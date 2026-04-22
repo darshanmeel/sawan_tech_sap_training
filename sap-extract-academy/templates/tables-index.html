@@ -1,73 +1,90 @@
-<!-- Tables index — module-filterable card grid -->
+<!-- Tables index — Bento card grid with module filter -->
 
-<div class="container">
-  <header class="page-header">
-    <h1>SAP Tables</h1>
-    <p class="page-lead">
-      Extract these tables from S/4HANA and ECC to cloud platforms.
-      Every table page covers key fields, extraction gotchas, license
-      implications, and walkthroughs at three skill levels.
-    </p>
-  </header>
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
 
-  <nav class="breadcrumb" aria-label="Breadcrumb">
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
     <ol>
       <li><a href="{{basePath}}/">Home</a></li>
       <li aria-current="page">Tables</li>
     </ol>
   </nav>
 
-  <div class="tables-toolbar">
-    <div class="toolbar-group">
-      <span class="toolbar-label" id="module-filter-label">Filter by module</span>
-      <div class="toolbar-chips" role="group" aria-labelledby="module-filter-label" data-filter-group="module">
-        <button type="button" class="chip chip--active" data-filter="all" aria-pressed="true">All</button>
-        {{#moduleChips}}
-        <button type="button" class="chip" data-filter="{{code}}" aria-pressed="false">{{label}}</button>
-        {{/moduleChips}}
+  <div class="grid">
+
+    <!-- Hero card -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>SAP Extract Academy</p>
+        <h1>SAP <em>Tables</em></h1>
       </div>
+      <p>Extract these tables from S/4HANA and ECC to cloud platforms. Every table covers key fields, extraction gotchas, license implications, and walkthroughs at three skill levels.</p>
     </div>
-    <div class="toolbar-count" aria-live="polite">
-      <span data-visible-count>{{itemCount}}</span> of {{itemCount}} tables
+
+    <!-- Side card: quick stats -->
+    <div class="card side">
+      <h3>In this library</h3>
+      <p class="big">{{itemCount}} <em style="font-style:italic;color:var(--color-accent-2)">tables</em></p>
+      <p>Each with beginner, intermediate, and expert walkthroughs. ODP, SLT, and RFC extraction patterns covered.</p>
     </div>
-  </div>
 
-  <section class="table-grid" data-filterable>
-    {{#items}}
-    <article class="table-card" data-module="{{module}}">
-      <header class="table-card-header">
-        <div class="table-card-tags">
-          <span class="tag tag--module">{{module}}</span>
-          <span class="tag tag--source">{{source}}</span>
-        </div>
-        <h2 class="table-card-title">
-          <a href="{{basePath}}{{url}}">{{code}}</a>
-        </h2>
-        <p class="table-card-subtitle">{{name}}</p>
-      </header>
-      <p class="table-card-description">{{description}}</p>
-      <footer class="table-card-footer">
-        <div class="table-card-meta">
-          <span class="meta-item">
-            <span class="meta-label">Volume</span>
-            <span class="meta-value">{{volumeLabel}}</span>
-          </span>
-          <span class="meta-item">
-            <span class="meta-label">Walkthroughs</span>
-            <span class="meta-value">{{walkthroughLabel}}</span>
-          </span>
-        </div>
-        <a class="table-card-link" href="{{basePath}}{{url}}">
-          Open table guide <span aria-hidden="true">→</span>
-        </a>
-      </footer>
-    </article>
-    {{/items}}
-  </section>
+    <!-- Section card: filter toolbar + table grid -->
+    <div class="card section">
 
-  <p class="table-grid-empty" data-empty-state hidden>
-    No tables match this filter.
-  </p>
+      <div class="tables-toolbar">
+        <div class="toolbar-group">
+          <span class="toolbar-label" id="module-filter-label">Filter by module</span>
+          <div class="toolbar-chips" role="group" aria-labelledby="module-filter-label" data-filter-group="module">
+            <button type="button" class="chip chip--active" data-filter="all" aria-pressed="true">All</button>
+            {{#moduleChips}}
+            <button type="button" class="chip" data-filter="{{code}}" aria-pressed="false">{{label}}</button>
+            {{/moduleChips}}
+          </div>
+        </div>
+        <div class="toolbar-count" aria-live="polite">
+          <span data-visible-count>{{itemCount}}</span> of {{itemCount}} tables
+        </div>
+      </div>
+
+      <div class="table-grid" data-filterable role="list">
+        {{#items}}
+        <article class="table-card" data-module="{{module}}" role="listitem">
+          <header class="table-card-header">
+            <div class="table-card-tags">
+              <span class="tag tag--module">{{module}}</span>
+              <span class="tag tag--source">{{source}}</span>
+            </div>
+            <h2 class="table-card-title">
+              <a href="{{basePath}}{{url}}">{{code}}</a>
+            </h2>
+            <p class="table-card-subtitle">{{name}}</p>
+          </header>
+          <p class="table-card-description">{{description}}</p>
+          <footer class="table-card-footer">
+            <div class="table-card-meta">
+              <span class="meta-item">
+                <span class="meta-label">Volume</span>
+                <span class="meta-value">{{volumeLabel}}</span>
+              </span>
+              <span class="meta-item">
+                <span class="meta-label">Walkthroughs</span>
+                <span class="meta-value">{{walkthroughLabel}}</span>
+              </span>
+            </div>
+            <a class="table-card-link" href="{{basePath}}{{url}}">
+              Open table guide <span aria-hidden="true">→</span>
+            </a>
+          </footer>
+        </article>
+        {{/items}}
+      </div>
+
+      <p class="table-grid-empty" data-empty-state hidden>
+        No tables match this filter.
+      </p>
+
+    </div><!-- /.card.section -->
+
+  </div><!-- /.grid -->
 </div>
 
 <script type="module" src="{{basePath}}/assets/js/table-filter.js?v=1" defer></script>

@@ -1,121 +1,130 @@
-<!-- Table detail page -->
+<!-- Table detail page — Bento card grid -->
 
-<div class="container">
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
 
-<nav class="breadcrumb" aria-label="Breadcrumb">
-  <ol>
-    <li><a href="{{basePath}}/">Home</a></li>
-    <li><a href="{{basePath}}/tables/">Tables</a></li>
-    <li aria-current="page">{{code}}</li>
-  </ol>
-</nav>
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="{{basePath}}/">Home</a></li>
+      <li><a href="{{basePath}}/tables/">Tables</a></li>
+      <li aria-current="page">{{code}}</li>
+    </ol>
+  </nav>
 
-<article class="table-detail">
-  <header class="table-header">
-    <div class="table-header-top">
-      <span class="module-badge">{{module}}</span>
+  <div class="grid">
+
+    <!-- Hero card: table code + module eyebrow -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>{{module}} · {{name}}</p>
+        <h1>{{code}}<em>.</em></h1>
+      </div>
+      <p>{{businessDescription}}</p>
     </div>
-    <h1>{{code}}</h1>
-    <p class="table-subtitle">{{name}}</p>
-    <p class="table-description">{{businessDescription}}</p>
-  </header>
 
-  <section class="table-overview">
-    <h2>What this table is</h2>
-    <div class="prose">
-      {{{body}}}
+    <!-- Side card: typical volume -->
+    <div class="card side">
+      <h3>Typical volume</h3>
+      <p class="big">{{typicalRowCount}}</p>
+      <p>{{volumeClass}} table. Plan your partitioning and licensing before anything else.</p>
     </div>
-  </section>
 
-  {{#hasKeyFields}}
-  <section class="table-fields">
-    <h2>Key fields</h2>
-    <table class="fields-table">
-      <thead>
-        <tr>
-          <th>Field name</th>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#keyFields}}
-        <tr>
-          <td><code>{{name}}</code></td>
-          <td>Key</td>
-          <td>{{description}}</td>
-        </tr>
-        {{/keyFields}}
-      </tbody>
-    </table>
-  </section>
-  {{/hasKeyFields}}
+    <!-- Meta cards: 4 × span 3 -->
+    {{#releasedCdsView}}
+    <div class="card meta"><dl><dt>Released CDS</dt><dd>{{releasedCdsView}}</dd></dl></div>
+    {{/releasedCdsView}}
+    <div class="card meta"><dl><dt>Volume class</dt><dd>{{volumeClass}}</dd></dl></div>
+    <div class="card meta"><dl><dt>Source system</dt><dd>S/4HANA</dd></dl></div>
+    <div class="card meta"><dl><dt>Module</dt><dd>{{module}}</dd></dl></div>
 
-  <section class="table-volume">
-    <h2>Volume characteristics</h2>
-    <dl>
-      <div>
-        <dt>Typical row count</dt>
-        <dd>{{typicalRowCount}}</dd>
-      </div>
-      <div>
-        <dt>Volume class</dt>
-        <dd><span class="badge badge-{{volumeClass}}">{{volumeClass}}</span></dd>
-      </div>
-      {{#releasedCdsView}}
-      <div>
-        <dt>Released CDS view</dt>
-        <dd><code>{{releasedCdsView}}</code></dd>
-      </div>
-      {{/releasedCdsView}}
-    </dl>
-  </section>
+    <!-- Accent card: scope lock -->
+    <div class="card accent">
+      <span class="chip">Scope lock</span>
+      <p>Understand the partitioning and licensing requirements for {{code}} before building any pipeline. Every other rule is downstream of this one.</p>
+    </div>
 
-  {{#hasExtractionGotchas}}
-  <section class="extraction-gotchas">
-    <h2>Extraction gotchas</h2>
-    <ul class="gotchas-list">
+    <!-- Section: What this table is -->
+    <div class="card section">
+      <h2>What this <em>is</em></h2>
+      <p class="subhead">{{businessDescription}}</p>
+      <div class="prose">
+        {{{body}}}
+      </div>
+    </div>
+
+    <!-- Section: Key fields -->
+    {{#hasKeyFields}}
+    <div class="card section">
+      <h2>Key fields</h2>
+      <table class="fields">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Role</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#keyFields}}
+          <tr>
+            <td class="k">{{name}}</td>
+            <td>Key</td>
+            <td>{{description}}</td>
+          </tr>
+          {{/keyFields}}
+        </tbody>
+      </table>
+    </div>
+    {{/hasKeyFields}}
+
+    <!-- Section: Extraction gotchas -->
+    {{#hasExtractionGotchas}}
+    <div class="card section">
+      <h2>Extraction gotchas</h2>
       {{#extractionGotchas}}
-      <li class="gotcha-item">
-        <p class="gotcha-text">{{summary}}</p>
-        {{#sapNoteOrDocUrl}}
-        <a class="gotcha-link" href="{{sapNoteOrDocUrl}}" target="_blank" rel="noopener noreferrer">
-          SAP Note <span aria-hidden="true">↗</span>
-          <span class="sr-only">(opens in new tab)</span>
-        </a>
-        {{/sapNoteOrDocUrl}}
-      </li>
+      <div class="gotcha">
+        <span class="icon">!</span>
+        <p>
+          <strong>{{summary}}</strong>
+          {{#sapNoteOrDocUrl}}
+          <a href="{{sapNoteOrDocUrl}}" target="_blank" rel="noopener noreferrer">
+            SAP Note <span aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span>
+          </a>
+          {{/sapNoteOrDocUrl}}
+        </p>
+      </div>
       {{/extractionGotchas}}
-    </ul>
-  </section>
-  {{/hasExtractionGotchas}}
-
-  <section class="walkthroughs-available">
-    <h2>Walkthroughs available</h2>
-    <p>Pick your skill level and start learning how to extract {{code}}.</p>
-    <div class="grid grid-cols-3">
-      {{#availableLevels}}
-      <a href="{{basePath}}/walkthrough/{{level}}/{{tableSlug}}/" class="card walkthrough-card">
-        <h3>{{levelCapitalized}}</h3>
-        <p class="walkthrough-meta">Step-by-step guide</p>
-      </a>
-      {{/availableLevels}}
     </div>
-  </section>
+    {{/hasExtractionGotchas}}
 
-  <section class="external-refs">
-    <h2>External references</h2>
-    <ul class="refs-list">
-      {{#sapHelpUrl}}
-      <li><a href="{{sapHelpUrl}}" target="_blank" rel="noopener noreferrer">SAP Help Portal — {{code}}</a></li>
-      {{/sapHelpUrl}}
-      {{^sapHelpUrl}}
-      <li><span class="refs-unverified">SAP Help Portal — [NEEDS_SAP_CITATION]</span></li>
-      {{/sapHelpUrl}}
-      <li><a href="https://www.leanx.eu/en/sap/table/{{slug}}.html" target="_blank" rel="noopener noreferrer">leanx.eu — {{code}} field list</a></li>
-      <li><a href="https://www.saptables.net/table/{{slug}}" target="_blank" rel="noopener noreferrer">saptables.net — {{code}}</a></li>
-    </ul>
-  </section>
-</article>
+    <!-- Section: Walkthroughs available -->
+    <div class="card section">
+      <h2>Walkthroughs <em>available</em></h2>
+      <p class="subhead">Pick your skill level and start learning how to extract {{code}}.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--space-4);margin-top:var(--space-5);">
+        {{#availableLevels}}
+        <a href="{{basePath}}/walkthrough/{{level}}/{{tableSlug}}/" style="display:block;background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);text-decoration:none;border:none;transition:box-shadow 0.15s;">
+          <p class="eyebrow" style="margin-bottom:var(--space-2);">{{level}}</p>
+          <div style="font-family:var(--font-display);font-size:24px;letter-spacing:-0.02em;color:var(--color-ink);margin-bottom:var(--space-2);">{{levelCapitalized}}</div>
+          <p style="font-size:14px;color:var(--color-ink-soft);margin:0;">Step-by-step guide</p>
+        </a>
+        {{/availableLevels}}
+      </div>
+    </div>
 
+    <!-- Section: External references -->
+    <div class="card section external-refs">
+      <h2>External <em>references</em></h2>
+      <ul class="refs-list">
+        {{#sapHelpUrl}}
+        <li><a href="{{sapHelpUrl}}" target="_blank" rel="noopener noreferrer">SAP Help Portal — {{code}}</a></li>
+        {{/sapHelpUrl}}
+        {{^sapHelpUrl}}
+        <li><span class="refs-unverified">SAP Help Portal — [NEEDS_SAP_CITATION]</span></li>
+        {{/sapHelpUrl}}
+        <li><a href="https://www.leanx.eu/en/sap/table/{{slug}}.html" target="_blank" rel="noopener noreferrer">leanx.eu — {{code}} field list</a></li>
+        <li><a href="https://www.saptables.net/table/{{slug}}" target="_blank" rel="noopener noreferrer">saptables.net — {{code}}</a></li>
+      </ul>
+    </div>
+
+  </div>
 </div>

@@ -1,89 +1,61 @@
-<!-- Landing page / Homepage -->
+<!-- Landing page / Homepage — Bento card grid -->
 
-<section class="hero">
-  <div class="container prose">
-    <h1>{{headline}}</h1>
-    <p class="hero-subheading">{{subheadline}}</p>
-    <div class="hero-ctas">
-      <a href="{{basePath}}/tables/" class="btn btn-primary">{{cta1Label}}</a>
-      <a href="{{cta2Url}}" class="btn btn-secondary">{{cta2Label}}</a>
-    </div>
-  </div>
-</section>
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+  <div class="grid">
 
-<section class="value-props">
-  <div class="container">
-    <div class="grid grid-cols-3">
-      {{#valueProps}}
-      <div class="value-prop card">
-        <h3>{{title}}</h3>
-        <p>{{description}}</p>
+    <!-- Hero card: span 8 -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>SAP · Data Extraction</p>
+        <h1>{{headline}}<em>.</em></h1>
       </div>
-      {{/valueProps}}
+      <p>{{subheadline}}</p>
     </div>
-  </div>
-</section>
 
-<section class="featured-walkthrough">
-  <div class="container prose">
-    <h2>{{featuredWalkthroughTitle}}</h2>
-    <div class="card">
-      <h3>{{featuredWalkthroughName}}</h3>
-      <p>{{featuredWalkthroughDescription}}</p>
-      <a href="{{featuredWalkthroughUrl}}" class="btn btn-primary">{{strings.cta.startWalkthrough}}</a>
+    <!-- Side card: span 4 -->
+    <div class="card side">
+      <h3>What you'll learn</h3>
+      <p class="big">5 <em style="font-style:italic;color:var(--color-accent-2)">tables</em></p>
+      <p>ACDOCA, BKPF, VBAK, MARA, LFA1 — each with beginner, intermediate, and expert walkthroughs covering ODP, SLT, and RFC extraction patterns.</p>
     </div>
-  </div>
-</section>
 
-<section class="table-library">
-  <div class="container">
-    <h2>Learn from five key tables</h2>
-    <p class="section-intro">Start with any table. Each has three walkthroughs: beginner, intermediate, and expert.</p>
-    <div class="grid grid-cols-3">
-      {{#featuredTables}}
-      <article class="card">
-        <h3>{{code}}</h3>
-        <p><strong>{{name}}</strong></p>
-        <p>{{module}}</p>
-        <p class="table-volume">{{volumeClass}}</p>
-        <a href="{{basePath}}/tables/{{slug}}/">View walkthroughs</a>
-      </article>
-      {{/featuredTables}}
+    <!-- Meta cards: 4 × span 3 -->
+    <div class="card meta"><dl><dt>Tables covered</dt><dd>5</dd></dl></div>
+    <div class="card meta"><dl><dt>Walkthroughs</dt><dd>15</dd></dl></div>
+    <div class="card meta"><dl><dt>Glossary terms</dt><dd>32</dd></dl></div>
+    <div class="card meta"><dl><dt>Methods</dt><dd>ODP · SLT · RFC</dd></dl></div>
+
+    <!-- Accent card: scope lock / tagline -->
+    <div class="card accent">
+      <span class="chip">Scope lock</span>
+      <p>Partition before you pipeline. Every rule in this Academy is downstream of that one.</p>
     </div>
-  </div>
-</section>
 
-<section class="roadmap-teaser">
-  <div class="container prose">
-    <h2>What's coming</h2>
-    <p>We're expanding beyond S/4HANA on-prem. See the roadmap for ECC 6.0, Cloud, BW, and Datasphere releases.</p>
-    <a href="{{basePath}}/roadmap/" class="btn btn-secondary">View roadmap</a>
-  </div>
-</section>
-
-<section class="email-signup">
-  <div class="container prose">
-    <h2>Get updates</h2>
-    <p>Join the community. We'll notify you when new content ships.</p>
-    <form
-      action="https://buttondown.email/api/emails/embed-subscribe/{{buttondownUsername}}"
-      method="post"
-      target="popupwindow"
-      class="email-form"
-    >
-      <label for="homepage-email">{{strings.form.emailLabel}}</label>
-      <div class="email-form-row">
-        <input
-          type="email"
-          name="email"
-          id="homepage-email"
-          placeholder="{{strings.cta.emailPlaceholder}}"
-          required
-          autocomplete="email"
-        />
-        <button type="submit" class="btn btn-primary">{{strings.cta.subscribeEmail}}</button>
+    <!-- Section card: What this academy is -->
+    <div class="card section">
+      <h2>What this <em>is</em></h2>
+      <p class="subhead">A practical field guide to extracting SAP S/4HANA data into cloud platforms — without the licensing surprises or 3 AM incidents.</p>
+      <p>Every page covers the SAP-side reality first: released CDS views, authorization requirements, volume characteristics, and the gotchas that break pipelines. Tool-specific configuration comes second, wrapped in a picker so you see only what's relevant to your stack.</p>
+      <div style="display:flex;gap:var(--space-4);margin-top:var(--space-5);flex-wrap:wrap;">
+        <a href="{{basePath}}/tables/" class="btn btn-primary">{{cta1Label}}</a>
+        <a href="{{cta2Url}}" class="btn btn-secondary">{{cta2Label}}</a>
       </div>
-      <p class="email-consent">{{strings.form.consentText}}</p>
-    </form>
+    </div>
+
+    <!-- Section card: Featured tables grid -->
+    <div class="card section">
+      <h2>Five key <em>tables</em></h2>
+      <p class="subhead">Start with any table. Each has three walkthroughs: beginner, intermediate, and expert.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--space-4);margin-top:var(--space-5);">
+        {{#featuredTables}}
+        <a href="{{basePath}}/tables/{{slug}}/" style="display:block;background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);text-decoration:none;border:none;transition:box-shadow 0.15s;">
+          <p class="eyebrow" style="margin-bottom:var(--space-2);">{{module}}</p>
+          <div style="font-family:var(--font-display);font-size:28px;letter-spacing:-0.02em;color:var(--color-ink);margin-bottom:var(--space-2);">{{code}}</div>
+          <p style="font-size:14px;color:var(--color-ink-soft);margin:0;">{{name}}</p>
+        </a>
+        {{/featuredTables}}
+      </div>
+    </div>
+
   </div>
-</section>
+</div>
