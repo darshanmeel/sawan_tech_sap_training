@@ -4,21 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>SAP Extract Academy Roadmap — What&#39;s Coming — SAP Extract Academy</title>
-  <meta name="description" content="Roadmap for new walkthroughs, advanced patterns, and features planned for SAP Extract Academy in 2026 and 2027.">
-  <link rel="canonical" href="https://academy.example.com&#x2F;roadmap&#x2F;">
+  <title>Help Me Decide — SAP Extraction Method Picker — SAP Extract Academy</title>
+  <meta name="description" content="Not sure whether to use ODP, SLT, or RFC for your SAP extraction? Answer five quick questions and get a personalised walkthrough link.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;decide&#x2F;">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="SAP Extract Academy Roadmap — What&#39;s Coming">
-  <meta property="og:description" content="Roadmap for new walkthroughs, advanced patterns, and features planned for SAP Extract Academy in 2026 and 2027.">
-  <meta property="og:url" content="https://academy.example.com&#x2F;roadmap&#x2F;">
+  <meta property="og:title" content="Help Me Decide — SAP Extraction Method Picker">
+  <meta property="og:description" content="Not sure whether to use ODP, SLT, or RFC for your SAP extraction? Answer five quick questions and get a personalised walkthrough link.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;decide&#x2F;">
   <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
   <meta property="og:site_name" content="SAP Extract Academy">
   <meta property="og:locale" content="en_US">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="SAP Extract Academy Roadmap — What&#39;s Coming">
-  <meta name="twitter:description" content="Roadmap for new walkthroughs, advanced patterns, and features planned for SAP Extract Academy in 2026 and 2027.">
+  <meta name="twitter:title" content="Help Me Decide — SAP Extraction Method Picker">
+  <meta name="twitter:description" content="Not sure whether to use ODP, SLT, or RFC for your SAP extraction? Answer five quick questions and get a personalised walkthrough link.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage"}</script>
@@ -65,16 +65,31 @@
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
     </div>
-    <!-- Generic list/index page template -->
+    <main id="main" class="prose">
+  <div class="container">
+    <h1>Help me decide</h1>
+    <p class="decide-intro">
+  Answer a few questions about your data and environment. The tool will recommend an extraction method, then build a direct link to the right walkthrough — pre-loaded with your choices.
+</p><div id="decide-mount">
+  <div aria-live="polite" aria-atomic="false" id="decide-live" class="sr-only"></div>
+  <div id="decide-grid" class="decide-grid">
+    <!-- Q1 card is rendered by decide.js on DOMContentLoaded -->
+  </div>
+</div><script src="/assets/js/decide.js" defer></script>
+<noscript>
+  <p class="decide-noscript">
+    JavaScript is required for the interactive decision tree.
+    Without it, use the guide below to pick your method manually.
+  </p>
+  <ul>
+    <li><strong>Real-time (&lt; 5 min lag)?</strong> → <a href="/articles/sap-runtime-license-trap/">Check SLT licensing first</a></li>
+    <li><strong>Batch, table &gt; 500M rows?</strong> → ODP with parallel extraction</li>
+    <li><strong>Batch, table ≤ 500M rows?</strong> → ODP single-thread</li>
+  </ul>
+</noscript>
 
-<header class="page-header">
-  <h1></h1>
-</header>
-
-
-<section class="items-grid">
-</section>
-
+  </div>
+</main>
 
   </main>
 
