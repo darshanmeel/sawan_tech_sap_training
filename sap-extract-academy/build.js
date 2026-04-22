@@ -16,6 +16,18 @@ const BASE_PATH = process.env.BASE_PATH || '';
 const strings = JSON.parse(fs.readFileSync(STRINGS_PATH, 'utf-8'));
 const baseTemplate = fs.readFileSync(path.join(TEMPLATES_DIR, 'base.html'), 'utf-8');
 
+// Load Mustache partials from templates/partials/ (*.mustache or *.html)
+const PARTIALS_DIR = path.join(TEMPLATES_DIR, 'partials');
+const partials = {};
+if (fs.existsSync(PARTIALS_DIR)) {
+  for (const file of fs.readdirSync(PARTIALS_DIR)) {
+    if (file.endsWith('.mustache') || file.endsWith('.html')) {
+      const name = path.basename(file, path.extname(file));
+      partials[name] = fs.readFileSync(path.join(PARTIALS_DIR, file), 'utf-8');
+    }
+  }
+}
+
 const pageTemplates = {
   landing: fs.readFileSync(path.join(TEMPLATES_DIR, 'landing.html'), 'utf-8'),
   table: fs.readFileSync(path.join(TEMPLATES_DIR, 'table-detail.html'), 'utf-8'),
@@ -232,13 +244,31 @@ function buildPage(filePath, content) {
   const troubleshooting = Array.isArray(data.troubleshooting) ? data.troubleshooting : [];
   const nextSteps = Array.isArray(data.nextSteps) ? data.nextSteps : [];
 
+  // B6: run marked.parseInline on step explanation/whyItMatters so fenced
+  // inline code and markdown in prose renders correctly. marked.parseInline is
+  // idempotent for strings that are already HTML.
+  function renderInline(text) {
+    if (typeof text !== 'string' || text.trim() === '') return text;
+    return marked.parseInline(text);
+  }
+
   const stepsWithDisplay = Array.isArray(data.steps)
     ? data.steps.map((step, idx) => {
         const match = typeof step.id === 'string' ? step.id.match(/\d+/) : null;
         const displayNumber = match ? parseInt(match[0], 10) : idx + 1;
-        return { ...step, displayNumber };
+        return {
+          ...step,
+          displayNumber,
+          explanation: renderInline(step.explanation),
+          whyItMatters: renderInline(step.whyItMatters)
+        };
       })
     : data.steps;
+
+  // B4: gate the relatedWalkthroughs section so it only renders when non-empty
+  const relatedWalkthroughs = Array.isArray(data.relatedWalkthroughs)
+    ? data.relatedWalkthroughs
+    : [];
 
   const mergedData = {
     ...data,
@@ -265,6 +295,9 @@ function buildPage(filePath, content) {
     hasPrerequisites: prerequisites.length > 0,
     hasTroubleshooting: troubleshooting.length > 0,
     hasNextSteps: nextSteps.length > 0,
+    // B4: relatedWalkthroughs is an array of {slug, level} objects; gate section
+    relatedWalkthroughs,
+    hasRelatedWalkthroughs: relatedWalkthroughs.length > 0,
     availableLevels: Array.isArray(data.availableLevels)
       ? data.availableLevels.map(level => ({
           level,
@@ -275,14 +308,14 @@ function buildPage(filePath, content) {
   };
 
   const pageTypeTemplate = pageTemplates[pageType];
-  const pageContent = Mustache.render(pageTypeTemplate, mergedData);
+  const pageContent = Mustache.render(pageTypeTemplate, mergedData, partials);
 
   const baseData = {
     ...mergedData,
     content: pageContent
   };
 
-  const html = Mustache.render(baseTemplate, baseData);
+  const html = Mustache.render(baseTemplate, baseData, partials);
 
   fs.mkdirSync(outputDir, { recursive: true });
   fs.writeFileSync(outputPath, html, 'utf-8');
@@ -437,7 +470,13 @@ function generateIndexPages() {
       seoDescription: 'Expert articles on SAP extraction: why ACDOCA breaks systems, licensing traps, complete walkthrough strategies.',
       items: articles.map(a => ({
         title: a.title,
-        subtitle: `${a.readingTimeMinutes} min read · ${a.publishDate}`,
+        // B5/X2: format publishDate (gray-matter parses YAML dates as JS Date
+        // objects); if already a string, normalise to YYYY-MM-DD
+        subtitle: `${a.readingTimeMinutes} min read · ${
+          a.publishDate
+            ? new Date(a.publishDate).toISOString().slice(0, 10)
+            : ''
+        }`,
         description: a.summary,
         url: `/articles/${a.slug}/`,
         label: 'Read Article'
@@ -452,6 +491,9 @@ function buildIndexPage(category, data) {
   const outputPath = path.join(outputDir, 'index.html');
 
   const mergedData = {
+    // B5/X1: list.html uses {{pageTitle}}; pass both pageTitle and title so
+    // any template that references either key gets the value.
+    pageTitle: data.title,
     title: data.title,
     seoTitle: data.seoTitle,
     seoDescription: data.seoDescription,
@@ -467,13 +509,13 @@ function buildIndexPage(category, data) {
   };
 
   const template = category === 'tables' ? pageTemplates.tablesIndex : pageTemplates.list;
-  const pageContent = Mustache.render(template, mergedData);
+  const pageContent = Mustache.render(template, mergedData, partials);
   const baseData = {
     ...mergedData,
     content: pageContent
   };
 
-  const html = Mustache.render(baseTemplate, baseData);
+  const html = Mustache.render(baseTemplate, baseData, partials);
 
   fs.mkdirSync(outputDir, { recursive: true });
   fs.writeFileSync(outputPath, html, 'utf-8');
