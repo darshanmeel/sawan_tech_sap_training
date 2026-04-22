@@ -1,24 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap');
 
 /* ===== Design Tokens ===== */
 
 :root {
-  --color-primary: #2a5c8f;
-  --color-ink: #1a1f2e;
-  --color-paper: #fafbfc;
-  --color-paper-2: #edf0f5;
-  --color-rule: #c4cdd8;
-  --color-border: #d4d9e1;
-  --color-accent: #e67e22;
-  --color-accent-soft: #f0a567;
-  --color-muted: #5c6478;
+  --color-primary: #B84220;
+  --color-ink: #1A1410;
+  --color-paper: #FAF3EB;
+  --color-paper-2: #EDE4D8;
+  --color-rule: #D8CABC;
+  --color-border: #CEC1B2;
+  --color-accent: #B84220;
+  --color-accent-soft: #D4714A;
+  --color-muted: #7A6A5A;
   --color-success: #2d6a4f;
   --color-warning: #a06000;
   --color-danger: #b02a2a;
-  --color-link: #2a5c8f;
+  --color-link: #B84220;
 
   --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  --font-display: "Plus Jakarta Sans", "IBM Plex Sans", sans-serif;
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas,
     monospace;
 
@@ -152,7 +152,7 @@ a:hover {
 }
 
 a:visited {
-  color: #1e4d7a;
+  color: #8B3A1F;
 }
 
 a:focus-visible {
@@ -362,7 +362,7 @@ blockquote {
 }
 
 .btn-primary:hover {
-  background-color: #1e4d7a;
+  background-color: #8B3A1F;
 }
 
 .btn-secondary {
@@ -460,7 +460,7 @@ legend {
 
 .callout.info {
   border-color: var(--color-link);
-  background-color: rgba(31, 74, 110, 0.05);
+  background-color: rgba(184, 66, 32, 0.05);
 }
 
 .callout.warning {

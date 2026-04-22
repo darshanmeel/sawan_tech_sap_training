@@ -201,6 +201,8 @@ function buildPage(filePath, content) {
 
   const stepCount = data.steps ? data.steps.length : 0;
 
+  const tableSlug = data.slug || (data.code ? data.code.toLowerCase() : '');
+
   const mergedData = {
     ...data,
     strings,
@@ -215,7 +217,14 @@ function buildPage(filePath, content) {
     stepCount,
     destinations: Array.isArray(data.destinations) ? data.destinations.join(', ') : data.destinations,
     extractors: Array.isArray(data.extractors) ? data.extractors.join(', ') : data.extractors,
-    prerequisites: Array.isArray(data.prerequisites) ? data.prerequisites : []
+    prerequisites: Array.isArray(data.prerequisites) ? data.prerequisites : [],
+    availableLevels: Array.isArray(data.availableLevels)
+      ? data.availableLevels.map(level => ({
+          level,
+          levelCapitalized: level.charAt(0).toUpperCase() + level.slice(1),
+          tableSlug
+        }))
+      : []
   };
 
   const pageTypeTemplate = pageTemplates[pageType];
