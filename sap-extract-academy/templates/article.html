@@ -42,18 +42,18 @@
     {{{body}}}
   </div>
 
-  {{#relatedWalkthroughs}}
+  {{#hasRelatedWalkthroughs}}
   <section class="related-walkthroughs">
     <h2>{{strings.articles.relatedWalkthroughsLabel}}</h2>
     <ul>
       {{#relatedWalkthroughs}}
       <li>
-        <a href="{{basePath}}/walkthrough/{{.}}/">Walkthrough: {{.}}</a>
+        <a href="{{basePath}}/walkthrough/{{level}}/{{slug}}/">Walkthrough: {{level}} — {{slug}}</a>
       </li>
       {{/relatedWalkthroughs}}
     </ul>
   </section>
-  {{/relatedWalkthroughs}}
+  {{/hasRelatedWalkthroughs}}
 
   {{#tags}}
   <footer class="article-footer">

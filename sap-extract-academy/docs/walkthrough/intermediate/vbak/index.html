@@ -192,7 +192,7 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro"><a href='/glossary/odp/'>ODP</a> maintains delta queues for each context (CDS view). The queue tracks insert, update, delete operations. You'll request a delta using a timestamp or sequence number.</p>
+          <p class="step-intro"><a href='/glossary/odp/'>ODP</a> maintains delta queues for each context (CDS view). The queue tracks insert, update, delete operations. You&#39;ll request a delta using a timestamp or sequence number.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
@@ -232,7 +232,7 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Install pyrfc library for direct SAP RFC calls. This gives you finer control over delta requests than ADF's SAP CDC connector.</p>
+          <p class="step-intro">Install pyrfc library for direct SAP RFC calls. This gives you finer control over delta requests than ADF&#39;s SAP CDC connector.</p>
 
 
           <figure class="code-block">
@@ -311,7 +311,7 @@ write_pandas(sf_conn, df, &#39;VBAK_FULL_LOAD&#39;, auto_create_table&#x3D;True)
         </header>
 
         <div class="step-body">
-          <p class="step-intro">After full load completes, query ODQMON to capture the current ODP sequence number. You'll use this in the delta extract to only get new/changed rows.</p>
+          <p class="step-intro">After full load completes, query ODQMON to capture the current ODP sequence number. You&#39;ll use this in the delta extract to only get new/changed rows.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
@@ -419,7 +419,7 @@ new_seq &#x3D; delta_result[&#39;NEXTSEQ&#39;]
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Check that ZZ_REGION is present in the Snowflake table and contains expected values (e.g., 'EMEA', 'APAC', 'AMER').</p>
+          <p class="step-intro">Check that ZZ_REGION is present in the Snowflake table and contains expected values (e.g., &#39;EMEA&#39;, &#39;APAC&#39;, &#39;AMER&#39;).</p>
 
 
 
