@@ -189,6 +189,74 @@ Required on the footer of every page:
 
 ---
 
+## Real-World Examples Policy
+
+Every article may include real-world examples or case studies. They must follow one of these three approaches — no exceptions.
+
+### Approach A — Anonymized Composite (Preferred)
+
+Label it explicitly. Never imply it is a single real event.
+
+```markdown
+**From the field (composite of multiple engagements, anonymized):**
+
+A financial services customer migrated to S/4HANA under a Runtime 
+Use License. Three months post-go-live, an SAP audit identified SLT 
+running in LTRC — a Full Use-only feature. The customer faced 
+retroactive licensing fees and an ultimatum: upgrade, decommission 
+SLT, or face contract action. The architecture had been signed off 
+without anyone confirming which license tier covered SLT.
+
+This pattern appears consistently. The mistake is always the same: 
+extraction architecture designed before license validation.
+```
+
+Rules for Approach A:
+- Always use "composite of multiple engagements" or "based on patterns seen across multiple customers"
+- No specific company names, no specific countries, no specific dollar amounts
+- No specific timeframes that imply a single real event ("three months post-go-live" is fine as a pattern description, not a specific claim)
+- Consequence amounts described as ranges: "retroactive fees in such cases range from tens of thousands to millions depending on system size and contract" — never invent a specific number
+
+### Approach B — Publicly Documented Events
+
+Use only events that are publicly documented and citeable.
+
+Good examples:
+- SAP Note 3255746 (Feb 2024) — SAP retroactively restricting ODP RFC usage, affecting ADF, Qlik, Matillion, Fivetran users who had working production integrations. Fully documented, publicly citeable.
+- Diageo vs SAP indirect access case (UK High Court, 2017) — public court record
+- AB InBev SAP licensing dispute — publicly reported
+
+Always cite the source. Never embellish with invented details.
+
+```markdown
+**Documented case:** When SAP updated Note 3255746 in February 2024, 
+customers running Azure Data Factory's SAP CDC connector found their 
+existing production pipelines were now classified as unpermitted. 
+No grace period was announced. [Source: SAP Note 3255746, 
+Microsoft Q&A thread, Matillion blog]
+```
+
+### Approach C — Your Own Direct Experience
+
+Write in first person or clearly attribute to the author.
+
+```markdown
+**From the author's experience (anonymized):**
+
+On a recent engagement, the customer had been running...
+```
+
+### What Is NEVER Permitted
+
+- Invented dollar amounts presented as real ("$1.5M fine")
+- Named companies that cannot be verified
+- Specific events that cannot be sourced
+- Anything that implies a factual news event without a citation
+
+Readers in DSAG and enterprise circles will Google every specific claim. A single unverifiable "fact" destroys the credibility of the entire article and the site. When in doubt, use Approach A and remove specifics.
+
+---
+
 ## Review Checklist Before Committing
 
 - [ ] Every SAP transaction/table/concept has an SAP Help link on first mention
