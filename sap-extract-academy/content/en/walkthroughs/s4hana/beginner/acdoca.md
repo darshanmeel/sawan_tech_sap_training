@@ -10,7 +10,7 @@ prerequisites:
   - "A technical SAP user account you control, or a BASIS team contact who can create one"
   - "An extraction tool that supports ODP with context ABAP_CDS (ADF SAP CDC, Qlik Replicate, Fivetran, Matillion, etc.)"
   - "Write access to your cloud platform's raw/landing zone"
-licenseRelevance: "IMPORTANT — Read Note 3255746 before choosing your extraction tool. SAP updated this note in February 2024: ODP via RFC is no longer permitted. This affects ADF SAP CDC connector, Qlik Replicate, Fivetran ODP connector, and most third-party tools. The compliant paths are: ODP via OData (slower, ~10x), SLT replication (separate license), or SAP Datasphere. If your tool uses RFC to call ODP, confirm the status with your SAP account executive before going live. Reference: SAP Note 3255746 [NEEDS_SAP_CITATION]"
+licenseRelevance: "IMPORTANT — Read SAP Note 3255746 before choosing your extraction tool. SAP updated this note in February 2024 (version 4): ODP via RFC is no longer permitted. This affects ADF SAP CDC connector, Qlik Replicate, Fivetran ODP connector, and most third-party tools. The compliant paths are: ODP via OData (slower, ~10x), SLT replication (separate license), or SAP Datasphere. If your tool uses RFC to call ODP, confirm the status with your SAP account executive before going live. Full note at: https://support.sap.com/notes/3255746 (SAP login required)"
 destinations:
   - Generic Cloud
 extractors:
@@ -19,14 +19,14 @@ steps:
   - id: step-01
     title: "Understand what you're about to extract"
     explanation: "ACDOCA is SAP's Universal Journal — the single table that stores every financial posting in S/4HANA. It replaced BSEG (GL line items), COEP (CO postings), and several other FI/CO tables. Every GL entry, every cost center posting, every internal order settlement lands here. At a mid-size enterprise ACDOCA has 500M rows. At a large one it has 3B+ rows. You are not extracting a small table. This is manageable if you do it right. It is a problem if you do it wrong."
-    verify: "You understand: ACDOCA exists only in S/4HANA (not ECC). On ECC, use BSEG + 0FI_GL_50. Confirm with your BASIS team which system type you're connecting to."
-    whyItMatters: "Connecting to an ECC system and searching for ACDOCA will return 0 rows — the table exists but is always empty in ECC. Confusingly, the schema is present in ECC for compatibility. If your first extract returns 0 rows, check the system type first."
+    verify: "You understand: ACDOCA exists only in S/4HANA (not ECC). On ECC, use BSEG + 0FI_GL_50 extractor instead. Confirm with your BASIS team which system type you're connecting to before proceeding."
+    whyItMatters: "Connecting to an ECC system and searching for ACDOCA will return 0 rows — the table schema exists in ECC for compatibility but is always empty. If your first extract returns 0 rows, check the system type first."
 
   - id: step-02
     title: "Understand why SELECT * is not an option"
-    explanation: "Three reasons you cannot do a direct table read on ACDOCA. First: size. A 1B-row extract in one request will run for hours and put significant load on your SAP system's dialog work processes — your BASIS team will terminate it. Second: license. Direct table read of ACDOCA via RFC (e.g. RFC_READ_TABLE) requires Full Use license. If you're on Runtime Use license, you are blocked at the authorization level. Third: correctness. ACDOCA contains currency conversion fields (HSL, KSL, MSL, TSL, WSL) that only make sense in context. The released CDS view handles these correctly. A raw table read does not. The safe path: ODP via CDS view I_JournalEntryItem."
-    verify: "You will not use RFC_READ_TABLE on ACDOCA. You will not attempt a direct table replication without first confirming your license allows it (see SAP Note 382318). [NEEDS_SAP_CITATION]"
-    whyItMatters: "This is not a theoretical concern. RFC_READ_TABLE on ACDOCA will either be blocked by authorization (Runtime license) or will succeed and cause visible system slowdown. SAP Note 382318 explicitly states RFC_READ_TABLE is not intended for productive use."
+    explanation: "Three reasons you cannot do a direct table read on ACDOCA. First: size. A 1B-row extract in one request will run for hours and put significant load on your SAP system's dialog work processes — your BASIS team will terminate it. [SME_KNOWLEDGE] Second: license. Direct table read of ACDOCA via RFC (e.g. RFC_READ_TABLE) requires Full Use license. If you're on Runtime Use license, you are blocked at the authorization level. Third: correctness. ACDOCA stores amounts in multiple currency fields (HSL, KSL, MSL, TSL, WSL) that only make sense with their paired currency code fields. The released CDS view handles these correctly via @Semantics annotations. A raw table read does not. The safe path: ODP via CDS view I_JournalEntryItem."
+    verify: "You will not use RFC_READ_TABLE on ACDOCA. RFC_READ_TABLE is explicitly not intended for productive use ([SAP Note 382318](https://support.sap.com/notes/382318)) and will either be blocked by authorization (Runtime license) or will cause visible system slowdown."
+    whyItMatters: "This is not a theoretical concern. RFC_READ_TABLE on ACDOCA is blocked for Runtime Use license holders by authorization. For Full Use license holders, it still runs but puts serious load on the SAP application server. Note 382318 documents that RFC_READ_TABLE is not for production use."
 
   - id: step-03
     title: "Check your license and talk to your BASIS team"
@@ -38,12 +38,14 @@ steps:
 
         1. LICENSE
            Confirm Runtime Use License covers ODP via CDS extraction.
-           If using a tool that connects via RFC, confirm Note 3255746
+           If your tool connects via RFC to call ODP, confirm Note 3255746
            compliance status with your SAP account executive.
+           Note 3255746 (Feb 2024): RFC-based ODP no longer permitted.
+           Compliant alternative: ODP via OData, or SLT replication.
 
         2. RFC DESTINATION
            Provide the RFC destination name for this system.
-           (SM59 → R/3 Connections → find the system)
+           (SAP transaction SM59 → R/3 Connections → find the system)
 
         3. S_RFC AUTHORIZATION
            Extraction user needs S_RFC with:
@@ -58,31 +60,36 @@ steps:
 
         5. ODQMON ACCESS
            Request read access to transaction ODQMON
-           so you can monitor delta queues.
+           so you can monitor delta queues after extraction runs.
       caption: "Send this to your BASIS team before starting configuration"
     verify: "Your extraction user can log in to the SAP system, and your BASIS team has confirmed S_RFC and S_ODP_READ are assigned. Ask them to run SU01 → your username → Authorizations and confirm both objects are present."
-    whyItMatters: "Missing S_ODP_READ with context ABAP_CDS is the most common cause of failed ACDOCA extractions. The error message varies by tool but often looks like SAP_ODP_AUTHORIZATION_MISSING or simply returns 0 rows without an error."
+    whyItMatters: "Missing S_ODP_READ with context ABAP_CDS is the most common cause of failed ACDOCA extractions. The error message varies by tool but often looks like SAP_ODP_AUTHORIZATION_MISSING or simply returns 0 rows without an error. [SME_KNOWLEDGE]"
 
   - id: step-04
     title: "Find and verify I_JournalEntryItem in SAP"
-    explanation: "Log in to your SAP system and open SE80 (ABAP Workbench) or ADT (SAP ABAP Development Tools in Eclipse). Search for the CDS view I_JournalEntryItem. You are looking for two things: the view exists and is active, and it carries the annotation @Analytics.dataExtract: #FULL."
+    explanation: "Log in to your SAP system and open SE80 (ABAP Workbench) or ADT (SAP ABAP Development Tools in Eclipse). Search for the CDS view I_JournalEntryItem. You are looking for two things: the view exists and is active, and it carries extraction annotations enabling ODP consumption."
     sapTransaction:
       code: SE80
-      menuPath: "Repository Browser → Other Objects → select 'CDS Entity' → enter I_JournalEntryItem"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE"
+      menuPath: "Repository Browser → Other Objects → select 'CDS Entity' → enter I_JournalEntryItem → press Enter → switch to Source Code tab"
+      helpUrl: "[NEEDS_SAP_CITATION]"
     codeBlock:
       language: abap
       content: |
         -- In SE80: after opening I_JournalEntryItem, switch to the
-        -- "Source Code" tab and look for this annotation near the top:
-        @Analytics.dataExtract: #FULL
+        -- "Source Code" tab and look for these annotations near the top:
 
-        -- If you see this, the view supports full ODP extraction.
-        -- If you also see this, delta is supported:
-        @Analytics.dataExtraction.delta.changeDataCapture.automatic: #true
-      caption: "Annotations to verify in SE80 source view"
-    verify: "I_JournalEntryItem opens in SE80 without error and the @Analytics.dataExtract annotation is present. If the view does not exist or has no annotation, your S/4HANA release may not include this view — check with BASIS for the correct CDS view name for your SPS level. Reference: SAP Note 2884410 [NEEDS_SAP_CITATION]"
-    whyItMatters: "Some S/4HANA releases use a different view name or have I_JournalEntryItem deactivated. Checking before configuring your tool saves hours of debugging later."
+        -- This annotation enables ODP extraction of this view:
+        @Analytics.dataExtraction.enabled: true
+
+        -- This annotation enables delta (CDC) extraction:
+        @Analytics.dataExtraction.delta.changeDataCapture.automatic: true
+
+        -- If you see both, the view supports full + delta ODP extraction.
+        -- If only the first is present, full extraction works but delta does not.
+        -- If neither is present, this view is not ODP-enabled on your system.
+      caption: "Annotations to verify in SE80 source view — source: wiki/concepts/CDS_views.md"
+    verify: "I_JournalEntryItem opens in SE80 without error and the @Analytics.dataExtraction.enabled annotation is present. If the view does not exist or has no annotation, your S/4HANA release may not include this view — confirm with BASIS. On S/4HANA on-prem, use I_JournalEntryItem. On S/4HANA Cloud, this view is confirmed released. Delta behavior documented in [SAP Note 2884410](https://support.sap.com/notes/2884410)."
+    whyItMatters: "Some S/4HANA releases or SPS levels have I_JournalEntryItem deactivated or use a different CDS view. Confirming in SE80 before tool configuration saves hours of debugging later. [SME_KNOWLEDGE] The safer confirmed on-prem extractor path is 0FI_ACDOCA_10 via SAPI context — if I_JournalEntryItem is not available on your system, use that instead."
 
   - id: step-05
     title: "Select your initial fields"
@@ -100,7 +107,7 @@ steps:
         DOCLN      -- Document Line Item
         BLART      -- Document Type
         BUDAT      -- Posting Date
-        RACCT      -- Account Number
+        RACCT      -- Account Number (G/L Account)
         PRCTR      -- Profit Center
         KOSTL      -- Cost Center
         WAERS      -- Transaction Currency
@@ -110,15 +117,15 @@ steps:
 
         FIELDS TO SKIP FOR NOW (add in Intermediate):
         TSL, WSL, MSL  -- Additional currency amounts (confusing without context)
-        ZZFIELD*       -- Customer Z-fields (require Append Structure understanding)
+        ZZFIELD*       -- Customer Z-fields (require CDS Extension View understanding)
         SEGMENT fields -- PSEGMENT, RFAREA (segment reporting — add later)
-      caption: "Starting field selection for ACDOCA beginner extract"
+      caption: "Starting field selection for ACDOCA beginner extract — source: wiki/tables/ACDOCA.md"
     verify: "You have a field list of ~15 fields. You have excluded all Z-fields (ZZFIELD*, ZFIELD*) and secondary currency amounts (TSL, WSL, MSL) for now."
-    whyItMatters: "I_JournalEntryItem exposes 200+ fields. Extracting all of them on a 1B-row table creates a very wide, very slow extract and causes confusion downstream. Start narrow. Add fields as analytics teams ask for them."
+    whyItMatters: "I_JournalEntryItem exposes 200+ fields. Extracting all of them on a 1B-row table creates a very wide, very slow extract. [SME_KNOWLEDGE] Start narrow — add fields as analytics teams ask for them."
 
   - id: step-06
     title: "Set up partitioning — the single most important step"
-    explanation: "Never extract all of ACDOCA in one request. Partition by GJAHR (fiscal year) and optionally RBUKRS (company code). Start with the current fiscal year and a single company code."
+    explanation: "Never extract all of ACDOCA in one request. Partition by GJAHR (fiscal year) and optionally RBUKRS (company code). Start with the current fiscal year and a single company code. This is not optional — an unpartitioned ACDOCA extract at a large enterprise will consume SAP dialog work processes for hours and trigger BASIS team intervention."
     codeBlock:
       language: sql
       content: |
@@ -129,7 +136,7 @@ steps:
 
         -- Expected row count at a mid-size enterprise: 5M to 50M rows
         -- Expected row count at a large enterprise: 50M to 200M rows per year
-        -- If your first extract returns > 200M rows on one year+company code,
+        -- If your first extract returns > 200M rows on one year + company code,
         -- split further by BUDAT (posting date) quarter.
 
         -- DO NOT run without a GJAHR filter.
@@ -138,11 +145,11 @@ steps:
         --   GJAHR = 2024     ✗ will return 0 rows or error in most tools
       caption: "ODP filter for ACDOCA initial extract — replace with your values"
     verify: "Your extraction tool shows a GJAHR filter value set to a string (quoted year, e.g. '2024') and a RBUKRS filter set to your company code. If your system has one company code, RBUKRS filter is optional but still recommended for the first run."
-    whyItMatters: "An unfiltered ACDOCA extract on a production system at a large enterprise can consume SAP dialog work processes for 4+ hours, trigger BASIS team intervention, and fill your cloud landing zone with billions of rows that overwrite each other on rerun. The GJAHR partition is your safety net."
+    whyItMatters: "GJAHR partitioning is the standard approach for ACDOCA initial load. [SME_KNOWLEDGE] Load year by year: historical years as a one-time full load, current year with delta afterwards. This maps naturally to how finance teams consume the data — by fiscal year."
 
   - id: step-07
     title: "Configure your extraction tool"
-    explanation: "In whatever tool you are using (ADF SAP CDC, Qlik, Fivetran, Matillion, custom RFC client), configure the ODP source with these exact settings."
+    explanation: "In whatever tool you are using (ADF SAP CDC, Qlik, Fivetran, Matillion, custom client), configure the ODP source with these exact settings. Pay attention to the delta type — ABAP_CDS uses CDC (Change Data Capture), not AIE. This is a common misconfiguration."
     codeBlock:
       language: plaintext
       content: |
@@ -150,7 +157,10 @@ steps:
 
         ODP Context:     ABAP_CDS
         Object Name:     I_JournalEntryItem
-        Delta Type:      AIE  (After-Image Extraction)
+        Delta Type:      CDC  (Change Data Capture — correct for ABAP_CDS context)
+                         NOTE: AIE is the delta type for SAPI extractor context,
+                         not ABAP_CDS. If your tool only shows AIE, check your
+                         ODP context — it may be set to SAPI instead of ABAP_CDS.
         Extraction Mode: Full (for first run)
         RFC Destination: <provided by BASIS team from SM59>
 
@@ -163,23 +173,25 @@ steps:
           If your tool requires explicit field selection, enter each field.
           If your tool selects all fields by default, create an exclusion list.
 
-        NOTE ON NOTE 3255746:
-          If your tool connects via RFC to call ODP (most tools do), review
-          SAP Note 3255746 with your SAP account executive before go-live.
-          RFC-based ODP is technically functional but no longer permitted
-          per SAP's updated licensing terms as of February 2024.
-          The compliant alternative is ODP via OData (configure separately).
+        LICENSE COMPLIANCE — SAP Note 3255746 (Feb 2024):
+          If your tool connects via RFC to call ODP (most tools do),
+          RFC-based ODP is no longer permitted per SAP's updated terms.
+          Full note: https://support.sap.com/notes/3255746
+          Compliant alternatives:
+            - ODP via OData (same configuration, ~10x slower)
+            - SLT replication (separate license, real-time capable)
+          Review with your SAP account executive before go-live.
       caption: "Exact ODP settings — copy to your tool's configuration"
-    verify: "Your tool shows ODP context ABAP_CDS, object I_JournalEntryItem, and the filter fields. The test connection succeeds. If it fails with an authorization error, return to Step 3 and recheck S_ODP_READ."
-    whyItMatters: "ABAP_CDS is the exact string — not 'CDS', not 'ODP_CDS', not 'ABAP CDS'. Most tools present a dropdown; if you do not see ABAP_CDS as an option, your tool version may not support CDS-based ODP. Check vendor documentation."
+    verify: "Your tool shows ODP context ABAP_CDS, object I_JournalEntryItem, delta type CDC, and the filter fields. The test connection succeeds. If it fails with an authorization error, return to Step 3 and recheck S_ODP_READ."
+    whyItMatters: "ABAP_CDS is the exact string — not 'CDS', not 'ODP_CDS', not 'ABAP CDS'. Most tools present a dropdown. If you do not see ABAP_CDS as an option, your tool version may not support CDS-based ODP. Check vendor documentation. The delta type CDC distinction matters: using AIE on an ABAP_CDS source will produce incorrect delta behavior. [SME_KNOWLEDGE]"
 
   - id: step-08
     title: "Run your first extract and monitor in ODQMON"
     explanation: "Trigger the extraction. While it runs, open ODQMON in SAP to watch the delta queue. This is how you monitor every ACDOCA extraction — know how to read it before your first production run."
     sapTransaction:
       code: ODQMON
-      menuPath: "Enter ODQMON in transaction code bar → Context: ABAP_CDS → Queue Name: I_JOURNALENTRYITEM → Subscriber: your tool's subscription name"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE"
+      menuPath: "Enter ODQMON in transaction code bar → Context: ABAP_CDS → Queue Name: I_JOURNALENTRYITEM → Subscriber: your tool's subscription name → F8 to execute"
+      helpUrl: "[NEEDS_SAP_CITATION]"
     codeBlock:
       language: plaintext
       content: |
@@ -190,18 +202,26 @@ steps:
         Status: INITIALIZED   → subscription initialized, no data fetched yet
         Status: ERROR         → something failed, check the Details column
 
+        IMPORTANT — FIRST DELTA AFTER INIT RETURNS 0 RECORDS:
+        After your first full extraction (init), the next delta run will
+        return 0 records. This is NORMAL, not a bug.
+        The CDC mechanism captures changes from the init point forward.
+        The delta after that 0-record run will contain actual changes.
+        Source: SAP Note 2884410 (https://support.sap.com/notes/2884410)
+
         STUCK QUEUE — one-line fix:
         If status stays FETCHING for > 30 min on a small extract,
         the subscription may be stuck. In ODQMON, select the subscription
         and choose Edit → Reset Delta → confirm. Then re-trigger extraction.
+        Warning: Reset forces the next run to be a full load.
 
         Row count check:
         ODQMON shows "Extracted Units" — this is the row count sent.
         Compare to SE16N count for ACDOCA WHERE GJAHR = '2024'
-        AND RBUKRS = '1000'. They should match within 1% (timing skew).
+        AND RBUKRS = '1000'. They should match within ~1% (timing skew).
       caption: "ODQMON reading guide for ACDOCA extraction"
-    verify: "ODQMON shows status EXTRACTED after the run completes. The Extracted Units count is non-zero and plausible for your filter (5M to 200M rows per fiscal year is normal; < 10K rows suggests the filter excluded almost everything — recheck GJAHR format)."
-    whyItMatters: "ODQMON is your primary debugging tool for all ODP extractions. If you do not know how to read it, the first stuck queue will cost hours. Bookmark it now."
+    verify: "ODQMON shows status EXTRACTED after the run completes. The Extracted Units count is non-zero and plausible for your filter (5M to 200M rows per fiscal year is normal; < 10K rows suggests the filter excluded almost everything — recheck GJAHR format is a quoted string)."
+    whyItMatters: "ODQMON is your primary debugging tool for all ODP extractions. If you do not know how to read it, the first stuck queue will cost hours. The 0-record first delta is the most common 'bug' that isn't a bug — knowing this upfront prevents a false alarm escalation. [SME_KNOWLEDGE]"
 
   - id: step-09
     title: "Load into your cloud platform — data type guidance"
@@ -222,8 +242,8 @@ steps:
         RACCT      VARCHAR(10)       -- G/L account, leading zeros matter
         PRCTR      VARCHAR(10)       -- profit center
         KOSTL      VARCHAR(10)       -- cost center
-        WAERS      VARCHAR(5)        -- currency code, NOT DECIMAL
-        RHCUR      VARCHAR(5)        -- company code currency, NOT DECIMAL
+        WAERS      VARCHAR(5)        -- transaction currency code, NOT DECIMAL
+        RHCUR      VARCHAR(5)        -- company code currency code, NOT DECIMAL
         HSL        DECIMAL(23, 2)    -- amount in company code currency
         KSL        DECIMAL(23, 2)    -- amount in global currency
 
@@ -232,11 +252,13 @@ steps:
         --   Cluster/sort by: RBUKRS, RACCT
         --   This aligns with how analysts typically filter the data
 
-        -- CRITICAL: Currency fields (WAERS, RHCUR) are VARCHAR not DECIMAL.
-        -- Storing 'USD' or 'EUR' as a decimal will fail or lose data.
+        -- CRITICAL: Currency CODE fields (WAERS, RHCUR) are VARCHAR not DECIMAL.
+        -- They contain values like 'USD', 'EUR', 'GBP'.
+        -- Currency AMOUNT fields (HSL, KSL) are DECIMAL.
+        -- Confusing the two causes silent data loss.
       caption: "Target table schema — ACDOCA on any cloud platform"
-    verify: "Your target table exists with GJAHR as VARCHAR(4) and WAERS as VARCHAR(5). Run a SELECT DISTINCT GJAHR FROM your_table — the result should be '2024', a four-character string. If you see 2024 as an integer, the type is wrong."
-    whyItMatters: "GJAHR as INTEGER seems harmless but breaks fiscal year comparisons (SAP uses '0001' for fiscal year 1 in some configurations), loses leading zeros in document numbers, and causes partition pruning to fail in Snowflake and BigQuery when analysts filter WHERE GJAHR = '2024'."
+    verify: "Your target table exists with GJAHR as VARCHAR(4) and WAERS as VARCHAR(5). Run a SELECT DISTINCT GJAHR FROM your_table — the result should be '2024', a four-character string. If you see 2024 as an integer, the type is wrong and leading-zero fiscal years will be corrupted."
+    whyItMatters: "GJAHR as INTEGER seems harmless but breaks fiscal year comparisons — SAP uses '0001' for fiscal year 1 in some configurations, leading zeros in document numbers (BELNR) are significant for matching back to SAP, and partition pruning fails in Snowflake and BigQuery when analysts filter WHERE GJAHR = '2024' on an INTEGER column. [SME_KNOWLEDGE]"
 
 nextSteps:
   - label: "ACDOCA Intermediate — adding delta loads and Z-fields"
@@ -258,13 +280,16 @@ troubleshooting:
     solution: "Return to Step 3. The extraction user needs S_ODP_READ with ODPCONTEXT = ABAP_CDS and ODPSOURCE = I_JOURNALENTRYITEM (or * for all sources). Ask BASIS to add this in PFCG and regenerate the user's profile."
 
   - problem: "ODQMON shows ERROR status"
-    solution: "In ODQMON, select the affected subscription and choose Details — the error message is usually specific. Common causes: (1) RFC connection timeout — check SM59 for the RFC destination status. (2) Memory exceeded — your filter is not selective enough, reduce the GJAHR range. (3) I_JournalEntryItem not activated — BASIS needs to activate the CDS view."
+    solution: "In ODQMON, select the affected subscription and choose Details — the error message is usually specific. Common causes: (1) RFC connection timeout — check SM59 for the RFC destination status. (2) Memory exceeded — your filter is not selective enough, reduce the GJAHR range. (3) I_JournalEntryItem not activated — BASIS needs to activate the CDS view in SE80."
 
   - problem: "ODP subscription stuck in INITIALIZED state"
     solution: "The subscription was created but extraction never ran. This is normal after a new subscription setup. Simply re-trigger the extraction. The first run after subscription creation is always a full load."
 
+  - problem: "First delta after full load returns 0 records"
+    solution: "This is expected behavior, not a bug. After an init/full load, the CDC mechanism records the starting point. The first delta finds no changes since that point. Run a second delta — it will contain actual changes. Source: SAP Note 2884410."
+
   - problem: "Note 3255746 — my tool uses ODP via RFC, what do I do?"
-    solution: "Short term: continue using it but document the risk for your compliance team. RFC-based ODP still works technically. Long term: (1) Check if your tool vendor offers an OData mode — Theobald and some others have compliant paths. (2) Consider SLT for real-time use cases. (3) For batch, ODP via OData is compliant but expect 5-10x slower throughput."
+    solution: "Short term: continue using it but document the risk for your compliance team. RFC-based ODP still works technically — SAP's enforcement mechanism is contract renewal audits, not immediate system lockout. [SME_KNOWLEDGE] Long term: (1) Check if your tool vendor offers an OData mode — some vendors have added compliant paths. (2) Consider SLT for real-time use cases. (3) For batch, ODP via OData is compliant but expect 5-10x slower throughput. Full note: https://support.sap.com/notes/3255746"
 
 seoTitle: "Extract ACDOCA to Cloud — Beginner Walkthrough (S/4HANA)"
 seoDescription: "Step-by-step beginner guide to extracting ACDOCA from SAP S/4HANA to any cloud platform. Covers ODP via I_JournalEntryItem, GJAHR partitioning, ODQMON monitoring, and cloud data type mapping."
