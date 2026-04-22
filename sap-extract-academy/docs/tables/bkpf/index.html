@@ -151,25 +151,25 @@
 
   <section class="extraction-gotchas">
     <h2>Extraction gotchas</h2>
-    <ul>
-      <li>
-        <strong>BKPF includes posted and parked documents. Filter BUKRS (company code) and GJAHR (fiscal year) early to reduce volume. Most extractions partition by fiscal year.</strong>
-        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;bkpf-partitioning.html" target="_blank" rel="noopener noreferrer">
-          SAP Note
+    <ul class="gotchas-list">
+      <li class="gotcha-item">
+        <p class="gotcha-text">BKPF includes posted and parked documents. Filter BUKRS (company code) and GJAHR (fiscal year) early to reduce volume. Most extractions partition by fiscal year.</p>
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;bkpf-partitioning.html" target="_blank" rel="noopener noreferrer">
+          SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
       </li>
-      <li>
-        <strong>Line items live in BSEG, not BKPF. BKPF is header only (amounts, posting date, approver). Join to BSEG for account-level details.</strong>
-        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;bseg.html" target="_blank" rel="noopener noreferrer">
-          SAP Note
+      <li class="gotcha-item">
+        <p class="gotcha-text">Line items live in BSEG, not BKPF. BKPF is header only (amounts, posting date, approver). Join to BSEG for account-level details.</p>
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;bseg.html" target="_blank" rel="noopener noreferrer">
+          SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
       </li>
-      <li>
-        <strong>Accounting documents can be reversed. Check AUGBL (reversal reference) and STORNOMON (reversal flag) to understand reversals vs. new postings.</strong>
-        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;reversals.html" target="_blank" rel="noopener noreferrer">
-          SAP Note
+      <li class="gotcha-item">
+        <p class="gotcha-text">Accounting documents can be reversed. Check AUGBL (reversal reference) and STORNOMON (reversal flag) to understand reversals vs. new postings.</p>
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;reversals.html" target="_blank" rel="noopener noreferrer">
+          SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
       </li>

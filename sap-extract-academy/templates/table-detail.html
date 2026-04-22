@@ -74,13 +74,13 @@
   {{#hasExtractionGotchas}}
   <section class="extraction-gotchas">
     <h2>Extraction gotchas</h2>
-    <ul>
+    <ul class="gotchas-list">
       {{#extractionGotchas}}
-      <li>
-        <strong>{{summary}}</strong>
+      <li class="gotcha-item">
+        <p class="gotcha-text">{{summary}}</p>
         {{#sapNoteOrDocUrl}}
-        <a href="{{sapNoteOrDocUrl}}" target="_blank" rel="noopener noreferrer">
-          SAP Note
+        <a class="gotcha-link" href="{{sapNoteOrDocUrl}}" target="_blank" rel="noopener noreferrer">
+          SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
         {{/sapNoteOrDocUrl}}
