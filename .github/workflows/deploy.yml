@@ -74,7 +74,7 @@ jobs:
         with:
           uploadArtifacts: true
           temporaryPublicStorage: true
-          configPath: './sap-extract-academy/lighthouserc.json'
+          configPath: './lighthouserc.json'
 
   test-lighthouse:
     if: github.event_name == 'pull_request'
