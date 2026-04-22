@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{{seoTitle}} — SAP Extract Academy</title>
+  <meta name="description" content="{{seoDescription}}">
+  <link rel="canonical" href="https://academy.example.com{{canonicalPath}}">
+
+  <meta property="og:type" content="{{ogType}}">
+  <meta property="og:title" content="{{seoTitle}}">
+  <meta property="og:description" content="{{seoDescription}}">
+  <meta property="og:url" content="https://academy.example.com{{canonicalPath}}">
+  <meta property="og:image" content="https://academy.example.com/assets/og/{{ogImage}}">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{seoTitle}}">
+  <meta name="twitter:description" content="{{seoDescription}}">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/{{ogImage}}">
+
+  <script type="application/ld+json">{{{jsonLd}}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/">{{strings.nav.home}}</a></li>
+          <li><a href="/tables/">{{strings.nav.tables}}</a></li>
+          <li><a href="/walkthrough/">{{strings.nav.walkthroughs}}</a></li>
+          <li><a href="/glossary/">{{strings.nav.glossary}}</a></li>
+          <li><a href="/articles/">{{strings.nav.articles}}</a></li>
+          <li><a href="/roadmap/">{{strings.nav.roadmap}}</a></li>
+          <li><a href="/about/">{{strings.nav.about}}</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    {{{content}}}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/{{buttondownUsername}}"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/{{buttondownUsername}}', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">{{strings.form.emailLabel}}</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="{{strings.cta.emailPlaceholder}}"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">{{strings.cta.subscribeEmail}}</button>
+          </div>
+          <p class="email-consent">{{strings.form.consentText}}</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">{{strings.footer.disclaimer}}</p>
+        <p class="copyright">{{strings.footer.copyright}}</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
