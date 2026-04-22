@@ -45,6 +45,11 @@ function getOutputPath(inputPath) {
   const relativePath = path.relative(CONTENT_DIR, inputPath);
   const parsed = path.parse(relativePath);
 
+  // Root index.md → docs/index.html
+  if (parsed.name === 'index' && (parsed.dir === '' || parsed.dir === '.')) {
+    return { outputDir: OUTPUT_DIR, outputPath: path.join(OUTPUT_DIR, 'index.html') };
+  }
+
   let pathSegments = parsed.dir.split(path.sep);
 
   if (pathSegments[0] === 'walkthroughs') {

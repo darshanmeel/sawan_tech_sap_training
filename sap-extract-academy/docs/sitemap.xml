@@ -229,7 +229,7 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://academy.example.com/index/</loc>
+    <loc>https://academy.example.com/</loc>
     <lastmod>2026-04-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
