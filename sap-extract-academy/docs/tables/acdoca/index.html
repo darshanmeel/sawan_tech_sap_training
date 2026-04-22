@@ -110,32 +110,32 @@
         <tr>
           <td><code>MANDT</code></td>
           <td>Key</td>
-          <td></td>
+          <td>Client (always filter to current client, never extract all)</td>
         </tr>
         <tr>
           <td><code>RBUKRS</code></td>
           <td>Key</td>
-          <td></td>
+          <td>Company Code (4-char, partition key for extraction)</td>
         </tr>
         <tr>
           <td><code>RYEAR</code></td>
           <td>Key</td>
-          <td></td>
+          <td>Reporting Year (partition key for extraction)</td>
         </tr>
         <tr>
           <td><code>POPER</code></td>
           <td>Key</td>
-          <td></td>
+          <td>Posting Period (01-16, use for sub-year partitioning)</td>
         </tr>
         <tr>
           <td><code>BELNR</code></td>
           <td>Key</td>
-          <td></td>
+          <td>Accounting Document Number</td>
         </tr>
         <tr>
           <td><code>DOCLN</code></td>
           <td>Key</td>
-          <td></td>
+          <td>Document Line Item Number (6-char, zero-padded)</td>
         </tr>
       </tbody>
     </table>

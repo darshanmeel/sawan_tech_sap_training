@@ -13,6 +13,19 @@ primaryKey:
   - POPER
   - BELNR
   - DOCLN
+keyFields:
+  - name: MANDT
+    description: "Client (always filter to current client, never extract all)"
+  - name: RBUKRS
+    description: "Company Code (4-char, partition key for extraction)"
+  - name: RYEAR
+    description: "Reporting Year (partition key for extraction)"
+  - name: POPER
+    description: "Posting Period (01-16, use for sub-year partitioning)"
+  - name: BELNR
+    description: "Accounting Document Number"
+  - name: DOCLN
+    description: "Document Line Item Number (6-char, zero-padded)"
 releasedCdsView: "I_JournalEntryItem"
 cdsViewDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/journal-entry-item-cds.html"
 sapHelpUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/universal-journal.html"
