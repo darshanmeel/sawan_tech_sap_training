@@ -4,24 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Extract LFA1 Vendor Master to ADLS (Beginner) — S&#x2F;4HANA — SAP Extract Academy</title>
-  <meta name="description" content="Beginner walkthrough for extracting vendor master data (LFA1) from SAP S&#x2F;4HANA to ADLS using ADF. Simple, stable data — perfect for your first full-load extraction.">
+  <title>Extract LFA1 Vendor Master (Beginner) — SAP-Side Guide — SAP Extract Academy</title>
+  <meta name="description" content="SAP-side beginner guide for LFA1 vendor master extraction. Confirm I_Supplier CDS view, set authorizations, verify with SE16N and ODQMON.">
   <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;beginner&#x2F;lfa1&#x2F;">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Extract LFA1 Vendor Master to ADLS (Beginner) — S&#x2F;4HANA">
-  <meta property="og:description" content="Beginner walkthrough for extracting vendor master data (LFA1) from SAP S&#x2F;4HANA to ADLS using ADF. Simple, stable data — perfect for your first full-load extraction.">
+  <meta property="og:title" content="Extract LFA1 Vendor Master (Beginner) — SAP-Side Guide">
+  <meta property="og:description" content="SAP-side beginner guide for LFA1 vendor master extraction. Confirm I_Supplier CDS view, set authorizations, verify with SE16N and ODQMON.">
   <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;beginner&#x2F;lfa1&#x2F;">
   <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
   <meta property="og:site_name" content="SAP Extract Academy">
   <meta property="og:locale" content="en_US">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Extract LFA1 Vendor Master to ADLS (Beginner) — S&#x2F;4HANA">
-  <meta name="twitter:description" content="Beginner walkthrough for extracting vendor master data (LFA1) from SAP S&#x2F;4HANA to ADLS using ADF. Simple, stable data — perfect for your first full-load extraction.">
+  <meta name="twitter:title" content="Extract LFA1 Vendor Master (Beginner) — SAP-Side Guide">
+  <meta name="twitter:description" content="SAP-side beginner guide for LFA1 vendor master extraction. Confirm I_Supplier CDS view, set authorizations, verify with SE16N and ODQMON.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract LFA1 Vendor Master to ADLS (Beginner)","description":"Full-load extraction of vendor master general data from S/4HANA to ADLS using ADF and the released CDS view I_Supplier. The simplest table extraction — small volume, stable data, no delta required.","totalTime":"PT40M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Verify the I_Supplier CDS view exists","text":"Vendor master is exposed via the <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/supplier-cds.html'>I_Supplier</a> CDS view. Confirm it's available in your system using SE80.","url":"https://academy.example.com/walkthrough/beginner/lfa1/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Create ADF source dataset for I_Supplier","text":"Use the SAP CDC linked service (from VBAK Beginner) and create a new source dataset targeting I_Supplier through ODP.","url":"https://academy.example.com/walkthrough/beginner/lfa1/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Create ADLS folder structure","text":"In the sap-raw container, create a subfolder vendor/full-load/ for the LFA1 Parquet files.","url":"https://academy.example.com/walkthrough/beginner/lfa1/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Create ADF sink dataset to ADLS","text":"Create a Parquet sink dataset pointing to sap-raw/vendor/full-load/. Use Snappy compression.","url":"https://academy.example.com/walkthrough/beginner/lfa1/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Build and run the ADF pipeline","text":"Create a new pipeline with a single Copy activity. Source = I_Supplier dataset, Sink = ADLS Parquet dataset. Trigger and monitor.","url":"https://academy.example.com/walkthrough/beginner/lfa1/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"LFA1","item":"https://academy.example.com/tables/lfa1/"},{"@type":"ListItem","position":4,"name":"Extract LFA1 Vendor Master to ADLS (Beginner)"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract LFA1 Vendor Master (Beginner)","description":"SAP-side preparation for full-load extraction of vendor master general data. Covers the released CDS view I_Supplier, minimum authorization setup, and SE16N reconciliation. The simplest table extraction — small volume, stable data.","totalTime":"PT40M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Verify the released CDS view I_Supplier","text":"Vendor master general data is exposed via the <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/supplier-cds.html\">I_Supplier</a> CDS view. Confirm it is present in your system and annotated for extraction.","url":"https://academy.example.com/walkthrough/beginner/lfa1/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Count rows in LFA1 (SE16N baseline)","text":"Use <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html\">SE16N</a> to count all rows in LFA1 without filters. LFA1 is typically small (thousands to low millions of vendors). Note the count for reconciliation.","url":"https://academy.example.com/walkthrough/beginner/lfa1/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Confirm the extraction user has vendor master authorization","text":"Vendor master sits in authorization group MM (Materials Management) for table display. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM in addition to S_RFC and S_ODP_READ. Use <a href=\"https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html\">PFCG</a> to check or update.","url":"https://academy.example.com/walkthrough/beginner/lfa1/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Check ODQMON after the first tool run","text":"After your extraction tool makes its first connection, verify <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html\">ODQMON</a> shows an active subscription for I_Supplier.","url":"https://academy.example.com/walkthrough/beginner/lfa1/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Reconcile vendor count after extraction","text":"Return to SE16N and count LFA1 again. The row count in your landing zone must match. LFA1 is stable enough that any significant discrepancy indicates a configuration problem, not in-flight updates.","url":"https://academy.example.com/walkthrough/beginner/lfa1/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"LFA1","item":"https://academy.example.com/tables/lfa1/"},{"@type":"ListItem","position":4,"name":"Extract LFA1 Vendor Master (Beginner)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,6 +72,90 @@
     <!-- Walkthrough detail page -->
 
 <div class="container">
+<div class="picker" aria-label="Extraction method, tool, and sink selector">
+  <fieldset class="picker-axis" id="picker-method">
+    <legend>Extraction method</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="method" value="odp" class="picker-radio">
+        <span>ODP</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="slt" class="picker-radio">
+        <span>SLT</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="rfc" class="picker-radio">
+        <span>RFC direct</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="ref" class="picker-radio">
+        <span>Reference only</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
+    <legend>Tool</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="adf" class="picker-radio">
+        <span>ADF</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="databricks" class="picker-radio">
+        <span>Databricks</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="fivetran" class="picker-radio">
+        <span>Fivetran</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="airbyte" class="picker-radio">
+        <span>Airbyte</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="custom" class="picker-radio">
+        <span>Custom</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis" id="picker-sink">
+    <legend>Sink</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="adls" class="picker-radio">
+        <span>ADLS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="s3" class="picker-radio">
+        <span>S3</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="gcs" class="picker-radio">
+        <span>GCS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="snowflake" class="picker-radio">
+        <span>Snowflake</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="bigquery" class="picker-radio">
+        <span>BigQuery</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="fabric" class="picker-radio">
+        <span>Fabric</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="other" class="picker-radio">
+        <span>Other</span>
+      </label>
+    </div>
+  </fieldset>
+</div>
+
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -87,8 +171,8 @@
       <span class="level-badge level-beginner">beginner</span>
       <span class="table-code">LFA1</span>
     </div>
-    <h1>Extract LFA1 Vendor Master to ADLS (Beginner)</h1>
-    <p class="walkthrough-summary">Full-load extraction of vendor master general data from S&#x2F;4HANA to ADLS using ADF and the released CDS view I_Supplier. The simplest table extraction — small volume, stable data, no delta required.</p>
+    <h1>Extract LFA1 Vendor Master (Beginner)</h1>
+    <p class="walkthrough-summary">SAP-side preparation for full-load extraction of vendor master general data. Covers the released CDS view I_Supplier, minimum authorization setup, and SE16N reconciliation. The simplest table extraction — small volume, stable data.</p>
 
     <dl class="walkthrough-meta-list">
       <div>
@@ -97,31 +181,237 @@
       </div>
       <div>
         <dt>Destinations</dt>
-        <dd>ADLS</dd>
+        <dd>Generic</dd>
       </div>
       <div>
         <dt>Extractors</dt>
-        <dd>ADF</dd>
+        <dd>ODP</dd>
       </div>
     </dl>
   </header>
 
-  <section class="callout callout-warning">
-    <h2>License check</h2>
-    <p>Works under all SAP license types. ODP extraction is application-layer and permitted for all licenses.</p>
+  <section class="sap-preflight">
+    <h2>SAP-side preflight</h2>
+    <p>Before any tool touches your SAP system, you need four things confirmed
+    on the SAP side. Skipping these steps is the most common cause of extraction
+    failures, performance incidents, and licensing surprises.</p>
+  
+    <ol class="sap-preflight-checklist">
+      <li>
+        <strong>License — confirm your extraction method is covered.</strong>
+        <p>
+          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
+          first decision. ODP-based extraction (via
+          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
+          SLT replication requires a Full Use license. Verify with your SAP
+          licensing contact before you design anything — not the day before
+          go-live.
+        </p>
+        <p class="sap-preflight-note">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
+          modules by third-party tools is no longer permitted. If your tool uses
+          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
+          contract terms. Compliant alternatives are ODP via OData or SLT
+          replication. Full note at
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
+          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
+        <p>
+          Every table covered in this Academy has a SAP-released
+          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
+          Open
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+            target="_blank" rel="noopener noreferrer">SE80</a>
+          and search for the view name before you build anything. Confirm the
+          annotation <code>@Analytics.dataExtract: true</code> is present. If
+          the view is absent or the annotation is missing, stop — raw table
+          extraction is not the solution.
+        </p>
+      </li>
+  
+      <li>
+        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
+        <p>
+          Your extraction user needs three authorization objects.
+          Use
+          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+            target="_blank" rel="noopener noreferrer">SU01</a>
+          to create a System-type (non-dialog) user, then use
+          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+            target="_blank" rel="noopener noreferrer">PFCG</a>
+          to assign a role containing:
+        </p>
+        <ul>
+          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
+          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
+            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
+          <li><code>S_TABU_DIS</code> — table display access for the relevant
+            authorization group</li>
+        </ul>
+        <p>
+          For SLT-based extraction, your Basis team will also need authorization
+          in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+            target="_blank" rel="noopener noreferrer">LTCO</a>
+          and
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+            target="_blank" rel="noopener noreferrer">LTRS</a>.
+          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Row-count context — understand data volumes before you run.</strong>
+        <p>
+          Use
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+            target="_blank" rel="noopener noreferrer">SE16N</a>
+          to count rows in the target table with your intended filter (company
+          code, fiscal year, material type, etc.) before you start the
+          extraction. This gives you:
+        </p>
+        <ul>
+          <li>A baseline to reconcile against after the extract.</li>
+          <li>A sense of whether your partition is safe to extract
+            (&lt;&nbsp;100M rows is generally safe for ODP;
+            larger partitions may need further splitting or SLT).</li>
+          <li>Early warning if a filter is misconfigured
+            (count returns billions — rethink the partition).</li>
+        </ul>
+      </li>
+    </ol>
+  
+    <p class="sap-preflight-footer">
+      These four checks take 15–30 minutes on a first walkthrough, and under
+      5 minutes once you know your system. They are the difference between a
+      smooth extraction and a multi-day incident.
+    </p>
   </section>
+
+  <section class="callout callout-warning license-check">
+    <h2>License check</h2>
+  
+    <p>Works under all SAP license types. ODP extraction via OData is permitted for all licenses. License trap: Runtime vs Full Use →</p>
+  
+  
+    <div class="license-check-detail" id="license-check-detail">
+      <!--
+        JS-controlled variants — picker.js shows/hides the relevant block
+        based on ?method= in the URL. All four variants are rendered; only
+        the active one is visible at runtime.
+      -->
+      <div class="license-variant" data-method="odp">
+        <p>
+          <strong>ODP (Operational Data Provisioning)</strong> is permitted
+          under both Runtime and Full Use SAP licenses when you access data
+          through published CDS views via the OData API.
+        </p>
+        <p class="license-check-warning">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
+          call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
+          etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
+          Verify with your licensing contact.
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">Full note (SAP login required)</a>.
+          [NEEDS_SAP_CITATION — confirm current note state]
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="slt" hidden>
+        <p>
+          <strong>SLT (SAP Landscape Transformation)</strong> requires a
+          <strong>Full Use SAP license</strong>. It is not permitted under
+          Runtime licenses. Verify in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+            target="_blank" rel="noopener noreferrer">SLICENSE</a>
+          that "SLT Landscape Transformation" is listed as Active, Type = Full
+          Use before you configure anything in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+            target="_blank" rel="noopener noreferrer">LTCO</a>.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="rfc" hidden>
+        <p>
+          <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
+          generally permitted for read-only access under Runtime and Full Use
+          licenses, but is not recommended for production use — it bypasses
+          authorization checks that released CDS views enforce and is subject
+          to SAP Note 3255746 restrictions when wrapped by third-party ODP
+          connectors. [NEEDS_SAP_CITATION — verify Runtime license scope for
+          direct RFC read]
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="ref" hidden>
+        <p>
+          <strong>Reference mode:</strong> you are reviewing this walkthrough
+          for SAP-side context only. No tool-specific pipeline steps are shown.
+          Check your license before selecting a tool.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+  // Inline snippet: switch visible license-variant on picker change.
+  // Runs immediately so no flash-of-wrong-content.
+  (function () {
+    function showMethod(method) {
+      var variants = document.querySelectorAll('.license-variant');
+      variants.forEach(function (el) {
+        if (el.getAttribute('data-method') === method) {
+          el.removeAttribute('hidden');
+        } else {
+          el.setAttribute('hidden', '');
+        }
+      });
+    }
+  
+    function readMethod() {
+      var params = new URLSearchParams(window.location.search);
+      return params.get('method') || 'odp';
+    }
+  
+    // Apply on load.
+    showMethod(readMethod());
+  
+    // Re-apply when picker radios change (picker.js fires change events).
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.name === 'method') {
+        showMethod(e.target.value);
+      }
+    });
+  })();
+  </script>
 
   <section class="walkthrough-intro">
     <h2>Overview</h2>
     <div class="prose">
-      <h2>Scenario</h2>
-<p>Your procurement analytics team needs a weekly feed of all active vendors in the system. Vendor master is small, stable, and doesn&#39;t change hourly. A simple full-load every Sunday morning is perfect.</p>
-<p>This walkthrough reuses the ADF infrastructure from VBAK Beginner (same linked service, same ADLS storage) and focuses on the patterns unique to vendor master: confirming the CDS view, understanding the table structure, and validating data quality.</p>
-<p>Estimated time: 40 minutes (faster than VBAK because it reuses infrastructure).</p>
+      <p>Your procurement analytics team needs a periodic feed of all active vendors. LFA1 (vendor master general data) is small, stable, and does not change hourly — a full-load extraction on a weekly or daily schedule is the correct pattern.</p>
+<p>This walkthrough covers the SAP-side preparation: confirming the released CDS view, checking authorization for vendor master data, and verifying the extraction with ODQMON and SE16N. Your tool team handles the pipeline and scheduling.</p>
+<p>Estimated time: 40 minutes, faster if you have already completed the VBAK beginner walkthrough and your extraction user is already configured.</p>
 <hr>
-<h2>What you&#39;ve built</h2>
-<p>You&#39;ve successfully extracted vendor master data to the data lake. The weekly pipeline is in place and will auto-run every Sunday. Your procurement team now has a current, authoritative vendor list in Parquet format, ready for analytics.</p>
-<p>You&#39;ve also learned that extraction patterns are reusable: same ADF infrastructure, same SHIR, same RFC user, just pointed at a different CDS view. When you&#39;re ready for the next table (materials, customers, accounts), you&#39;ll reuse this pattern.</p>
+<h2>What you have established</h2>
+<p>You have confirmed the SAP side is correctly configured for LFA1 extraction. The released CDS view is present, the extraction user has vendor master authorization, and you have a row-count baseline. Your tool team can now configure the extraction pipeline against I_Supplier with confidence.</p>
+<p>The patterns here — CDS view, System-type user, ODQMON subscription check, SE16N reconciliation — are identical for every table. When you move to the intermediate walkthrough, you will add delta processing.</p>
 
     </div>
   </section>
@@ -129,15 +419,14 @@
   <section class="prerequisites">
     <h2>Before you start</h2>
     <ul class="prerequisites-list">
-      <li>Access to an S&#x2F;4HANA on-premise system with SE80</li>
-      <li>Azure Data Factory and ADLS Gen2 infrastructure (from VBAK Beginner walkthrough)</li>
-      <li>EXTRACT_VBAK technical user (can reuse from VBAK walkthrough)</li>
+      <li>Access to an S&#x2F;4HANA on-premise system with SE80 and SE16N authorization</li>
+      <li>Ability to create or request a technical user via SU01</li>
     </ul>
   </section>
 
   <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
-      <span id="progress-count">0</span> of 8 steps complete
+      <span id="progress-count">0</span> of 5 steps complete
     </div>
     <div class="progress-bar" aria-hidden="true">
       <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
@@ -149,20 +438,20 @@
       <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
         <header class="step-header">
           <div class="step-number">Step 1</div>
-          <h2 class="step-title">Verify the I_Supplier CDS view exists</h2>
+          <h2 class="step-title">Verify the released CDS view I_Supplier</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-01"
-              aria-label="Mark Verify the I_Supplier CDS view exists as complete"
+              aria-label="Mark Verify the released CDS view I_Supplier as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Vendor master is exposed via the <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/supplier-cds.html'>I_Supplier</a> CDS view. Confirm it&#39;s available in your system using SE80.</p>
+          <p class="step-intro">Vendor master general data is exposed via the <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/supplier-cds.html">I_Supplier</a> CDS view. Confirm it is present in your system and annotated for extraction.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
@@ -189,26 +478,37 @@
       <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
         <header class="step-header">
           <div class="step-number">Step 2</div>
-          <h2 class="step-title">Create ADF source dataset for I_Supplier</h2>
+          <h2 class="step-title">Count rows in LFA1 (SE16N baseline)</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-02"
-              aria-label="Mark Create ADF source dataset for I_Supplier as complete"
+              aria-label="Mark Count rows in LFA1 (SE16N baseline) as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Use the SAP CDC linked service (from VBAK Beginner) and create a new source dataset targeting I_Supplier through ODP.</p>
+          <p class="step-intro">Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html">SE16N</a> to count all rows in LFA1 without filters. LFA1 is typically small (thousands to low millions of vendors). Note the count for reconciliation.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → LFA1 → Count (no filter)</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Dataset preview shows vendor records with LIFNR, NAME1, LAND1, ORT01.</div>
+            <div class="step-action-body">You have a row count for LFA1. Typical range: 50K–2M vendors.</div>
           </div>
 
         </div>
@@ -218,26 +518,37 @@
       <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
         <header class="step-header">
           <div class="step-number">Step 3</div>
-          <h2 class="step-title">Create ADLS folder structure</h2>
+          <h2 class="step-title">Confirm the extraction user has vendor master authorization</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-03"
-              aria-label="Mark Create ADLS folder structure as complete"
+              aria-label="Mark Confirm the extraction user has vendor master authorization as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">In the sap-raw container, create a subfolder vendor/full-load/ for the LFA1 Parquet files.</p>
+          <p class="step-intro">Vendor master sits in authorization group MM (Materials Management) for table display. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM in addition to S_RFC and S_ODP_READ. Use <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html">PFCG</a> to check or update.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;e5e83c2825c34a7896bdb97c0da65fb5.html" target="_blank" rel="noopener noreferrer">
+                PFCG
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Role → Display → Authorization Data</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Folder vendor&#x2F;full-load&#x2F; exists in Azure Storage Explorer.</div>
+            <div class="step-action-body">Role covers S_TABU_DIS for authorization group MM (or a broader group that includes vendor master tables).</div>
           </div>
 
         </div>
@@ -247,26 +558,37 @@
       <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
         <header class="step-header">
           <div class="step-number">Step 4</div>
-          <h2 class="step-title">Create ADF sink dataset to ADLS</h2>
+          <h2 class="step-title">Check ODQMON after the first tool run</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-04"
-              aria-label="Mark Create ADF sink dataset to ADLS as complete"
+              aria-label="Mark Check ODQMON after the first tool run as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Create a Parquet sink dataset pointing to sap-raw/vendor/full-load/. Use Snappy compression.</p>
+          <p class="step-intro">After your extraction tool makes its first connection, verify <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html">ODQMON</a> shows an active subscription for I_Supplier.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;ODQMON.html" target="_blank" rel="noopener noreferrer">
+                ODQMON
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Subscriptions → Context: ABAP_CDS → I_Supplier</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Sink dataset Test Connection returns green.</div>
+            <div class="step-action-body">Subscription for I_Supplier is active. No errors.</div>
           </div>
 
         </div>
@@ -276,113 +598,37 @@
       <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
         <header class="step-header">
           <div class="step-number">Step 5</div>
-          <h2 class="step-title">Build and run the ADF pipeline</h2>
+          <h2 class="step-title">Reconcile vendor count after extraction</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-05"
-              aria-label="Mark Build and run the ADF pipeline as complete"
+              aria-label="Mark Reconcile vendor count after extraction as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Create a new pipeline with a single Copy activity. Source = I_Supplier dataset, Sink = ADLS Parquet dataset. Trigger and monitor.</p>
+          <p class="step-intro">Return to SE16N and count LFA1 again. The row count in your landing zone must match. LFA1 is stable enough that any significant discrepancy indicates a configuration problem, not in-flight updates.</p>
 
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Pipeline completes successfully and Parquet files appear in sap-raw&#x2F;vendor&#x2F;full-load&#x2F;.</div>
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → LFA1 → Count</em>.
+            </div>
           </div>
 
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
-        <header class="step-header">
-          <div class="step-number">Step 6</div>
-          <h2 class="step-title">Verify row count in ADLS</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-06"
-              aria-label="Mark Verify row count in ADLS as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Query the Parquet files to count rows. Cross-check with SE16N count of LFA1 to ensure no data loss.</p>
-
-
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Row count in Parquet matches (or is very close to) LFA1 count in SAP. Sample columns (LIFNR, NAME1, LAND1) have expected values.</div>
-          </div>
-
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
-        <header class="step-header">
-          <div class="step-number">Step 7</div>
-          <h2 class="step-title">Document the pipeline</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-07"
-              aria-label="Mark Document the pipeline as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Add tags and descriptions to the ADF pipeline. Note that this is a full-load, weekly refresh scenario. Include a link to this walkthrough in the documentation.</p>
-
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Pipeline has meaningful tags (e.g., &#39;vendor-master&#39;, &#39;weekly&#39;, &#39;sap-extract&#39;) and description.</div>
-          </div>
-
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-08" data-step-id="step-08">
-        <header class="step-header">
-          <div class="step-number">Step 8</div>
-          <h2 class="step-title">Schedule the pipeline for weekly runs</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-08"
-              aria-label="Mark Schedule the pipeline for weekly runs as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Use ADF&#39;s Schedule trigger to run the pipeline every Sunday at 2 AM UTC. Adjust based on your maintenance window.</p>
-
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">A Schedule trigger exists on the pipeline and shows the next scheduled execution.</div>
+            <div class="step-action-body">Landing zone row count matches SE16N count. Sample columns LIFNR, NAME1, LAND1 have expected values.</div>
           </div>
 
         </div>
@@ -394,21 +640,15 @@
     <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
-        <dt>ODP_NO_DATA_AVAILABLE error</dt>
+        <dt>ODP_NO_DATA_AVAILABLE error in tool</dt>
         <dd>
-          <p>The CDS view might have no data or be filtered. Verify LFA1 has vendors via SE16N. Remove any filter conditions from the ADF dataset.</p>
+          <p>Verify LFA1 has rows via SE16N. Then check if I_Supplier applies a hidden filter — open the view in SE80 and look for WHERE clause conditions that might restrict active vendor status. If the view filters to only active vendors, the extracted count will be less than raw LFA1.</p>
         </dd>
       </div>
       <div class="troubleshooting-item">
-        <dt>Parquet file is empty after successful pipeline run</dt>
+        <dt>ODQMON shows no subscription</dt>
         <dd>
-          <p>Check if the I_Supplier CDS view applies a hidden filter (e.g., only active vendors). Review the CDS view definition in SE80.</p>
-        </dd>
-      </div>
-      <div class="troubleshooting-item">
-        <dt>ADF pipeline times out</dt>
-        <dd>
-          <p>LFA1 is small but if it has millions of vendors, partition the extract by LAND1 (country) in multiple ADF iterations.</p>
+          <p>The tool may be using RFC-based ODP, which is restricted per SAP Note 3255746. Confirm the tool is using OData mode and re-run.</p>
         </dd>
       </div>
     </dl>
@@ -416,15 +656,15 @@
 
   <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
-    <p>Congratulations! You've completed the beginner walkthrough for LFA1. You now have 8 steps of experience extracting this table, and you understand the key considerations for the LFA1 use case.</p>
+    <p>Congratulations! You've completed the beginner walkthrough for LFA1. You now have 5 steps of experience extracting this table, and you understand the key considerations for the LFA1 use case.</p>
   </section>
 
   <section class="next-steps">
     <h2>What&#39;s next</h2>
     <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;lfa1&#x2F;">Try the LFA1 Intermediate walkthrough — add hourly delta</a></li>
+      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;lfa1&#x2F;">Try the LFA1 Intermediate walkthrough — adds hourly delta</a></li>
       <li><a href="&#x2F;tables&#x2F;lfa1&#x2F;">Table overview: LFA1 Vendor Master</a></li>
-      <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning</a></li>
+      <li><a href="&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;">License trap: Runtime vs Full Use</a></li>
     </ul>
   </section>
 
@@ -436,6 +676,7 @@
 
 </div>
 
+<script src="/assets/js/picker.js" defer></script>
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 
   </main>

@@ -4,24 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Extract MARA Material Master to ADLS (Beginner) — S&#x2F;4HANA — SAP Extract Academy</title>
-  <meta name="description" content="Beginner walkthrough for extracting material master (MARA) from S&#x2F;4HANA to ADLS. Learn field type handling (UOM trimming, numeric keys) and Parquet best practices.">
+  <title>Extract MARA Material Master (Beginner) — SAP-Side Guide — SAP Extract Academy</title>
+  <meta name="description" content="SAP-side beginner guide for MARA material master extraction. Confirm I_Product CDS view, check field types in SE11, assign authorizations, reconcile with SE16N.">
   <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;beginner&#x2F;mara&#x2F;">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Extract MARA Material Master to ADLS (Beginner) — S&#x2F;4HANA">
-  <meta property="og:description" content="Beginner walkthrough for extracting material master (MARA) from S&#x2F;4HANA to ADLS. Learn field type handling (UOM trimming, numeric keys) and Parquet best practices.">
+  <meta property="og:title" content="Extract MARA Material Master (Beginner) — SAP-Side Guide">
+  <meta property="og:description" content="SAP-side beginner guide for MARA material master extraction. Confirm I_Product CDS view, check field types in SE11, assign authorizations, reconcile with SE16N.">
   <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;beginner&#x2F;mara&#x2F;">
   <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
   <meta property="og:site_name" content="SAP Extract Academy">
   <meta property="og:locale" content="en_US">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Extract MARA Material Master to ADLS (Beginner) — S&#x2F;4HANA">
-  <meta name="twitter:description" content="Beginner walkthrough for extracting material master (MARA) from S&#x2F;4HANA to ADLS. Learn field type handling (UOM trimming, numeric keys) and Parquet best practices.">
+  <meta name="twitter:title" content="Extract MARA Material Master (Beginner) — SAP-Side Guide">
+  <meta name="twitter:description" content="SAP-side beginner guide for MARA material master extraction. Confirm I_Product CDS view, check field types in SE11, assign authorizations, reconcile with SE16N.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract MARA Material Master to ADLS (Beginner)","description":"Full-load extraction of material master general data. Introduces handling of numeric (UOM) and character (classification) fields. No Z-fields yet, but lays groundwork for later.","totalTime":"PT45M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Locate the I_Product CDS view","text":"Material master is exposed via <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/product-cds.html'>I_Product</a>. Verify in SE80.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Review MARA key fields (MATNR, MTART, MATKL)","text":"Use SE16N to browse MARA and understand data patterns. MATNR is the material number (key), MTART is material type (key business dimension), MATKL is product category.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Create source dataset for I_Product","text":"In ADF, create a new source dataset using the SAP CDC linked service, targeting I_Product through ODP.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Note numeric vs character field handling","text":"MEINS (UOM) is a 3-char field, often padded (e.g., 'EA ', 'PC '); MATNR is numeric-character (18 digits). Parquet preserves types; you'll handle trimming in downstream SQL if needed.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Create ADLS folder structure","text":"In sap-raw, create material/full-load/ for the extraction.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract MARA Material Master to ADLS (Beginner)"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract MARA Material Master (Beginner)","description":"SAP-side preparation for full-load extraction of material master general data. Covers the released CDS view I_Product, authorization for material master tables, key field characteristics (MATNR, MTART, MEINS), and SE16N reconciliation.","totalTime":"PT45M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Locate and confirm the released CDS view I_Product","text":"Material master general data is exposed via <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/product-cds.html\">I_Product</a>. Confirm it exists in your system and carries the extraction annotation.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Inspect key field characteristics in SE11","text":"Before extracting, understand the field types in MARA that affect downstream processing. Use <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html\">SE11</a> to inspect the table definition. Key fields: MATNR (material number — 18-char numeric-character, often zero-padded), MTART (material type — 4-char, important for filtering), MATKL (product category), MEINS (base unit of measure — 3-char, may carry trailing spaces).","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Count materials in SE16N (baseline)","text":"Use <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html\">SE16N</a> to count MARA rows. You can optionally filter by MTART to count a specific material type. Write the count down.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Confirm the extraction user has MM authorization","text":"Material master tables are in authorization group MM. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM (or broader) in <a href=\"https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html\">PFCG</a>.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Check ODQMON after first tool run","text":"Verify an active subscription appears in <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html\">ODQMON</a> for I_Product under context ABAP_CDS.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract MARA Material Master (Beginner)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,6 +72,90 @@
     <!-- Walkthrough detail page -->
 
 <div class="container">
+<div class="picker" aria-label="Extraction method, tool, and sink selector">
+  <fieldset class="picker-axis" id="picker-method">
+    <legend>Extraction method</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="method" value="odp" class="picker-radio">
+        <span>ODP</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="slt" class="picker-radio">
+        <span>SLT</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="rfc" class="picker-radio">
+        <span>RFC direct</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="ref" class="picker-radio">
+        <span>Reference only</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
+    <legend>Tool</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="adf" class="picker-radio">
+        <span>ADF</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="databricks" class="picker-radio">
+        <span>Databricks</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="fivetran" class="picker-radio">
+        <span>Fivetran</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="airbyte" class="picker-radio">
+        <span>Airbyte</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="custom" class="picker-radio">
+        <span>Custom</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis" id="picker-sink">
+    <legend>Sink</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="adls" class="picker-radio">
+        <span>ADLS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="s3" class="picker-radio">
+        <span>S3</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="gcs" class="picker-radio">
+        <span>GCS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="snowflake" class="picker-radio">
+        <span>Snowflake</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="bigquery" class="picker-radio">
+        <span>BigQuery</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="fabric" class="picker-radio">
+        <span>Fabric</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="other" class="picker-radio">
+        <span>Other</span>
+      </label>
+    </div>
+  </fieldset>
+</div>
+
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -87,8 +171,8 @@
       <span class="level-badge level-beginner">beginner</span>
       <span class="table-code">MARA</span>
     </div>
-    <h1>Extract MARA Material Master to ADLS (Beginner)</h1>
-    <p class="walkthrough-summary">Full-load extraction of material master general data. Introduces handling of numeric (UOM) and character (classification) fields. No Z-fields yet, but lays groundwork for later.</p>
+    <h1>Extract MARA Material Master (Beginner)</h1>
+    <p class="walkthrough-summary">SAP-side preparation for full-load extraction of material master general data. Covers the released CDS view I_Product, authorization for material master tables, key field characteristics (MATNR, MTART, MEINS), and SE16N reconciliation.</p>
 
     <dl class="walkthrough-meta-list">
       <div>
@@ -97,30 +181,235 @@
       </div>
       <div>
         <dt>Destinations</dt>
-        <dd>ADLS</dd>
+        <dd>Generic</dd>
       </div>
       <div>
         <dt>Extractors</dt>
-        <dd>ADF</dd>
+        <dd>ODP</dd>
       </div>
     </dl>
   </header>
 
-  <section class="callout callout-warning">
-    <h2>License check</h2>
-    <p>All license types. ODP extraction is application-layer.</p>
+  <section class="sap-preflight">
+    <h2>SAP-side preflight</h2>
+    <p>Before any tool touches your SAP system, you need four things confirmed
+    on the SAP side. Skipping these steps is the most common cause of extraction
+    failures, performance incidents, and licensing surprises.</p>
+  
+    <ol class="sap-preflight-checklist">
+      <li>
+        <strong>License — confirm your extraction method is covered.</strong>
+        <p>
+          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
+          first decision. ODP-based extraction (via
+          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
+          SLT replication requires a Full Use license. Verify with your SAP
+          licensing contact before you design anything — not the day before
+          go-live.
+        </p>
+        <p class="sap-preflight-note">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
+          modules by third-party tools is no longer permitted. If your tool uses
+          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
+          contract terms. Compliant alternatives are ODP via OData or SLT
+          replication. Full note at
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
+          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
+        <p>
+          Every table covered in this Academy has a SAP-released
+          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
+          Open
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+            target="_blank" rel="noopener noreferrer">SE80</a>
+          and search for the view name before you build anything. Confirm the
+          annotation <code>@Analytics.dataExtract: true</code> is present. If
+          the view is absent or the annotation is missing, stop — raw table
+          extraction is not the solution.
+        </p>
+      </li>
+  
+      <li>
+        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
+        <p>
+          Your extraction user needs three authorization objects.
+          Use
+          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+            target="_blank" rel="noopener noreferrer">SU01</a>
+          to create a System-type (non-dialog) user, then use
+          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+            target="_blank" rel="noopener noreferrer">PFCG</a>
+          to assign a role containing:
+        </p>
+        <ul>
+          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
+          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
+            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
+          <li><code>S_TABU_DIS</code> — table display access for the relevant
+            authorization group</li>
+        </ul>
+        <p>
+          For SLT-based extraction, your Basis team will also need authorization
+          in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+            target="_blank" rel="noopener noreferrer">LTCO</a>
+          and
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+            target="_blank" rel="noopener noreferrer">LTRS</a>.
+          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Row-count context — understand data volumes before you run.</strong>
+        <p>
+          Use
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+            target="_blank" rel="noopener noreferrer">SE16N</a>
+          to count rows in the target table with your intended filter (company
+          code, fiscal year, material type, etc.) before you start the
+          extraction. This gives you:
+        </p>
+        <ul>
+          <li>A baseline to reconcile against after the extract.</li>
+          <li>A sense of whether your partition is safe to extract
+            (&lt;&nbsp;100M rows is generally safe for ODP;
+            larger partitions may need further splitting or SLT).</li>
+          <li>Early warning if a filter is misconfigured
+            (count returns billions — rethink the partition).</li>
+        </ul>
+      </li>
+    </ol>
+  
+    <p class="sap-preflight-footer">
+      These four checks take 15–30 minutes on a first walkthrough, and under
+      5 minutes once you know your system. They are the difference between a
+      smooth extraction and a multi-day incident.
+    </p>
   </section>
+
+  <section class="callout callout-warning license-check">
+    <h2>License check</h2>
+  
+    <p>All license types. ODP extraction via OData is permitted for all licenses. License trap: Runtime vs Full Use →</p>
+  
+  
+    <div class="license-check-detail" id="license-check-detail">
+      <!--
+        JS-controlled variants — picker.js shows/hides the relevant block
+        based on ?method= in the URL. All four variants are rendered; only
+        the active one is visible at runtime.
+      -->
+      <div class="license-variant" data-method="odp">
+        <p>
+          <strong>ODP (Operational Data Provisioning)</strong> is permitted
+          under both Runtime and Full Use SAP licenses when you access data
+          through published CDS views via the OData API.
+        </p>
+        <p class="license-check-warning">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
+          call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
+          etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
+          Verify with your licensing contact.
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">Full note (SAP login required)</a>.
+          [NEEDS_SAP_CITATION — confirm current note state]
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="slt" hidden>
+        <p>
+          <strong>SLT (SAP Landscape Transformation)</strong> requires a
+          <strong>Full Use SAP license</strong>. It is not permitted under
+          Runtime licenses. Verify in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+            target="_blank" rel="noopener noreferrer">SLICENSE</a>
+          that "SLT Landscape Transformation" is listed as Active, Type = Full
+          Use before you configure anything in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+            target="_blank" rel="noopener noreferrer">LTCO</a>.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="rfc" hidden>
+        <p>
+          <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
+          generally permitted for read-only access under Runtime and Full Use
+          licenses, but is not recommended for production use — it bypasses
+          authorization checks that released CDS views enforce and is subject
+          to SAP Note 3255746 restrictions when wrapped by third-party ODP
+          connectors. [NEEDS_SAP_CITATION — verify Runtime license scope for
+          direct RFC read]
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="ref" hidden>
+        <p>
+          <strong>Reference mode:</strong> you are reviewing this walkthrough
+          for SAP-side context only. No tool-specific pipeline steps are shown.
+          Check your license before selecting a tool.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+  // Inline snippet: switch visible license-variant on picker change.
+  // Runs immediately so no flash-of-wrong-content.
+  (function () {
+    function showMethod(method) {
+      var variants = document.querySelectorAll('.license-variant');
+      variants.forEach(function (el) {
+        if (el.getAttribute('data-method') === method) {
+          el.removeAttribute('hidden');
+        } else {
+          el.setAttribute('hidden', '');
+        }
+      });
+    }
+  
+    function readMethod() {
+      var params = new URLSearchParams(window.location.search);
+      return params.get('method') || 'odp';
+    }
+  
+    // Apply on load.
+    showMethod(readMethod());
+  
+    // Re-apply when picker radios change (picker.js fires change events).
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.name === 'method') {
+        showMethod(e.target.value);
+      }
+    });
+  })();
+  </script>
 
   <section class="walkthrough-intro">
     <h2>Overview</h2>
     <div class="prose">
-      <h2>Scenario</h2>
-<p>Your product analytics team needs material master data to build product dimension tables. You&#39;ll extract MARA (material master general section) to ADLS as Parquet, focusing on understanding how different field types (numeric-character, UOM strings) come across in the extraction.</p>
-<p>This walkthrough builds on VBAK and LFA1 patterns but introduces field type awareness, which becomes critical when you add Z-fields in the intermediate walkthrough.</p>
-<p>Estimated time: 45 minutes.</p>
+      <p>Your product analytics team needs material master data to build product dimension tables. MARA (material master general section) is a manageable table for a first extraction: typically 100K to 10M rows depending on system size and data retention.</p>
+<p>This walkthrough covers the SAP-side work: confirming the released CDS view, understanding how MARA&#39;s key fields (MATNR, MEINS) behave in extraction, and reconciling counts with SE16N. The field type quirks you learn here — zero-padding, trailing spaces — apply to dozens of other SAP tables.</p>
 <hr>
-<h2>What you&#39;ve built</h2>
-<p>You&#39;ve extracted material master data and learned how field types differ between SAP and Parquet. MEINS (UOM) may have trailing spaces; MATNR is zero-padded numeric-character. Your downstream SQL will account for these via TRIM() and casting. You&#39;re now ready to handle Z-fields in the next walkthrough.</p>
+<h2>What you have established</h2>
+<p>You have confirmed the SAP side is ready for MARA extraction and you understand the key field characteristics that affect downstream processing. Your tool team can extract from I_Product. In the intermediate walkthrough, you will add Z-fields via a CDS extension view.</p>
 
     </div>
   </section>
@@ -128,15 +417,14 @@
   <section class="prerequisites">
     <h2>Before you start</h2>
     <ul class="prerequisites-list">
-      <li>Completed VBAK Beginner or VBAK Beginner experience</li>
-      <li>ADF infrastructure (linked service, ADLS)</li>
-      <li>S&#x2F;4HANA access and EXTRACT_VBAK user</li>
+      <li>Completed VBAK beginner walkthrough (extraction user and SE80 familiarity)</li>
+      <li>S&#x2F;4HANA access with SE80 and SE11 authorization</li>
     </ul>
   </section>
 
   <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
-      <span id="progress-count">0</span> of 9 steps complete
+      <span id="progress-count">0</span> of 6 steps complete
     </div>
     <div class="progress-bar" aria-hidden="true">
       <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
@@ -148,20 +436,20 @@
       <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
         <header class="step-header">
           <div class="step-number">Step 1</div>
-          <h2 class="step-title">Locate the I_Product CDS view</h2>
+          <h2 class="step-title">Locate and confirm the released CDS view I_Product</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-01"
-              aria-label="Mark Locate the I_Product CDS view as complete"
+              aria-label="Mark Locate and confirm the released CDS view I_Product as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Material master is exposed via <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/product-cds.html'>I_Product</a>. Verify in SE80.</p>
+          <p class="step-intro">Material master general data is exposed via <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/product-cds.html">I_Product</a>. Confirm it exists in your system and carries the extraction annotation.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
@@ -178,7 +466,7 @@
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">I_Product appears with @Analytics.dataExtract: true.</div>
+            <div class="step-action-body">I_Product appears in SE80 with @Analytics.dataExtract: true.</div>
           </div>
 
         </div>
@@ -188,20 +476,64 @@
       <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
         <header class="step-header">
           <div class="step-number">Step 2</div>
-          <h2 class="step-title">Review MARA key fields (MATNR, MTART, MATKL)</h2>
+          <h2 class="step-title">Inspect key field characteristics in SE11</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-02"
-              aria-label="Mark Review MARA key fields (MATNR, MTART, MATKL) as complete"
+              aria-label="Mark Inspect key field characteristics in SE11 as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Use SE16N to browse MARA and understand data patterns. MATNR is the material number (key), MTART is material type (key business dimension), MATKL is product category.</p>
+          <p class="step-intro">Before extracting, understand the field types in MARA that affect downstream processing. Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html">SE11</a> to inspect the table definition. Key fields: MATNR (material number — 18-char numeric-character, often zero-padded), MTART (material type — 4-char, important for filtering), MATKL (product category), MEINS (base unit of measure — 3-char, may carry trailing spaces).</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE11.html" target="_blank" rel="noopener noreferrer">
+                SE11
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Data Dictionary → Database Tables → MARA → Display</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">SE11 shows MATNR as CHAR(18), MEINS as UNIT(3), MTART as CHAR(4).</div>
+          </div>
+
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>MATNR is zero-padded in SAP (material 1 is stored as &#39;000000000000000001&#39;). Your downstream SQL may need LTRIM or CAST. MEINS trailing spaces are common and break string joins if not trimmed.</p>
+          </details>
+        </div>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
+          <h2 class="step-title">Count materials in SE16N (baseline)</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Count materials in SE16N (baseline) as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html">SE16N</a> to count MARA rows. You can optionally filter by MTART to count a specific material type. Write the count down.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
@@ -211,43 +543,14 @@
                 SE16N
                 <span class="sr-only">(opens in new tab)</span>
               </a>
-              and navigate to <em>Execute → MARA</em>.
+              and navigate to <em>Execute → MARA → Count</em>.
             </div>
           </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">You can see rows in SE16N with different MTART and MATKL values. Count is reasonable (100K-10M typical).</div>
-          </div>
-
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
-        <header class="step-header">
-          <div class="step-number">Step 3</div>
-          <h2 class="step-title">Create source dataset for I_Product</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-03"
-              aria-label="Mark Create source dataset for I_Product as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">In ADF, create a new source dataset using the SAP CDC linked service, targeting I_Product through ODP.</p>
-
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Preview loads material records with columns MATNR, MTART, MATKL, MEINS (UOM).</div>
+            <div class="step-action-body">You have a total row count for MARA. Typical range: 100K–10M materials.</div>
           </div>
 
         </div>
@@ -257,26 +560,37 @@
       <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
         <header class="step-header">
           <div class="step-number">Step 4</div>
-          <h2 class="step-title">Note numeric vs character field handling</h2>
+          <h2 class="step-title">Confirm the extraction user has MM authorization</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-04"
-              aria-label="Mark Note numeric vs character field handling as complete"
+              aria-label="Mark Confirm the extraction user has MM authorization as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">MEINS (UOM) is a 3-char field, often padded (e.g., &#39;EA &#39;, &#39;PC &#39;); MATNR is numeric-character (18 digits). Parquet preserves types; you&#39;ll handle trimming in downstream SQL if needed.</p>
+          <p class="step-intro">Material master tables are in authorization group MM. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM (or broader) in <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html">PFCG</a>.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;e5e83c2825c34a7896bdb97c0da65fb5.html" target="_blank" rel="noopener noreferrer">
+                PFCG
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              .
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">In the preview, observe that MEINS values include trailing spaces and MATNR is zero-padded.</div>
+            <div class="step-action-body">Role includes S_TABU_DIS for authorization group MM.</div>
           </div>
 
         </div>
@@ -286,26 +600,37 @@
       <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
         <header class="step-header">
           <div class="step-number">Step 5</div>
-          <h2 class="step-title">Create ADLS folder structure</h2>
+          <h2 class="step-title">Check ODQMON after first tool run</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-05"
-              aria-label="Mark Create ADLS folder structure as complete"
+              aria-label="Mark Check ODQMON after first tool run as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">In sap-raw, create material/full-load/ for the extraction.</p>
+          <p class="step-intro">Verify an active subscription appears in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html">ODQMON</a> for I_Product under context ABAP_CDS.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;ODQMON.html" target="_blank" rel="noopener noreferrer">
+                ODQMON
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Subscriptions → Context: ABAP_CDS → I_Product</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Folder exists in ADLS.</div>
+            <div class="step-action-body">Active subscription for I_Product. No errors.</div>
           </div>
 
         </div>
@@ -315,113 +640,37 @@
       <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
         <header class="step-header">
           <div class="step-number">Step 6</div>
-          <h2 class="step-title">Create sink dataset to ADLS Parquet</h2>
+          <h2 class="step-title">Reconcile row count and note field quirks</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-06"
-              aria-label="Mark Create sink dataset to ADLS Parquet as complete"
+              aria-label="Mark Reconcile row count and note field quirks as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Point to sap-raw/material/full-load/. Snappy compression.</p>
+          <p class="step-intro">After the extraction completes, count rows in your landing zone and compare to SE16N. Then check a sample of MATNR values — confirm they match expected zero-padding. Check MEINS values for trailing spaces.</p>
 
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Test connection succeeds.</div>
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → MARA → Count</em>.
+            </div>
           </div>
 
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
-        <header class="step-header">
-          <div class="step-number">Step 7</div>
-          <h2 class="step-title">Build and trigger the ADF pipeline</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-07"
-              aria-label="Mark Build and trigger the ADF pipeline as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Copy activity: I_Product → ADLS Parquet.</p>
-
-
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Pipeline completes and files appear.</div>
-          </div>
-
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-08" data-step-id="step-08">
-        <header class="step-header">
-          <div class="step-number">Step 8</div>
-          <h2 class="step-title">Validate row count and column count</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-08"
-              aria-label="Mark Validate row count and column count as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Query the Parquet files. Confirm row count matches SE16N. Check that expected columns (MATNR, MTART, MATKL, MEINS) are present with correct data types (MATNR string/numeric, MEINS string).</p>
-
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Parquet row count ≈ SE16N count. MEINS values may have trailing spaces.</div>
-          </div>
-
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-09" data-step-id="step-09">
-        <header class="step-header">
-          <div class="step-number">Step 9</div>
-          <h2 class="step-title">Document field transformations needed</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-09"
-              aria-label="Mark Document field transformations needed as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">In your data warehouse schema, note that MEINS will need TRIM(), and MATNR may need conversion to numeric or stays as string. Create a data dictionary for the downstream SQL ETL.</p>
-
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Data dictionary includes MARA → ADLS mappings with transformation notes.</div>
+            <div class="step-action-body">Row count matches SE16N. Sample MATNR values show expected zero-padding (if present on your system). MEINS values include trailing spaces.</div>
           </div>
 
         </div>
@@ -433,15 +682,15 @@
     <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
-        <dt>Preview shows very few rows (suspiciously low count)</dt>
+        <dt>Extracted row count is lower than SE16N</dt>
         <dd>
-          <p>I_Product may apply a hidden filter (e.g., only active materials). Verify with SE16N MARA count.</p>
+          <p>I_Product may apply a filter — for example, only active materials (LVORM &#x3D; &#39; &#39;). Check the CDS view definition in SE80 for WHERE clause conditions. If this is intentional, document that the extraction represents active materials only.</p>
         </dd>
       </div>
       <div class="troubleshooting-item">
-        <dt>Parquet file is huge (&gt;10GB for MARA)</dt>
+        <dt>MATNR values in landing zone are missing leading zeros</dt>
         <dd>
-          <p>Material master is large in some systems. Consider partitioning by MTART (material type) in ADF to parallelize.</p>
+          <p>Some extraction tools strip leading zeros from MATNR during type casting. Check your tool&#39;s type mapping for CHAR fields. Either configure the tool to preserve leading zeros, or add a LPAD transformation downstream.</p>
         </dd>
       </div>
     </dl>
@@ -449,13 +698,13 @@
 
   <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
-    <p>Congratulations! You've completed the beginner walkthrough for MARA. You now have 9 steps of experience extracting this table, and you understand the key considerations for the MARA use case.</p>
+    <p>Congratulations! You've completed the beginner walkthrough for MARA. You now have 6 steps of experience extracting this table, and you understand the key considerations for the MARA use case.</p>
   </section>
 
   <section class="next-steps">
     <h2>What&#39;s next</h2>
     <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;mara&#x2F;">Try MARA Intermediate walkthrough — introduces Z-fields</a></li>
+      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;mara&#x2F;">Try MARA Intermediate — introduces Z-fields via CDS extension</a></li>
       <li><a href="&#x2F;tables&#x2F;mara&#x2F;">Table overview: MARA Material Master</a></li>
     </ul>
   </section>
@@ -468,6 +717,7 @@
 
 </div>
 
+<script src="/assets/js/picker.js" defer></script>
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 
   </main>

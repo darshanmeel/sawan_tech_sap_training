@@ -4,24 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Extract BKPF Multi-Year with Python ODP — SAP Extract Academy</title>
-  <meta name="description" content="Intermediate BKPF extraction: multi-year (2022-2024), multi-company partitioned loading via Python and ODP. Parallel processing and reconciliation.">
+  <title>Extract BKPF Multi-Year (Intermediate) — SAP-Side Guide — SAP Extract Academy</title>
+  <meta name="description" content="SAP-side intermediate guide for multi-year BKPF extraction. Partition by BUKRS+GJAHR, monitor SM50 during parallel runs, verify ODQMON queue health.">
   <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;bkpf&#x2F;">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Extract BKPF Multi-Year with Python ODP">
-  <meta property="og:description" content="Intermediate BKPF extraction: multi-year (2022-2024), multi-company partitioned loading via Python and ODP. Parallel processing and reconciliation.">
+  <meta property="og:title" content="Extract BKPF Multi-Year (Intermediate) — SAP-Side Guide">
+  <meta property="og:description" content="SAP-side intermediate guide for multi-year BKPF extraction. Partition by BUKRS+GJAHR, monitor SM50 during parallel runs, verify ODQMON queue health.">
   <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;bkpf&#x2F;">
   <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
   <meta property="og:site_name" content="SAP Extract Academy">
   <meta property="og:locale" content="en_US">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Extract BKPF Multi-Year with Python ODP">
-  <meta name="twitter:description" content="Intermediate BKPF extraction: multi-year (2022-2024), multi-company partitioned loading via Python and ODP. Parallel processing and reconciliation.">
+  <meta name="twitter:title" content="Extract BKPF Multi-Year (Intermediate) — SAP-Side Guide">
+  <meta name="twitter:description" content="SAP-side intermediate guide for multi-year BKPF extraction. Partition by BUKRS+GJAHR, monitor SM50 during parallel runs, verify ODQMON queue health.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract BKPF Multi-Year with Python ODP","description":"Full extraction of multiple fiscal years (2022-2024), partitioned by BUKRS and GJAHR. Python/pyrfc with parallel loading.","totalTime":"PT75M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Design multi-year extraction strategy","text":"Extract 2022, 2023, 2024 in parallel. Each year partitioned by BUKRS for further parallelism.","url":"https://academy.example.com/walkthrough/intermediate/bkpf/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Execute parallel extractions","text":"Use ThreadPoolExecutor to run up to 4 parallel pyrfc connections. Each extracts one (BUKRS, GJAHR) partition.","url":"https://academy.example.com/walkthrough/intermediate/bkpf/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Load into Snowflake with partitioned schema","text":"Store in ACCOUNTING.BKPF_RAW partitioned by GJAHR and BUKRS.","url":"https://academy.example.com/walkthrough/intermediate/bkpf/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Reconcile aggregate totals","text":"For each fiscal year and company code, sum amounts in Parquet and compare to SAP via FM_GET_DOCUMENT_HEADER RFC (if available).","url":"https://academy.example.com/walkthrough/intermediate/bkpf/#step-step-04"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"BKPF","item":"https://academy.example.com/tables/bkpf/"},{"@type":"ListItem","position":4,"name":"Extract BKPF Multi-Year with Python ODP"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract BKPF Multi-Year (Intermediate)","description":"SAP-side intermediate guide for multi-year BKPF extraction. Covers partitioning by BUKRS and GJAHR across multiple years, SM50 load monitoring during multi-partition runs, and ODQMON queue health checks.","totalTime":"PT75M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Count rows per partition in SE16N","text":"For each fiscal year and company code combination you plan to extract, run a count in <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html\">SE16N</a> with BUKRS and GJAHR filters. Record each count. This gives you a per-partition reconciliation baseline and helps you estimate total extraction time.","url":"https://academy.example.com/walkthrough/intermediate/bkpf/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Confirm I_AccountingDocument CDS view is available for all target years","text":"The released CDS view I_AccountingDocument exposes BKPF through ODP. Verify it is active in <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html\">SE80</a>. Also confirm that your extraction does not need data from before the system cut-over date — for systems migrated from ECC to S/4HANA, historical data may not be in BKPF (it may be in BKPF_OLD or have been migrated). [NEEDS_SAP_CITATION — confirm BKPF_OLD behavior for migrated systems]","url":"https://academy.example.com/walkthrough/intermediate/bkpf/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Monitor SAP system load during multi-partition extraction (SM50)","text":"When running multiple partition extractions in parallel, your extraction tool opens multiple RFC connections simultaneously. Each connection consumes a work process. Monitor <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SM50.html\">SM50</a> to confirm work process utilization stays below 80%. If it climbs higher, the finance team (who are posting documents) will be affected.","url":"https://academy.example.com/walkthrough/intermediate/bkpf/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Check ODQMON for multiple active subscriptions","text":"If your tool runs multiple partitions in parallel via multiple ODP subscriptions, <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html\">ODQMON</a> shows all active subscriptions. Monitor that each subscription is progressing and none is stuck in an error or fetching state. A stuck subscription consumes resources and blocks that partition.","url":"https://academy.example.com/walkthrough/intermediate/bkpf/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Reconcile totals per partition after extraction","text":"For each (BUKRS, GJAHR) partition, re-run the SE16N count you recorded in step 01 and compare to the row count in your target. All partitions must reconcile before you sign off on the extraction.","url":"https://academy.example.com/walkthrough/intermediate/bkpf/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"BKPF","item":"https://academy.example.com/tables/bkpf/"},{"@type":"ListItem","position":4,"name":"Extract BKPF Multi-Year (Intermediate)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,6 +72,90 @@
     <!-- Walkthrough detail page -->
 
 <div class="container">
+<div class="picker" aria-label="Extraction method, tool, and sink selector">
+  <fieldset class="picker-axis" id="picker-method">
+    <legend>Extraction method</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="method" value="odp" class="picker-radio">
+        <span>ODP</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="slt" class="picker-radio">
+        <span>SLT</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="rfc" class="picker-radio">
+        <span>RFC direct</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="ref" class="picker-radio">
+        <span>Reference only</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
+    <legend>Tool</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="adf" class="picker-radio">
+        <span>ADF</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="databricks" class="picker-radio">
+        <span>Databricks</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="fivetran" class="picker-radio">
+        <span>Fivetran</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="airbyte" class="picker-radio">
+        <span>Airbyte</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="custom" class="picker-radio">
+        <span>Custom</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis" id="picker-sink">
+    <legend>Sink</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="adls" class="picker-radio">
+        <span>ADLS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="s3" class="picker-radio">
+        <span>S3</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="gcs" class="picker-radio">
+        <span>GCS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="snowflake" class="picker-radio">
+        <span>Snowflake</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="bigquery" class="picker-radio">
+        <span>BigQuery</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="fabric" class="picker-radio">
+        <span>Fabric</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="other" class="picker-radio">
+        <span>Other</span>
+      </label>
+    </div>
+  </fieldset>
+</div>
+
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -87,8 +171,8 @@
       <span class="level-badge level-intermediate">intermediate</span>
       <span class="table-code">BKPF</span>
     </div>
-    <h1>Extract BKPF Multi-Year with Python ODP</h1>
-    <p class="walkthrough-summary">Full extraction of multiple fiscal years (2022-2024), partitioned by BUKRS and GJAHR. Python&#x2F;pyrfc with parallel loading.</p>
+    <h1>Extract BKPF Multi-Year (Intermediate)</h1>
+    <p class="walkthrough-summary">SAP-side intermediate guide for multi-year BKPF extraction. Covers partitioning by BUKRS and GJAHR across multiple years, SM50 load monitoring during multi-partition runs, and ODQMON queue health checks.</p>
 
     <dl class="walkthrough-meta-list">
       <div>
@@ -97,28 +181,235 @@
       </div>
       <div>
         <dt>Destinations</dt>
-        <dd>Snowflake</dd>
+        <dd>Generic</dd>
       </div>
       <div>
         <dt>Extractors</dt>
-        <dd>Python</dd>
+        <dd>ODP</dd>
       </div>
     </dl>
   </header>
 
-  <section class="callout callout-warning">
-    <h2>License check</h2>
-    <p>All licenses.</p>
+  <section class="sap-preflight">
+    <h2>SAP-side preflight</h2>
+    <p>Before any tool touches your SAP system, you need four things confirmed
+    on the SAP side. Skipping these steps is the most common cause of extraction
+    failures, performance incidents, and licensing surprises.</p>
+  
+    <ol class="sap-preflight-checklist">
+      <li>
+        <strong>License — confirm your extraction method is covered.</strong>
+        <p>
+          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
+          first decision. ODP-based extraction (via
+          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
+          SLT replication requires a Full Use license. Verify with your SAP
+          licensing contact before you design anything — not the day before
+          go-live.
+        </p>
+        <p class="sap-preflight-note">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
+          modules by third-party tools is no longer permitted. If your tool uses
+          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
+          contract terms. Compliant alternatives are ODP via OData or SLT
+          replication. Full note at
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
+          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
+        <p>
+          Every table covered in this Academy has a SAP-released
+          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
+          Open
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+            target="_blank" rel="noopener noreferrer">SE80</a>
+          and search for the view name before you build anything. Confirm the
+          annotation <code>@Analytics.dataExtract: true</code> is present. If
+          the view is absent or the annotation is missing, stop — raw table
+          extraction is not the solution.
+        </p>
+      </li>
+  
+      <li>
+        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
+        <p>
+          Your extraction user needs three authorization objects.
+          Use
+          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+            target="_blank" rel="noopener noreferrer">SU01</a>
+          to create a System-type (non-dialog) user, then use
+          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+            target="_blank" rel="noopener noreferrer">PFCG</a>
+          to assign a role containing:
+        </p>
+        <ul>
+          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
+          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
+            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
+          <li><code>S_TABU_DIS</code> — table display access for the relevant
+            authorization group</li>
+        </ul>
+        <p>
+          For SLT-based extraction, your Basis team will also need authorization
+          in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+            target="_blank" rel="noopener noreferrer">LTCO</a>
+          and
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+            target="_blank" rel="noopener noreferrer">LTRS</a>.
+          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Row-count context — understand data volumes before you run.</strong>
+        <p>
+          Use
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+            target="_blank" rel="noopener noreferrer">SE16N</a>
+          to count rows in the target table with your intended filter (company
+          code, fiscal year, material type, etc.) before you start the
+          extraction. This gives you:
+        </p>
+        <ul>
+          <li>A baseline to reconcile against after the extract.</li>
+          <li>A sense of whether your partition is safe to extract
+            (&lt;&nbsp;100M rows is generally safe for ODP;
+            larger partitions may need further splitting or SLT).</li>
+          <li>Early warning if a filter is misconfigured
+            (count returns billions — rethink the partition).</li>
+        </ul>
+      </li>
+    </ol>
+  
+    <p class="sap-preflight-footer">
+      These four checks take 15–30 minutes on a first walkthrough, and under
+      5 minutes once you know your system. They are the difference between a
+      smooth extraction and a multi-day incident.
+    </p>
   </section>
+
+  <section class="callout callout-warning license-check">
+    <h2>License check</h2>
+  
+    <p>All licenses. ODP via OData API. License trap: Runtime vs Full Use →</p>
+  
+  
+    <div class="license-check-detail" id="license-check-detail">
+      <!--
+        JS-controlled variants — picker.js shows/hides the relevant block
+        based on ?method= in the URL. All four variants are rendered; only
+        the active one is visible at runtime.
+      -->
+      <div class="license-variant" data-method="odp">
+        <p>
+          <strong>ODP (Operational Data Provisioning)</strong> is permitted
+          under both Runtime and Full Use SAP licenses when you access data
+          through published CDS views via the OData API.
+        </p>
+        <p class="license-check-warning">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
+          call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
+          etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
+          Verify with your licensing contact.
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">Full note (SAP login required)</a>.
+          [NEEDS_SAP_CITATION — confirm current note state]
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="slt" hidden>
+        <p>
+          <strong>SLT (SAP Landscape Transformation)</strong> requires a
+          <strong>Full Use SAP license</strong>. It is not permitted under
+          Runtime licenses. Verify in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+            target="_blank" rel="noopener noreferrer">SLICENSE</a>
+          that "SLT Landscape Transformation" is listed as Active, Type = Full
+          Use before you configure anything in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+            target="_blank" rel="noopener noreferrer">LTCO</a>.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="rfc" hidden>
+        <p>
+          <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
+          generally permitted for read-only access under Runtime and Full Use
+          licenses, but is not recommended for production use — it bypasses
+          authorization checks that released CDS views enforce and is subject
+          to SAP Note 3255746 restrictions when wrapped by third-party ODP
+          connectors. [NEEDS_SAP_CITATION — verify Runtime license scope for
+          direct RFC read]
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="ref" hidden>
+        <p>
+          <strong>Reference mode:</strong> you are reviewing this walkthrough
+          for SAP-side context only. No tool-specific pipeline steps are shown.
+          Check your license before selecting a tool.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+  // Inline snippet: switch visible license-variant on picker change.
+  // Runs immediately so no flash-of-wrong-content.
+  (function () {
+    function showMethod(method) {
+      var variants = document.querySelectorAll('.license-variant');
+      variants.forEach(function (el) {
+        if (el.getAttribute('data-method') === method) {
+          el.removeAttribute('hidden');
+        } else {
+          el.setAttribute('hidden', '');
+        }
+      });
+    }
+  
+    function readMethod() {
+      var params = new URLSearchParams(window.location.search);
+      return params.get('method') || 'odp';
+    }
+  
+    // Apply on load.
+    showMethod(readMethod());
+  
+    // Re-apply when picker radios change (picker.js fires change events).
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.name === 'method') {
+        showMethod(e.target.value);
+      }
+    });
+  })();
+  </script>
 
   <section class="walkthrough-intro">
     <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
-<p>Your finance warehouse needs 3 years of accounting documents. You&#39;ll extract in parallel by fiscal year and company code to minimize extraction time.</p>
+<p>Your finance warehouse needs three years of accounting documents. You will extract in parallel by fiscal year and company code to minimize extraction time, while keeping SAP work process utilization safe for concurrent posting activity.</p>
 <hr>
-<h2>What you&#39;ve built</h2>
-<p>You&#39;ve mastered multi-dimensional partitioning (fiscal year × company code) and parallel extraction. Finance can now run ad-hoc reports across years without waiting for sequential loads.</p>
+<h2>What you have confirmed</h2>
+<p>You have a per-partition row-count baseline, know how to monitor SAP work process load during parallel extractions, and understand how to use ODQMON to track subscription health across multiple concurrent extractions. Enterprise-scale extraction (billions of rows, SLT) is covered in the Expert walkthrough.</p>
 
     </div>
   </section>
@@ -126,14 +417,14 @@
   <section class="prerequisites">
     <h2>Before you start</h2>
     <ul class="prerequisites-list">
-      <li>Completed BKPF Beginner</li>
-      <li>Python&#x2F;pyrfc expertise</li>
+      <li>Completed BKPF Beginner walkthrough</li>
+      <li>SE16N familiarity for counting across multiple fiscal year filters</li>
     </ul>
   </section>
 
   <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
-      <span id="progress-count">0</span> of 4 steps complete
+      <span id="progress-count">0</span> of 5 steps complete
     </div>
     <div class="progress-bar" aria-hidden="true">
       <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
@@ -145,37 +436,37 @@
       <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
         <header class="step-header">
           <div class="step-number">Step 1</div>
-          <h2 class="step-title">Design multi-year extraction strategy</h2>
+          <h2 class="step-title">Count rows per partition in SE16N</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-01"
-              aria-label="Mark Design multi-year extraction strategy as complete"
+              aria-label="Mark Count rows per partition in SE16N as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Extract 2022, 2023, 2024 in parallel. Each year partitioned by BUKRS for further parallelism.</p>
+          <p class="step-intro">For each fiscal year and company code combination you plan to extract, run a count in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html">SE16N</a> with BUKRS and GJAHR filters. Record each count. This gives you a per-partition reconciliation baseline and helps you estimate total extraction time.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → BKPF → Filter BUKRS&#x3D;&#39;1000&#39; AND GJAHR&#x3D;2022 → Count; repeat for 2023, 2024</em>.
+            </div>
+          </div>
 
-          <figure class="code-block">
-            <figcaption>Multi-year, multi-company task matrix</figcaption>
-            <pre><code class="language-python">years &#x3D; [2022, 2023, 2024]
-companies &#x3D; [1000, 1001, 2000]
-tasks &#x3D; [
-  (year, bukrs)
-  for year in years
-  for bukrs in companies
-]
-</code></pre>
-          </figure>
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">9 extraction tasks planned (3 years × 3 companies).</div>
+            <div class="step-action-body">You have row counts for each (BUKRS, GJAHR) combination. Total row count across all partitions is documented.</div>
           </div>
 
         </div>
@@ -185,26 +476,37 @@ tasks &#x3D; [
       <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
         <header class="step-header">
           <div class="step-number">Step 2</div>
-          <h2 class="step-title">Execute parallel extractions</h2>
+          <h2 class="step-title">Confirm I_AccountingDocument CDS view is available for all target years</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-02"
-              aria-label="Mark Execute parallel extractions as complete"
+              aria-label="Mark Confirm I_AccountingDocument CDS view is available for all target years as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Use ThreadPoolExecutor to run up to 4 parallel pyrfc connections. Each extracts one (BUKRS, GJAHR) partition.</p>
+          <p class="step-intro">The released CDS view I_AccountingDocument exposes BKPF through ODP. Verify it is active in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html">SE80</a>. Also confirm that your extraction does not need data from before the system cut-over date — for systems migrated from ECC to S/4HANA, historical data may not be in BKPF (it may be in BKPF_OLD or have been migrated). [NEEDS_SAP_CITATION — confirm BKPF_OLD behavior for migrated systems]</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Repository Browser → I_AccountingDocument</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">All 9 partitions complete in ~30 minutes (vs sequential 90+ minutes).</div>
+            <div class="step-action-body">I_AccountingDocument is active. Ask Basis team whether pre-migration documents are in scope and where they are stored.</div>
           </div>
 
         </div>
@@ -214,28 +516,43 @@ tasks &#x3D; [
       <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
         <header class="step-header">
           <div class="step-number">Step 3</div>
-          <h2 class="step-title">Load into Snowflake with partitioned schema</h2>
+          <h2 class="step-title">Monitor SAP system load during multi-partition extraction (SM50)</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-03"
-              aria-label="Mark Load into Snowflake with partitioned schema as complete"
+              aria-label="Mark Monitor SAP system load during multi-partition extraction (SM50) as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Store in ACCOUNTING.BKPF_RAW partitioned by GJAHR and BUKRS.</p>
+          <p class="step-intro">When running multiple partition extractions in parallel, your extraction tool opens multiple RFC connections simultaneously. Each connection consumes a work process. Monitor <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SM50.html">SM50</a> to confirm work process utilization stays below 80%. If it climbs higher, the finance team (who are posting documents) will be affected.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SM50.html" target="_blank" rel="noopener noreferrer">
+                SM50
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Work Process Overview</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">ACCOUNTING.BKPF_RAW has 9 partitions, all populated.</div>
+            <div class="step-action-body">During extraction, SM50 shows work processes for your extraction user (DIA or BTC type) with CPU and status. Total work process utilization stays below 80%.</div>
           </div>
 
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>If your extraction saturates all available work processes, finance users cannot post documents. Coordinate extraction windows with the finance team — run multi-partition extractions outside posting hours.</p>
+          </details>
         </div>
       </article>
     </li>
@@ -243,26 +560,77 @@ tasks &#x3D; [
       <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
         <header class="step-header">
           <div class="step-number">Step 4</div>
-          <h2 class="step-title">Reconcile aggregate totals</h2>
+          <h2 class="step-title">Check ODQMON for multiple active subscriptions</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-04"
-              aria-label="Mark Reconcile aggregate totals as complete"
+              aria-label="Mark Check ODQMON for multiple active subscriptions as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">For each fiscal year and company code, sum amounts in Parquet and compare to SAP via FM_GET_DOCUMENT_HEADER RFC (if available).</p>
+          <p class="step-intro">If your tool runs multiple partitions in parallel via multiple ODP subscriptions, <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html">ODQMON</a> shows all active subscriptions. Monitor that each subscription is progressing and none is stuck in an error or fetching state. A stuck subscription consumes resources and blocks that partition.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;ODQMON.html" target="_blank" rel="noopener noreferrer">
+                ODQMON
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Subscriptions → Context: ABAP_CDS → Filter by I_AccountingDocument</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Total amounts match within 0.01% (allowance for rounding).</div>
+            <div class="step-action-body">All subscriptions for I_AccountingDocument are in active (not error) state. Queue depths are decreasing over time.</div>
+          </div>
+
+        </div>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
+          <h2 class="step-title">Reconcile totals per partition after extraction</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Reconcile totals per partition after extraction as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">For each (BUKRS, GJAHR) partition, re-run the SE16N count you recorded in step 01 and compare to the row count in your target. All partitions must reconcile before you sign off on the extraction.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              .
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Row counts in target match SE16N for each (BUKRS, GJAHR) partition. Document any acceptable variance for in-flight postings.</div>
           </div>
 
         </div>
@@ -274,9 +642,15 @@ tasks &#x3D; [
     <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
-        <dt>ThreadPoolExecutor exhausts SAP connection pool</dt>
+        <dt>SM50 shows work process saturation during extraction</dt>
         <dd>
-          <p>Limit to 4 parallel threads. Queue remaining tasks.</p>
+          <p>Reduce the number of parallel extraction connections. Limit to 3–4 concurrent partitions maximum. Queue remaining partitions to run sequentially after the first batch completes. Run extractions outside peak posting hours.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>One partition fails while others succeed</dt>
+        <dd>
+          <p>BKPF for a specific fiscal year may have unusual volume (e.g., a year-end closing run generated more documents than normal). Re-run the failed partition with a smaller sub-partition (e.g., add a BLART filter for document types). Check ODQMON for the specific subscription error message.</p>
         </dd>
       </div>
     </dl>
@@ -284,13 +658,14 @@ tasks &#x3D; [
 
   <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
-    <p>Congratulations! You've completed the intermediate walkthrough for BKPF. You now have 4 steps of experience extracting this table, and you understand the key considerations for the BKPF use case.</p>
+    <p>Congratulations! You've completed the intermediate walkthrough for BKPF. You now have 5 steps of experience extracting this table, and you understand the key considerations for the BKPF use case.</p>
   </section>
 
   <section class="next-steps">
     <h2>What&#39;s next</h2>
     <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;bkpf&#x2F;">Try BKPF Expert</a></li>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;bkpf&#x2F;">Try BKPF Expert — SLT parallel readers for enterprise scale</a></li>
+      <li><a href="&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;">License trap: Runtime vs Full Use</a></li>
     </ul>
   </section>
 
@@ -302,6 +677,7 @@ tasks &#x3D; [
 
 </div>
 
+<script src="/assets/js/picker.js" defer></script>
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 
   </main>

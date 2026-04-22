@@ -4,24 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Extract VBAK with Delta &amp; Z-Fields (Intermediate) — S&#x2F;4HANA — SAP Extract Academy</title>
-  <meta name="description" content="Intermediate walkthrough for VBAK extraction with delta processing and custom Z-field support. Python&#x2F;pyrfc + Snowflake. ODP delta queues and incremental load patterns.">
+  <title>Extract VBAK with Delta and Z-Field (Intermediate) — SAP-Side Guide — SAP Extract Academy</title>
+  <meta name="description" content="SAP-side intermediate guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics.">
   <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;vbak&#x2F;">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Extract VBAK with Delta &amp; Z-Fields (Intermediate) — S&#x2F;4HANA">
-  <meta property="og:description" content="Intermediate walkthrough for VBAK extraction with delta processing and custom Z-field support. Python&#x2F;pyrfc + Snowflake. ODP delta queues and incremental load patterns.">
+  <meta property="og:title" content="Extract VBAK with Delta and Z-Field (Intermediate) — SAP-Side Guide">
+  <meta property="og:description" content="SAP-side intermediate guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics.">
   <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;vbak&#x2F;">
   <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
   <meta property="og:site_name" content="SAP Extract Academy">
   <meta property="og:locale" content="en_US">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Extract VBAK with Delta &amp; Z-Fields (Intermediate) — S&#x2F;4HANA">
-  <meta name="twitter:description" content="Intermediate walkthrough for VBAK extraction with delta processing and custom Z-field support. Python&#x2F;pyrfc + Snowflake. ODP delta queues and incremental load patterns.">
+  <meta name="twitter:title" content="Extract VBAK with Delta and Z-Field (Intermediate) — SAP-Side Guide">
+  <meta name="twitter:description" content="SAP-side intermediate guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract VBAK with Delta and Z-Field (Intermediate)","description":"Full + delta extraction of VBAK with a custom Z-field (ZZ_REGION). Introduces delta queues in ODP, CDS extension views for Z-fields, and incremental load patterns.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Verify the I_SalesDocument CDS extension view supports ZZ_REGION","text":"Your S/4HANA system has a custom Z-field ZZ_REGION on VBAK. Confirm the released CDS view I_SalesDocument includes this via an extension view or direct annotation.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Understand ODP delta queues","text":"<a href='/glossary/odp/'>ODP</a> maintains delta queues for each context (CDS view). The queue tracks insert, update, delete operations. You'll request a delta using a timestamp or sequence number.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Set up Python environment with pyrfc","text":"Install pyrfc library for direct SAP RFC calls. This gives you finer control over delta requests than ADF's SAP CDC connector.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Create Python script for full load","text":"Write a Python script using pyrfc to call RFC_READ_TABLE on I_SalesDocument CDS view. Request all rows (no WHERE clause). Save to Parquet in Snowflake via pyodbc and pandas.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Capture baseline delta sequence number","text":"After full load completes, query ODQMON to capture the current ODP sequence number. You'll use this in the delta extract to only get new/changed rows.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"VBAK","item":"https://academy.example.com/tables/vbak/"},{"@type":"ListItem","position":4,"name":"Extract VBAK with Delta and Z-Field (Intermediate)"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract VBAK with Delta and Z-Field (Intermediate)","description":"SAP-side intermediate guide for VBAK extraction with delta processing and a custom Z-field. Covers ODP delta queue mechanics in ODQMON, CDS extension view creation in SE80 for Z-field inclusion, and checking delta subscription health.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Verify I_SalesDocument supports delta extraction","text":"Open I_SalesDocument in <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html\">SE80</a> and inspect the delta annotation. For ODP delta to work, the view must carry <code>@Analytics.dataExtraction.delta.changeDataCapture.automatic: true</code>.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Check for the custom Z-field ZZ_REGION in VBAK","text":"Your S/4HANA system has a custom Z-field ZZ_REGION on VBAK (added via an Append Structure). Confirm this field exists in the table definition using <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html\">SE11</a> before building a CDS extension view to expose it.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Create a CDS extension view to expose ZZ_REGION","text":"In <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html\">SE80</a> or ABAP Development Tools (ADT), create a CDS extension view that adds ZZ_REGION to I_SalesDocument. The extension view must not modify the released view — it extends it.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Monitor the ODP delta subscription in ODQMON","text":"After your extraction tool registers and runs its init-delta, check <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html\">ODQMON</a>. Confirm the subscription exists and is in an active (not stuck) state. Note: the first delta after init returns 0 records — this is normal per <a href=\"https://support.sap.com/notes/2884410\">SAP Note 2884410</a>.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Validate Z-field data in SE16N","text":"Before handing data to your analytics team, verify that ZZ_REGION values look correct. Use <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html\">SE16N</a> to browse VBAK and check ZZ_REGION values for a sample of document numbers. Then confirm those same values appear in your target system for the same VBELN keys.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"VBAK","item":"https://academy.example.com/tables/vbak/"},{"@type":"ListItem","position":4,"name":"Extract VBAK with Delta and Z-Field (Intermediate)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,6 +72,90 @@
     <!-- Walkthrough detail page -->
 
 <div class="container">
+<div class="picker" aria-label="Extraction method, tool, and sink selector">
+  <fieldset class="picker-axis" id="picker-method">
+    <legend>Extraction method</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="method" value="odp" class="picker-radio">
+        <span>ODP</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="slt" class="picker-radio">
+        <span>SLT</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="rfc" class="picker-radio">
+        <span>RFC direct</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="ref" class="picker-radio">
+        <span>Reference only</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
+    <legend>Tool</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="adf" class="picker-radio">
+        <span>ADF</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="databricks" class="picker-radio">
+        <span>Databricks</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="fivetran" class="picker-radio">
+        <span>Fivetran</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="airbyte" class="picker-radio">
+        <span>Airbyte</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="custom" class="picker-radio">
+        <span>Custom</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis" id="picker-sink">
+    <legend>Sink</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="adls" class="picker-radio">
+        <span>ADLS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="s3" class="picker-radio">
+        <span>S3</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="gcs" class="picker-radio">
+        <span>GCS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="snowflake" class="picker-radio">
+        <span>Snowflake</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="bigquery" class="picker-radio">
+        <span>BigQuery</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="fabric" class="picker-radio">
+        <span>Fabric</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="other" class="picker-radio">
+        <span>Other</span>
+      </label>
+    </div>
+  </fieldset>
+</div>
+
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -88,7 +172,7 @@
       <span class="table-code">VBAK</span>
     </div>
     <h1>Extract VBAK with Delta and Z-Field (Intermediate)</h1>
-    <p class="walkthrough-summary">Full + delta extraction of VBAK with a custom Z-field (ZZ_REGION). Introduces delta queues in ODP, CDS extension views for Z-fields, and incremental load patterns.</p>
+    <p class="walkthrough-summary">SAP-side intermediate guide for VBAK extraction with delta processing and a custom Z-field. Covers ODP delta queue mechanics in ODQMON, CDS extension view creation in SE80 for Z-field inclusion, and checking delta subscription health.</p>
 
     <dl class="walkthrough-meta-list">
       <div>
@@ -97,27 +181,236 @@
       </div>
       <div>
         <dt>Destinations</dt>
-        <dd>Snowflake</dd>
+        <dd>Generic</dd>
       </div>
       <div>
         <dt>Extractors</dt>
-        <dd>Python</dd>
+        <dd>ODP</dd>
       </div>
     </dl>
   </header>
 
+  <section class="sap-preflight">
+    <h2>SAP-side preflight</h2>
+    <p>Before any tool touches your SAP system, you need four things confirmed
+    on the SAP side. Skipping these steps is the most common cause of extraction
+    failures, performance incidents, and licensing surprises.</p>
+  
+    <ol class="sap-preflight-checklist">
+      <li>
+        <strong>License — confirm your extraction method is covered.</strong>
+        <p>
+          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
+          first decision. ODP-based extraction (via
+          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
+          SLT replication requires a Full Use license. Verify with your SAP
+          licensing contact before you design anything — not the day before
+          go-live.
+        </p>
+        <p class="sap-preflight-note">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
+          modules by third-party tools is no longer permitted. If your tool uses
+          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
+          contract terms. Compliant alternatives are ODP via OData or SLT
+          replication. Full note at
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
+          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
+        <p>
+          Every table covered in this Academy has a SAP-released
+          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
+          Open
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+            target="_blank" rel="noopener noreferrer">SE80</a>
+          and search for the view name before you build anything. Confirm the
+          annotation <code>@Analytics.dataExtract: true</code> is present. If
+          the view is absent or the annotation is missing, stop — raw table
+          extraction is not the solution.
+        </p>
+      </li>
+  
+      <li>
+        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
+        <p>
+          Your extraction user needs three authorization objects.
+          Use
+          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+            target="_blank" rel="noopener noreferrer">SU01</a>
+          to create a System-type (non-dialog) user, then use
+          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+            target="_blank" rel="noopener noreferrer">PFCG</a>
+          to assign a role containing:
+        </p>
+        <ul>
+          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
+          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
+            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
+          <li><code>S_TABU_DIS</code> — table display access for the relevant
+            authorization group</li>
+        </ul>
+        <p>
+          For SLT-based extraction, your Basis team will also need authorization
+          in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+            target="_blank" rel="noopener noreferrer">LTCO</a>
+          and
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+            target="_blank" rel="noopener noreferrer">LTRS</a>.
+          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Row-count context — understand data volumes before you run.</strong>
+        <p>
+          Use
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+            target="_blank" rel="noopener noreferrer">SE16N</a>
+          to count rows in the target table with your intended filter (company
+          code, fiscal year, material type, etc.) before you start the
+          extraction. This gives you:
+        </p>
+        <ul>
+          <li>A baseline to reconcile against after the extract.</li>
+          <li>A sense of whether your partition is safe to extract
+            (&lt;&nbsp;100M rows is generally safe for ODP;
+            larger partitions may need further splitting or SLT).</li>
+          <li>Early warning if a filter is misconfigured
+            (count returns billions — rethink the partition).</li>
+        </ul>
+      </li>
+    </ol>
+  
+    <p class="sap-preflight-footer">
+      These four checks take 15–30 minutes on a first walkthrough, and under
+      5 minutes once you know your system. They are the difference between a
+      smooth extraction and a multi-day incident.
+    </p>
+  </section>
+
+  <section class="callout callout-warning license-check">
+    <h2>License check</h2>
+  
+    <p>All license types. CDS extension views are application-layer. License trap: Runtime vs Full Use →</p>
+  
+  
+    <div class="license-check-detail" id="license-check-detail">
+      <!--
+        JS-controlled variants — picker.js shows/hides the relevant block
+        based on ?method= in the URL. All four variants are rendered; only
+        the active one is visible at runtime.
+      -->
+      <div class="license-variant" data-method="odp">
+        <p>
+          <strong>ODP (Operational Data Provisioning)</strong> is permitted
+          under both Runtime and Full Use SAP licenses when you access data
+          through published CDS views via the OData API.
+        </p>
+        <p class="license-check-warning">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
+          call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
+          etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
+          Verify with your licensing contact.
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">Full note (SAP login required)</a>.
+          [NEEDS_SAP_CITATION — confirm current note state]
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="slt" hidden>
+        <p>
+          <strong>SLT (SAP Landscape Transformation)</strong> requires a
+          <strong>Full Use SAP license</strong>. It is not permitted under
+          Runtime licenses. Verify in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+            target="_blank" rel="noopener noreferrer">SLICENSE</a>
+          that "SLT Landscape Transformation" is listed as Active, Type = Full
+          Use before you configure anything in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+            target="_blank" rel="noopener noreferrer">LTCO</a>.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="rfc" hidden>
+        <p>
+          <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
+          generally permitted for read-only access under Runtime and Full Use
+          licenses, but is not recommended for production use — it bypasses
+          authorization checks that released CDS views enforce and is subject
+          to SAP Note 3255746 restrictions when wrapped by third-party ODP
+          connectors. [NEEDS_SAP_CITATION — verify Runtime license scope for
+          direct RFC read]
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="ref" hidden>
+        <p>
+          <strong>Reference mode:</strong> you are reviewing this walkthrough
+          for SAP-side context only. No tool-specific pipeline steps are shown.
+          Check your license before selecting a tool.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+  // Inline snippet: switch visible license-variant on picker change.
+  // Runs immediately so no flash-of-wrong-content.
+  (function () {
+    function showMethod(method) {
+      var variants = document.querySelectorAll('.license-variant');
+      variants.forEach(function (el) {
+        if (el.getAttribute('data-method') === method) {
+          el.removeAttribute('hidden');
+        } else {
+          el.setAttribute('hidden', '');
+        }
+      });
+    }
+  
+    function readMethod() {
+      var params = new URLSearchParams(window.location.search);
+      return params.get('method') || 'odp';
+    }
+  
+    // Apply on load.
+    showMethod(readMethod());
+  
+    // Re-apply when picker radios change (picker.js fires change events).
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.name === 'method') {
+        showMethod(e.target.value);
+      }
+    });
+  })();
+  </script>
 
   <section class="walkthrough-intro">
     <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
-<p>Your analytics team now needs near-real-time sales data. Daily delta extracts are sufficient — you don&#39;t need sub-minute updates, but every morning&#39;s refresh should catch all yesterday&#39;s new and changed orders.</p>
-<p>Additionally, your company has added a custom Z-field ZZ_REGION to sales documents (EMEA, APAC, AMER) for regional analysis. You&#39;ll update the extraction to include this field and implement delta processing.</p>
-<p>Estimated time: 60 minutes.</p>
+<p>Your analytics team now needs near-real-time sales data. Daily delta extracts are sufficient — you do not need sub-minute updates, but every morning&#39;s refresh should catch all yesterday&#39;s new and changed orders. Your company also added a custom Z-field ZZ_REGION to sales documents for regional analysis.</p>
+<p>This walkthrough covers the SAP-side changes: confirming delta support, creating a CDS extension view for ZZ_REGION, and verifying that the delta queue in ODQMON is healthy. Your tool team configures the delta poll schedule.</p>
 <hr>
-<h2>What you&#39;ve built</h2>
-<p>You&#39;ve built a full + delta extraction pattern using pyrfc and ODP delta queues. Your Snowflake table receives a daily update with only changed rows, keeping the data fresh and reducing extraction volume. The Z-field ZZ_REGION is now part of the data pipeline.</p>
-<p>This pattern scales: as Z-fields multiply or business rules change, you&#39;ll adjust the CDS extension view or raw-table extraction, but the delta mechanism remains the same.</p>
+<h2>What you have confirmed</h2>
+<p>The SAP side supports delta extraction for VBAK, the Z-field is exposed through a CDS extension view, and the ODQMON subscription is healthy. Your tool team can now configure daily delta polls. When you need sub-minute real-time updates — for example, to feed a live sales dashboard — move to the Expert walkthrough and SLT.</p>
 
     </div>
   </section>
@@ -125,14 +418,14 @@
   <section class="prerequisites">
     <h2>Before you start</h2>
     <ul class="prerequisites-list">
-      <li>Completed VBAK Beginner</li>
-      <li>Understanding of ODP delta concepts from glossary</li>
+      <li>Completed VBAK Beginner walkthrough</li>
+      <li>Understanding of ODP delta concepts from the ODP glossary entry</li>
     </ul>
   </section>
 
   <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
-      <span id="progress-count">0</span> of 8 steps complete
+      <span id="progress-count">0</span> of 5 steps complete
     </div>
     <div class="progress-bar" aria-hidden="true">
       <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
@@ -144,20 +437,20 @@
       <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
         <header class="step-header">
           <div class="step-number">Step 1</div>
-          <h2 class="step-title">Verify the I_SalesDocument CDS extension view supports ZZ_REGION</h2>
+          <h2 class="step-title">Verify I_SalesDocument supports delta extraction</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-01"
-              aria-label="Mark Verify the I_SalesDocument CDS extension view supports ZZ_REGION as complete"
+              aria-label="Mark Verify I_SalesDocument supports delta extraction as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Your S/4HANA system has a custom Z-field ZZ_REGION on VBAK. Confirm the released CDS view I_SalesDocument includes this via an extension view or direct annotation.</p>
+          <p class="step-intro">Open I_SalesDocument in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html">SE80</a> and inspect the delta annotation. For ODP delta to work, the view must carry <code>@Analytics.dataExtraction.delta.changeDataCapture.automatic: true</code>.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
@@ -167,14 +460,14 @@
                 SE80
                 <span class="sr-only">(opens in new tab)</span>
               </a>
-              and navigate to <em>Repository Browser → I_SalesDocument</em>.
+              and navigate to <em>Repository Browser → I_SalesDocument → Annotations</em>.
             </div>
           </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">I_SalesDocument or an associated extension view exposes ZZ_REGION as a field.</div>
+            <div class="step-action-body">I_SalesDocument has @Analytics.dataExtract: true. Delta annotation is present or Basis team confirms delta is supported.</div>
           </div>
 
         </div>
@@ -184,39 +477,43 @@
       <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
         <header class="step-header">
           <div class="step-number">Step 2</div>
-          <h2 class="step-title">Understand ODP delta queues</h2>
+          <h2 class="step-title">Check for the custom Z-field ZZ_REGION in VBAK</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-02"
-              aria-label="Mark Understand ODP delta queues as complete"
+              aria-label="Mark Check for the custom Z-field ZZ_REGION in VBAK as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro"><a href='/glossary/odp/'>ODP</a> maintains delta queues for each context (CDS view). The queue tracks insert, update, delete operations. You&#39;ll request a delta using a timestamp or sequence number.</p>
+          <p class="step-intro">Your S/4HANA system has a custom Z-field ZZ_REGION on VBAK (added via an Append Structure). Confirm this field exists in the table definition using <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html">SE11</a> before building a CDS extension view to expose it.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;ODQMON.html" target="_blank" rel="noopener noreferrer">
-                ODQMON
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE11.html" target="_blank" rel="noopener noreferrer">
+                SE11
                 <span class="sr-only">(opens in new tab)</span>
               </a>
-              and navigate to <em>Subscriptions → Search I_SalesDocument</em>.
+              and navigate to <em>Data Dictionary → Database Tables → VBAK → Display → Fields</em>.
             </div>
           </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">ODQMON shows an ODP subscription for I_SalesDocument with a delta queue active.</div>
+            <div class="step-action-body">ZZ_REGION appears in the VBAK field list under an Append Structure entry.</div>
           </div>
 
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>Z-fields added via Append Structures are part of the physical table but are not included in standard released CDS views. You must expose them explicitly through a CDS extension view to make them available for ODP extraction.</p>
+          </details>
         </div>
       </article>
     </li>
@@ -224,32 +521,46 @@
       <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
         <header class="step-header">
           <div class="step-number">Step 3</div>
-          <h2 class="step-title">Set up Python environment with pyrfc</h2>
+          <h2 class="step-title">Create a CDS extension view to expose ZZ_REGION</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-03"
-              aria-label="Mark Set up Python environment with pyrfc as complete"
+              aria-label="Mark Create a CDS extension view to expose ZZ_REGION as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Install pyrfc library for direct SAP RFC calls. This gives you finer control over delta requests than ADF&#39;s SAP CDC connector.</p>
+          <p class="step-intro">In <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html">SE80</a> or ABAP Development Tools (ADT), create a CDS extension view that adds ZZ_REGION to I_SalesDocument. The extension view must not modify the released view — it extends it.</p>
 
-
-          <figure class="code-block">
-            <figcaption>Install pyrfc and verify</figcaption>
-            <pre><code class="language-bash">pip install pyrfc cryptography
-python -c &quot;import pyrfc; print(pyrfc.__version__)&quot;
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Repository Browser → Create → CDS View Extension</em>.
+              <figure class="code-block">
+                <figcaption>Reference: CDS extension view to expose ZZ_REGION — adjust to your naming conventions</figcaption>
+                <pre><code class="language-abap">@AccessControl.authorizationCheck: #CHECK
+@Analytics.dataExtract: true
+extend view I_SalesDocument with ZI_SalesDocument_Ext {
+  vbak.ZZ_REGION
+}
 </code></pre>
-          </figure>
+              </figure>
+            </div>
+          </div>
+
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">pyrfc imports successfully in Python.</div>
+            <div class="step-action-body">Extension view ZI_SalesDocument_Ext is active in SE80. Activating it does not raise errors or modify I_SalesDocument itself.</div>
           </div>
 
         </div>
@@ -259,64 +570,20 @@ python -c &quot;import pyrfc; print(pyrfc.__version__)&quot;
       <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
         <header class="step-header">
           <div class="step-number">Step 4</div>
-          <h2 class="step-title">Create Python script for full load</h2>
+          <h2 class="step-title">Monitor the ODP delta subscription in ODQMON</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-04"
-              aria-label="Mark Create Python script for full load as complete"
+              aria-label="Mark Monitor the ODP delta subscription in ODQMON as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Write a Python script using pyrfc to call RFC_READ_TABLE on I_SalesDocument CDS view. Request all rows (no WHERE clause). Save to Parquet in Snowflake via pyodbc and pandas.</p>
-
-
-          <figure class="code-block">
-            <figcaption>Simplified full-load Python script</figcaption>
-            <pre><code class="language-python">from pyrfc import Connection
-import pandas as pd
-from snowflake.connector.pandas_tools import write_pandas
-
-conn &#x3D; Connection(ashost&#x3D;&#39;&lt;SAP_HOST&gt;&#39;, sysnr&#x3D;&#39;00&#39;, client&#x3D;&#39;100&#39;, user&#x3D;&#39;EXTRACT_VBAK&#39;, passwd&#x3D;&#39;&lt;pwd&gt;&#39;)
-
-query_result &#x3D; conn.call(&#39;RFC_READ_TABLE&#39;, QUERY_TABLE&#x3D;&#39;I_SalesDocument&#39;, ROWCOUNT&#x3D;500000)
-df &#x3D; pd.DataFrame(query_result[&#39;DATA&#39;])
-
-sf_conn &#x3D; snowflake.connector.connect(user&#x3D;&#39;&lt;sf_user&gt;&#39;, password&#x3D;&#39;&lt;sf_pwd&gt;&#39;, account&#x3D;&#39;&lt;account&gt;&#39;)
-write_pandas(sf_conn, df, &#39;VBAK_FULL_LOAD&#39;, auto_create_table&#x3D;True)
-</code></pre>
-          </figure>
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Script runs and data lands in Snowflake table VBAK_FULL_LOAD.</div>
-          </div>
-
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
-        <header class="step-header">
-          <div class="step-number">Step 5</div>
-          <h2 class="step-title">Capture baseline delta sequence number</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-05"
-              aria-label="Mark Capture baseline delta sequence number as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">After full load completes, query ODQMON to capture the current ODP sequence number. You&#39;ll use this in the delta extract to only get new/changed rows.</p>
+          <p class="step-intro">After your extraction tool registers and runs its init-delta, check <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html">ODQMON</a>. Confirm the subscription exists and is in an active (not stuck) state. Note: the first delta after init returns 0 records — this is normal per <a href="https://support.sap.com/notes/2884410">SAP Note 2884410</a>.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
@@ -326,111 +593,54 @@ write_pandas(sf_conn, df, &#39;VBAK_FULL_LOAD&#39;, auto_create_table&#x3D;True)
                 ODQMON
                 <span class="sr-only">(opens in new tab)</span>
               </a>
-              and navigate to <em>Subscriptions → I_SalesDocument → View Queue</em>.
+              and navigate to <em>Subscriptions → Context: ABAP_CDS → I_SalesDocument (or ZI_SalesDocument_Ext)</em>.
             </div>
           </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">You note the ODP sequence number (e.g., 12345) as the baseline.</div>
+            <div class="step-action-body">Subscription is active. After init run, delta queue shows 0 pending records (expected). After subsequent changes in SAP, queue shows pending records matching number of changed documents.</div>
           </div>
 
         </div>
       </article>
     </li>
     <li>
-      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
         <header class="step-header">
-          <div class="step-number">Step 6</div>
-          <h2 class="step-title">Implement incremental load logic</h2>
+          <div class="step-number">Step 5</div>
+          <h2 class="step-title">Validate Z-field data in SE16N</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
-              data-step-id="step-06"
-              aria-label="Mark Implement incremental load logic as complete"
+              data-step-id="step-05"
+              aria-label="Mark Validate Z-field data in SE16N as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Create a second Python script that calls ODP with the previous sequence number to fetch only changed rows. Store the updated sequence number for the next run.</p>
+          <p class="step-intro">Before handing data to your analytics team, verify that ZZ_REGION values look correct. Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html">SE16N</a> to browse VBAK and check ZZ_REGION values for a sample of document numbers. Then confirm those same values appear in your target system for the same VBELN keys.</p>
 
-
-          <figure class="code-block">
-            <figcaption>Delta extraction pseudocode</figcaption>
-            <pre><code class="language-python">last_seq &#x3D; 12345  # from baseline
-delta_result &#x3D; conn.call(&#39;RS_DATASOURCE_DELTA&#39;, ..., LAST_SEQ&#x3D;str(last_seq))
-new_seq &#x3D; delta_result[&#39;NEXTSEQ&#39;]
-
-# Apply delta: insert new, update changed, delete removed
-# Store new_seq for next run
-</code></pre>
-          </figure>
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Delta extraction runs and updates Snowflake with only changed rows.</div>
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → VBAK → Show ZZ_REGION for sample VBELN</em>.
+            </div>
           </div>
 
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
-        <header class="step-header">
-          <div class="step-number">Step 7</div>
-          <h2 class="step-title">Schedule daily delta runs</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-07"
-              aria-label="Mark Schedule daily delta runs as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Use AWS Lambda or a Snowflake task to run the delta extraction daily. Maintain state (last sequence number) in a Snowflake metadata table.</p>
-
-
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Lambda function or Snowflake task executes on schedule and logs show daily delta runs.</div>
-          </div>
-
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-08" data-step-id="step-08">
-        <header class="step-header">
-          <div class="step-number">Step 8</div>
-          <h2 class="step-title">Validate Z-field data (ZZ_REGION)</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-08"
-              aria-label="Mark Validate Z-field data (ZZ_REGION) as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Check that ZZ_REGION is present in the Snowflake table and contains expected values (e.g., &#39;EMEA&#39;, &#39;APAC&#39;, &#39;AMER&#39;).</p>
-
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">SELECT DISTINCT ZZ_REGION FROM VBAK_FULL_LOAD returns expected regional values.</div>
+            <div class="step-action-body">ZZ_REGION values in your target match ZZ_REGION values in SE16N for the same VBELN records.</div>
           </div>
 
         </div>
@@ -442,15 +652,21 @@ new_seq &#x3D; delta_result[&#39;NEXTSEQ&#39;]
     <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
-        <dt>pyrfc connection fails with SNC_PARTNER_NOT_REACHED</dt>
+        <dt>ZZ_REGION is NULL in extraction output</dt>
         <dd>
-          <p>SNC is enabled on the SAP system. Disable in the connection or configure SNC certificates on the Python machine.</p>
+          <p>The CDS extension view may not be active or may not be the source your tool is pointing at. Confirm the extension view is active in SE80 and that your tool&#39;s ODP source is configured to use ZI_SalesDocument_Ext (not the base I_SalesDocument). Also confirm the ABAP transport containing the extension view is in the production system.</p>
         </dd>
       </div>
       <div class="troubleshooting-item">
-        <dt>Z-field ZZ_REGION is NULL in output</dt>
+        <dt>Delta subscriptions accumulate in ODQMON without being consumed</dt>
         <dd>
-          <p>The CDS view may not expose the Z-field directly. Create a CDS extension view in SE80 that appends the Z-field, or extract VBAK raw table separately and join.</p>
+          <p>Check whether your extraction scheduler is running. Stale subscriptions that accumulate more than a few days of delta entries can cause performance issues in ODQMON. If the subscriber is no longer active, delete it in ODQMON to prevent queue buildup.</p>
+          <p>
+            <a href="https:&#x2F;&#x2F;support.sap.com&#x2F;notes&#x2F;2884410" target="_blank" rel="noopener noreferrer">
+              Related SAP Note
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </p>
         </dd>
       </div>
     </dl>
@@ -458,14 +674,15 @@ new_seq &#x3D; delta_result[&#39;NEXTSEQ&#39;]
 
   <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
-    <p>Congratulations! You've completed the intermediate walkthrough for VBAK. You now have 8 steps of experience extracting this table, and you understand the key considerations for the VBAK use case.</p>
+    <p>Congratulations! You've completed the intermediate walkthrough for VBAK. You now have 5 steps of experience extracting this table, and you understand the key considerations for the VBAK use case.</p>
   </section>
 
   <section class="next-steps">
     <h2>What&#39;s next</h2>
     <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;vbak&#x2F;">Try VBAK Expert — SLT push to Kafka</a></li>
-      <li><a href="&#x2F;glossary&#x2F;delta&#x2F;">Glossary: Operational Data Provisioning delta</a></li>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;vbak&#x2F;">Try VBAK Expert — SLT push replication for real-time scenarios</a></li>
+      <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning delta</a></li>
+      <li><a href="&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;">License trap: Runtime vs Full Use</a></li>
     </ul>
   </section>
 
@@ -477,6 +694,7 @@ new_seq &#x3D; delta_result[&#39;NEXTSEQ&#39;]
 
 </div>
 
+<script src="/assets/js/picker.js" defer></script>
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 
   </main>

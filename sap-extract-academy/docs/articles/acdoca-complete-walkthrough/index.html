@@ -4,24 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>ACDOCA Extraction: Complete Guide Beginner to Enterprise — SAP Extract Academy</title>
-  <meta name="description" content="Learn ACDOCA extraction at three levels: simple ODP, parallel extraction, enterprise SLT streaming. Choose your pattern based on data volume and latency.">
+  <title>ACDOCA Extraction: Three Patterns Beginner to Enterprise — SAP Extract Academy</title>
+  <meta name="description" content="Choosing an ACDOCA extraction pattern. Three approaches: ODP single-partition, ODP multi-partition, and SLT real-time. Decision driven by volume, latency, and license.">
   <link rel="canonical" href="https://academy.example.com&#x2F;articles&#x2F;acdoca-complete-walkthrough&#x2F;">
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="ACDOCA Extraction: Complete Guide Beginner to Enterprise">
-  <meta property="og:description" content="Learn ACDOCA extraction at three levels: simple ODP, parallel extraction, enterprise SLT streaming. Choose your pattern based on data volume and latency.">
+  <meta property="og:title" content="ACDOCA Extraction: Three Patterns Beginner to Enterprise">
+  <meta property="og:description" content="Choosing an ACDOCA extraction pattern. Three approaches: ODP single-partition, ODP multi-partition, and SLT real-time. Decision driven by volume, latency, and license.">
   <meta property="og:url" content="https://academy.example.com&#x2F;articles&#x2F;acdoca-complete-walkthrough&#x2F;">
   <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
   <meta property="og:site_name" content="SAP Extract Academy">
   <meta property="og:locale" content="en_US">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="ACDOCA Extraction: Complete Guide Beginner to Enterprise">
-  <meta name="twitter:description" content="Learn ACDOCA extraction at three levels: simple ODP, parallel extraction, enterprise SLT streaming. Choose your pattern based on data volume and latency.">
+  <meta name="twitter:title" content="ACDOCA Extraction: Three Patterns Beginner to Enterprise">
+  <meta name="twitter:description" content="Choosing an ACDOCA extraction pattern. Three approaches: ODP single-partition, ODP multi-partition, and SLT real-time. Decision driven by volume, latency, and license.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"ACDOCA Extraction: The Complete Walkthrough from Beginner to Enterprise","description":"Learn ACDOCA extraction at three levels: simple ODP, parallel extraction, enterprise SLT streaming. Choose your pattern based on data volume and latency.","author":{"@type":"Organization","name":"SAP Extract Academy"},"publisher":{"@type":"Organization","name":"SAP Extract Academy"},"datePublished":"2026-04-22T00:00:00.000Z","dateModified":"2026-04-22T00:00:00.000Z","mainEntityOfPage":"https://academy.example.com/articles/acdoca-complete-walkthrough/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://academy.example.com/articles/"},{"@type":"ListItem","position":3,"name":"ACDOCA Extraction: The Complete Walkthrough from Beginner to Enterprise"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"ACDOCA Extraction: Three Patterns from Beginner to Enterprise","description":"Choosing an ACDOCA extraction pattern. Three approaches: ODP single-partition, ODP multi-partition, and SLT real-time. Decision driven by volume, latency, and license.","author":{"@type":"Organization","name":"SAP Extract Academy"},"publisher":{"@type":"Organization","name":"SAP Extract Academy"},"datePublished":"2026-04-22T00:00:00.000Z","dateModified":"2026-04-22T00:00:00.000Z","mainEntityOfPage":"https://academy.example.com/articles/acdoca-complete-walkthrough/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://academy.example.com/articles/"},{"@type":"ListItem","position":3,"name":"ACDOCA Extraction: Three Patterns from Beginner to Enterprise"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,14 +75,14 @@
   <ol>
     <li><a href="/">Home</a></li>
     <li><a href="/articles/">Articles</a></li>
-    <li aria-current="page">ACDOCA Extraction: The Complete Walkthrough from Beginner to Enterprise</li>
+    <li aria-current="page">ACDOCA Extraction: Three Patterns from Beginner to Enterprise</li>
   </ol>
 </nav>
 
 <article class="article">
   <header class="article-header">
 
-    <h1>ACDOCA Extraction: The Complete Walkthrough from Beginner to Enterprise</h1>
+    <h1>ACDOCA Extraction: Three Patterns from Beginner to Enterprise</h1>
 
     <dl class="article-meta">
       <div>
@@ -91,7 +91,7 @@
       </div>
       <div>
         <dt>Reading time</dt>
-        <dd>12 minutes</dd>
+        <dd>8 minutes</dd>
       </div>
       <div>
         <dt>Author</dt>
@@ -101,341 +101,107 @@
   </header>
 
   <div class="article-body prose">
-    <p>ACDOCA (Accounting Entries, Contract Accounting, Investment) is the universal journal of S/4HANA. It&#39;s where every GL posting lives—every accounting entry from FI (Finance), CO (Controlling), MM (Materials), SD (Sales), HR (Payroll). For analytics, ACDOCA is the single source of truth. For data extraction, it&#39;s the most challenging table in SAP.</p>
-<p>This article guides you through three extraction patterns, from beginner (simple, one company/year) to expert (billions of rows, real-time streaming). You&#39;ll understand the trade-offs and choose the pattern that fits your business.</p>
-<h2>Pattern 1: Beginner – One Company, One Year via ODP</h2>
-<p><strong>When to use this pattern</strong>: You need GL data for a single company and fiscal year (e.g., year-end close for one operating company), volumes are under 500M rows, and you can tolerate a one-time 2-4 hour extraction window.</p>
-<p><strong>Architecture</strong>:</p>
-<pre><code>SAP S/4HANA (ACDOCA)
-        ↓
-   ODP Provider
-        ↓
-  Python/pyrfc
-        ↓
-  Snowflake
-</code></pre>
-<p><strong>Steps</strong>:</p>
+    <p>ACDOCA — the Universal Journal — is the single most challenging table in SAP S/4HANA for data extraction. Every GL posting, every controlling entry, every cost allocation lives here. For a large enterprise, ACDOCA contains billions of rows. For a data engineer, it is the test that separates careful practice from expensive incidents.</p>
+<p>This article describes three extraction patterns at increasing scale. The decision between them is mostly an SAP-side decision: how large is your partition, do you need real-time delta, and does your license cover your chosen approach.</p>
+<p><strong>License trap:</strong> Before reading further, confirm your SAP license type. SLT replication (Pattern 3) requires a Full Use license. ODP-based extraction (Patterns 1 and 2) is permitted under Runtime licenses when using the OData API. See <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use →</a> for the full explanation.</p>
+<h2>The Core Rule: Always Partition</h2>
+<p>Regardless of which pattern you choose, you must partition ACDOCA by company code (RBUKRS) and fiscal year (RYEAR) before running any extraction. A raw, unfiltered read of ACDOCA exhausts SAP application server work process memory within minutes on any production system — resulting in a <code>TSV_TNEW_PAGE_ALLOC_FAILED</code> short dump and, in worse cases, locking ACDOCA rows and preventing finance users from posting during the window.</p>
+<p>Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html">SE16N</a> to count rows for your intended partition before running any extraction. Write down the count. This is your reconciliation target.</p>
+<h2>Always Use the Released CDS View</h2>
+<p>Never extract raw ACDOCA. SAP ships <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html">I_JournalEntryItem</a> as the released CDS view for the Universal Journal. This view:</p>
+<ul>
+<li>Enforces authorization (you see only GL entries your user role is permitted to see)</li>
+<li>Applies currency conversion (currency fields are pre-converted to your local/group currency)</li>
+<li>Exposes the data through <a href="/glossary/odp/">ODP</a> — SAP&#39;s standard extraction framework</li>
+<li>Includes database hints that prevent the memory exhaustion a raw SELECT * causes</li>
+</ul>
+<p>Confirm it is present and annotated in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html">SE80</a> before proceeding: look for <code>@Analytics.dataExtract: true</code> in the view header.</p>
+<h2>Pattern 1: ODP Single Partition (Beginner)</h2>
+<p><strong>When to use:</strong> One company code, one fiscal year. SE16N shows under 100M rows for your partition. You need a one-time historical load or an initial extract for a single reporting entity.</p>
+<p><strong>What you do in SAP:</strong></p>
 <ol>
-<li><strong>Connect via Python/pyrfc</strong> to your SAP system</li>
-<li><strong>Call RFC_ODP_READ</strong> with filter: <code>RBUKRS=&#39;1000&#39; AND RYEAR=2024</code></li>
-<li><strong>Stream in batches</strong> of 100k rows to avoid memory exhaustion in Python</li>
-<li><strong>Upsert to Snowflake</strong> as data arrives</li>
-<li><strong>Reconcile</strong> GL totals (sum of GL_ACDOCA_RAW in Snowflake = sum in SAP)</li>
+<li>Confirm I_JournalEntryItem exists with the extraction annotation in SE80.</li>
+<li>Count rows for your partition in SE16N (RBUKRS=&#39;1000&#39; AND RYEAR=2024).</li>
+<li>Create a System-type extraction user in <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html">SU01</a> with S_RFC and S_ODP_READ (ODPSOURCE=ABAP_CDS) authorization.</li>
+<li>After the extraction runs, check <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html">ODQMON</a> to confirm the subscription is registered and active.</li>
+<li>After the extraction completes, reconcile: SE16N count must match your target row count.</li>
 </ol>
-<p><strong>Pros</strong>:</p>
-<ul>
-<li>Simple, 50 lines of Python</li>
-<li>No licensing issues (ODP is permitted on Runtime License)</li>
-<li>Fast initial setup (&lt; 1 day)</li>
-<li>Built on standard tools (pyrfc, Snowflake)</li>
-</ul>
-<p><strong>Cons</strong>:</p>
-<ul>
-<li>Non-real-time (extraction is one-time, manually triggered)</li>
-<li>Doesn&#39;t scale to billions of rows without code change</li>
-<li>No parallelism (single extraction thread)</li>
-</ul>
-<p><strong>Example Code</strong>:</p>
-<pre><code class="language-python">import pyrfc
-import snowflake.connector
-
-conn = pyrfc.Client(...)  # RFC connection to SAP
-
-# Fetch ACDOCA for company 1000, year 2024, in batches
-filter_str = &quot;(RBUKRS=&#39;1000&#39; AND RYEAR=2024)&quot;
-result = conn.call(&#39;RFC_ODP_READ&#39;, 
-                   PROVIDER=&#39;I_JournalEntryItem&#39;,
-                   FILTER=filter_str, 
-                   ROWCOUNT=100000)
-
-# Connect to Snowflake
-snow_conn = snowflake.connector.connect(...)
-cursor = snow_conn.cursor()
-
-# Stream and upsert
-for row_batch in result:
-    cursor.executemany(
-        &quot;INSERT INTO GL_ACDOCA_RAW (...) VALUES (...)&quot;,
-        row_batch
-    )
-    snow_conn.commit()
-</code></pre>
-<p><strong>When it breaks</strong>: If RBUKRS=&#39;1000&#39; AND RYEAR=2024 contains 500M+ rows, you hit memory exhaustion. Move to Pattern 2.</p>
-<h2>Pattern 2: Intermediate – Multi-Company Parallel via ODP</h2>
-<p><strong>When to use this pattern</strong>: You need 2-5 years of data across 5-20 company codes, volumes are 500M to 5B rows, you want reasonably fast extraction (4-12 hours), and you can use Python with ThreadPoolExecutor.</p>
-<p><strong>Architecture</strong>:</p>
-<pre><code>SAP S/4HANA (ACDOCA)
-        ↓
-   ODP Provider
-        ↓
-  Python ThreadPoolExecutor (4 parallel threads)
-        ↓
-  Snowflake (partitioned by GJAHR, BUKRS)
-</code></pre>
-<p><strong>Key insight</strong>: Extract each (BUKRS, GJAHR) partition independently in parallel. A 4-thread executor runs 4 partitions concurrently, cutting total time by 4x.</p>
-<p><strong>Steps</strong>:</p>
+<p><strong>What your tool does:</strong> Your extraction tool (ADF, Databricks, Fivetran, Airbyte, or custom) connects via ODP OData, registers a subscription, and fetches rows in batches. The SAP-side configuration above is what you control; the tool pipeline configuration is in your vendor&#39;s documentation.</p>
+<p><strong>Constraints:</strong> Below 100M rows this pattern is fast. Above 100M rows, ODP single-partition extraction may time out or exhaust memory on the SAP side. Move to Pattern 2.</p>
+<h2>Pattern 2: ODP Multi-Partition (Intermediate)</h2>
+<p><strong>When to use:</strong> Multiple company codes, multiple fiscal years. SE16N shows 100M–500M rows per partition. You need 2–5 years of data across several entities.</p>
+<p><strong>What you do in SAP:</strong></p>
 <ol>
-<li><p><strong>Define partitions</strong>: Generate a matrix of (BUKRS, GJAHR) pairs</p>
-<pre><code class="language-python">years = [2022, 2023, 2024]
-companies = [1000, 1001, 2000, 2100, 2200]
-partitions = [(bukrs, year) for year in years for bukrs in companies]
-# Result: 15 partitions
-</code></pre>
-</li>
-<li><p><strong>Launch parallel extractions</strong>: Use ThreadPoolExecutor to run 4 concurrent RFC connections</p>
-<pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor
-
-with ThreadPoolExecutor(max_workers=4) as executor:
-    futures = [executor.submit(extract_partition, bukrs, year) 
-               for bukrs, year in partitions]
-    for future in futures:
-        future.result()  # Wait for all to complete
-</code></pre>
-</li>
-<li><p><strong>Extract partition function</strong>:</p>
-<pre><code class="language-python">def extract_partition(bukrs, year):
-    conn = pyrfc.Client(...)  # New RFC connection per thread
-    filter_str = f&quot;(RBUKRS=&#39;{bukrs}&#39; AND RYEAR={year})&quot;
-    result = conn.call(&#39;RFC_ODP_READ&#39;,
-                       PROVIDER=&#39;I_JournalEntryItem&#39;,
-                       FILTER=filter_str,
-                       ROWCOUNT=100000)
-    
-    snow_conn = snowflake.connector.connect(...)
-    cursor = snow_conn.cursor()
-    
-    for row_batch in result:
-        cursor.executemany(&quot;INSERT INTO GL_ACDOCA_RAW (...) VALUES (...)&quot;,
-                          row_batch)
-    snow_conn.commit()
-</code></pre>
-</li>
-<li><p><strong>Reconcile by partition</strong>: For each (BUKRS, GJAHR), verify totals match SAP</p>
-</li>
+<li>Use SE16N to count rows for each (RBUKRS, RYEAR) combination you plan to extract. Record each count separately.</li>
+<li>For each partition, verify that the count is under 500M rows. If any single partition exceeds this, sub-partition further by posting period (POPER).</li>
+<li>Monitor <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SM50.html">SM50</a> during extraction. Multiple simultaneous ODP connections each consume a work process. Keep total utilization below 80% to avoid impacting finance users.</li>
+<li>Monitor ODQMON for multiple active subscriptions — one per partition if your tool creates separate subscribers, or one shared subscriber if it uses a single subscription with filter parameters.</li>
+<li>After extraction, reconcile each partition individually against SE16N.</li>
 </ol>
-<p><strong>Pros</strong>:</p>
-<ul>
-<li>4-8x speedup via parallelism</li>
-<li>Handles up to 5B rows (15 partitions × 333M rows each)</li>
-<li>No licensing issues (ODP + Python is Runtime-safe)</li>
-<li>Fault-tolerant (if partition fails, others continue; retry failed partition)</li>
-<li>Moderately complex (150-200 lines of Python)</li>
-</ul>
-<p><strong>Cons</strong>:</p>
-<ul>
-<li>Manual partition definition (if companies/years change, code updates required)</li>
-<li>Still non-real-time (one-time extraction, then manual delta polling)</li>
-<li>Limits to 4 parallel threads (more threads risk SAP connection pool exhaustion or dialog user blocking)</li>
-</ul>
-<p><strong>Data Model in Snowflake</strong>:</p>
-<pre><code class="language-sql">CREATE TABLE GL_ACDOCA_RAW (
-    MANDT CHAR(3),
-    RBUKRS CHAR(4),  -- partition column 1
-    RYEAR CHAR(4),   -- partition column 2
-    POPER CHAR(3),
-    BELNR CHAR(10),
-    ... GL fields ...
-)
-PARTITION BY (RYEAR, RBUKRS);
-</code></pre>
-<p><strong>When it breaks</strong>: If you need real-time GL updates (posting visible in Snowflake within minutes), or if volumes exceed 5B rows, move to Pattern 3.</p>
-<h2>Pattern 3: Expert – Enterprise SLT Real-Time Streaming</h2>
-<p><strong>When to use this pattern</strong>: You need real-time GL data (&lt; 5 min lag), volumes are 5B+ rows, you have a Full Use license and SLT installed, and you need sub-minute accounting close.</p>
-<p><strong>Architecture</strong>:</p>
-<pre><code>SAP S/4HANA (ACDOCA)
-           ↓
-      SLT + LTRS
-   (Parallel readers)
-           ↓
-  Kafka (30 partitions)
-  [Log compaction enabled]
-           ↓
-Snowflake Kafka Connector
-           ↓
-Snowflake GL_ACDOCA_RAW
-</code></pre>
-<p><strong>Key differences from Pattern 2</strong>:</p>
-<ul>
-<li><strong>Full-load via SLT</strong> (not ODP): SLT is built for billions of rows; ODP is not</li>
-<li><strong>Parallel readers (LTRS)</strong>: 4-8 parallel readers, each handling one partition, running simultaneously</li>
-<li><strong>Kafka as buffer</strong>: SLT pushes to Kafka; Kafka buffers with log compaction; Snowflake connector polls Kafka</li>
-<li><strong>Real-time delta</strong>: After full-load completes, SLT automatically switches to delta (only changes flow), with near-zero latency</li>
-</ul>
-<p><strong>Prerequisites</strong>:</p>
-<ul>
-<li>Full Use license (SLT requires this)</li>
-<li>Kafka cluster (10+ brokers, 500GB+ storage, log compaction enabled)</li>
-<li>SLT installed and configured</li>
-<li>SM59 RFC destinations for Kafka cluster</li>
-</ul>
-<p><strong>Steps</strong>:</p>
+<p><strong>Key note on Note 3255746:</strong> If your tool uses ODP via RFC internally (most ADF, Qlik, Fivetran ODP connectors do), review your contract compliance against <a href="https://support.sap.com/notes/3255746">SAP Note 3255746</a> (Feb 2024). RFC-based ODP is no longer permitted for third-party tools. The compliant path is ODP via OData. [NEEDS_SAP_CITATION — confirm current Note 3255746 scope]</p>
+<h2>Pattern 3: SLT Real-Time (Expert)</h2>
+<p><strong>When to use:</strong> Billions of rows. Real-time delta required (GL postings visible in target within minutes). Full Use license in place.</p>
+<p><strong>What you do in SAP (summary — see <a href="/walkthrough/expert/acdoca/">Expert walkthrough</a> for full detail):</strong></p>
 <ol>
-<li><p><strong>Check license</strong> (SLICENSE transaction)</p>
-<ul>
-<li>Verify &quot;SLT Landscape Transformation&quot; = Active, Type = Full Use</li>
-</ul>
-</li>
-<li><p><strong>Configure SLT replication object</strong> (LTRC transaction)</p>
-<pre><code>Replication Object Name: ACDOCA_KAFKA
-Source Table: ACDOCA
-Partitioning Strategy: BUKRS + GJAHR (critical!)
-Destination: Kafka topic acdoca-source
-Replication Mode: Full + Delta
-</code></pre>
-</li>
-<li><p><strong>Create Kafka topic</strong> with correct settings</p>
-<pre><code class="language-bash">kafka-topics --create --topic acdoca-source \
-  --partitions 30 \
-  --replication-factor 3 \
-  --config log.cleanup.policy=compact \
-  --config log.segment.bytes=1073741824
-</code></pre>
-</li>
-<li><p><strong>Configure LTRS parallel readers</strong> (LTRS transaction)</p>
-<pre><code>Number of Parallel Readers: 4-8
-Reader Timeout: 60 minutes
-Delay Between Reader Launches: 30 seconds
-</code></pre>
-</li>
-<li><p><strong>Trigger full replication</strong> (LTCO transaction)</p>
-<ul>
-<li>Click &quot;Full Replication&quot; button</li>
-<li>Monitor via LTCO status screen</li>
-<li>Full-load runs 24-72 hours depending on volume</li>
-</ul>
-</li>
-<li><p><strong>Create Snowflake Kafka Connector</strong> to consume from Kafka</p>
-<pre><code class="language-json">{
-  &quot;name&quot;: &quot;snowflake-acdoca-sink&quot;,
-  &quot;config&quot;: {
-    &quot;connector.class&quot;: &quot;com.snowflake.kafka.connector.SnowflakeSinkConnector&quot;,
-    &quot;topics&quot;: &quot;acdoca-source&quot;,
-    &quot;snowflake.database.name&quot;: &quot;FINANCE&quot;,
-    &quot;snowflake.schema.name&quot;: &quot;GL&quot;,
-    &quot;snowflake.user.name&quot;: &quot;KAFKA_USER&quot;,
-    &quot;key.converter&quot;: &quot;org.apache.kafka.connect.storage.StringConverter&quot;,
-    &quot;value.converter&quot;: &quot;org.apache.kafka.connect.json.JsonConverter&quot;,
-    &quot;buffer.count.records&quot;: 10000,
-    &quot;buffer.flush.time&quot;: 30
-  }
-}
-</code></pre>
-</li>
-<li><p><strong>Monitor replication</strong></p>
-<ul>
-<li>LTCO: shows replication status (% complete, rows/sec)</li>
-<li>ODQMON: shows delta queue depth (should be near zero after full-load)</li>
-<li>Snowflake: watch GL_ACDOCA_RAW row count grow in real-time</li>
-</ul>
-</li>
-<li><p><strong>Reconcile post-load</strong></p>
-<pre><code class="language-sql">-- In Snowflake
-SELECT RBUKRS, RYEAR, SUM(AMOUNT_DEBIT), SUM(AMOUNT_CREDIT)
-FROM GL_ACDOCA_RAW
-GROUP BY RBUKRS, RYEAR
--- Compare with SAP via FM_GET_GL_TOTAL RFC or manual SE16N verification
-</code></pre>
-</li>
+<li>Verify Full Use license in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html">SLICENSE</a>. Get written confirmation from SAP licensing.</li>
+<li>Work with Basis to create an SLT replication object in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html">LTCO</a> for ACDOCA with partition key RBUKRS+RYEAR.</li>
+<li>Configure 4–8 parallel readers in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html">LTRS</a>. More readers = faster full load, more SAP resource consumption. Coordinate with Basis.</li>
+<li>Monitor SM50 throughout the 48–72 hour full load. Finance operations must not be impacted.</li>
+<li>After full load, LTCO switches to DELTA automatically. Monitor LTRS for lag. Reconcile with SE16N.</li>
 </ol>
-<p><strong>Pros</strong>:</p>
-<ul>
-<li>Real-time GL data (delta lag &lt; 5 min)</li>
-<li>Scales to 10B+ rows (SLT + LTRS + parallelism handle any volume)</li>
-<li>Sub-minute accounting close (no wait for batch extraction)</li>
-<li>Automatic delta after full-load (no manual polling required)</li>
-<li>Kafka as integration hub (other systems can subscribe to GL changes)</li>
-</ul>
-<p><strong>Cons</strong>:</p>
-<ul>
-<li>Most expensive: Full Use license ($500k-$2M/year) + SLT licensing + Kafka infrastructure</li>
-<li>Complex setup: 5+ SAP transactions, Kafka cluster management, Snowflake Kafka connector</li>
-<li>Requires SLT expertise (SLT configuration, partitioning strategy, LTRS tuning)</li>
-<li>Support complexity: if lag grows, is it SAP bottleneck, Kafka bottleneck, or Snowflake bottleneck?</li>
-</ul>
-<p><strong>Monitoring checklist</strong>:</p>
-<ul>
-<li>LTCO replication status (full-load % complete, delta status)</li>
-<li>ODQMON delta queue depth (target: &lt; 1000 unread entries)</li>
-<li>Kafka consumer lag (target: &lt; 30 sec)</li>
-<li>Snowflake query performance (GL analytics should complete in &lt; 30 sec)</li>
-<li>SM50 dialog process utilization (target: &lt; 80%, don&#39;t starve finance users)</li>
-</ul>
-<h2>Comparison: Which Pattern for You?</h2>
+<p><strong>What your infrastructure team does:</strong> Provisions the target (Kafka topic, ADLS container, S3 bucket, Snowflake table, or equivalent) and configures SLT to push to that target via the configured SM59 RFC destination. Your tool team or Basis team owns the target configuration.</p>
+<p><strong>From the field (composite of multiple engagements, anonymized):</strong></p>
+<p>A financial services customer designed a real-time ACDOCA pipeline using SLT before confirming their license. Three months post-go-live, an audit identified SLT running in LTRC under a Runtime License — a Full Use-only feature. Retroactive licensing costs were significant, and the architecture had to be either redesigned or upgraded. The mistake was designing the extraction architecture before license validation. This pattern appears consistently across enterprises.</p>
+<h2>Comparison</h2>
 <table>
 <thead>
 <tr>
-<th>Metric</th>
+<th></th>
 <th>Pattern 1</th>
 <th>Pattern 2</th>
 <th>Pattern 3</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>Data Volume</strong></td>
-<td>&lt; 500M rows</td>
-<td>500M–5B rows</td>
-<td>5B+ rows</td>
+<td><strong>Volume</strong></td>
+<td>&lt; 100M rows / partition</td>
+<td>100M–500M rows / partition</td>
+<td>Billions of rows</td>
 </tr>
 <tr>
 <td><strong>Latency</strong></td>
-<td>One-time, manual</td>
-<td>One-time or 2hr polling</td>
-<td>Real-time (&lt; 5 min)</td>
+<td>One-time or scheduled</td>
+<td>Scheduled batch</td>
+<td>Real-time delta</td>
 </tr>
 <tr>
-<td><strong>Extraction Time</strong></td>
-<td>2–4 hours</td>
-<td>4–12 hours</td>
-<td>24–72 hours (for initial), then &lt; 5 min deltas</td>
+<td><strong>SAP transactions</strong></td>
+<td>SE80, SE16N, SU01, PFCG, ODQMON</td>
+<td>+ SM50, multi-subscription ODQMON</td>
+<td>+ SLICENSE, LTCO, LTRS, SM50</td>
 </tr>
 <tr>
-<td><strong>Setup Complexity</strong></td>
-<td>Simple (50 LOC Python)</td>
-<td>Moderate (200 LOC Python)</td>
-<td>Complex (5 SAP transactions, Kafka cluster)</td>
-</tr>
-<tr>
-<td><strong>Licensing</strong></td>
+<td><strong>License</strong></td>
 <td>Runtime OK</td>
 <td>Runtime OK</td>
 <td>Full Use required</td>
 </tr>
 <tr>
-<td><strong>Cost</strong></td>
-<td>Low (Python dev time)</td>
-<td>Low (Python dev time)</td>
-<td>High (licenses + Kafka + operations)</td>
-</tr>
-<tr>
-<td><strong>Parallelism</strong></td>
-<td>Single-threaded</td>
-<td>4 threads</td>
-<td>4–8 parallel readers</td>
-</tr>
-<tr>
-<td><strong>Recommended For</strong></td>
-<td>Single company/year, finance analysts</td>
-<td>Multi-year close, data warehouse staging</td>
-<td>Enterprise GL, real-time analytics, sub-minute close</td>
+<td><strong>Complexity</strong></td>
+<td>Low</td>
+<td>Medium</td>
+<td>High</td>
 </tr>
 </tbody></table>
-<h2>Real-World Progression</h2>
-<p>Most enterprises follow this path:</p>
-<ol>
-<li><strong>Year 1</strong>: Implement Pattern 1 (simple ODP). Finance gets month-end GL close in 4 hours via Snowflake.</li>
-<li><strong>Year 2</strong>: Users ask for 3 years of GL data for analytics. Pattern 1 times out. Upgrade to Pattern 2 (parallel ODP). Extract 3 years in 8 hours.</li>
-<li><strong>Year 3</strong>: CFO demands real-time GL for sub-minute close. Finance users want live GL during posting. Pattern 2 doesn&#39;t support real-time. Invest in Full Use license and SLT. Implement Pattern 3. GL is now real-time.</li>
-</ol>
-<p>Each upgrade requires investment (development time, licensing, infrastructure), but each solves a real business problem at that point in time.</p>
 <h2>Key Takeaways</h2>
 <ol>
-<li><strong>Partition always</strong> (BUKRS + GJAHR minimum). Never SELECT * from ACDOCA.</li>
-<li><strong>Use released CDS views</strong> (I_JournalEntryItem), not raw ACDOCA tables.</li>
-<li><strong>ODP scales to 5B rows</strong> with proper partitioning and parallelism. SLT scales beyond.</li>
-<li><strong>Real-time extraction requires SLT</strong> (and a Full Use license). ODP is batch/polling, not real-time.</li>
-<li><strong>Start simple</strong> (Pattern 1), then upgrade architecture as business needs grow.</li>
+<li>Partition always (RBUKRS + RYEAR minimum). Never extract without a partition key.</li>
+<li>Use I_JournalEntryItem, not raw ACDOCA.</li>
+<li>Reconcile with SE16N after every extraction.</li>
+<li>Check your license before choosing a pattern. SLT is Full Use only.</li>
+<li>Monitor ODQMON (ODP patterns) and LTRS (SLT patterns) for queue health.</li>
 </ol>
-<p>The three patterns are not rigid; they&#39;re a ladder. Climb at your pace, understanding the trade-offs at each rung. Master ACDOCA extraction, and you can extract any SAP table.</p>
+<p>The three patterns are a progression. Start with Pattern 1 for the simplest scenario. Upgrade to Pattern 2 when volume requires it. Add Pattern 3 only when real-time delta is a hard requirement and the license is confirmed.</p>
 
   </div>
 
@@ -443,13 +209,13 @@ GROUP BY RBUKRS, RYEAR
     <h2>Related walkthroughs</h2>
     <ul>
       <li>
+        <a href="/walkthrough/beginner/acdoca/">Walkthrough: beginner — acdoca</a>
+      </li>
+      <li>
         <a href="/walkthrough/intermediate/acdoca/">Walkthrough: intermediate — acdoca</a>
       </li>
       <li>
         <a href="/walkthrough/expert/acdoca/">Walkthrough: expert — acdoca</a>
-      </li>
-      <li>
-        <a href="/walkthrough/expert/bkpf/">Walkthrough: expert — bkpf</a>
       </li>
     </ul>
   </section>

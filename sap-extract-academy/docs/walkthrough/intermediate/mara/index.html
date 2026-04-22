@@ -4,24 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Extract MARA with Z-Fields via CDS Extension — SAP Extract Academy</title>
-  <meta name="description" content="Intermediate MARA extraction with custom Z-fields using CDS extension views. Safe, non-invasive Z-field extraction.">
+  <title>Extract MARA with Z-Fields via CDS Extension — SAP-Side Intermediate — SAP Extract Academy</title>
+  <meta name="description" content="SAP-side intermediate guide for MARA Z-field extraction. SE11 Append Structure identification, CDS extension view creation in SE80, Z-field validation with SE16N.">
   <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;mara&#x2F;">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Extract MARA with Z-Fields via CDS Extension">
-  <meta property="og:description" content="Intermediate MARA extraction with custom Z-fields using CDS extension views. Safe, non-invasive Z-field extraction.">
+  <meta property="og:title" content="Extract MARA with Z-Fields via CDS Extension — SAP-Side Intermediate">
+  <meta property="og:description" content="SAP-side intermediate guide for MARA Z-field extraction. SE11 Append Structure identification, CDS extension view creation in SE80, Z-field validation with SE16N.">
   <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;mara&#x2F;">
   <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
   <meta property="og:site_name" content="SAP Extract Academy">
   <meta property="og:locale" content="en_US">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Extract MARA with Z-Fields via CDS Extension">
-  <meta name="twitter:description" content="Intermediate MARA extraction with custom Z-fields using CDS extension views. Safe, non-invasive Z-field extraction.">
+  <meta name="twitter:title" content="Extract MARA with Z-Fields via CDS Extension — SAP-Side Intermediate">
+  <meta name="twitter:description" content="SAP-side intermediate guide for MARA Z-field extraction. SE11 Append Structure identification, CDS extension view creation in SE80, Z-field validation with SE16N.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract MARA with Z-Fields via CDS Extension","description":"Material master extraction with custom Z-fields (ZZ_BRAND, ZZ_SUSTAINABILITY). Uses CDS extension view to safely expose Z-fields.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Identify Z-fields in MARA","text":"Your MARA has Z-fields: ZZ_BRAND (20 char), ZZ_SUSTAINABILITY (1 char). Confirm in SE11.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Create CDS extension view for Z-fields","text":"In SE80, create a CDS extension view ZPROD_ZFIELDS that adds Z-fields to I_Product without modifying the released view.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Extract via the extension view","text":"Use pyrfc to extract from ZPROD_ZFIELDS instead of I_Product. This includes Z-fields safely.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Land in Snowflake with Z-field columns","text":"Parquet schema now includes ZZ_BRAND and ZZ_SUSTAINABILITY. Store in Snowflake MATERIAL table.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Document Z-field lineage","text":"In your data dictionary, document: MARA.ZZ_BRAND → MATERIAL.ZZ_BRAND, MARA.ZZ_SUSTAINABILITY → MATERIAL.ZZ_SUSTAINABILITY. Note that these are append-structure fields (custom, not part of standard table).","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract MARA with Z-Fields via CDS Extension"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract MARA with Z-Fields via CDS Extension (Intermediate)","description":"SAP-side intermediate guide for MARA extraction with custom Z-fields. Covers identifying Z-fields in SE11 Append Structures, creating a CDS extension view in SE80, confirming the extension view activates cleanly, and verifying Z-field values with SE16N.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Identify Z-fields in MARA via SE11","text":"Your MARA table carries custom Z-fields added through Append Structures. Open <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html\">SE11</a>, display the MARA table definition, and scroll to the field list. Append Structure fields are grouped separately. In this walkthrough, the target Z-fields are ZZ_BRAND (20-char) and ZZ_SUSTAINABILITY (1-char).","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Check that the Append Structure has data","text":"Use <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html\">SE16N</a> to browse MARA rows and confirm that ZZ_BRAND contains expected values. If all values are empty (initial), the Z-field may not yet be populated from the upstream business process. Extracting empty Z-fields is harmless but produces no analytical value.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Create a CDS extension view to expose Z-fields","text":"In <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html\">SE80</a> or ABAP Development Tools (ADT), create an extension view that adds ZZ_BRAND and ZZ_SUSTAINABILITY to I_Product. The extension view must carry <code>@AccessControl.authorizationCheck: #CHECK</code> — without it, unauthorized users can read the Z-fields. Activate the view and verify it has no syntax errors.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Verify the extension view returns Z-field data","text":"From <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html\">SE80</a>, run a data preview on ZPROD_ZFIELDS and confirm ZZ_BRAND and ZZ_SUSTAINABILITY values appear alongside standard MARA fields.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Cross-check Z-field values with SE16N after extraction","text":"After extraction, pick a sample of MATNR values and compare ZZ_BRAND values in your target system against the SE16N MARA values for the same material numbers.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract MARA with Z-Fields via CDS Extension (Intermediate)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,6 +72,90 @@
     <!-- Walkthrough detail page -->
 
 <div class="container">
+<div class="picker" aria-label="Extraction method, tool, and sink selector">
+  <fieldset class="picker-axis" id="picker-method">
+    <legend>Extraction method</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="method" value="odp" class="picker-radio">
+        <span>ODP</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="slt" class="picker-radio">
+        <span>SLT</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="rfc" class="picker-radio">
+        <span>RFC direct</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="ref" class="picker-radio">
+        <span>Reference only</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
+    <legend>Tool</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="adf" class="picker-radio">
+        <span>ADF</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="databricks" class="picker-radio">
+        <span>Databricks</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="fivetran" class="picker-radio">
+        <span>Fivetran</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="airbyte" class="picker-radio">
+        <span>Airbyte</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="custom" class="picker-radio">
+        <span>Custom</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis" id="picker-sink">
+    <legend>Sink</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="adls" class="picker-radio">
+        <span>ADLS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="s3" class="picker-radio">
+        <span>S3</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="gcs" class="picker-radio">
+        <span>GCS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="snowflake" class="picker-radio">
+        <span>Snowflake</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="bigquery" class="picker-radio">
+        <span>BigQuery</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="fabric" class="picker-radio">
+        <span>Fabric</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="other" class="picker-radio">
+        <span>Other</span>
+      </label>
+    </div>
+  </fieldset>
+</div>
+
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -87,8 +171,8 @@
       <span class="level-badge level-intermediate">intermediate</span>
       <span class="table-code">MARA</span>
     </div>
-    <h1>Extract MARA with Z-Fields via CDS Extension</h1>
-    <p class="walkthrough-summary">Material master extraction with custom Z-fields (ZZ_BRAND, ZZ_SUSTAINABILITY). Uses CDS extension view to safely expose Z-fields.</p>
+    <h1>Extract MARA with Z-Fields via CDS Extension (Intermediate)</h1>
+    <p class="walkthrough-summary">SAP-side intermediate guide for MARA extraction with custom Z-fields. Covers identifying Z-fields in SE11 Append Structures, creating a CDS extension view in SE80, confirming the extension view activates cleanly, and verifying Z-field values with SE16N.</p>
 
     <dl class="walkthrough-meta-list">
       <div>
@@ -97,28 +181,236 @@
       </div>
       <div>
         <dt>Destinations</dt>
-        <dd>Snowflake</dd>
+        <dd>Generic</dd>
       </div>
       <div>
         <dt>Extractors</dt>
-        <dd>Python</dd>
+        <dd>ODP</dd>
       </div>
     </dl>
   </header>
 
-  <section class="callout callout-warning">
-    <h2>License check</h2>
-    <p>All licenses.</p>
+  <section class="sap-preflight">
+    <h2>SAP-side preflight</h2>
+    <p>Before any tool touches your SAP system, you need four things confirmed
+    on the SAP side. Skipping these steps is the most common cause of extraction
+    failures, performance incidents, and licensing surprises.</p>
+  
+    <ol class="sap-preflight-checklist">
+      <li>
+        <strong>License — confirm your extraction method is covered.</strong>
+        <p>
+          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
+          first decision. ODP-based extraction (via
+          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
+          SLT replication requires a Full Use license. Verify with your SAP
+          licensing contact before you design anything — not the day before
+          go-live.
+        </p>
+        <p class="sap-preflight-note">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
+          modules by third-party tools is no longer permitted. If your tool uses
+          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
+          contract terms. Compliant alternatives are ODP via OData or SLT
+          replication. Full note at
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
+          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
+        <p>
+          Every table covered in this Academy has a SAP-released
+          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
+          Open
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+            target="_blank" rel="noopener noreferrer">SE80</a>
+          and search for the view name before you build anything. Confirm the
+          annotation <code>@Analytics.dataExtract: true</code> is present. If
+          the view is absent or the annotation is missing, stop — raw table
+          extraction is not the solution.
+        </p>
+      </li>
+  
+      <li>
+        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
+        <p>
+          Your extraction user needs three authorization objects.
+          Use
+          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+            target="_blank" rel="noopener noreferrer">SU01</a>
+          to create a System-type (non-dialog) user, then use
+          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+            target="_blank" rel="noopener noreferrer">PFCG</a>
+          to assign a role containing:
+        </p>
+        <ul>
+          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
+          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
+            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
+          <li><code>S_TABU_DIS</code> — table display access for the relevant
+            authorization group</li>
+        </ul>
+        <p>
+          For SLT-based extraction, your Basis team will also need authorization
+          in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+            target="_blank" rel="noopener noreferrer">LTCO</a>
+          and
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+            target="_blank" rel="noopener noreferrer">LTRS</a>.
+          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Row-count context — understand data volumes before you run.</strong>
+        <p>
+          Use
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+            target="_blank" rel="noopener noreferrer">SE16N</a>
+          to count rows in the target table with your intended filter (company
+          code, fiscal year, material type, etc.) before you start the
+          extraction. This gives you:
+        </p>
+        <ul>
+          <li>A baseline to reconcile against after the extract.</li>
+          <li>A sense of whether your partition is safe to extract
+            (&lt;&nbsp;100M rows is generally safe for ODP;
+            larger partitions may need further splitting or SLT).</li>
+          <li>Early warning if a filter is misconfigured
+            (count returns billions — rethink the partition).</li>
+        </ul>
+      </li>
+    </ol>
+  
+    <p class="sap-preflight-footer">
+      These four checks take 15–30 minutes on a first walkthrough, and under
+      5 minutes once you know your system. They are the difference between a
+      smooth extraction and a multi-day incident.
+    </p>
   </section>
+
+  <section class="callout callout-warning license-check">
+    <h2>License check</h2>
+  
+    <p>All licenses. CDS extension views are application-layer. License trap: Runtime vs Full Use →</p>
+  
+  
+    <div class="license-check-detail" id="license-check-detail">
+      <!--
+        JS-controlled variants — picker.js shows/hides the relevant block
+        based on ?method= in the URL. All four variants are rendered; only
+        the active one is visible at runtime.
+      -->
+      <div class="license-variant" data-method="odp">
+        <p>
+          <strong>ODP (Operational Data Provisioning)</strong> is permitted
+          under both Runtime and Full Use SAP licenses when you access data
+          through published CDS views via the OData API.
+        </p>
+        <p class="license-check-warning">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
+          call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
+          etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
+          Verify with your licensing contact.
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">Full note (SAP login required)</a>.
+          [NEEDS_SAP_CITATION — confirm current note state]
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="slt" hidden>
+        <p>
+          <strong>SLT (SAP Landscape Transformation)</strong> requires a
+          <strong>Full Use SAP license</strong>. It is not permitted under
+          Runtime licenses. Verify in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+            target="_blank" rel="noopener noreferrer">SLICENSE</a>
+          that "SLT Landscape Transformation" is listed as Active, Type = Full
+          Use before you configure anything in
+          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+            target="_blank" rel="noopener noreferrer">LTCO</a>.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="rfc" hidden>
+        <p>
+          <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
+          generally permitted for read-only access under Runtime and Full Use
+          licenses, but is not recommended for production use — it bypasses
+          authorization checks that released CDS views enforce and is subject
+          to SAP Note 3255746 restrictions when wrapped by third-party ODP
+          connectors. [NEEDS_SAP_CITATION — verify Runtime license scope for
+          direct RFC read]
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="ref" hidden>
+        <p>
+          <strong>Reference mode:</strong> you are reviewing this walkthrough
+          for SAP-side context only. No tool-specific pipeline steps are shown.
+          Check your license before selecting a tool.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+  // Inline snippet: switch visible license-variant on picker change.
+  // Runs immediately so no flash-of-wrong-content.
+  (function () {
+    function showMethod(method) {
+      var variants = document.querySelectorAll('.license-variant');
+      variants.forEach(function (el) {
+        if (el.getAttribute('data-method') === method) {
+          el.removeAttribute('hidden');
+        } else {
+          el.setAttribute('hidden', '');
+        }
+      });
+    }
+  
+    function readMethod() {
+      var params = new URLSearchParams(window.location.search);
+      return params.get('method') || 'odp';
+    }
+  
+    // Apply on load.
+    showMethod(readMethod());
+  
+    // Re-apply when picker radios change (picker.js fires change events).
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.name === 'method') {
+        showMethod(e.target.value);
+      }
+    });
+  })();
+  </script>
 
   <section class="walkthrough-intro">
     <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
-<p>Your company extended MARA with Z-fields for brand and sustainability tracking. You need these in the data warehouse without modifying the released CDS view.</p>
+<p>Your company extended MARA with Z-fields for brand and sustainability tracking. You need these fields in the data warehouse without modifying the released CDS view.</p>
+<p>This walkthrough covers the SAP-side work: identifying Z-fields in SE11, creating a CDS extension view, and verifying the Z-field data is correctly exposed. Your tool team points the extraction at the extension view instead of the base I_Product view.</p>
 <hr>
-<h2>What you&#39;ve built</h2>
-<p>You&#39;ve extracted MARA with Z-fields via a safe, maintainable CDS extension view. The data warehouse now includes brand and sustainability dimensions.</p>
+<h2>What you have confirmed</h2>
+<p>You have created and activated a CDS extension view that exposes MARA Z-fields, confirmed the Z-field values look correct in SE80 data preview, and cross-checked against SE16N. The data warehouse now includes brand and sustainability dimensions in the next extraction run.</p>
 
     </div>
   </section>
@@ -126,8 +418,9 @@
   <section class="prerequisites">
     <h2>Before you start</h2>
     <ul class="prerequisites-list">
-      <li>Completed MARA Beginner</li>
-      <li>SE80 expertise</li>
+      <li>Completed MARA Beginner walkthrough</li>
+      <li>SE80 familiarity — you can open and read a CDS view</li>
+      <li>Access to SE11 to inspect table field lists</li>
     </ul>
   </section>
 
@@ -145,20 +438,20 @@
       <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
         <header class="step-header">
           <div class="step-number">Step 1</div>
-          <h2 class="step-title">Identify Z-fields in MARA</h2>
+          <h2 class="step-title">Identify Z-fields in MARA via SE11</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-01"
-              aria-label="Mark Identify Z-fields in MARA as complete"
+              aria-label="Mark Identify Z-fields in MARA via SE11 as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Your MARA has Z-fields: ZZ_BRAND (20 char), ZZ_SUSTAINABILITY (1 char). Confirm in SE11.</p>
+          <p class="step-intro">Your MARA table carries custom Z-fields added through Append Structures. Open <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html">SE11</a>, display the MARA table definition, and scroll to the field list. Append Structure fields are grouped separately. In this walkthrough, the target Z-fields are ZZ_BRAND (20-char) and ZZ_SUSTAINABILITY (1-char).</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
@@ -168,16 +461,20 @@
                 SE11
                 <span class="sr-only">(opens in new tab)</span>
               </a>
-              and navigate to <em>Data Dictionary → Tables → MARA → Fields → Find Z*</em>.
+              and navigate to <em>Data Dictionary → Database Tables → MARA → Display → Fields → Find Z*</em>.
             </div>
           </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">ZZ_BRAND and ZZ_SUSTAINABILITY appear in MARA.</div>
+            <div class="step-action-body">ZZ_BRAND (CHAR 20) and ZZ_SUSTAINABILITY (CHAR 1) appear in the MARA field list under an Append Structure entry.</div>
           </div>
 
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>Z-fields in Append Structures are part of the physical table but are not visible in the standard released CDS view. You must expose them explicitly. Knowing the exact field names and data types before creating the extension view prevents activation errors.</p>
+          </details>
         </div>
       </article>
     </li>
@@ -185,37 +482,37 @@
       <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
         <header class="step-header">
           <div class="step-number">Step 2</div>
-          <h2 class="step-title">Create CDS extension view for Z-fields</h2>
+          <h2 class="step-title">Check that the Append Structure has data</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-02"
-              aria-label="Mark Create CDS extension view for Z-fields as complete"
+              aria-label="Mark Check that the Append Structure has data as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">In SE80, create a CDS extension view ZPROD_ZFIELDS that adds Z-fields to I_Product without modifying the released view.</p>
+          <p class="step-intro">Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html">SE16N</a> to browse MARA rows and confirm that ZZ_BRAND contains expected values. If all values are empty (initial), the Z-field may not yet be populated from the upstream business process. Extracting empty Z-fields is harmless but produces no analytical value.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → MARA → Add column ZZ_BRAND → Browse sample rows</em>.
+            </div>
+          </div>
 
-          <figure class="code-block">
-            <figcaption>CDS extension view</figcaption>
-            <pre><code class="language-abap">@AccessControl.authorizationCheck: #CHECK
-define view ZPROD_ZFIELDS as select from I_Product
-{
-  *,
-  mara.ZZ_BRAND,
-  mara.ZZ_SUSTAINABILITY
-}
-</code></pre>
-          </figure>
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">View ZPROD_ZFIELDS appears in SE80 with @Analytics.dataExtract: true.</div>
+            <div class="step-action-body">ZZ_BRAND contains non-initial values for at least a subset of materials. You know what expected values look like (e.g., &#39;PREMIUM&#39;, &#39;STANDARD&#39;).</div>
           </div>
 
         </div>
@@ -225,26 +522,47 @@ define view ZPROD_ZFIELDS as select from I_Product
       <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
         <header class="step-header">
           <div class="step-number">Step 3</div>
-          <h2 class="step-title">Extract via the extension view</h2>
+          <h2 class="step-title">Create a CDS extension view to expose Z-fields</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-03"
-              aria-label="Mark Extract via the extension view as complete"
+              aria-label="Mark Create a CDS extension view to expose Z-fields as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Use pyrfc to extract from ZPROD_ZFIELDS instead of I_Product. This includes Z-fields safely.</p>
+          <p class="step-intro">In <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html">SE80</a> or ABAP Development Tools (ADT), create an extension view that adds ZZ_BRAND and ZZ_SUSTAINABILITY to I_Product. The extension view must carry <code>@AccessControl.authorizationCheck: #CHECK</code> — without it, unauthorized users can read the Z-fields. Activate the view and verify it has no syntax errors.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Repository Browser → Create → CDS View Extension</em>.
+              <figure class="code-block">
+                <figcaption>Reference: CDS extension view for MARA Z-fields — adjust names to match your system</figcaption>
+                <pre><code class="language-abap">@AccessControl.authorizationCheck: #CHECK
+@Analytics.dataExtract: true
+extend view I_Product with ZPROD_ZFIELDS {
+  mara.ZZ_BRAND,
+  mara.ZZ_SUSTAINABILITY
+}
+</code></pre>
+              </figure>
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Python script successfully reads ZZ_BRAND and ZZ_SUSTAINABILITY values.</div>
+            <div class="step-action-body">ZPROD_ZFIELDS is active in SE80. Activation log shows no errors. The base view I_Product is not modified.</div>
           </div>
 
         </div>
@@ -254,26 +572,37 @@ define view ZPROD_ZFIELDS as select from I_Product
       <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
         <header class="step-header">
           <div class="step-number">Step 4</div>
-          <h2 class="step-title">Land in Snowflake with Z-field columns</h2>
+          <h2 class="step-title">Verify the extension view returns Z-field data</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-04"
-              aria-label="Mark Land in Snowflake with Z-field columns as complete"
+              aria-label="Mark Verify the extension view returns Z-field data as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Parquet schema now includes ZZ_BRAND and ZZ_SUSTAINABILITY. Store in Snowflake MATERIAL table.</p>
+          <p class="step-intro">From <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html">SE80</a>, run a data preview on ZPROD_ZFIELDS and confirm ZZ_BRAND and ZZ_SUSTAINABILITY values appear alongside standard MARA fields.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>ZPROD_ZFIELDS → Data Preview</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">SELECT ZZ_BRAND, ZZ_SUSTAINABILITY FROM MATERIAL returns expected values.</div>
+            <div class="step-action-body">Preview shows MATNR, MTART, ZZ_BRAND, ZZ_SUSTAINABILITY columns with expected values.</div>
           </div>
 
         </div>
@@ -283,26 +612,37 @@ define view ZPROD_ZFIELDS as select from I_Product
       <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
         <header class="step-header">
           <div class="step-number">Step 5</div>
-          <h2 class="step-title">Document Z-field lineage</h2>
+          <h2 class="step-title">Cross-check Z-field values with SE16N after extraction</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-05"
-              aria-label="Mark Document Z-field lineage as complete"
+              aria-label="Mark Cross-check Z-field values with SE16N after extraction as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">In your data dictionary, document: MARA.ZZ_BRAND → MATERIAL.ZZ_BRAND, MARA.ZZ_SUSTAINABILITY → MATERIAL.ZZ_SUSTAINABILITY. Note that these are append-structure fields (custom, not part of standard table).</p>
+          <p class="step-intro">After extraction, pick a sample of MATNR values and compare ZZ_BRAND values in your target system against the SE16N MARA values for the same material numbers.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → MARA → Show ZZ_BRAND for sample MATNR</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Data dictionary includes Z-field lineage.</div>
+            <div class="step-action-body">ZZ_BRAND values in target match ZZ_BRAND values in SE16N for the same MATNR records.</div>
           </div>
 
         </div>
@@ -314,9 +654,15 @@ define view ZPROD_ZFIELDS as select from I_Product
     <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
-        <dt>CDS extension view won&#39;t save (syntax error)</dt>
+        <dt>CDS extension view activation fails with syntax error</dt>
         <dd>
-          <p>Ensure @AccessControl.authorizationCheck is present. Test in SE80 with Ctrl+F12.</p>
+          <p>Check the exact syntax against your ABAP CDS documentation. Common issues: missing @AccessControl annotation, incorrect field name (must match SE11 exactly), using MARA. prefix when the table alias is different in I_Product. Check the activation log in SE80 for the specific error message.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>Z-field values are empty in extraction output but not in SE16N</dt>
+        <dd>
+          <p>The extension view may be pointing to the wrong table alias. In SE80, inspect I_Product&#39;s FROM clause to find the alias used for MARA rows. Use that alias in the extension view (e.g., if I_Product uses alias &#39;prod&#39;, use &#39;prod.ZZ_BRAND&#39; not &#39;mara.ZZ_BRAND&#39;).</p>
         </dd>
       </div>
     </dl>
@@ -330,7 +676,8 @@ define view ZPROD_ZFIELDS as select from I_Product
   <section class="next-steps">
     <h2>What&#39;s next</h2>
     <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;mara&#x2F;">Try MARA Expert</a></li>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;mara&#x2F;">Try MARA Expert — 20+ Z-fields, multi-table extraction</a></li>
+      <li><a href="&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;">License trap: Runtime vs Full Use</a></li>
     </ul>
   </section>
 
@@ -342,6 +689,7 @@ define view ZPROD_ZFIELDS as select from I_Product
 
 </div>
 
+<script src="/assets/js/picker.js" defer></script>
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 
   </main>
