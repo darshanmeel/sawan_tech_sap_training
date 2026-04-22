@@ -65,6 +65,7 @@ function getPageType(filePath) {
 
   if (baseName === 'index.md') return 'landing';
   if (baseName === 'about.md') return 'page';
+  if (baseName === 'decide.md') return 'page';
   if (baseName === 'roadmap.md') return 'list';
   if (normalized.includes('/tables/')) return 'table';
   if (normalized.includes('/walkthroughs/')) return 'walkthrough';
