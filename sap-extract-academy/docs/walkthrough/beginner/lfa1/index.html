@@ -40,13 +40,13 @@
       </div>
       <nav class="site-nav">
         <ul>
-          <li><a href="/"></a></li>
-          <li><a href="/tables/"></a></li>
-          <li><a href="/walkthrough/"></a></li>
-          <li><a href="/glossary/"></a></li>
-          <li><a href="/articles/"></a></li>
-          <li><a href="/roadmap/"></a></li>
-          <li><a href="/about/"></a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/tables/">Tables</a></li>
+          <li><a href="/walkthrough/">Walkthroughs</a></li>
+          <li><a href="/glossary/">Glossary</a></li>
+          <li><a href="/articles/">Articles</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/about/">About</a></li>
         </ul>
         <div data-source-picker>
           <label for="source-version-select" class="sr-only">SAP Version</label>
@@ -86,15 +86,15 @@
 
     <dl class="walkthrough-meta-list">
       <div>
-        <dt></dt>
+        <dt>Estimated time</dt>
         <dd>40 minutes</dd>
       </div>
       <div>
-        <dt></dt>
+        <dt>Destinations</dt>
         <dd>ADLS</dd>
       </div>
       <div>
-        <dt></dt>
+        <dt>Extractors</dt>
         <dd>ADF</dd>
       </div>
     </dl>
@@ -149,7 +149,7 @@
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 8 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden></button>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
   </section>
 
   <ol class="steps-list">
@@ -174,7 +174,7 @@
         <p class="step-explanation">Vendor master is exposed via the <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/supplier-cds.html'>I_Supplier</a> CDS view. Confirm it's available in your system using SE80.</p>
 
         <aside class="callout callout-sap">
-          <h3></h3>
+          <h3>Do this in SAP</h3>
           <p>
             Open transaction
             <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
@@ -187,7 +187,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>I_Supplier appears in SE80 with @Analytics.dataExtract: true.</p>
         </aside>
 
@@ -216,7 +216,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Dataset preview shows vendor records with LIFNR, NAME1, LAND1, ORT01.</p>
         </aside>
 
@@ -245,7 +245,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Folder vendor&#x2F;full-load&#x2F; exists in Azure Storage Explorer.</p>
         </aside>
 
@@ -274,7 +274,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Sink dataset Test Connection returns green.</p>
         </aside>
 
@@ -303,7 +303,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Pipeline completes successfully and Parquet files appear in sap-raw&#x2F;vendor&#x2F;full-load&#x2F;.</p>
         </aside>
 
@@ -332,7 +332,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Row count in Parquet matches (or is very close to) LFA1 count in SAP. Sample columns (LIFNR, NAME1, LAND1) have expected values.</p>
         </aside>
 
@@ -361,7 +361,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Pipeline has meaningful tags (e.g., &#39;vendor-master&#39;, &#39;weekly&#39;, &#39;sap-extract&#39;) and description.</p>
         </aside>
 
@@ -390,7 +390,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>A Schedule trigger exists on the pipeline and shows the next scheduled execution.</p>
         </aside>
 
@@ -399,7 +399,7 @@
   </ol>
 
   <section class="troubleshooting">
-    <h2></h2>
+    <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
         <dt>ODP_NO_DATA_AVAILABLE error</dt>
@@ -422,7 +422,7 @@
     </dl>
   </section>
   <section class="troubleshooting">
-    <h2></h2>
+    <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
         <dt>ODP_NO_DATA_AVAILABLE error</dt>
@@ -445,7 +445,7 @@
     </dl>
   </section>
   <section class="troubleshooting">
-    <h2></h2>
+    <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
         <dt>ODP_NO_DATA_AVAILABLE error</dt>
@@ -474,7 +474,7 @@
   </section>
 
   <section class="next-steps">
-    <h2></h2>
+    <h2>What&#39;s next</h2>
     <ul>
       <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;lfa1&#x2F;">Try the LFA1 Intermediate walkthrough — add hourly delta</a></li>
       <li><a href="&#x2F;tables&#x2F;lfa1&#x2F;">Table overview: LFA1 Vendor Master</a></li>
@@ -482,7 +482,7 @@
     </ul>
   </section>
   <section class="next-steps">
-    <h2></h2>
+    <h2>What&#39;s next</h2>
     <ul>
       <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;lfa1&#x2F;">Try the LFA1 Intermediate walkthrough — add hourly delta</a></li>
       <li><a href="&#x2F;tables&#x2F;lfa1&#x2F;">Table overview: LFA1 Vendor Master</a></li>
@@ -490,7 +490,7 @@
     </ul>
   </section>
   <section class="next-steps">
-    <h2></h2>
+    <h2>What&#39;s next</h2>
     <ul>
       <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;lfa1&#x2F;">Try the LFA1 Intermediate walkthrough — add hourly delta</a></li>
       <li><a href="&#x2F;tables&#x2F;lfa1&#x2F;">Table overview: LFA1 Vendor Master</a></li>
@@ -499,7 +499,7 @@
   </section>
 
   <section class="walkthrough-actions">
-    <button type="button" class="btn btn-primary" id="download-pdf" hidden></button>
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
   </section>
 </article>
 
@@ -529,25 +529,25 @@
         class="email-form"
       >
         <div class="email-form-content">
-          <label for="bd-email"></label>
+          <label for="bd-email">Email address</label>
           <div class="email-form-row">
             <input
               type="email"
               name="email"
               id="bd-email"
-              placeholder=""
+              placeholder="you@example.com"
               required
               autocomplete="email"
             />
-            <button type="submit" class="btn btn-primary"></button>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
           </div>
-          <p class="email-consent"></p>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
         </div>
       </form>
 
       <div class="footer-info">
-        <p class="disclaimer"></p>
-        <p class="copyright"></p>
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
       </div>
     </div>
   </footer>

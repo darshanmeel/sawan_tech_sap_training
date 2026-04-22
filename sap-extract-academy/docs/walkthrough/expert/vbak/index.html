@@ -40,13 +40,13 @@
       </div>
       <nav class="site-nav">
         <ul>
-          <li><a href="/"></a></li>
-          <li><a href="/tables/"></a></li>
-          <li><a href="/walkthrough/"></a></li>
-          <li><a href="/glossary/"></a></li>
-          <li><a href="/articles/"></a></li>
-          <li><a href="/roadmap/"></a></li>
-          <li><a href="/about/"></a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/tables/">Tables</a></li>
+          <li><a href="/walkthrough/">Walkthroughs</a></li>
+          <li><a href="/glossary/">Glossary</a></li>
+          <li><a href="/articles/">Articles</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/about/">About</a></li>
         </ul>
         <div data-source-picker>
           <label for="source-version-select" class="sr-only">SAP Version</label>
@@ -86,15 +86,15 @@
 
     <dl class="walkthrough-meta-list">
       <div>
-        <dt></dt>
+        <dt>Estimated time</dt>
         <dd>120 minutes</dd>
       </div>
       <div>
-        <dt></dt>
+        <dt>Destinations</dt>
         <dd>Kafka</dd>
       </div>
       <div>
-        <dt></dt>
+        <dt>Extractors</dt>
         <dd>SLT</dd>
       </div>
     </dl>
@@ -160,7 +160,7 @@
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 10 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden></button>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
   </section>
 
   <ol class="steps-list">
@@ -185,7 +185,7 @@
         <p class="step-explanation"><a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SLT.html'>SAP Landscape Transformation (SLT)</a> replicates tables at the database level, capturing every insert/update/delete. Confirm license with SAP.</p>
 
         <aside class="callout callout-sap">
-          <h3></h3>
+          <h3>Do this in SAP</h3>
           <p>
             Open transaction
             <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;license.html" target="_blank" rel="noopener noreferrer">
@@ -198,7 +198,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Full Use License is visible and SLT is listed as an active module.</p>
         </aside>
 
@@ -225,7 +225,7 @@
         <p class="step-explanation">In the SLT cluster (HANA appliance or separate instance), configure the Kafka RFC destination and login credentials.</p>
 
         <aside class="callout callout-sap">
-          <h3></h3>
+          <h3>Do this in SAP</h3>
           <p>
             Open transaction
             <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SM59.html" target="_blank" rel="noopener noreferrer">
@@ -238,7 +238,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Test connection returns green for the Kafka RFC destination.</p>
         </aside>
 
@@ -276,7 +276,7 @@
         </figure>
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Topic vbak-source-topic exists with 10 partitions and log compaction enabled.</p>
         </aside>
 
@@ -303,7 +303,7 @@
         <p class="step-explanation">In LTCO, create a new replication object: source table VBAK, target Kafka topic vbak-source-topic. Include all fields, enable key-based delta (to leverage log compaction).</p>
 
         <aside class="callout callout-sap">
-          <h3></h3>
+          <h3>Do this in SAP</h3>
           <p>
             Open transaction
             <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
@@ -316,7 +316,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Replication object VBAK_KAFKA is created with status ACTIVE.</p>
         </aside>
 
@@ -352,7 +352,7 @@ Alternative: VBELN_HASH % 10 for numeric key distribution.
         </figure>
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>In LTCO, the replication object shows VKORG as partition key.</p>
         </aside>
 
@@ -379,7 +379,7 @@ Alternative: VBELN_HASH % 10 for numeric key distribution.
         <p class="step-explanation">Trigger a full load: SLT reads all VBAK rows and pushes to Kafka in a single batch. Depending on VBAK size, this may take hours.</p>
 
         <aside class="callout callout-sap">
-          <h3></h3>
+          <h3>Do this in SAP</h3>
           <p>
             Open transaction
             <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
@@ -392,7 +392,7 @@ Alternative: VBELN_HASH % 10 for numeric key distribution.
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Full load completes. Kafka topic vbak-source-topic has partitions filled with VBAK rows.</p>
         </aside>
 
@@ -421,7 +421,7 @@ Alternative: VBELN_HASH % 10 for numeric key distribution.
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>In LTCO, monitor shows &#39;DELTA&#39; status and a heartbeat&#x2F;row count in LTRS.</p>
         </aside>
 
@@ -462,7 +462,7 @@ for message in consumer:
         </figure>
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Consumer runs and rows appear in Snowflake VBAK table in real-time.</p>
         </aside>
 
@@ -489,7 +489,7 @@ for message in consumer:
         <p class="step-explanation">In LTRS, monitor the delta queue. Confirm replication lag is within your SLA (e.g., < 5 minutes).</p>
 
         <aside class="callout callout-sap">
-          <h3></h3>
+          <h3>Do this in SAP</h3>
           <p>
             Open transaction
             <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTRS.html" target="_blank" rel="noopener noreferrer">
@@ -502,7 +502,7 @@ for message in consumer:
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>LTRS shows green status, replication lag &lt; SLA.</p>
         </aside>
 
@@ -531,7 +531,7 @@ for message in consumer:
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>VBAK records in Kafka and Snowflake include all Z-fields (verified via SELECT *)</p>
         </aside>
 
@@ -540,7 +540,7 @@ for message in consumer:
   </ol>
 
   <section class="troubleshooting">
-    <h2></h2>
+    <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
         <dt>SLT replication lag exceeds SLA</dt>
@@ -557,7 +557,7 @@ for message in consumer:
     </dl>
   </section>
   <section class="troubleshooting">
-    <h2></h2>
+    <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
         <dt>SLT replication lag exceeds SLA</dt>
@@ -580,14 +580,14 @@ for message in consumer:
   </section>
 
   <section class="next-steps">
-    <h2></h2>
+    <h2>What&#39;s next</h2>
     <ul>
       <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;acdoca&#x2F;">Compare with ACDOCA Expert for ultra-large-scale patterns</a></li>
       <li><a href="&#x2F;glossary&#x2F;slt&#x2F;">Glossary: SAP Landscape Transformation</a></li>
     </ul>
   </section>
   <section class="next-steps">
-    <h2></h2>
+    <h2>What&#39;s next</h2>
     <ul>
       <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;acdoca&#x2F;">Compare with ACDOCA Expert for ultra-large-scale patterns</a></li>
       <li><a href="&#x2F;glossary&#x2F;slt&#x2F;">Glossary: SAP Landscape Transformation</a></li>
@@ -595,7 +595,7 @@ for message in consumer:
   </section>
 
   <section class="walkthrough-actions">
-    <button type="button" class="btn btn-primary" id="download-pdf" hidden></button>
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
   </section>
 </article>
 
@@ -625,25 +625,25 @@ for message in consumer:
         class="email-form"
       >
         <div class="email-form-content">
-          <label for="bd-email"></label>
+          <label for="bd-email">Email address</label>
           <div class="email-form-row">
             <input
               type="email"
               name="email"
               id="bd-email"
-              placeholder=""
+              placeholder="you@example.com"
               required
               autocomplete="email"
             />
-            <button type="submit" class="btn btn-primary"></button>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
           </div>
-          <p class="email-consent"></p>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
         </div>
       </form>
 
       <div class="footer-info">
-        <p class="disclaimer"></p>
-        <p class="copyright"></p>
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
       </div>
     </div>
   </footer>

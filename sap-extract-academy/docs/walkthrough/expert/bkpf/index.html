@@ -40,13 +40,13 @@
       </div>
       <nav class="site-nav">
         <ul>
-          <li><a href="/"></a></li>
-          <li><a href="/tables/"></a></li>
-          <li><a href="/walkthrough/"></a></li>
-          <li><a href="/glossary/"></a></li>
-          <li><a href="/articles/"></a></li>
-          <li><a href="/roadmap/"></a></li>
-          <li><a href="/about/"></a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/tables/">Tables</a></li>
+          <li><a href="/walkthrough/">Walkthroughs</a></li>
+          <li><a href="/glossary/">Glossary</a></li>
+          <li><a href="/articles/">Articles</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/about/">About</a></li>
         </ul>
         <div data-source-picker>
           <label for="source-version-select" class="sr-only">SAP Version</label>
@@ -86,15 +86,15 @@
 
     <dl class="walkthrough-meta-list">
       <div>
-        <dt></dt>
+        <dt>Estimated time</dt>
         <dd>120 minutes</dd>
       </div>
       <div>
-        <dt></dt>
+        <dt>Destinations</dt>
         <dd>Kafka</dd>
       </div>
       <div>
-        <dt></dt>
+        <dt>Extractors</dt>
         <dd>SLT</dd>
       </div>
     </dl>
@@ -146,7 +146,7 @@
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 7 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden></button>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
   </section>
 
   <ol class="steps-list">
@@ -173,7 +173,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>In SE16N, count BKPF vs BSEG for a fiscal year. BSEG&#x2F;BKPF ratio is typically 8-15.</p>
         </aside>
 
@@ -202,7 +202,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>LTCO shows 2 active replication objects: BKPF_SLT and BSEG_SLT.</p>
         </aside>
 
@@ -231,7 +231,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>LTRS monitor shows multiple reader processes running.</p>
         </aside>
 
@@ -260,7 +260,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Topics exist with correct partition counts.</p>
         </aside>
 
@@ -289,7 +289,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Kafka topics are populated and show active producers.</p>
         </aside>
 
@@ -318,7 +318,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>GL_ENTRIES table has rows with headers joined to line items.</p>
         </aside>
 
@@ -347,7 +347,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>SELECT COUNT(*) FROM BSEG b WHERE NOT EXISTS (SELECT 1 FROM BKPF k WHERE k.BELNR &#x3D; b.BELNR) returns 0.</p>
         </aside>
 
@@ -356,7 +356,7 @@
   </ol>
 
   <section class="troubleshooting">
-    <h2></h2>
+    <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
         <dt>LTRS parallel readers cause lock contention in SAP</dt>
@@ -373,7 +373,7 @@
     </dl>
   </section>
   <section class="troubleshooting">
-    <h2></h2>
+    <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
         <dt>LTRS parallel readers cause lock contention in SAP</dt>
@@ -396,14 +396,14 @@
   </section>
 
   <section class="next-steps">
-    <h2></h2>
+    <h2>What&#39;s next</h2>
     <ul>
       <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;acdoca&#x2F;">Study ACDOCA Expert for ultra-scale patterns</a></li>
     </ul>
   </section>
 
   <section class="walkthrough-actions">
-    <button type="button" class="btn btn-primary" id="download-pdf" hidden></button>
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
   </section>
 </article>
 
@@ -433,25 +433,25 @@
         class="email-form"
       >
         <div class="email-form-content">
-          <label for="bd-email"></label>
+          <label for="bd-email">Email address</label>
           <div class="email-form-row">
             <input
               type="email"
               name="email"
               id="bd-email"
-              placeholder=""
+              placeholder="you@example.com"
               required
               autocomplete="email"
             />
-            <button type="submit" class="btn btn-primary"></button>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
           </div>
-          <p class="email-consent"></p>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
         </div>
       </form>
 
       <div class="footer-info">
-        <p class="disclaimer"></p>
-        <p class="copyright"></p>
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
       </div>
     </div>
   </footer>

@@ -40,13 +40,13 @@
       </div>
       <nav class="site-nav">
         <ul>
-          <li><a href="/"></a></li>
-          <li><a href="/tables/"></a></li>
-          <li><a href="/walkthrough/"></a></li>
-          <li><a href="/glossary/"></a></li>
-          <li><a href="/articles/"></a></li>
-          <li><a href="/roadmap/"></a></li>
-          <li><a href="/about/"></a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/tables/">Tables</a></li>
+          <li><a href="/walkthrough/">Walkthroughs</a></li>
+          <li><a href="/glossary/">Glossary</a></li>
+          <li><a href="/articles/">Articles</a></li>
+          <li><a href="/roadmap/">Roadmap</a></li>
+          <li><a href="/about/">About</a></li>
         </ul>
         <div data-source-picker>
           <label for="source-version-select" class="sr-only">SAP Version</label>
@@ -86,15 +86,15 @@
 
     <dl class="walkthrough-meta-list">
       <div>
-        <dt></dt>
+        <dt>Estimated time</dt>
         <dd>150 minutes</dd>
       </div>
       <div>
-        <dt></dt>
+        <dt>Destinations</dt>
         <dd>Kafka</dd>
       </div>
       <div>
-        <dt></dt>
+        <dt>Extractors</dt>
         <dd>SLT</dd>
       </div>
     </dl>
@@ -181,7 +181,7 @@
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 10 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden></button>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
   </section>
 
   <ol class="steps-list">
@@ -206,7 +206,7 @@
         <p class="step-explanation">SLT replication of ACDOCA requires Full Use License. Runtime Licenses are rejected by SAP. Check your license certificate in SLICENSE before proceeding. This is non-negotiable.</p>
 
         <aside class="callout callout-sap">
-          <h3></h3>
+          <h3>Do this in SAP</h3>
           <p>
             Open transaction
             <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;license.html" target="_blank" rel="noopener noreferrer">
@@ -219,12 +219,12 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>License shows &#39;SLT Landscape Transformation&#39; &#x3D; Active, Type &#x3D; Full Use</p>
         </aside>
 
         <details class="why-it-matters">
-          <summary></summary>
+          <summary>Why this matters</summary>
           <p>Proceeding without correct license will result in licensing violations and potential audit findings. SAP audits SLT usage rigorously.</p>
         </details>
       </div>
@@ -261,7 +261,7 @@
         </figure>
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Topic acdoca-source exists with 30 partitions.</p>
         </aside>
 
@@ -288,7 +288,7 @@
         <p class="step-explanation">In LTCO, define replication object for ACDOCA with partitioning: BUKRS + GJAHR. This avoids hot partitions and enables parallel SLT readers.</p>
 
         <aside class="callout callout-sap">
-          <h3></h3>
+          <h3>Do this in SAP</h3>
           <p>
             Open transaction
             <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
@@ -301,7 +301,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>LTCO shows ACDOCA_KAFKA replication object with partition key BUKRS+GJAHR.</p>
         </aside>
 
@@ -328,7 +328,7 @@
         <p class="step-explanation">SLT's Landscape Transformation Replication Server (LTRS) can run 4-8 parallel database readers. Each reader processes a company code + fiscal year partition independently.</p>
 
         <aside class="callout callout-sap">
-          <h3></h3>
+          <h3>Do this in SAP</h3>
           <p>
             Open transaction
             <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTRS.html" target="_blank" rel="noopener noreferrer">
@@ -341,7 +341,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>LTRS shows 4 reader processes active and running.</p>
         </aside>
 
@@ -368,7 +368,7 @@
         <p class="step-explanation">ACDOCA full replication will stress SAP for days. Monitor CPU, memory, lock wait times via SM50. Coordinate with SAP Basis to ensure no conflicts with batch jobs.</p>
 
         <aside class="callout callout-sap">
-          <h3></h3>
+          <h3>Do this in SAP</h3>
           <p>
             Open transaction
             <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SM50.html" target="_blank" rel="noopener noreferrer">
@@ -381,7 +381,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>SM50 shows SLT processes (wp_SLT*) running, CPU usage acceptable (&lt; 80%).</p>
         </aside>
 
@@ -408,7 +408,7 @@
         <p class="step-explanation">In LTCO, trigger full replication. This will run for 24-72 hours depending on ACDOCA size. Kafka topic will fill with billions of rows.</p>
 
         <aside class="callout callout-sap">
-          <h3></h3>
+          <h3>Do this in SAP</h3>
           <p>
             Open transaction
             <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
@@ -421,7 +421,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Replication status &#x3D; &#39;RUNNING&#39;. Monitor Kafka topic growth via kafka-log-dirs tool.</p>
         </aside>
 
@@ -450,7 +450,7 @@
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>LTCO status &#x3D; &#39;DELTA&#39;. LTRS shows delta queue depth (should be near zero if no backlog).</p>
         </aside>
 
@@ -495,7 +495,7 @@
         </figure>
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Connector status &#x3D; RUNNING. Snowflake GL_ACDOCA_RAW table grows.</p>
         </aside>
 
@@ -532,7 +532,7 @@ GROUP BY RBUKRS, RYEAR
         </figure>
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Totals match exactly. No orphan or duplicate rows.</p>
         </aside>
 
@@ -561,7 +561,7 @@ GROUP BY RBUKRS, RYEAR
 
 
         <aside class="callout callout-verify">
-          <h3></h3>
+          <h3>Verify</h3>
           <p>Data dictionary includes: ACDOCA.AMOUNT_TRANS → GL_ACDOCA_RAW.AMOUNT_TXN_CURRENCY, with conversion rules.</p>
         </aside>
 
@@ -570,7 +570,7 @@ GROUP BY RBUKRS, RYEAR
   </ol>
 
   <section class="troubleshooting">
-    <h2></h2>
+    <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
         <dt>SLT replication crashes after 12 hours (memory error in SAP)</dt>
@@ -593,7 +593,7 @@ GROUP BY RBUKRS, RYEAR
     </dl>
   </section>
   <section class="troubleshooting">
-    <h2></h2>
+    <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
         <dt>SLT replication crashes after 12 hours (memory error in SAP)</dt>
@@ -616,7 +616,7 @@ GROUP BY RBUKRS, RYEAR
     </dl>
   </section>
   <section class="troubleshooting">
-    <h2></h2>
+    <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
         <dt>SLT replication crashes after 12 hours (memory error in SAP)</dt>
@@ -645,7 +645,7 @@ GROUP BY RBUKRS, RYEAR
   </section>
 
   <section class="next-steps">
-    <h2></h2>
+    <h2>What&#39;s next</h2>
     <ul>
       <li><a href="&#x2F;glossary&#x2F;slt&#x2F;">Glossary: SAP Landscape Transformation</a></li>
       <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning</a></li>
@@ -653,7 +653,7 @@ GROUP BY RBUKRS, RYEAR
     </ul>
   </section>
   <section class="next-steps">
-    <h2></h2>
+    <h2>What&#39;s next</h2>
     <ul>
       <li><a href="&#x2F;glossary&#x2F;slt&#x2F;">Glossary: SAP Landscape Transformation</a></li>
       <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning</a></li>
@@ -661,7 +661,7 @@ GROUP BY RBUKRS, RYEAR
     </ul>
   </section>
   <section class="next-steps">
-    <h2></h2>
+    <h2>What&#39;s next</h2>
     <ul>
       <li><a href="&#x2F;glossary&#x2F;slt&#x2F;">Glossary: SAP Landscape Transformation</a></li>
       <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning</a></li>
@@ -670,7 +670,7 @@ GROUP BY RBUKRS, RYEAR
   </section>
 
   <section class="walkthrough-actions">
-    <button type="button" class="btn btn-primary" id="download-pdf" hidden></button>
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
   </section>
 </article>
 
@@ -700,25 +700,25 @@ GROUP BY RBUKRS, RYEAR
         class="email-form"
       >
         <div class="email-form-content">
-          <label for="bd-email"></label>
+          <label for="bd-email">Email address</label>
           <div class="email-form-row">
             <input
               type="email"
               name="email"
               id="bd-email"
-              placeholder=""
+              placeholder="you@example.com"
               required
               autocomplete="email"
             />
-            <button type="submit" class="btn btn-primary"></button>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
           </div>
-          <p class="email-consent"></p>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
         </div>
       </form>
 
       <div class="footer-info">
-        <p class="disclaimer"></p>
-        <p class="copyright"></p>
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
       </div>
     </div>
   </footer>

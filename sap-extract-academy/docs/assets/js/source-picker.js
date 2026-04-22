@@ -31,22 +31,18 @@
   }
 
   function updateSourceIndicator(version) {
-    // Update banner/indicator if present
     const indicator = document.querySelector('[data-source-indicator]');
     if (indicator) {
       indicator.setAttribute('data-source-version', version);
 
-      const label = indicator.querySelector('[data-source-label]');
-      if (label) {
-        if (version === 'ecc') {
-          label.textContent = 'Viewing ECC Extraction Patterns';
-          indicator.classList.add('source-ecc');
-          indicator.classList.remove('source-s4hana');
-        } else {
-          label.textContent = 'Viewing S/4HANA Extraction Patterns';
-          indicator.classList.add('source-s4hana');
-          indicator.classList.remove('source-ecc');
-        }
+      if (version === 'ecc') {
+        indicator.classList.add('source-ecc');
+        indicator.classList.remove('source-s4hana');
+      } else {
+        indicator.classList.add('source-s4hana');
+        indicator.classList.remove('source-ecc');
+        const label = indicator.querySelector('[data-source-label]');
+        if (label) label.textContent = 'Viewing S/4HANA Extraction Patterns';
       }
     }
 
