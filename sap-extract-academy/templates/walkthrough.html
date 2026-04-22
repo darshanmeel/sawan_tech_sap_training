@@ -72,84 +72,29 @@
     </div>
   </aside>
 
-  <ol class="steps-list">
-    {{#steps}}
-    <li>
-      <article class="walkthrough-step" id="step-{{id}}" data-step-id="{{id}}">
-        <header class="step-header">
-          <div class="step-number">Step {{displayNumber}}</div>
-          <h2 class="step-title">{{title}}</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="{{id}}"
-              aria-label="Mark {{title}} as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
+  <div class="steps-container" data-default-method="{{defaultMethod}}">
+    <ol class="steps-list" data-method="odp">
+      {{#stepsOdp}}{{> walkthrough-step}}{{/stepsOdp}}
+    </ol>
 
-        <div class="step-body">
-          <p class="step-intro">{{{explanation}}}</p>
+    {{#hasStepsSlt}}
+    <ol class="steps-list" data-method="slt" hidden>
+      {{#stepsSlt}}{{> walkthrough-step}}{{/stepsSlt}}
+    </ol>
+    {{/hasStepsSlt}}
 
-          {{#sapTransaction}}
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">{{strings.walkthrough.doThisInSapLabel}}</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="{{helpUrl}}" target="_blank" rel="noopener noreferrer">
-                {{code}}
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              {{#menuPath}}and navigate to <em>{{menuPath}}</em>{{/menuPath}}.
-              {{#codeBlock}}
-              <figure class="code-block">
-                <figcaption>{{caption}}</figcaption>
-                <pre><code class="language-{{language}}">{{content}}</code></pre>
-              </figure>
-              {{/codeBlock}}
-            </div>
-          </div>
-          {{/sapTransaction}}
+    {{#hasStepsRfc}}
+    <ol class="steps-list" data-method="rfc" hidden>
+      {{#stepsRfc}}{{> walkthrough-step}}{{/stepsRfc}}
+    </ol>
+    {{/hasStepsRfc}}
 
-          {{^sapTransaction}}
-          {{#codeBlock}}
-          <details class="reference-starter" hidden>
-            <summary>Reference starter — this is a starting point, not a tutorial</summary>
-            <p class="reference-starter-disclaimer">
-              The snippet below is a minimal starting point to orient you
-              with the vendor-specific configuration. It is not a
-              production-ready implementation. Refer to your tool vendor's
-              documentation for full configuration guidance:
-              {{#isAdf}}<a href="https://learn.microsoft.com/azure/data-factory/" target="_blank" rel="noopener noreferrer">Azure Data Factory docs</a>{{/isAdf}}{{#isDatabricks}}<a href="https://docs.databricks.com/" target="_blank" rel="noopener noreferrer">Databricks docs</a>{{/isDatabricks}}{{#isFivetran}}<a href="https://fivetran.com/docs/applications/sap-erp" target="_blank" rel="noopener noreferrer">Fivetran SAP docs</a>{{/isFivetran}}{{#isAirbyte}}<a href="https://docs.airbyte.com/integrations/sources/sap-fieldglass" target="_blank" rel="noopener noreferrer">Airbyte docs</a>{{/isAirbyte}}.
-            </p>
-            <figure class="code-block">
-              <figcaption>{{caption}}</figcaption>
-              <pre><code class="language-{{language}}">{{content}}</code></pre>
-            </figure>
-          </details>
-          {{/codeBlock}}
-          {{/sapTransaction}}
-
-          {{#verify}}
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">{{strings.walkthrough.verifyLabel}}</div>
-            <div class="step-action-body">{{verify}}</div>
-          </div>
-          {{/verify}}
-
-          {{#whyItMatters}}
-          <details class="step-why">
-            <summary>{{strings.walkthrough.whyLabel}}</summary>
-            <p>{{{.}}}</p>
-          </details>
-          {{/whyItMatters}}
-        </div>
-      </article>
-    </li>
-    {{/steps}}
-  </ol>
+    {{#hasStepsRef}}
+    <ol class="steps-list" data-method="ref" hidden>
+      {{#stepsRef}}{{> walkthrough-step}}{{/stepsRef}}
+    </ol>
+    {{/hasStepsRef}}
+  </div>
 
   {{#hasTroubleshooting}}
   <section class="troubleshooting">

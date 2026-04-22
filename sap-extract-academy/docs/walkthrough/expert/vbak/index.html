@@ -192,107 +192,81 @@
     </dl>
   </header>
 
-  <section class="sap-preflight">
-    <h2>SAP-side preflight</h2>
-    <p>Before any tool touches your SAP system, you need four things confirmed
-    on the SAP side. Skipping these steps is the most common cause of extraction
-    failures, performance incidents, and licensing surprises.</p>
-  
-    <ol class="sap-preflight-checklist">
-      <li>
-        <strong>License — confirm your extraction method is covered.</strong>
-        <p>
-          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
-          first decision. ODP-based extraction (via
-          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
-          SLT replication requires a Full Use license. Verify with your SAP
-          licensing contact before you design anything — not the day before
-          go-live.
-        </p>
-        <p class="sap-preflight-note">
-          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
-          modules by third-party tools is no longer permitted. If your tool uses
-          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
-          contract terms. Compliant alternatives are ODP via OData or SLT
-          replication. Full note at
-          <a href="https://support.sap.com/notes/3255746" target="_blank"
-            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
-          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
-        </p>
+  <section class="sap-preflight" aria-labelledby="sap-preflight-title">
+    <h2 id="sap-preflight-title">Four things to confirm before any tool runs</h2>
+    <p class="sap-preflight-lede">The checks below, in order, are the difference between a smooth extraction and a multi-day incident. Each one is one sentence; expand for the how.</p>
+
+    <ol class="preflight-grid">
+      <li class="preflight-card" data-preflight="license">
+        <span class="preflight-eyebrow">01 · Licence</span>
+        <p class="preflight-summary">Confirm your extraction method is covered by your installed SAP licence before anyone designs anything.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Runtime licences cover ODP through OData. SLT replication requires a
+            Full Use licence. Ask your SAP licensing contact; do not assume.
+            See the dedicated article on
+            <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a>,
+            and note that
+            <a href="https://support.sap.com/notes/3255746" target="_blank" rel="noopener noreferrer">SAP Note 3255746</a>
+            prohibits third-party tools from using ODP via RFC — compliant
+            paths are ODP over OData or SLT. <em>[NEEDS_SAP_CITATION]</em>
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
-        <p>
-          Every table covered in this Academy has a SAP-released
-          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
-          Open
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE80</a>
-          and search for the view name before you build anything. Confirm the
-          annotation <code>@Analytics.dataExtract: true</code> is present. If
-          the view is absent or the annotation is missing, stop — raw table
-          extraction is not the solution.
-        </p>
+
+      <li class="preflight-card" data-preflight="cds">
+        <span class="preflight-eyebrow">02 · Released CDS view</span>
+        <p class="preflight-summary">Every table covered here has an extraction-safe released CDS view; confirm it exists before building.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Open the view in
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE80</a>
+            (or in ADT) and confirm the header annotation
+            <code>@Analytics.dataExtract: true</code> is present. If it is
+            missing, the view is not extractable — raw-table reads are not
+            the fix.
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
-        <p>
-          Your extraction user needs three authorization objects.
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SU01</a>
-          to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">PFCG</a>
-          to assign a role containing:
-        </p>
-        <ul>
-          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
-          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
-            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
-          <li><code>S_TABU_DIS</code> — table display access for the relevant
-            authorization group</li>
-        </ul>
-        <p>
-          For SLT-based extraction, your Basis team will also need authorization
-          in
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTCO</a>
-          and
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTRS</a>.
-          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
-        </p>
+
+      <li class="preflight-card" data-preflight="auth">
+        <span class="preflight-eyebrow">03 · Authorisations</span>
+        <p class="preflight-summary">A System-type technical user with the minimum authorisation objects for your chosen method — no named users, no wildcards.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Create a System user via
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SU01</a>
+            and assign a role via
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">PFCG</a>.
+            For ODP: <code>S_RFC</code> (RFC_TYPE=FUNC) and
+            <code>S_ODP_READ</code> (ODPSOURCE=ABAP_CDS). For SLT your Basis
+            team also needs authorisation in LTCO and LTRS. For RFC direct
+            add <code>S_TABU_DIS</code> scoped to the table's authorisation
+            group — never wildcard it.
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Row-count context — understand data volumes before you run.</strong>
-        <p>
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE16N</a>
-          to count rows in the target table with your intended filter (company
-          code, fiscal year, material type, etc.) before you start the
-          extraction. This gives you:
-        </p>
-        <ul>
-          <li>A baseline to reconcile against after the extract.</li>
-          <li>A sense of whether your partition is safe to extract
-            (&lt;&nbsp;100M rows is generally safe for ODP;
-            larger partitions may need further splitting or SLT).</li>
-          <li>Early warning if a filter is misconfigured
-            (count returns billions — rethink the partition).</li>
-        </ul>
+
+      <li class="preflight-card" data-preflight="rowcount">
+        <span class="preflight-eyebrow">04 · Row-count baseline</span>
+        <p class="preflight-summary">Use SE16N to measure the intended partition before extraction — you cannot reconcile without this number.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Open
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE16N</a>,
+            apply the same filter your extraction will use, and record the
+            count. Under 100M rows is usually safe for a single ODP partition;
+            larger volumes need further splitting or SLT. A count in the
+            billions means the filter is misconfigured — rethink the
+            partition before running anything.
+          </p>
+        </details>
       </li>
     </ol>
-  
-    <p class="sap-preflight-footer">
-      These four checks take 15–30 minutes on a first walkthrough, and under
-      5 minutes once you know your system. They are the difference between a
-      smooth extraction and a multi-day incident.
-    </p>
   </section>
 
   <section class="callout callout-warning license-check">
@@ -435,248 +409,253 @@
     </div>
   </aside>
 
-  <ol class="steps-list">
-    <li>
-      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
-        <header class="step-header">
-          <div class="step-number">Step 1</div>
-          <h2 class="step-title">Verify Full Use License in SLICENSE</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-01"
-              aria-label="Mark Verify Full Use License in SLICENSE as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
+  <div class="steps-container" data-default-method="slt">
+    <ol class="steps-list" data-method="odp">
+<li>
+  <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+    <header class="step-header">
+      <div class="step-number">Step 1</div>
+      <h2 class="step-title">Verify Full Use License in SLICENSE</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-01"
+          aria-label="Mark Verify Full Use License in SLICENSE as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
 
-        <div class="step-body">
-          <p class="step-intro">Open <a href="https://help.sap.com/">SLICENSE</a> and confirm SLT Landscape Transformation is listed as Active, Type = Full Use. Get written confirmation from your SAP licensing contact. SLT will run on any system regardless of license — SAP enforces compliance through audits, not technical blocks.</p>
+    <div class="step-body">
+      <p class="step-intro">Open <a href="https://help.sap.com/">SLICENSE</a> and confirm SLT Landscape Transformation is listed as Active, Type = Full Use. Get written confirmation from your SAP licensing contact. SLT will run on any system regardless of license — SAP enforces compliance through audits, not technical blocks.</p>
 
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SLICENSE
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>License Overview → Check SLT entry</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">SLICENSE shows SLT Landscape Transformation &#x3D; Active, Full Use. Written licensing confirmation exists.</div>
-          </div>
-
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SLICENSE
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>License Overview → Check SLT entry</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
-        <header class="step-header">
-          <div class="step-number">Step 2</div>
-          <h2 class="step-title">Validate the RFC destination for the target system (SM59)</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-02"
-              aria-label="Mark Validate the RFC destination for the target system (SM59) as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">SLT pushes data to a target system via an RFC destination. Confirm the RFC destination your Basis team has configured points to the correct target and the connection test passes. Use <a href="https://help.sap.com/">SM59</a> to run the test. A failed RFC destination will silently drop replication data without SLT raising an error in LTCO.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SM59
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>RFC Connections → TCP&#x2F;IP → Test Connection</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Test Connection returns green for the RFC destination your SLT replication object uses.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">SLICENSE shows SLT Landscape Transformation &#x3D; Active, Full Use. Written licensing confirmation exists.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+    <header class="step-header">
+      <div class="step-number">Step 2</div>
+      <h2 class="step-title">Validate the RFC destination for the target system (SM59)</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-02"
+          aria-label="Mark Validate the RFC destination for the target system (SM59) as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">SLT pushes data to a target system via an RFC destination. Confirm the RFC destination your Basis team has configured points to the correct target and the connection test passes. Use <a href="https://help.sap.com/">SM59</a> to run the test. A failed RFC destination will silently drop replication data without SLT raising an error in LTCO.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SM59
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>RFC Connections → TCP&#x2F;IP → Test Connection</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
-        <header class="step-header">
-          <div class="step-number">Step 3</div>
-          <h2 class="step-title">Configure SLT replication object for VBAK in LTCO</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-03"
-              aria-label="Mark Configure SLT replication object for VBAK in LTCO as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Work with your Basis team to create a replication object for VBAK in <a href="https://help.sap.com/">LTCO</a>. For VBAK, partition by VKORG (sales organisation) to distribute load evenly across SLT readers. Confirm the replication object is in ACTIVE status before triggering any load.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                LTCO
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Replication Objects → Create → Source Table: VBAK → Partition Key: VKORG</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">LTCO shows a VBAK replication object with VKORG as partition key. Status &#x3D; ACTIVE.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Test Connection returns green for the RFC destination your SLT replication object uses.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+    <header class="step-header">
+      <div class="step-number">Step 3</div>
+      <h2 class="step-title">Configure SLT replication object for VBAK in LTCO</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-03"
+          aria-label="Mark Configure SLT replication object for VBAK in LTCO as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Work with your Basis team to create a replication object for VBAK in <a href="https://help.sap.com/">LTCO</a>. For VBAK, partition by VKORG (sales organisation) to distribute load evenly across SLT readers. Confirm the replication object is in ACTIVE status before triggering any load.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTCO
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Replication Objects → Create → Source Table: VBAK → Partition Key: VKORG</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
-        <header class="step-header">
-          <div class="step-number">Step 4</div>
-          <h2 class="step-title">Perform initial full load via LTCO</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-04"
-              aria-label="Mark Perform initial full load via LTCO as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Trigger the full replication in <a href="https://help.sap.com/">LTCO</a>. SLT reads all VBAK rows and pushes them to the target. Depending on VBAK size, this takes minutes to hours. Monitor progress via LTCO status and confirm SM50 work process utilization stays safe.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                LTCO
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Replication Objects → VBAK_REP → Full Replication</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Full load completes. LTCO status switches from RUNNING to DELTA automatically.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTCO shows a VBAK replication object with VKORG as partition key. Status &#x3D; ACTIVE.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+    <header class="step-header">
+      <div class="step-number">Step 4</div>
+      <h2 class="step-title">Perform initial full load via LTCO</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-04"
+          aria-label="Mark Perform initial full load via LTCO as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Trigger the full replication in <a href="https://help.sap.com/">LTCO</a>. SLT reads all VBAK rows and pushes them to the target. Depending on VBAK size, this takes minutes to hours. Monitor progress via LTCO status and confirm SM50 work process utilization stays safe.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTCO
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Replication Objects → VBAK_REP → Full Replication</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
-        <header class="step-header">
-          <div class="step-number">Step 5</div>
-          <h2 class="step-title">Confirm real-time delta and monitor lag in LTRS</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-05"
-              aria-label="Mark Confirm real-time delta and monitor lag in LTRS as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">After full load, SLT captures changes from VBAK in near-real-time. Monitor lag in <a href="https://help.sap.com/">LTRS</a>. Expected lag for VBAK is under 60 seconds. If lag grows continuously, investigate SM50 for SLT process saturation or network issues between SAP and the target.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                LTRS
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Monitor → Replication Status → Lag</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">LTRS shows DELTA status and replication lag within SLA (e.g., under 60 seconds for VBAK).</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Full load completes. LTCO status switches from RUNNING to DELTA automatically.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+    <header class="step-header">
+      <div class="step-number">Step 5</div>
+      <h2 class="step-title">Confirm real-time delta and monitor lag in LTRS</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-05"
+          aria-label="Mark Confirm real-time delta and monitor lag in LTRS as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">After full load, SLT captures changes from VBAK in near-real-time. Monitor lag in <a href="https://help.sap.com/">LTRS</a>. Expected lag for VBAK is under 60 seconds. If lag grows continuously, investigate SM50 for SLT process saturation or network issues between SAP and the target.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTRS
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Monitor → Replication Status → Lag</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
-        <header class="step-header">
-          <div class="step-number">Step 6</div>
-          <h2 class="step-title">Handle Z-fields at scale</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-06"
-              aria-label="Mark Handle Z-fields at scale as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">If VBAK has multiple Z-fields (more than 5), SLT may need a field-mapping configuration to include them in the replication object. Confirm with your Basis team that all Z-fields are included in the LTCO replication object definition. If a Z-field was added after the initial replication object was created, it may need to be added manually and a partial re-init triggered. [NEEDS_SAP_CITATION — confirm SLT behavior when Z-fields are added post-configuration]</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                LTCO
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Replication Objects → VBAK_REP → Field Mapping</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">LTCO field mapping includes all VBAK Z-fields. Target system records include Z-field values.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTRS shows DELTA status and replication lag within SLA (e.g., under 60 seconds for VBAK).</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
+    <header class="step-header">
+      <div class="step-number">Step 6</div>
+      <h2 class="step-title">Handle Z-fields at scale</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-06"
+          aria-label="Mark Handle Z-fields at scale as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">If VBAK has multiple Z-fields (more than 5), SLT may need a field-mapping configuration to include them in the replication object. Confirm with your Basis team that all Z-fields are included in the LTCO replication object definition. If a Z-field was added after the initial replication object was created, it may need to be added manually and a partial re-init triggered. [NEEDS_SAP_CITATION — confirm SLT behavior when Z-fields are added post-configuration]</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTCO
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Replication Objects → VBAK_REP → Field Mapping</em>.
         </div>
-      </article>
-    </li>
-  </ol>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTCO field mapping includes all VBAK Z-fields. Target system records include Z-field values.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+    </ol>
+
+
+
+  </div>
 
   <section class="troubleshooting">
     <h2>Troubleshooting</h2>

@@ -192,107 +192,81 @@
     </dl>
   </header>
 
-  <section class="sap-preflight">
-    <h2>SAP-side preflight</h2>
-    <p>Before any tool touches your SAP system, you need four things confirmed
-    on the SAP side. Skipping these steps is the most common cause of extraction
-    failures, performance incidents, and licensing surprises.</p>
-  
-    <ol class="sap-preflight-checklist">
-      <li>
-        <strong>License — confirm your extraction method is covered.</strong>
-        <p>
-          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
-          first decision. ODP-based extraction (via
-          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
-          SLT replication requires a Full Use license. Verify with your SAP
-          licensing contact before you design anything — not the day before
-          go-live.
-        </p>
-        <p class="sap-preflight-note">
-          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
-          modules by third-party tools is no longer permitted. If your tool uses
-          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
-          contract terms. Compliant alternatives are ODP via OData or SLT
-          replication. Full note at
-          <a href="https://support.sap.com/notes/3255746" target="_blank"
-            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
-          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
-        </p>
+  <section class="sap-preflight" aria-labelledby="sap-preflight-title">
+    <h2 id="sap-preflight-title">Four things to confirm before any tool runs</h2>
+    <p class="sap-preflight-lede">The checks below, in order, are the difference between a smooth extraction and a multi-day incident. Each one is one sentence; expand for the how.</p>
+
+    <ol class="preflight-grid">
+      <li class="preflight-card" data-preflight="license">
+        <span class="preflight-eyebrow">01 · Licence</span>
+        <p class="preflight-summary">Confirm your extraction method is covered by your installed SAP licence before anyone designs anything.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Runtime licences cover ODP through OData. SLT replication requires a
+            Full Use licence. Ask your SAP licensing contact; do not assume.
+            See the dedicated article on
+            <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a>,
+            and note that
+            <a href="https://support.sap.com/notes/3255746" target="_blank" rel="noopener noreferrer">SAP Note 3255746</a>
+            prohibits third-party tools from using ODP via RFC — compliant
+            paths are ODP over OData or SLT. <em>[NEEDS_SAP_CITATION]</em>
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
-        <p>
-          Every table covered in this Academy has a SAP-released
-          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
-          Open
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE80</a>
-          and search for the view name before you build anything. Confirm the
-          annotation <code>@Analytics.dataExtract: true</code> is present. If
-          the view is absent or the annotation is missing, stop — raw table
-          extraction is not the solution.
-        </p>
+
+      <li class="preflight-card" data-preflight="cds">
+        <span class="preflight-eyebrow">02 · Released CDS view</span>
+        <p class="preflight-summary">Every table covered here has an extraction-safe released CDS view; confirm it exists before building.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Open the view in
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE80</a>
+            (or in ADT) and confirm the header annotation
+            <code>@Analytics.dataExtract: true</code> is present. If it is
+            missing, the view is not extractable — raw-table reads are not
+            the fix.
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
-        <p>
-          Your extraction user needs three authorization objects.
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SU01</a>
-          to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">PFCG</a>
-          to assign a role containing:
-        </p>
-        <ul>
-          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
-          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
-            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
-          <li><code>S_TABU_DIS</code> — table display access for the relevant
-            authorization group</li>
-        </ul>
-        <p>
-          For SLT-based extraction, your Basis team will also need authorization
-          in
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTCO</a>
-          and
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTRS</a>.
-          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
-        </p>
+
+      <li class="preflight-card" data-preflight="auth">
+        <span class="preflight-eyebrow">03 · Authorisations</span>
+        <p class="preflight-summary">A System-type technical user with the minimum authorisation objects for your chosen method — no named users, no wildcards.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Create a System user via
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SU01</a>
+            and assign a role via
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">PFCG</a>.
+            For ODP: <code>S_RFC</code> (RFC_TYPE=FUNC) and
+            <code>S_ODP_READ</code> (ODPSOURCE=ABAP_CDS). For SLT your Basis
+            team also needs authorisation in LTCO and LTRS. For RFC direct
+            add <code>S_TABU_DIS</code> scoped to the table's authorisation
+            group — never wildcard it.
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Row-count context — understand data volumes before you run.</strong>
-        <p>
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE16N</a>
-          to count rows in the target table with your intended filter (company
-          code, fiscal year, material type, etc.) before you start the
-          extraction. This gives you:
-        </p>
-        <ul>
-          <li>A baseline to reconcile against after the extract.</li>
-          <li>A sense of whether your partition is safe to extract
-            (&lt;&nbsp;100M rows is generally safe for ODP;
-            larger partitions may need further splitting or SLT).</li>
-          <li>Early warning if a filter is misconfigured
-            (count returns billions — rethink the partition).</li>
-        </ul>
+
+      <li class="preflight-card" data-preflight="rowcount">
+        <span class="preflight-eyebrow">04 · Row-count baseline</span>
+        <p class="preflight-summary">Use SE16N to measure the intended partition before extraction — you cannot reconcile without this number.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Open
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE16N</a>,
+            apply the same filter your extraction will use, and record the
+            count. Under 100M rows is usually safe for a single ODP partition;
+            larger volumes need further splitting or SLT. A count in the
+            billions means the filter is misconfigured — rethink the
+            partition before running anything.
+          </p>
+        </details>
       </li>
     </ol>
-  
-    <p class="sap-preflight-footer">
-      These four checks take 15–30 minutes on a first walkthrough, and under
-      5 minutes once you know your system. They are the difference between a
-      smooth extraction and a multi-day incident.
-    </p>
   </section>
 
   <section class="callout callout-warning license-check">
@@ -438,332 +412,337 @@
     </div>
   </aside>
 
-  <ol class="steps-list">
-    <li>
-      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
-        <header class="step-header">
-          <div class="step-number">Step 1</div>
-          <h2 class="step-title">License check — verify Full Use in SLICENSE</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-01"
-              aria-label="Mark License check — verify Full Use in SLICENSE as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
+  <div class="steps-container" data-default-method="slt">
+    <ol class="steps-list" data-method="odp">
+<li>
+  <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+    <header class="step-header">
+      <div class="step-number">Step 1</div>
+      <h2 class="step-title">License check — verify Full Use in SLICENSE</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-01"
+          aria-label="Mark License check — verify Full Use in SLICENSE as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
 
-        <div class="step-body">
-          <p class="step-intro">SLT replication of ACDOCA requires Full Use License. SAP does not enforce this at the technical level — the transaction will run regardless. But an audit will detect it and the consequences are severe. Open <a href="https://help.sap.com/">SLICENSE</a> and verify that &quot;SLT Landscape Transformation&quot; is listed as Active, Type = Full Use. Get this confirmed in writing from your SAP licensing contact before proceeding.</p>
+    <div class="step-body">
+      <p class="step-intro">SLT replication of ACDOCA requires Full Use License. SAP does not enforce this at the technical level — the transaction will run regardless. But an audit will detect it and the consequences are severe. Open <a href="https://help.sap.com/">SLICENSE</a> and verify that &quot;SLT Landscape Transformation&quot; is listed as Active, Type = Full Use. Get this confirmed in writing from your SAP licensing contact before proceeding.</p>
 
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SLICENSE
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>License → License Overview → Check SLT entry</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">SLICENSE shows SLT Landscape Transformation &#x3D; Active, Type &#x3D; Full Use. Written confirmation from SAP licensing exists.</div>
-          </div>
-
-          <details class="step-why">
-            <summary>Why this matters</summary>
-            <p>Proceeding without confirmed Full Use license results in licensing violations and potential audit findings with retroactive costs. SAP audits SLT usage. Do not rely on the transaction running as proof of license compliance.</p>
-          </details>
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SLICENSE
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>License → License Overview → Check SLT entry</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
-        <header class="step-header">
-          <div class="step-number">Step 2</div>
-          <h2 class="step-title">Confirm ACDOCA partition sizes before configuring SLT</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-02"
-              aria-label="Mark Confirm ACDOCA partition sizes before configuring SLT as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Before configuring SLT, use <a href="https://help.sap.com/">SE16N</a> to count ACDOCA rows per company code (RBUKRS) and fiscal year (RYEAR). This determines how many SLT parallel readers you need and how long the full load will take. At 4 parallel readers, a 2B-row ACDOCA typically takes 48–72 hours for the initial full load.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE16N
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Execute → ACDOCA → Filter each RBUKRS and RYEAR combination</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">You have a per-(RBUKRS, RYEAR) row count. Total row count and number of distinct company code + fiscal year combinations are documented.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">SLICENSE shows SLT Landscape Transformation &#x3D; Active, Type &#x3D; Full Use. Written confirmation from SAP licensing exists.</div>
+      </div>
 
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>Proceeding without confirmed Full Use license results in licensing violations and potential audit findings with retroactive costs. SAP audits SLT usage. Do not rely on the transaction running as proof of license compliance.</p>
+      </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+    <header class="step-header">
+      <div class="step-number">Step 2</div>
+      <h2 class="step-title">Confirm ACDOCA partition sizes before configuring SLT</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-02"
+          aria-label="Mark Confirm ACDOCA partition sizes before configuring SLT as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Before configuring SLT, use <a href="https://help.sap.com/">SE16N</a> to count ACDOCA rows per company code (RBUKRS) and fiscal year (RYEAR). This determines how many SLT parallel readers you need and how long the full load will take. At 4 parallel readers, a 2B-row ACDOCA typically takes 48–72 hours for the initial full load.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → ACDOCA → Filter each RBUKRS and RYEAR combination</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
-        <header class="step-header">
-          <div class="step-number">Step 3</div>
-          <h2 class="step-title">Configure SLT replication object in LTCO</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-03"
-              aria-label="Mark Configure SLT replication object in LTCO as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">In <a href="https://help.sap.com/">LTCO</a>, create a replication object for ACDOCA. Set the partitioning key to RBUKRS + RYEAR — this is mandatory for ACDOCA at scale. Without partitioning, SLT readers will attempt to read the entire table in a single pass and cause memory errors. Your Basis team owns the LTCO configuration; your role is to specify the correct partition key and confirm the replication object is set up correctly.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                LTCO
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Replication Objects → Create → Source Table: ACDOCA → Partition Key: RBUKRS+RYEAR</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">LTCO shows an ACDOCA replication object with partition key RBUKRS+RYEAR. Your Basis team confirms the SLT cluster is connected and the replication object is in a ready state.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">You have a per-(RBUKRS, RYEAR) row count. Total row count and number of distinct company code + fiscal year combinations are documented.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+    <header class="step-header">
+      <div class="step-number">Step 3</div>
+      <h2 class="step-title">Configure SLT replication object in LTCO</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-03"
+          aria-label="Mark Configure SLT replication object in LTCO as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">In <a href="https://help.sap.com/">LTCO</a>, create a replication object for ACDOCA. Set the partitioning key to RBUKRS + RYEAR — this is mandatory for ACDOCA at scale. Without partitioning, SLT readers will attempt to read the entire table in a single pass and cause memory errors. Your Basis team owns the LTCO configuration; your role is to specify the correct partition key and confirm the replication object is set up correctly.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTCO
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Replication Objects → Create → Source Table: ACDOCA → Partition Key: RBUKRS+RYEAR</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
-        <header class="step-header">
-          <div class="step-number">Step 4</div>
-          <h2 class="step-title">Configure LTRS parallel readers (4–8 readers)</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-04"
-              aria-label="Mark Configure LTRS parallel readers (4–8 readers) as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">In <a href="https://help.sap.com/">LTRS</a>, configure the number of parallel readers. Each reader handles one partition independently. For ACDOCA, 4 readers is the minimum recommended; 8 is the maximum before diminishing returns (and risk of exhausting SAP work processes). Coordinate with Basis on the appropriate value for your system size. [NEEDS_SAP_CITATION — confirm recommended LTRS reader counts for large tables]</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                LTRS
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Administration → Settings → Parallel Readers → Set to 4</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">LTRS shows 4 reader processes configured. Basis team confirms the SLT cluster has enough resources to run 4 readers without starving productive users.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTCO shows an ACDOCA replication object with partition key RBUKRS+RYEAR. Your Basis team confirms the SLT cluster is connected and the replication object is in a ready state.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+    <header class="step-header">
+      <div class="step-number">Step 4</div>
+      <h2 class="step-title">Configure LTRS parallel readers (4–8 readers)</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-04"
+          aria-label="Mark Configure LTRS parallel readers (4–8 readers) as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">In <a href="https://help.sap.com/">LTRS</a>, configure the number of parallel readers. Each reader handles one partition independently. For ACDOCA, 4 readers is the minimum recommended; 8 is the maximum before diminishing returns (and risk of exhausting SAP work processes). Coordinate with Basis on the appropriate value for your system size. [NEEDS_SAP_CITATION — confirm recommended LTRS reader counts for large tables]</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTRS
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Administration → Settings → Parallel Readers → Set to 4</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
-        <header class="step-header">
-          <div class="step-number">Step 5</div>
-          <h2 class="step-title">Monitor SAP system load during full replication (SM50)</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-05"
-              aria-label="Mark Monitor SAP system load during full replication (SM50) as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">ACDOCA full replication runs for 48–72 hours and stresses SAP. Monitor <a href="https://help.sap.com/">SM50</a> throughout. SLT processes appear as wp_SLT* or background work processes. Total work process utilization must stay below 80% to avoid impacting finance posting users. Coordinate the full-load timing with your finance team — start during a low-activity window.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SM50
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Work Process Overview → Filter SLT processes</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">SM50 shows SLT processes active during replication. Total work process utilization is below 80%. Finance users are not reporting posting failures.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTRS shows 4 reader processes configured. Basis team confirms the SLT cluster has enough resources to run 4 readers without starving productive users.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+    <header class="step-header">
+      <div class="step-number">Step 5</div>
+      <h2 class="step-title">Monitor SAP system load during full replication (SM50)</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-05"
+          aria-label="Mark Monitor SAP system load during full replication (SM50) as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">ACDOCA full replication runs for 48–72 hours and stresses SAP. Monitor <a href="https://help.sap.com/">SM50</a> throughout. SLT processes appear as wp_SLT* or background work processes. Total work process utilization must stay below 80% to avoid impacting finance posting users. Coordinate the full-load timing with your finance team — start during a low-activity window.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SM50
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Work Process Overview → Filter SLT processes</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
-        <header class="step-header">
-          <div class="step-number">Step 6</div>
-          <h2 class="step-title">Trigger and monitor full replication</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-06"
-              aria-label="Mark Trigger and monitor full replication as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">In <a href="https://help.sap.com/">LTCO</a>, trigger the full replication. Monitor progress via LTCO status screen. The status moves through INITIALIZING → RUNNING → COMPLETED (for full load), then automatically switches to DELTA for ongoing change capture. Do not stop or restart the full load unless it errors — an interrupted full load may leave partial data in your target and require a complete restart.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                LTCO
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Replication Objects → ACDOCA_REP → Full Replication</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">LTCO status &#x3D; RUNNING. Progress (% rows replicated) is visible and advancing. Estimate completion time based on current rows&#x2F;second rate.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">SM50 shows SLT processes active during replication. Total work process utilization is below 80%. Finance users are not reporting posting failures.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
+    <header class="step-header">
+      <div class="step-number">Step 6</div>
+      <h2 class="step-title">Trigger and monitor full replication</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-06"
+          aria-label="Mark Trigger and monitor full replication as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">In <a href="https://help.sap.com/">LTCO</a>, trigger the full replication. Monitor progress via LTCO status screen. The status moves through INITIALIZING → RUNNING → COMPLETED (for full load), then automatically switches to DELTA for ongoing change capture. Do not stop or restart the full load unless it errors — an interrupted full load may leave partial data in your target and require a complete restart.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTCO
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Replication Objects → ACDOCA_REP → Full Replication</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
-        <header class="step-header">
-          <div class="step-number">Step 7</div>
-          <h2 class="step-title">Confirm switch to real-time delta after full load</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-07"
-              aria-label="Mark Confirm switch to real-time delta after full load as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">After the full load completes, LTCO automatically switches to DELTA mode. Check LTRS to confirm the delta queue is flowing and lag is near zero. Real-time posting updates should now flow to your target within seconds to minutes, depending on SLT configuration and network latency. [NEEDS_SAP_CITATION — confirm typical SLT delta latency figures]</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                LTRS
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Monitor → Replication Status → DELTA</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">LTCO status &#x3D; DELTA. LTRS shows delta queue depth near zero (no backlog). New postings in SAP appear in your target within the expected latency window.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTCO status &#x3D; RUNNING. Progress (% rows replicated) is visible and advancing. Estimate completion time based on current rows&#x2F;second rate.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
+    <header class="step-header">
+      <div class="step-number">Step 7</div>
+      <h2 class="step-title">Confirm switch to real-time delta after full load</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-07"
+          aria-label="Mark Confirm switch to real-time delta after full load as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">After the full load completes, LTCO automatically switches to DELTA mode. Check LTRS to confirm the delta queue is flowing and lag is near zero. Real-time posting updates should now flow to your target within seconds to minutes, depending on SLT configuration and network latency. [NEEDS_SAP_CITATION — confirm typical SLT delta latency figures]</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTRS
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Monitor → Replication Status → DELTA</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-08" data-step-id="step-08">
-        <header class="step-header">
-          <div class="step-number">Step 8</div>
-          <h2 class="step-title">Reconcile ACDOCA totals in ODQMON and SE16N</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-08"
-              aria-label="Mark Reconcile ACDOCA totals in ODQMON and SE16N as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">After full load, reconcile: (1) Use <a href="https://help.sap.com/">ODQMON</a> to confirm queue depth is near zero and no subscription errors exist. (2) Use <a href="https://help.sap.com/">SE16N</a> to count ACDOCA rows per (RBUKRS, RYEAR) and compare to your target system. Allow for in-flight postings (rows added during the extraction window).</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                ODQMON
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Subscriptions → ACDOCA delta status</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">ODQMON shows no error states. SE16N per-partition counts match target counts within a tolerable delta for in-flight postings. Document this as the post-load reconciliation record.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTCO status &#x3D; DELTA. LTRS shows delta queue depth near zero (no backlog). New postings in SAP appear in your target within the expected latency window.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-08" data-step-id="step-08">
+    <header class="step-header">
+      <div class="step-number">Step 8</div>
+      <h2 class="step-title">Reconcile ACDOCA totals in ODQMON and SE16N</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-08"
+          aria-label="Mark Reconcile ACDOCA totals in ODQMON and SE16N as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">After full load, reconcile: (1) Use <a href="https://help.sap.com/">ODQMON</a> to confirm queue depth is near zero and no subscription errors exist. (2) Use <a href="https://help.sap.com/">SE16N</a> to count ACDOCA rows per (RBUKRS, RYEAR) and compare to your target system. Allow for in-flight postings (rows added during the extraction window).</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            ODQMON
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Subscriptions → ACDOCA delta status</em>.
         </div>
-      </article>
-    </li>
-  </ol>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">ODQMON shows no error states. SE16N per-partition counts match target counts within a tolerable delta for in-flight postings. Document this as the post-load reconciliation record.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+    </ol>
+
+
+
+  </div>
 
   <section class="troubleshooting">
     <h2>Troubleshooting</h2>

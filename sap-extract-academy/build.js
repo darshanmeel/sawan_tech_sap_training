@@ -253,18 +253,26 @@ function buildPage(filePath, content) {
     return marked.parseInline(text);
   }
 
-  const stepsWithDisplay = Array.isArray(data.steps)
-    ? data.steps.map((step, idx) => {
-        const match = typeof step.id === 'string' ? step.id.match(/\d+/) : null;
-        const displayNumber = match ? parseInt(match[0], 10) : idx + 1;
-        return {
-          ...step,
-          displayNumber,
-          explanation: renderInline(step.explanation),
-          whyItMatters: renderInline(step.whyItMatters)
-        };
-      })
-    : data.steps;
+  function decorateSteps(arr) {
+    if (!Array.isArray(arr)) return [];
+    return arr.map((step, idx) => {
+      const match = typeof step.id === 'string' ? step.id.match(/\d+/) : null;
+      const displayNumber = match ? parseInt(match[0], 10) : idx + 1;
+      return {
+        ...step,
+        displayNumber,
+        explanation: renderInline(step.explanation),
+        whyItMatters: renderInline(step.whyItMatters)
+      };
+    });
+  }
+
+  const stepsOdp = decorateSteps(data.steps);
+  const stepsSlt = decorateSteps(data.stepsSlt);
+  const stepsRfc = decorateSteps(data.stepsRfc);
+  const stepsRef = decorateSteps(data.stepsRef);
+  const defaultMethod = data.method || 'odp';
+  const stepsWithDisplay = stepsOdp;
 
   // B4: gate the relatedWalkthroughs section so it only renders when non-empty
   const relatedWalkthroughs = Array.isArray(data.relatedWalkthroughs)
@@ -290,6 +298,14 @@ function buildPage(filePath, content) {
     troubleshooting,
     nextSteps,
     steps: stepsWithDisplay,
+    stepsOdp,
+    stepsSlt,
+    stepsRfc,
+    stepsRef,
+    hasStepsSlt: stepsSlt.length > 0,
+    hasStepsRfc: stepsRfc.length > 0,
+    hasStepsRef: stepsRef.length > 0,
+    defaultMethod,
     keyFields,
     hasKeyFields: keyFields.length > 0,
     hasExtractionGotchas: extractionGotchas.length > 0,

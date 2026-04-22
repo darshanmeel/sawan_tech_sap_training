@@ -192,107 +192,81 @@
     </dl>
   </header>
 
-  <section class="sap-preflight">
-    <h2>SAP-side preflight</h2>
-    <p>Before any tool touches your SAP system, you need four things confirmed
-    on the SAP side. Skipping these steps is the most common cause of extraction
-    failures, performance incidents, and licensing surprises.</p>
-  
-    <ol class="sap-preflight-checklist">
-      <li>
-        <strong>License — confirm your extraction method is covered.</strong>
-        <p>
-          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
-          first decision. ODP-based extraction (via
-          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
-          SLT replication requires a Full Use license. Verify with your SAP
-          licensing contact before you design anything — not the day before
-          go-live.
-        </p>
-        <p class="sap-preflight-note">
-          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
-          modules by third-party tools is no longer permitted. If your tool uses
-          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
-          contract terms. Compliant alternatives are ODP via OData or SLT
-          replication. Full note at
-          <a href="https://support.sap.com/notes/3255746" target="_blank"
-            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
-          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
-        </p>
+  <section class="sap-preflight" aria-labelledby="sap-preflight-title">
+    <h2 id="sap-preflight-title">Four things to confirm before any tool runs</h2>
+    <p class="sap-preflight-lede">The checks below, in order, are the difference between a smooth extraction and a multi-day incident. Each one is one sentence; expand for the how.</p>
+
+    <ol class="preflight-grid">
+      <li class="preflight-card" data-preflight="license">
+        <span class="preflight-eyebrow">01 · Licence</span>
+        <p class="preflight-summary">Confirm your extraction method is covered by your installed SAP licence before anyone designs anything.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Runtime licences cover ODP through OData. SLT replication requires a
+            Full Use licence. Ask your SAP licensing contact; do not assume.
+            See the dedicated article on
+            <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a>,
+            and note that
+            <a href="https://support.sap.com/notes/3255746" target="_blank" rel="noopener noreferrer">SAP Note 3255746</a>
+            prohibits third-party tools from using ODP via RFC — compliant
+            paths are ODP over OData or SLT. <em>[NEEDS_SAP_CITATION]</em>
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
-        <p>
-          Every table covered in this Academy has a SAP-released
-          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
-          Open
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE80</a>
-          and search for the view name before you build anything. Confirm the
-          annotation <code>@Analytics.dataExtract: true</code> is present. If
-          the view is absent or the annotation is missing, stop — raw table
-          extraction is not the solution.
-        </p>
+
+      <li class="preflight-card" data-preflight="cds">
+        <span class="preflight-eyebrow">02 · Released CDS view</span>
+        <p class="preflight-summary">Every table covered here has an extraction-safe released CDS view; confirm it exists before building.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Open the view in
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE80</a>
+            (or in ADT) and confirm the header annotation
+            <code>@Analytics.dataExtract: true</code> is present. If it is
+            missing, the view is not extractable — raw-table reads are not
+            the fix.
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
-        <p>
-          Your extraction user needs three authorization objects.
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SU01</a>
-          to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">PFCG</a>
-          to assign a role containing:
-        </p>
-        <ul>
-          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
-          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
-            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
-          <li><code>S_TABU_DIS</code> — table display access for the relevant
-            authorization group</li>
-        </ul>
-        <p>
-          For SLT-based extraction, your Basis team will also need authorization
-          in
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTCO</a>
-          and
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTRS</a>.
-          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
-        </p>
+
+      <li class="preflight-card" data-preflight="auth">
+        <span class="preflight-eyebrow">03 · Authorisations</span>
+        <p class="preflight-summary">A System-type technical user with the minimum authorisation objects for your chosen method — no named users, no wildcards.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Create a System user via
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SU01</a>
+            and assign a role via
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">PFCG</a>.
+            For ODP: <code>S_RFC</code> (RFC_TYPE=FUNC) and
+            <code>S_ODP_READ</code> (ODPSOURCE=ABAP_CDS). For SLT your Basis
+            team also needs authorisation in LTCO and LTRS. For RFC direct
+            add <code>S_TABU_DIS</code> scoped to the table's authorisation
+            group — never wildcard it.
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Row-count context — understand data volumes before you run.</strong>
-        <p>
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE16N</a>
-          to count rows in the target table with your intended filter (company
-          code, fiscal year, material type, etc.) before you start the
-          extraction. This gives you:
-        </p>
-        <ul>
-          <li>A baseline to reconcile against after the extract.</li>
-          <li>A sense of whether your partition is safe to extract
-            (&lt;&nbsp;100M rows is generally safe for ODP;
-            larger partitions may need further splitting or SLT).</li>
-          <li>Early warning if a filter is misconfigured
-            (count returns billions — rethink the partition).</li>
-        </ul>
+
+      <li class="preflight-card" data-preflight="rowcount">
+        <span class="preflight-eyebrow">04 · Row-count baseline</span>
+        <p class="preflight-summary">Use SE16N to measure the intended partition before extraction — you cannot reconcile without this number.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Open
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE16N</a>,
+            apply the same filter your extraction will use, and record the
+            count. Under 100M rows is usually safe for a single ODP partition;
+            larger volumes need further splitting or SLT. A count in the
+            billions means the filter is misconfigured — rethink the
+            partition before running anything.
+          </p>
+        </details>
       </li>
     </ol>
-  
-    <p class="sap-preflight-footer">
-      These four checks take 15–30 minutes on a first walkthrough, and under
-      5 minutes once you know your system. They are the difference between a
-      smooth extraction and a multi-day incident.
-    </p>
   </section>
 
   <section class="callout callout-warning license-check">
@@ -436,300 +410,967 @@
     </div>
   </aside>
 
-  <ol class="steps-list">
-    <li>
-      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
-        <header class="step-header">
-          <div class="step-number">Step 1</div>
-          <h2 class="step-title">Confirm the released CDS view I_SalesDocument</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-01"
-              aria-label="Mark Confirm the released CDS view I_SalesDocument as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
+  <div class="steps-container" data-default-method="odp">
+    <ol class="steps-list" data-method="odp">
+<li>
+  <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+    <header class="step-header">
+      <div class="step-number">Step 1</div>
+      <h2 class="step-title">Confirm the released CDS view I_SalesDocument</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-01"
+          aria-label="Mark Confirm the released CDS view I_SalesDocument as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
 
-        <div class="step-body">
-          <p class="step-intro">SAP ships released CDS views for standard tables. For VBAK, the view is <a href="https://help.sap.com/">I_SalesDocument</a>. It carries authorization, delta support, and the <code>@Analytics.dataExtract: true</code> annotation that signals ODP readiness. Using this view is the SAP-recommended approach — extracting raw VBAK bypasses authorization and has no delta support.</p>
+    <div class="step-body">
+      <p class="step-intro">SAP ships released CDS views for standard tables. For VBAK, the view is <a href="https://help.sap.com/">I_SalesDocument</a>. It carries authorization, delta support, and the <code>@Analytics.dataExtract: true</code> annotation that signals ODP readiness. Using this view is the SAP-recommended approach — extracting raw VBAK bypasses authorization and has no delta support.</p>
 
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE80
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Repository Browser → Search → I_SalesDocument</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">I_SalesDocument opens in SE80 and the annotation @Analytics.dataExtract: true is visible in the header.</div>
-          </div>
-
-          <details class="step-why">
-            <summary>Why this matters</summary>
-            <p>Extracting from a released CDS view respects authorization and provides built-in delta support. Reading VBAK directly skips both. Released views are also more stable across upgrades than raw table layouts.</p>
-          </details>
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE80
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Repository Browser → Search → I_SalesDocument</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
-        <header class="step-header">
-          <div class="step-number">Step 2</div>
-          <h2 class="step-title">Check row count in SE16N (establish a reconciliation baseline)</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-02"
-              aria-label="Mark Check row count in SE16N (establish a reconciliation baseline) as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Use <a href="https://help.sap.com/">SE16N</a> to count rows in VBAK without filters (or with the filter that matches your intended extraction scope). Write down the number. This is your target: after the extraction, the row count in your landing zone must match this number.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE16N
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Execute → VBAK → Count</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">You have a row count for VBAK. Typical range is 1M–50M rows depending on system size and history retained.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">I_SalesDocument opens in SE80 and the annotation @Analytics.dataExtract: true is visible in the header.</div>
+      </div>
 
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>Extracting from a released CDS view respects authorization and provides built-in delta support. Reading VBAK directly skips both. Released views are also more stable across upgrades than raw table layouts.</p>
+      </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+    <header class="step-header">
+      <div class="step-number">Step 2</div>
+      <h2 class="step-title">Check row count in SE16N (establish a reconciliation baseline)</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-02"
+          aria-label="Mark Check row count in SE16N (establish a reconciliation baseline) as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Use <a href="https://help.sap.com/">SE16N</a> to count rows in VBAK without filters (or with the filter that matches your intended extraction scope). Write down the number. This is your target: after the extraction, the row count in your landing zone must match this number.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → VBAK → Count</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
-        <header class="step-header">
-          <div class="step-number">Step 3</div>
-          <h2 class="step-title">Create a technical RFC user with minimum permissions</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-03"
-              aria-label="Mark Create a technical RFC user with minimum permissions as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Create a System-type (non-dialog) user via <a href="https://help.sap.com/">SU01</a>. System users cannot log on interactively and do not consume a dialog work process. Never reuse a named user account for automated extraction — it creates audit, security, and performance problems.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SU01
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>User → Create → User type: System</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">User EXTRACT_VBAK exists in SU01 with User Type &#x3D; System. The user is locked for interactive logon.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">You have a row count for VBAK. Typical range is 1M–50M rows depending on system size and history retained.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+    <header class="step-header">
+      <div class="step-number">Step 3</div>
+      <h2 class="step-title">Create a technical RFC user with minimum permissions</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-03"
+          aria-label="Mark Create a technical RFC user with minimum permissions as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Create a System-type (non-dialog) user via <a href="https://help.sap.com/">SU01</a>. System users cannot log on interactively and do not consume a dialog work process. Never reuse a named user account for automated extraction — it creates audit, security, and performance problems.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SU01
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>User → Create → User type: System</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
-        <header class="step-header">
-          <div class="step-number">Step 4</div>
-          <h2 class="step-title">Assign authorizations via PFCG</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-04"
-              aria-label="Mark Assign authorizations via PFCG as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">In <a href="https://help.sap.com/">PFCG</a>, create a single custom role. Add three authorization objects: S_RFC (RFC_TYPE=FUNC), S_ODP_READ (ODPSOURCE=ABAP_CDS), and S_TABU_DIS (authorization group SD). Generate the profile and assign the role to EXTRACT_VBAK.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                PFCG
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Role → Create → Authorizations → Add Object</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">In SU01, EXTRACT_VBAK shows one role assigned. In PFCG, the role authorization data contains S_ODP_READ with ODPSOURCE&#x3D;ABAP_CDS.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">User EXTRACT_VBAK exists in SU01 with User Type &#x3D; System. The user is locked for interactive logon.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+    <header class="step-header">
+      <div class="step-number">Step 4</div>
+      <h2 class="step-title">Assign authorizations via PFCG</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-04"
+          aria-label="Mark Assign authorizations via PFCG as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">In <a href="https://help.sap.com/">PFCG</a>, create a single custom role. Add three authorization objects: S_RFC (RFC_TYPE=FUNC), S_ODP_READ (ODPSOURCE=ABAP_CDS), and S_TABU_DIS (authorization group SD). Generate the profile and assign the role to EXTRACT_VBAK.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            PFCG
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Role → Create → Authorizations → Add Object</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
-        <header class="step-header">
-          <div class="step-number">Step 5</div>
-          <h2 class="step-title">Verify the RFC destination is reachable (SM59)</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-05"
-              aria-label="Mark Verify the RFC destination is reachable (SM59) as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Your extraction tool connects to SAP over an RFC destination. Ask your Basis team to check <a href="https://help.sap.com/">SM59</a> for the destination your tool will use. The test connection must pass before any extraction attempt.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SM59
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>RFC Connections → ABAP Connections or TCP&#x2F;IP → Test Connection</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Test Connection returns green for the RFC destination your tool uses.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">In SU01, EXTRACT_VBAK shows one role assigned. In PFCG, the role authorization data contains S_ODP_READ with ODPSOURCE&#x3D;ABAP_CDS.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+    <header class="step-header">
+      <div class="step-number">Step 5</div>
+      <h2 class="step-title">Verify the RFC destination is reachable (SM59)</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-05"
+          aria-label="Mark Verify the RFC destination is reachable (SM59) as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Your extraction tool connects to SAP over an RFC destination. Ask your Basis team to check <a href="https://help.sap.com/">SM59</a> for the destination your tool will use. The test connection must pass before any extraction attempt.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SM59
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>RFC Connections → ABAP Connections or TCP&#x2F;IP → Test Connection</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
-        <header class="step-header">
-          <div class="step-number">Step 6</div>
-          <h2 class="step-title">Check ODQMON after the tool&#39;s first run</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-06"
-              aria-label="Mark Check ODQMON after the tool&#39;s first run as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">After your extraction tool makes its first connection, open <a href="https://help.sap.com/">ODQMON</a>. A subscription for I_SalesDocument should appear under context ABAP_CDS. No subscription means the tool did not register with ODP — this usually means it is using an unsupported path or the authorization is incorrect.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                ODQMON
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Subscriptions → Context: ABAP_CDS → I_SalesDocument</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">ODQMON shows an active subscription for I_SalesDocument. No error status.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Test Connection returns green for the RFC destination your tool uses.</div>
+      </div>
 
-          <details class="step-why">
-            <summary>Why this matters</summary>
-            <p>ODQMON is your diagnostic console. If the extraction looks successful in your tool but the data count is wrong, ODQMON will show you why.</p>
-          </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
+    <header class="step-header">
+      <div class="step-number">Step 6</div>
+      <h2 class="step-title">Check ODQMON after the tool&#39;s first run</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-06"
+          aria-label="Mark Check ODQMON after the tool&#39;s first run as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">After your extraction tool makes its first connection, open <a href="https://help.sap.com/">ODQMON</a>. A subscription for I_SalesDocument should appear under context ABAP_CDS. No subscription means the tool did not register with ODP — this usually means it is using an unsupported path or the authorization is incorrect.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            ODQMON
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Subscriptions → Context: ABAP_CDS → I_SalesDocument</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
-        <header class="step-header">
-          <div class="step-number">Step 7</div>
-          <h2 class="step-title">Reconcile row counts after extraction</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-07"
-              aria-label="Mark Reconcile row counts after extraction as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Return to SE16N and count VBAK rows with the same filters you used in step 02. Compare to the row count your landing zone reports. The counts should match or differ only by in-flight postings that arrived during the extraction window.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE16N
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Execute → VBAK → Count</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Row count in landing zone matches SE16N count within a tolerable margin.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">ODQMON shows an active subscription for I_SalesDocument. No error status.</div>
+      </div>
 
-          <details class="step-why">
-            <summary>Why this matters</summary>
-            <p>Row-count reconciliation is the single most important verification in any extraction. Never hand data to the analytics team without it.</p>
-          </details>
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>ODQMON is your diagnostic console. If the extraction looks successful in your tool but the data count is wrong, ODQMON will show you why.</p>
+      </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
+    <header class="step-header">
+      <div class="step-number">Step 7</div>
+      <h2 class="step-title">Reconcile row counts after extraction</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-07"
+          aria-label="Mark Reconcile row counts after extraction as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Return to SE16N and count VBAK rows with the same filters you used in step 02. Compare to the row count your landing zone reports. The counts should match or differ only by in-flight postings that arrived during the extraction window.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → VBAK → Count</em>.
         </div>
-      </article>
-    </li>
-  </ol>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Row count in landing zone matches SE16N count within a tolerable margin.</div>
+      </div>
+
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>Row-count reconciliation is the single most important verification in any extraction. Never hand data to the analytics team without it.</p>
+      </details>
+    </div>
+  </article>
+</li>
+    </ol>
+
+    <ol class="steps-list" data-method="slt" hidden>
+<li>
+  <article class="walkthrough-step" id="step-slt-step-01" data-step-id="slt-step-01">
+    <header class="step-header">
+      <div class="step-number">Step 1</div>
+      <h2 class="step-title">Basis: confirm Full Use licence in SLICENSE</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="slt-step-01"
+          aria-label="Mark Basis: confirm Full Use licence in SLICENSE as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">SLT replication is only permitted under a Full Use SAP licence. Ask your Basis team to open <a href="https://help.sap.com/">SLICENSE</a> and confirm the installed licence type. A Runtime licence is not enough — replicating through SLT under Runtime is a contract breach. If the licence is Runtime, stop this walkthrough and use the ODP variant instead.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SLICENSE
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>System → Licence → Installed Licences</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Installed licence row shows a product line that explicitly permits SLT replication (typically SAP S&#x2F;4HANA Full Use or equivalent). Screenshot this and attach to your design doc.</div>
+      </div>
+
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>Licence verification is the single most common thing SLT projects skip — and the single most expensive thing to discover at go-live. Always front-load this check.</p>
+      </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-slt-step-02" data-step-id="slt-step-02">
+    <header class="step-header">
+      <div class="step-number">Step 2</div>
+      <h2 class="step-title">Developer: inspect VBAK and I_SalesDocument in ADT</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="slt-step-02"
+          aria-label="Mark Developer: inspect VBAK and I_SalesDocument in ADT as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Open VBAK and the released CDS view <a href="https://help.sap.com/">I_SalesDocument</a> in <a href="https://help.sap.com/">ABAP Development Tools (ADT)</a> in Eclipse. You need to see two things. First, the raw table columns of VBAK (MANDT, VBELN, ERDAT, AUART, VKORG, VTWEG, KUNNR …) — SLT replicates the raw table, not the CDS view, so the raw layout is what lands in the target. Second, the released CDS view so you understand what downstream analytics would normally consume; SLT output will need a comparable semantic layer on top.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            ADT (Eclipse)
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Project Explorer → System → Dictionary → Database Tables → VBAK</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">In ADT you can see the VBAK table definition with its 100+ raw columns and its delivery class A (application table). You can open I_SalesDocument source and read the SELECT projection. Note that the column names differ (raw VBAK is technical, CDS is semantic) — your downstream layer must map between them.</div>
+      </div>
+
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>SLT is raw-table replication. If your team is used to CDS semantic names (SalesDocument, CreationDate), the SLT output (VBELN, ERDAT) will surprise them. Agreeing on the naming mapping now avoids a rename project later.</p>
+      </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-slt-step-03" data-step-id="slt-step-03">
+    <header class="step-header">
+      <div class="step-number">Step 3</div>
+      <h2 class="step-title">Basis: configure the SLT replication object in LTRC</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="slt-step-03"
+          aria-label="Mark Basis: configure the SLT replication object in LTRC as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Your Basis team opens <a href="https://help.sap.com/">LTRC</a> on the SLT system and creates a replication configuration pointing at the source S/4HANA and the target (RFC destination for a database, or a logging-table-based sink). Add table VBAK with replication mode &quot;Load + Replication&quot; for full load plus ongoing delta.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTRC
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Configurations → Create → Source: S&#x2F;4HANA system · Target: ... · Replication</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTRC shows a configuration row for VBAK with status Configured. The source and target RFC destinations both test green.</div>
+      </div>
+
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>LTRC is the SLT control plane. Everything else — triggers, parallelism, delta — is configured from here.</p>
+      </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-slt-step-04" data-step-id="slt-step-04">
+    <header class="step-header">
+      <div class="step-number">Step 4</div>
+      <h2 class="step-title">Basis: set parallel reader count in LTRS</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="slt-step-04"
+          aria-label="Mark Basis: set parallel reader count in LTRS as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">For a small table like VBAK, one or two parallel readers is enough. Your Basis team opens <a href="https://help.sap.com/">LTRS</a> and sets the Reader/Job count for VBAK. Keep initial load jobs ≤ 2 for a beginner setup; more readers generate more dialog-process pressure and are rarely needed for a header-only table.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTRS
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Specific Settings → Performance Options → Number of Parallel Jobs</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTRS shows VBAK with a reader count of 1 or 2 and a calculation type appropriate for the key (most commonly KEY_BASED for VBAK).</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-slt-step-05" data-step-id="slt-step-05">
+    <header class="step-header">
+      <div class="step-number">Step 5</div>
+      <h2 class="step-title">Basis: start replication and monitor in LTCO</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="slt-step-05"
+          aria-label="Mark Basis: start replication and monitor in LTCO as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Trigger Load + Replication from LTRC and watch progress in <a href="https://help.sap.com/">LTCO</a>. LTCO shows per-table load status, replication lag, and job health. For VBAK the initial load should complete in minutes; once it is in Replication state, inserts and updates on the source appear at the target within seconds.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTCO
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Control → Configurations → VBAK</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTCO shows VBAK with status Replication (green). The row count on the target matches the source, and a new order posted on the source appears in the target within a minute.</div>
+      </div>
+
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>LTCO is where you discover problems. A VBAK stuck in Initial Load means the target is slower than the source or a trigger failed — either way you need Basis before Analytics gets curious.</p>
+      </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-slt-step-06" data-step-id="slt-step-06">
+    <header class="step-header">
+      <div class="step-number">Step 6</div>
+      <h2 class="step-title">Basis + developer: confirm no ODP subscription is needed</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="slt-step-06"
+          aria-label="Mark Basis + developer: confirm no ODP subscription is needed as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">SLT does not use ODP — it writes straight into the target through triggers and the SLT read module. So there is nothing to check in ODQMON for this path. If your design mentions ODQMON or ABAP_CDS context, it is accidentally the ODP design — reopen the method picker and switch to ODP.</p>
+
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Your design doc says SLT everywhere and does not mention ODP&#x2F;ODQMON&#x2F;ABAP_CDS. If it does, it is mixing two methods and one of them is wrong.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-slt-step-07" data-step-id="slt-step-07">
+    <header class="step-header">
+      <div class="step-number">Step 7</div>
+      <h2 class="step-title">Row-count reconcile against source</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="slt-step-07"
+          aria-label="Mark Row-count reconcile against source as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Compare VBAK row count between source and target. Use <a href="https://help.sap.com/">SE16N</a> on the source with the same filter, compare against SELECT COUNT(*) on the target. A delta of zero is the goal; small positive deltas on an active source are normal and explained by the handful of orders posted during the counting window.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → VBAK → Count → (record the number)</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Source and target counts match exactly, or differ by a small number you can explain (count of orders posted during the reconciliation window).</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+    </ol>
+
+    <ol class="steps-list" data-method="rfc" hidden>
+<li>
+  <article class="walkthrough-step" id="step-rfc-step-01" data-step-id="rfc-step-01">
+    <header class="step-header">
+      <div class="step-number">Step 1</div>
+      <h2 class="step-title">Developer: inspect VBAK structure in SE11 or ADT</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="rfc-step-01"
+          aria-label="Mark Developer: inspect VBAK structure in SE11 or ADT as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">RFC direct reads the raw table. Open VBAK in <a href="https://help.sap.com/">SE11</a> (classic) or in <a href="https://help.sap.com/">ADT</a> (modern). Note the key fields (MANDT, VBELN) and the authorization group — for sales documents this is usually V or VB. You will need the correct authorization group in PFCG later.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE11
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Database Table → VBAK → Display → Delivery and Maintenance</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">You can read the delivery class (A), the authorization group (V or VB), and the full key list for VBAK.</div>
+      </div>
+
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>RFC direct extraction bypasses released CDS views, so you inherit no authorization, no annotation, and no built-in delta. Knowing the raw structure up front is the only thing keeping the extraction honest.</p>
+      </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-rfc-step-02" data-step-id="rfc-step-02">
+    <header class="step-header">
+      <div class="step-number">Step 2</div>
+      <h2 class="step-title">Measure row count in SE16N (reconciliation baseline)</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="rfc-step-02"
+          aria-label="Mark Measure row count in SE16N (reconciliation baseline) as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Count rows in VBAK with the filter you intend to extract. Record the number. This is the count the landing zone must match after the extract completes. Without this number, reconciliation is impossible.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → VBAK → Enter filter → Count</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">You have a number in hand (or in the design doc) for VBAK under your chosen filter.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-rfc-step-03" data-step-id="rfc-step-03">
+    <header class="step-header">
+      <div class="step-number">Step 3</div>
+      <h2 class="step-title">Basis: create technical user via SU01</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="rfc-step-03"
+          aria-label="Mark Basis: create technical user via SU01 as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Ask Basis to create a System-type user (not Dialog) in <a href="https://help.sap.com/">SU01</a>. System users cannot log on interactively. Without a dedicated system user, any extraction that runs on behalf of a named person becomes an audit finding.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SU01
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>User → Create → User type: System</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">EXTRACT_VBAK exists with type System and is locked for interactive logon.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-rfc-step-04" data-step-id="rfc-step-04">
+    <header class="step-header">
+      <div class="step-number">Step 4</div>
+      <h2 class="step-title">Basis: role with S_RFC + S_TABU_DIS (authgroup V) in PFCG</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="rfc-step-04"
+          aria-label="Mark Basis: role with S_RFC + S_TABU_DIS (authgroup V) in PFCG as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">In <a href="https://help.sap.com/">PFCG</a>, create a single-role profile. Add <code>S_RFC</code> with RFC_TYPE=FUNC, and <code>S_TABU_DIS</code> with DICBERCLS=V (the Sales authorization group covering VBAK). Do <strong>not</strong> grant S_TABU_DIS with * — that is a finding.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            PFCG
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Role → Create → Authorizations → Add Object</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">In SU01 the extraction user shows the role. In PFCG the role contains exactly the two objects above, scoped to the minimum needed.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-rfc-step-05" data-step-id="rfc-step-05">
+    <header class="step-header">
+      <div class="step-number">Step 5</div>
+      <h2 class="step-title">Basis: test RFC destination in SM59</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="rfc-step-05"
+          aria-label="Mark Basis: test RFC destination in SM59 as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">The tool calls SAP over an RFC destination defined in <a href="https://help.sap.com/">SM59</a>. Ask Basis to Test Connection and Test Authorization against the destination the tool uses. Both must pass before a single row is extracted.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SM59
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>RFC Connections → ABAP Connections or TCP&#x2F;IP → Test Connection → Test Authorization</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Test Connection returns green. Test Authorization returns green for the extraction user.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-rfc-step-06" data-step-id="rfc-step-06">
+    <header class="step-header">
+      <div class="step-number">Step 6</div>
+      <h2 class="step-title">Basis: watch SM50 during the first extraction</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="rfc-step-06"
+          aria-label="Mark Basis: watch SM50 during the first extraction as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">During the first run, ask Basis to keep <a href="https://help.sap.com/">SM50</a> open on the application server hosting the RFC. RFC direct consumes dialog work processes for the lifetime of the call. If the extraction dominates the work-process pool, finance users will notice.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SM50
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Processes → Filter by User: EXTRACT_VBAK</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">At any moment during the extract, total dialog-process utilisation on the app server stays below 80%. If it spikes higher, throttle the extraction to one concurrent call.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-rfc-step-07" data-step-id="rfc-step-07">
+    <header class="step-header">
+      <div class="step-number">Step 7</div>
+      <h2 class="step-title">Row-count reconcile after extraction</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="rfc-step-07"
+          aria-label="Mark Row-count reconcile after extraction as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Return to SE16N with the same filter used in step 02. Compare to the row count in the landing zone. Matching or in-flight-only delta = success. Anything else, investigate before trusting the data.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → VBAK → same filter → Count</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Landing-zone count matches SE16N count within a tolerable margin (e.g. new orders posted during the extraction window).</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+    </ol>
+
+    <ol class="steps-list" data-method="ref" hidden>
+<li>
+  <article class="walkthrough-step" id="step-ref-step-01" data-step-id="ref-step-01">
+    <header class="step-header">
+      <div class="step-number">Step 1</div>
+      <h2 class="step-title">What VBAK is and why extract it</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="ref-step-01"
+          aria-label="Mark What VBAK is and why extract it as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">VBAK is the sales document <em>header</em>. One row per order, quotation, or contract. The released CDS view for this table is I_SalesDocument — it is authorisation-aware, delta-capable, and ODP-ready. For line items, the corresponding table is VBAP.</p>
+
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">You can explain in one sentence what lives in VBAK and why analytics teams want it.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-ref-step-02" data-step-id="ref-step-02">
+    <header class="step-header">
+      <div class="step-number">Step 2</div>
+      <h2 class="step-title">Methods at a glance (ODP &#x2F; SLT &#x2F; RFC direct)</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="ref-step-02"
+          aria-label="Mark Methods at a glance (ODP &#x2F; SLT &#x2F; RFC direct) as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">ODP is the recommended path — runs under both Runtime and Full Use licences, reads through the released CDS view, and plays nicely with ODQMON for monitoring. SLT is raw-table replication with live delta, requires a Full Use licence, and replicates to the target at the database level. RFC direct is a last-resort path with no delta and requires careful authorization scoping.</p>
+
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">You can name the one reason an organisation would pick each method.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-ref-step-03" data-step-id="ref-step-03">
+    <header class="step-header">
+      <div class="step-number">Step 3</div>
+      <h2 class="step-title">Where the actual build happens</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="ref-step-03"
+          aria-label="Mark Where the actual build happens as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Switch the method picker above to ODP, SLT, or RFC direct to see the SAP-side workflow for that specific approach. Each variant gives you the transactions, the authorisations, and the verification steps a Basis team and ABAP developer would actually run.</p>
+
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">You know which method you are going to build and have switched the picker to that method.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+    </ol>
+  </div>
 
   <section class="troubleshooting">
     <h2>Troubleshooting</h2>

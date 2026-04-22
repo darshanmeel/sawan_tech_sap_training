@@ -192,107 +192,81 @@
     </dl>
   </header>
 
-  <section class="sap-preflight">
-    <h2>SAP-side preflight</h2>
-    <p>Before any tool touches your SAP system, you need four things confirmed
-    on the SAP side. Skipping these steps is the most common cause of extraction
-    failures, performance incidents, and licensing surprises.</p>
-  
-    <ol class="sap-preflight-checklist">
-      <li>
-        <strong>License — confirm your extraction method is covered.</strong>
-        <p>
-          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
-          first decision. ODP-based extraction (via
-          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
-          SLT replication requires a Full Use license. Verify with your SAP
-          licensing contact before you design anything — not the day before
-          go-live.
-        </p>
-        <p class="sap-preflight-note">
-          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
-          modules by third-party tools is no longer permitted. If your tool uses
-          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
-          contract terms. Compliant alternatives are ODP via OData or SLT
-          replication. Full note at
-          <a href="https://support.sap.com/notes/3255746" target="_blank"
-            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
-          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
-        </p>
+  <section class="sap-preflight" aria-labelledby="sap-preflight-title">
+    <h2 id="sap-preflight-title">Four things to confirm before any tool runs</h2>
+    <p class="sap-preflight-lede">The checks below, in order, are the difference between a smooth extraction and a multi-day incident. Each one is one sentence; expand for the how.</p>
+
+    <ol class="preflight-grid">
+      <li class="preflight-card" data-preflight="license">
+        <span class="preflight-eyebrow">01 · Licence</span>
+        <p class="preflight-summary">Confirm your extraction method is covered by your installed SAP licence before anyone designs anything.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Runtime licences cover ODP through OData. SLT replication requires a
+            Full Use licence. Ask your SAP licensing contact; do not assume.
+            See the dedicated article on
+            <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a>,
+            and note that
+            <a href="https://support.sap.com/notes/3255746" target="_blank" rel="noopener noreferrer">SAP Note 3255746</a>
+            prohibits third-party tools from using ODP via RFC — compliant
+            paths are ODP over OData or SLT. <em>[NEEDS_SAP_CITATION]</em>
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
-        <p>
-          Every table covered in this Academy has a SAP-released
-          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
-          Open
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE80</a>
-          and search for the view name before you build anything. Confirm the
-          annotation <code>@Analytics.dataExtract: true</code> is present. If
-          the view is absent or the annotation is missing, stop — raw table
-          extraction is not the solution.
-        </p>
+
+      <li class="preflight-card" data-preflight="cds">
+        <span class="preflight-eyebrow">02 · Released CDS view</span>
+        <p class="preflight-summary">Every table covered here has an extraction-safe released CDS view; confirm it exists before building.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Open the view in
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE80</a>
+            (or in ADT) and confirm the header annotation
+            <code>@Analytics.dataExtract: true</code> is present. If it is
+            missing, the view is not extractable — raw-table reads are not
+            the fix.
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
-        <p>
-          Your extraction user needs three authorization objects.
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SU01</a>
-          to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">PFCG</a>
-          to assign a role containing:
-        </p>
-        <ul>
-          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
-          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
-            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
-          <li><code>S_TABU_DIS</code> — table display access for the relevant
-            authorization group</li>
-        </ul>
-        <p>
-          For SLT-based extraction, your Basis team will also need authorization
-          in
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTCO</a>
-          and
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTRS</a>.
-          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
-        </p>
+
+      <li class="preflight-card" data-preflight="auth">
+        <span class="preflight-eyebrow">03 · Authorisations</span>
+        <p class="preflight-summary">A System-type technical user with the minimum authorisation objects for your chosen method — no named users, no wildcards.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Create a System user via
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SU01</a>
+            and assign a role via
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">PFCG</a>.
+            For ODP: <code>S_RFC</code> (RFC_TYPE=FUNC) and
+            <code>S_ODP_READ</code> (ODPSOURCE=ABAP_CDS). For SLT your Basis
+            team also needs authorisation in LTCO and LTRS. For RFC direct
+            add <code>S_TABU_DIS</code> scoped to the table's authorisation
+            group — never wildcard it.
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Row-count context — understand data volumes before you run.</strong>
-        <p>
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE16N</a>
-          to count rows in the target table with your intended filter (company
-          code, fiscal year, material type, etc.) before you start the
-          extraction. This gives you:
-        </p>
-        <ul>
-          <li>A baseline to reconcile against after the extract.</li>
-          <li>A sense of whether your partition is safe to extract
-            (&lt;&nbsp;100M rows is generally safe for ODP;
-            larger partitions may need further splitting or SLT).</li>
-          <li>Early warning if a filter is misconfigured
-            (count returns billions — rethink the partition).</li>
-        </ul>
+
+      <li class="preflight-card" data-preflight="rowcount">
+        <span class="preflight-eyebrow">04 · Row-count baseline</span>
+        <p class="preflight-summary">Use SE16N to measure the intended partition before extraction — you cannot reconcile without this number.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Open
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE16N</a>,
+            apply the same filter your extraction will use, and record the
+            count. Under 100M rows is usually safe for a single ODP partition;
+            larger volumes need further splitting or SLT. A count in the
+            billions means the filter is misconfigured — rethink the
+            partition before running anything.
+          </p>
+        </details>
       </li>
     </ol>
-  
-    <p class="sap-preflight-footer">
-      These four checks take 15–30 minutes on a first walkthrough, and under
-      5 minutes once you know your system. They are the difference between a
-      smooth extraction and a multi-day incident.
-    </p>
   </section>
 
   <section class="callout callout-warning license-check">
@@ -435,208 +409,213 @@
     </div>
   </aside>
 
-  <ol class="steps-list">
-    <li>
-      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
-        <header class="step-header">
-          <div class="step-number">Step 1</div>
-          <h2 class="step-title">Understand BKPF + BSEG cardinality in SE16N</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-01"
-              aria-label="Mark Understand BKPF + BSEG cardinality in SE16N as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
+  <div class="steps-container" data-default-method="slt">
+    <ol class="steps-list" data-method="odp">
+<li>
+  <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+    <header class="step-header">
+      <div class="step-number">Step 1</div>
+      <h2 class="step-title">Understand BKPF + BSEG cardinality in SE16N</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-01"
+          aria-label="Mark Understand BKPF + BSEG cardinality in SE16N as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
 
-        <div class="step-body">
-          <p class="step-intro">BKPF (header, 1 row per document) joins to BSEG (line items, N rows per document). For a fiscal year partition, use <a href="https://help.sap.com/">SE16N</a> to count both tables. The BSEG/BKPF row ratio is typically 8–15×. Understanding this ratio is essential for sizing your target storage and estimating full-load time.</p>
+    <div class="step-body">
+      <p class="step-intro">BKPF (header, 1 row per document) joins to BSEG (line items, N rows per document). For a fiscal year partition, use <a href="https://help.sap.com/">SE16N</a> to count both tables. The BSEG/BKPF row ratio is typically 8–15×. Understanding this ratio is essential for sizing your target storage and estimating full-load time.</p>
 
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE16N
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Execute → BKPF → Filter BUKRS&#x3D;&#39;1000&#39; AND GJAHR&#x3D;2024 → Count; repeat for BSEG</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">You have row counts for both BKPF and BSEG for the same BUKRS+GJAHR partition. BSEG&#x2F;BKPF ratio is documented.</div>
-          </div>
-
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → BKPF → Filter BUKRS&#x3D;&#39;1000&#39; AND GJAHR&#x3D;2024 → Count; repeat for BSEG</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
-        <header class="step-header">
-          <div class="step-number">Step 2</div>
-          <h2 class="step-title">Configure separate SLT replication objects for BKPF and BSEG in LTCO</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-02"
-              aria-label="Mark Configure separate SLT replication objects for BKPF and BSEG in LTCO as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">In <a href="https://help.sap.com/">LTCO</a>, create two replication objects: one for BKPF (partition key BUKRS+GJAHR), one for BSEG (partition key BUKRS+GJAHR+BUZEI — adding line item for finer partitioning). Separate objects let you monitor and manage each table independently. This is important because BSEG full load will take significantly longer than BKPF.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                LTCO
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Replication Objects → Create → BKPF (BUKRS+GJAHR); Create → BSEG (BUKRS+GJAHR+BUZEI)</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">LTCO shows two active replication objects: BKPF_REP and BSEG_REP. Partition keys are correctly configured.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">You have row counts for both BKPF and BSEG for the same BUKRS+GJAHR partition. BSEG&#x2F;BKPF ratio is documented.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+    <header class="step-header">
+      <div class="step-number">Step 2</div>
+      <h2 class="step-title">Configure separate SLT replication objects for BKPF and BSEG in LTCO</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-02"
+          aria-label="Mark Configure separate SLT replication objects for BKPF and BSEG in LTCO as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">In <a href="https://help.sap.com/">LTCO</a>, create two replication objects: one for BKPF (partition key BUKRS+GJAHR), one for BSEG (partition key BUKRS+GJAHR+BUZEI — adding line item for finer partitioning). Separate objects let you monitor and manage each table independently. This is important because BSEG full load will take significantly longer than BKPF.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTCO
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Replication Objects → Create → BKPF (BUKRS+GJAHR); Create → BSEG (BUKRS+GJAHR+BUZEI)</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
-        <header class="step-header">
-          <div class="step-number">Step 3</div>
-          <h2 class="step-title">Configure LTRS parallel readers for BSEG</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-03"
-              aria-label="Mark Configure LTRS parallel readers for BSEG as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">BSEG is typically 10× larger than BKPF. Configure more parallel readers for BSEG in <a href="https://help.sap.com/">LTRS</a> to compensate. For BKPF, 2 readers is usually sufficient. For BSEG, start with 4 and increase to 8 if the full load takes longer than expected without causing SM50 saturation.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                LTRS
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Administration → Settings → BKPF: 2 readers; BSEG: 4 readers</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">LTRS shows correct reader counts per replication object. SM50 confirms work process utilization is within safe limits.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTCO shows two active replication objects: BKPF_REP and BSEG_REP. Partition keys are correctly configured.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+    <header class="step-header">
+      <div class="step-number">Step 3</div>
+      <h2 class="step-title">Configure LTRS parallel readers for BSEG</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-03"
+          aria-label="Mark Configure LTRS parallel readers for BSEG as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">BSEG is typically 10× larger than BKPF. Configure more parallel readers for BSEG in <a href="https://help.sap.com/">LTRS</a> to compensate. For BKPF, 2 readers is usually sufficient. For BSEG, start with 4 and increase to 8 if the full load takes longer than expected without causing SM50 saturation.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTRS
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Administration → Settings → BKPF: 2 readers; BSEG: 4 readers</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
-        <header class="step-header">
-          <div class="step-number">Step 4</div>
-          <h2 class="step-title">Trigger full replication for both tables and monitor</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-04"
-              aria-label="Mark Trigger full replication for both tables and monitor as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Start both full replications from <a href="https://help.sap.com/">LTCO</a>. Monitor SM50 to ensure combined load from both replications stays safe. BKPF full load completes first; it will switch to DELTA while BSEG is still in full load. This is normal and expected — the two tables replicate independently.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                LTCO
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Replication Objects → BKPF_REP → Full Replication; BSEG_REP → Full Replication</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Both replication objects show RUNNING status. BKPF completes and shows DELTA; BSEG is still RUNNING. SM50 work process utilization below 80%.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">LTRS shows correct reader counts per replication object. SM50 confirms work process utilization is within safe limits.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+    <header class="step-header">
+      <div class="step-number">Step 4</div>
+      <h2 class="step-title">Trigger full replication for both tables and monitor</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-04"
+          aria-label="Mark Trigger full replication for both tables and monitor as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Start both full replications from <a href="https://help.sap.com/">LTCO</a>. Monitor SM50 to ensure combined load from both replications stays safe. BKPF full load completes first; it will switch to DELTA while BSEG is still in full load. This is normal and expected — the two tables replicate independently.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            LTCO
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Replication Objects → BKPF_REP → Full Replication; BSEG_REP → Full Replication</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
-        <header class="step-header">
-          <div class="step-number">Step 5</div>
-          <h2 class="step-title">Monitor join coherence — no orphan BSEG rows</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-05"
-              aria-label="Mark Monitor join coherence — no orphan BSEG rows as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">After both full loads complete, verify referential integrity: every BSEG row must have a matching BKPF header. Because the two tables replicate independently, there is a window where a BSEG row exists in your target before the BKPF header arrives. For data quality checks, allow 24 hours after both full loads complete before running orphan queries — the small window closes once DELTA is stable for both tables.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE16N
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Execute → BSEG → Filter BUKRS+GJAHR → Count. Verify matches BKPF line item total.</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">SE16N BKPF count × average line items ≈ SE16N BSEG count for the same partition. In your target, after 24 hours: orphan BSEG rows (no matching BKPF) &#x3D; 0.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Both replication objects show RUNNING status. BKPF completes and shows DELTA; BSEG is still RUNNING. SM50 work process utilization below 80%.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+    <header class="step-header">
+      <div class="step-number">Step 5</div>
+      <h2 class="step-title">Monitor join coherence — no orphan BSEG rows</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-05"
+          aria-label="Mark Monitor join coherence — no orphan BSEG rows as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">After both full loads complete, verify referential integrity: every BSEG row must have a matching BKPF header. Because the two tables replicate independently, there is a window where a BSEG row exists in your target before the BKPF header arrives. For data quality checks, allow 24 hours after both full loads complete before running orphan queries — the small window closes once DELTA is stable for both tables.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → BSEG → Filter BUKRS+GJAHR → Count. Verify matches BKPF line item total.</em>.
         </div>
-      </article>
-    </li>
-  </ol>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">SE16N BKPF count × average line items ≈ SE16N BSEG count for the same partition. In your target, after 24 hours: orphan BSEG rows (no matching BKPF) &#x3D; 0.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+    </ol>
+
+
+
+  </div>
 
   <section class="troubleshooting">
     <h2>Troubleshooting</h2>

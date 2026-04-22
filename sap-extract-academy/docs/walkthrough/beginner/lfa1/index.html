@@ -192,107 +192,81 @@
     </dl>
   </header>
 
-  <section class="sap-preflight">
-    <h2>SAP-side preflight</h2>
-    <p>Before any tool touches your SAP system, you need four things confirmed
-    on the SAP side. Skipping these steps is the most common cause of extraction
-    failures, performance incidents, and licensing surprises.</p>
-  
-    <ol class="sap-preflight-checklist">
-      <li>
-        <strong>License — confirm your extraction method is covered.</strong>
-        <p>
-          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
-          first decision. ODP-based extraction (via
-          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
-          SLT replication requires a Full Use license. Verify with your SAP
-          licensing contact before you design anything — not the day before
-          go-live.
-        </p>
-        <p class="sap-preflight-note">
-          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
-          modules by third-party tools is no longer permitted. If your tool uses
-          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
-          contract terms. Compliant alternatives are ODP via OData or SLT
-          replication. Full note at
-          <a href="https://support.sap.com/notes/3255746" target="_blank"
-            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
-          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
-        </p>
+  <section class="sap-preflight" aria-labelledby="sap-preflight-title">
+    <h2 id="sap-preflight-title">Four things to confirm before any tool runs</h2>
+    <p class="sap-preflight-lede">The checks below, in order, are the difference between a smooth extraction and a multi-day incident. Each one is one sentence; expand for the how.</p>
+
+    <ol class="preflight-grid">
+      <li class="preflight-card" data-preflight="license">
+        <span class="preflight-eyebrow">01 · Licence</span>
+        <p class="preflight-summary">Confirm your extraction method is covered by your installed SAP licence before anyone designs anything.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Runtime licences cover ODP through OData. SLT replication requires a
+            Full Use licence. Ask your SAP licensing contact; do not assume.
+            See the dedicated article on
+            <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a>,
+            and note that
+            <a href="https://support.sap.com/notes/3255746" target="_blank" rel="noopener noreferrer">SAP Note 3255746</a>
+            prohibits third-party tools from using ODP via RFC — compliant
+            paths are ODP over OData or SLT. <em>[NEEDS_SAP_CITATION]</em>
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
-        <p>
-          Every table covered in this Academy has a SAP-released
-          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
-          Open
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE80</a>
-          and search for the view name before you build anything. Confirm the
-          annotation <code>@Analytics.dataExtract: true</code> is present. If
-          the view is absent or the annotation is missing, stop — raw table
-          extraction is not the solution.
-        </p>
+
+      <li class="preflight-card" data-preflight="cds">
+        <span class="preflight-eyebrow">02 · Released CDS view</span>
+        <p class="preflight-summary">Every table covered here has an extraction-safe released CDS view; confirm it exists before building.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Open the view in
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE80</a>
+            (or in ADT) and confirm the header annotation
+            <code>@Analytics.dataExtract: true</code> is present. If it is
+            missing, the view is not extractable — raw-table reads are not
+            the fix.
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
-        <p>
-          Your extraction user needs three authorization objects.
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SU01</a>
-          to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">PFCG</a>
-          to assign a role containing:
-        </p>
-        <ul>
-          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
-          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
-            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
-          <li><code>S_TABU_DIS</code> — table display access for the relevant
-            authorization group</li>
-        </ul>
-        <p>
-          For SLT-based extraction, your Basis team will also need authorization
-          in
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTCO</a>
-          and
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTRS</a>.
-          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
-        </p>
+
+      <li class="preflight-card" data-preflight="auth">
+        <span class="preflight-eyebrow">03 · Authorisations</span>
+        <p class="preflight-summary">A System-type technical user with the minimum authorisation objects for your chosen method — no named users, no wildcards.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Create a System user via
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SU01</a>
+            and assign a role via
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">PFCG</a>.
+            For ODP: <code>S_RFC</code> (RFC_TYPE=FUNC) and
+            <code>S_ODP_READ</code> (ODPSOURCE=ABAP_CDS). For SLT your Basis
+            team also needs authorisation in LTCO and LTRS. For RFC direct
+            add <code>S_TABU_DIS</code> scoped to the table's authorisation
+            group — never wildcard it.
+          </p>
+        </details>
       </li>
-  
-      <li>
-        <strong>Row-count context — understand data volumes before you run.</strong>
-        <p>
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE16N</a>
-          to count rows in the target table with your intended filter (company
-          code, fiscal year, material type, etc.) before you start the
-          extraction. This gives you:
-        </p>
-        <ul>
-          <li>A baseline to reconcile against after the extract.</li>
-          <li>A sense of whether your partition is safe to extract
-            (&lt;&nbsp;100M rows is generally safe for ODP;
-            larger partitions may need further splitting or SLT).</li>
-          <li>Early warning if a filter is misconfigured
-            (count returns billions — rethink the partition).</li>
-        </ul>
+
+      <li class="preflight-card" data-preflight="rowcount">
+        <span class="preflight-eyebrow">04 · Row-count baseline</span>
+        <p class="preflight-summary">Use SE16N to measure the intended partition before extraction — you cannot reconcile without this number.</p>
+        <details class="preflight-detail">
+          <summary>How to check</summary>
+          <p>
+            Open
+            <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE16N</a>,
+            apply the same filter your extraction will use, and record the
+            count. Under 100M rows is usually safe for a single ODP partition;
+            larger volumes need further splitting or SLT. A count in the
+            billions means the filter is misconfigured — rethink the
+            partition before running anything.
+          </p>
+        </details>
       </li>
     </ol>
-  
-    <p class="sap-preflight-footer">
-      These four checks take 15–30 minutes on a first walkthrough, and under
-      5 minutes once you know your system. They are the difference between a
-      smooth extraction and a multi-day incident.
-    </p>
   </section>
 
   <section class="callout callout-warning license-check">
@@ -435,208 +409,213 @@
     </div>
   </aside>
 
-  <ol class="steps-list">
-    <li>
-      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
-        <header class="step-header">
-          <div class="step-number">Step 1</div>
-          <h2 class="step-title">Verify the released CDS view I_Supplier</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-01"
-              aria-label="Mark Verify the released CDS view I_Supplier as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
+  <div class="steps-container" data-default-method="odp">
+    <ol class="steps-list" data-method="odp">
+<li>
+  <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+    <header class="step-header">
+      <div class="step-number">Step 1</div>
+      <h2 class="step-title">Verify the released CDS view I_Supplier</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-01"
+          aria-label="Mark Verify the released CDS view I_Supplier as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
 
-        <div class="step-body">
-          <p class="step-intro">Vendor master general data is exposed via the <a href="https://help.sap.com/">I_Supplier</a> CDS view. Confirm it is present in your system and annotated for extraction.</p>
+    <div class="step-body">
+      <p class="step-intro">Vendor master general data is exposed via the <a href="https://help.sap.com/">I_Supplier</a> CDS view. Confirm it is present in your system and annotated for extraction.</p>
 
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE80
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Repository Browser → Search → I_Supplier</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">I_Supplier appears in SE80 with @Analytics.dataExtract: true.</div>
-          </div>
-
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE80
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Repository Browser → Search → I_Supplier</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
-        <header class="step-header">
-          <div class="step-number">Step 2</div>
-          <h2 class="step-title">Count rows in LFA1 (SE16N baseline)</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-02"
-              aria-label="Mark Count rows in LFA1 (SE16N baseline) as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Use <a href="https://help.sap.com/">SE16N</a> to count all rows in LFA1 without filters. LFA1 is typically small (thousands to low millions of vendors). Note the count for reconciliation.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE16N
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Execute → LFA1 → Count (no filter)</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">You have a row count for LFA1. Typical range: 50K–2M vendors.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">I_Supplier appears in SE80 with @Analytics.dataExtract: true.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+    <header class="step-header">
+      <div class="step-number">Step 2</div>
+      <h2 class="step-title">Count rows in LFA1 (SE16N baseline)</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-02"
+          aria-label="Mark Count rows in LFA1 (SE16N baseline) as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Use <a href="https://help.sap.com/">SE16N</a> to count all rows in LFA1 without filters. LFA1 is typically small (thousands to low millions of vendors). Note the count for reconciliation.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → LFA1 → Count (no filter)</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
-        <header class="step-header">
-          <div class="step-number">Step 3</div>
-          <h2 class="step-title">Confirm the extraction user has vendor master authorization</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-03"
-              aria-label="Mark Confirm the extraction user has vendor master authorization as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Vendor master sits in authorization group MM (Materials Management) for table display. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM in addition to S_RFC and S_ODP_READ. Use <a href="https://help.sap.com/">PFCG</a> to check or update.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                PFCG
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Role → Display → Authorization Data</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Role covers S_TABU_DIS for authorization group MM (or a broader group that includes vendor master tables).</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">You have a row count for LFA1. Typical range: 50K–2M vendors.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+    <header class="step-header">
+      <div class="step-number">Step 3</div>
+      <h2 class="step-title">Confirm the extraction user has vendor master authorization</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-03"
+          aria-label="Mark Confirm the extraction user has vendor master authorization as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Vendor master sits in authorization group MM (Materials Management) for table display. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM in addition to S_RFC and S_ODP_READ. Use <a href="https://help.sap.com/">PFCG</a> to check or update.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            PFCG
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Role → Display → Authorization Data</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
-        <header class="step-header">
-          <div class="step-number">Step 4</div>
-          <h2 class="step-title">Check ODQMON after the first tool run</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-04"
-              aria-label="Mark Check ODQMON after the first tool run as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">After your extraction tool makes its first connection, verify <a href="https://help.sap.com/">ODQMON</a> shows an active subscription for I_Supplier.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                ODQMON
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Subscriptions → Context: ABAP_CDS → I_Supplier</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Subscription for I_Supplier is active. No errors.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Role covers S_TABU_DIS for authorization group MM (or a broader group that includes vendor master tables).</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+    <header class="step-header">
+      <div class="step-number">Step 4</div>
+      <h2 class="step-title">Check ODQMON after the first tool run</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-04"
+          aria-label="Mark Check ODQMON after the first tool run as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">After your extraction tool makes its first connection, verify <a href="https://help.sap.com/">ODQMON</a> shows an active subscription for I_Supplier.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            ODQMON
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Subscriptions → Context: ABAP_CDS → I_Supplier</em>.
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
-        <header class="step-header">
-          <div class="step-number">Step 5</div>
-          <h2 class="step-title">Reconcile vendor count after extraction</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-05"
-              aria-label="Mark Reconcile vendor count after extraction as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Return to SE16N and count LFA1 again. The row count in your landing zone must match. LFA1 is stable enough that any significant discrepancy indicates a configuration problem, not in-flight updates.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE16N
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Execute → LFA1 → Count</em>.
-            </div>
-          </div>
+      </div>
 
 
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Landing zone row count matches SE16N count. Sample columns LIFNR, NAME1, LAND1 have expected values.</div>
-          </div>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Subscription for I_Supplier is active. No errors.</div>
+      </div>
 
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+    <header class="step-header">
+      <div class="step-number">Step 5</div>
+      <h2 class="step-title">Reconcile vendor count after extraction</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-05"
+          aria-label="Mark Reconcile vendor count after extraction as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Return to SE16N and count LFA1 again. The row count in your landing zone must match. LFA1 is stable enough that any significant discrepancy indicates a configuration problem, not in-flight updates.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → LFA1 → Count</em>.
         </div>
-      </article>
-    </li>
-  </ol>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Landing zone row count matches SE16N count. Sample columns LIFNR, NAME1, LAND1 have expected values.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+    </ol>
+
+
+
+  </div>
 
   <section class="troubleshooting">
     <h2>Troubleshooting</h2>

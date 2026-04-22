@@ -54,6 +54,28 @@
       });
     });
 
+    // Swap visible step list based on current method. Falls back to the
+    // container's data-default-method if no list exists for the selection.
+    const container = document.querySelector('.steps-container');
+    if (container) {
+      const available = Array.from(container.querySelectorAll('ol.steps-list'));
+      const wanted = state.method;
+      const fallback =
+        container.getAttribute('data-default-method') || 'odp';
+      const targetMethod = available.some(function (ol) {
+        return ol.getAttribute('data-method') === wanted;
+      })
+        ? wanted
+        : fallback;
+      available.forEach(function (ol) {
+        if (ol.getAttribute('data-method') === targetMethod) {
+          ol.removeAttribute('hidden');
+        } else {
+          ol.setAttribute('hidden', '');
+        }
+      });
+    }
+
     // When method=ref, hide the tool axis and any reference-starter blocks.
     const toolAxisEl = document.getElementById('picker-tool');
     const referenceStarters = document.querySelectorAll('.reference-starter');
