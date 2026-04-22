@@ -1,0 +1,73 @@
+<!-- Tables index — module-filterable card grid -->
+
+<div class="container">
+  <header class="page-header">
+    <h1>SAP Tables</h1>
+    <p class="page-lead">
+      Extract these tables from S/4HANA and ECC to cloud platforms.
+      Every table page covers key fields, extraction gotchas, license
+      implications, and walkthroughs at three skill levels.
+    </p>
+  </header>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="{{basePath}}/">Home</a></li>
+      <li aria-current="page">Tables</li>
+    </ol>
+  </nav>
+
+  <div class="tables-toolbar">
+    <div class="toolbar-group">
+      <span class="toolbar-label" id="module-filter-label">Filter by module</span>
+      <div class="toolbar-chips" role="group" aria-labelledby="module-filter-label" data-filter-group="module">
+        <button type="button" class="chip chip--active" data-filter="all" aria-pressed="true">All</button>
+        {{#moduleChips}}
+        <button type="button" class="chip" data-filter="{{code}}" aria-pressed="false">{{label}}</button>
+        {{/moduleChips}}
+      </div>
+    </div>
+    <div class="toolbar-count" aria-live="polite">
+      <span data-visible-count>{{itemCount}}</span> of {{itemCount}} tables
+    </div>
+  </div>
+
+  <section class="table-grid" data-filterable>
+    {{#items}}
+    <article class="table-card" data-module="{{module}}">
+      <header class="table-card-header">
+        <div class="table-card-tags">
+          <span class="tag tag--module">{{module}}</span>
+          <span class="tag tag--source">{{source}}</span>
+        </div>
+        <h2 class="table-card-title">
+          <a href="{{basePath}}{{url}}">{{code}}</a>
+        </h2>
+        <p class="table-card-subtitle">{{name}}</p>
+      </header>
+      <p class="table-card-description">{{description}}</p>
+      <footer class="table-card-footer">
+        <div class="table-card-meta">
+          <span class="meta-item">
+            <span class="meta-label">Volume</span>
+            <span class="meta-value">{{volumeLabel}}</span>
+          </span>
+          <span class="meta-item">
+            <span class="meta-label">Walkthroughs</span>
+            <span class="meta-value">{{walkthroughLabel}}</span>
+          </span>
+        </div>
+        <a class="table-card-link" href="{{basePath}}{{url}}">
+          Open table guide <span aria-hidden="true">→</span>
+        </a>
+      </footer>
+    </article>
+    {{/items}}
+  </section>
+
+  <p class="table-grid-empty" data-empty-state hidden>
+    No tables match this filter.
+  </p>
+</div>
+
+<script type="module" src="{{basePath}}/assets/js/table-filter.js?v=1" defer></script>

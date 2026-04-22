@@ -64,56 +64,189 @@
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
     </div>
-    <!-- Generic list/index page template -->
+    <!-- Tables index — module-filterable card grid -->
 
-<header class="page-header">
-  <h1></h1>
-</header>
+<div class="container">
+  <header class="page-header">
+    <h1>SAP Tables</h1>
+    <p class="page-lead">
+      Extract these tables from S/4HANA and ECC to cloud platforms.
+      Every table page covers key fields, extraction gotchas, license
+      implications, and walkthroughs at three skill levels.
+    </p>
+  </header>
 
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li aria-current="page">Tables</li>
+    </ol>
+  </nav>
 
-<section class="items-grid">
-  <article class="item-card card">
-    <h2>
-      <a href="&#x2F;tables&#x2F;acdoca&#x2F;">ACDOCA: Universal Journal</a>
-    </h2>
-    <p class="item-subtitle">Module: FI</p>
-    <p class="item-description">Universal Journal (subledger, costing, and line-item accounting). Billions of rows; consolidated view of all postings across all document types.</p>
-    <a href="&#x2F;tables&#x2F;acdoca&#x2F;" class="btn btn-secondary">View</a>
-  </article>
-  <article class="item-card card">
-    <h2>
-      <a href="&#x2F;tables&#x2F;bkpf&#x2F;">BKPF: Accounting Document Header</a>
-    </h2>
-    <p class="item-subtitle">Module: FI</p>
-    <p class="item-description">Accounting document header (all G&#x2F;L, A&#x2F;P, A&#x2F;R documents). One row per accounting document, with posting date, document type, company code, fiscal year.</p>
-    <a href="&#x2F;tables&#x2F;bkpf&#x2F;" class="btn btn-secondary">View</a>
-  </article>
-  <article class="item-card card">
-    <h2>
-      <a href="&#x2F;tables&#x2F;lfa1&#x2F;">LFA1: Vendor Master (General)</a>
-    </h2>
-    <p class="item-subtitle">Module: MD</p>
-    <p class="item-description">Vendor master data (general section). One row per vendor, containing company name, address, contact, and core purchasing details.</p>
-    <a href="&#x2F;tables&#x2F;lfa1&#x2F;" class="btn btn-secondary">View</a>
-  </article>
-  <article class="item-card card">
-    <h2>
-      <a href="&#x2F;tables&#x2F;mara&#x2F;">MARA: Material Master (General)</a>
-    </h2>
-    <p class="item-subtitle">Module: MD</p>
-    <p class="item-description">Material master data (general section). One row per material, containing material type, category, unit of measure, and core logistics attributes.</p>
-    <a href="&#x2F;tables&#x2F;mara&#x2F;" class="btn btn-secondary">View</a>
-  </article>
-  <article class="item-card card">
-    <h2>
-      <a href="&#x2F;tables&#x2F;vbak&#x2F;">VBAK: Sales Document Header</a>
-    </h2>
-    <p class="item-subtitle">Module: SD</p>
-    <p class="item-description">Header record for sales documents (orders, quotations, contracts). One row per sales document.</p>
-    <a href="&#x2F;tables&#x2F;vbak&#x2F;" class="btn btn-secondary">View</a>
-  </article>
-</section>
+  <div class="tables-toolbar">
+    <div class="toolbar-group">
+      <span class="toolbar-label" id="module-filter-label">Filter by module</span>
+      <div class="toolbar-chips" role="group" aria-labelledby="module-filter-label" data-filter-group="module">
+        <button type="button" class="chip chip--active" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" class="chip" data-filter="FI" aria-pressed="false">Finance</button>
+        <button type="button" class="chip" data-filter="MD" aria-pressed="false">Master Data</button>
+        <button type="button" class="chip" data-filter="SD" aria-pressed="false">Sales</button>
+      </div>
+    </div>
+    <div class="toolbar-count" aria-live="polite">
+      <span data-visible-count>5</span> of 5 tables
+    </div>
+  </div>
 
+  <section class="table-grid" data-filterable>
+    <article class="table-card" data-module="FI">
+      <header class="table-card-header">
+        <div class="table-card-tags">
+          <span class="tag tag--module">FI</span>
+          <span class="tag tag--source">S&#x2F;4HANA</span>
+        </div>
+        <h2 class="table-card-title">
+          <a href="&#x2F;tables&#x2F;acdoca&#x2F;">ACDOCA</a>
+        </h2>
+        <p class="table-card-subtitle">Universal Journal</p>
+      </header>
+      <p class="table-card-description">Universal Journal (subledger, costing, and line-item accounting). Billions of rows; consolidated view of all postings across all document types.</p>
+      <footer class="table-card-footer">
+        <div class="table-card-meta">
+          <span class="meta-item">
+            <span class="meta-label">Volume</span>
+            <span class="meta-value">Heavyweight</span>
+          </span>
+          <span class="meta-item">
+            <span class="meta-label">Walkthroughs</span>
+            <span class="meta-value">3 levels</span>
+          </span>
+        </div>
+        <a class="table-card-link" href="&#x2F;tables&#x2F;acdoca&#x2F;">
+          Open table guide <span aria-hidden="true">→</span>
+        </a>
+      </footer>
+    </article>
+    <article class="table-card" data-module="FI">
+      <header class="table-card-header">
+        <div class="table-card-tags">
+          <span class="tag tag--module">FI</span>
+          <span class="tag tag--source">S&#x2F;4HANA</span>
+        </div>
+        <h2 class="table-card-title">
+          <a href="&#x2F;tables&#x2F;bkpf&#x2F;">BKPF</a>
+        </h2>
+        <p class="table-card-subtitle">Accounting Document Header</p>
+      </header>
+      <p class="table-card-description">Accounting document header (all G&#x2F;L, A&#x2F;P, A&#x2F;R documents). One row per accounting document, with posting date, document type, company code, fiscal year.</p>
+      <footer class="table-card-footer">
+        <div class="table-card-meta">
+          <span class="meta-item">
+            <span class="meta-label">Volume</span>
+            <span class="meta-value">Medium</span>
+          </span>
+          <span class="meta-item">
+            <span class="meta-label">Walkthroughs</span>
+            <span class="meta-value">3 levels</span>
+          </span>
+        </div>
+        <a class="table-card-link" href="&#x2F;tables&#x2F;bkpf&#x2F;">
+          Open table guide <span aria-hidden="true">→</span>
+        </a>
+      </footer>
+    </article>
+    <article class="table-card" data-module="MD">
+      <header class="table-card-header">
+        <div class="table-card-tags">
+          <span class="tag tag--module">MD</span>
+          <span class="tag tag--source">S&#x2F;4HANA</span>
+        </div>
+        <h2 class="table-card-title">
+          <a href="&#x2F;tables&#x2F;lfa1&#x2F;">LFA1</a>
+        </h2>
+        <p class="table-card-subtitle">Vendor Master (General)</p>
+      </header>
+      <p class="table-card-description">Vendor master data (general section). One row per vendor, containing company name, address, contact, and core purchasing details.</p>
+      <footer class="table-card-footer">
+        <div class="table-card-meta">
+          <span class="meta-item">
+            <span class="meta-label">Volume</span>
+            <span class="meta-value">Small</span>
+          </span>
+          <span class="meta-item">
+            <span class="meta-label">Walkthroughs</span>
+            <span class="meta-value">3 levels</span>
+          </span>
+        </div>
+        <a class="table-card-link" href="&#x2F;tables&#x2F;lfa1&#x2F;">
+          Open table guide <span aria-hidden="true">→</span>
+        </a>
+      </footer>
+    </article>
+    <article class="table-card" data-module="MD">
+      <header class="table-card-header">
+        <div class="table-card-tags">
+          <span class="tag tag--module">MD</span>
+          <span class="tag tag--source">S&#x2F;4HANA</span>
+        </div>
+        <h2 class="table-card-title">
+          <a href="&#x2F;tables&#x2F;mara&#x2F;">MARA</a>
+        </h2>
+        <p class="table-card-subtitle">Material Master (General)</p>
+      </header>
+      <p class="table-card-description">Material master data (general section). One row per material, containing material type, category, unit of measure, and core logistics attributes.</p>
+      <footer class="table-card-footer">
+        <div class="table-card-meta">
+          <span class="meta-item">
+            <span class="meta-label">Volume</span>
+            <span class="meta-value">Medium</span>
+          </span>
+          <span class="meta-item">
+            <span class="meta-label">Walkthroughs</span>
+            <span class="meta-value">3 levels</span>
+          </span>
+        </div>
+        <a class="table-card-link" href="&#x2F;tables&#x2F;mara&#x2F;">
+          Open table guide <span aria-hidden="true">→</span>
+        </a>
+      </footer>
+    </article>
+    <article class="table-card" data-module="SD">
+      <header class="table-card-header">
+        <div class="table-card-tags">
+          <span class="tag tag--module">SD</span>
+          <span class="tag tag--source">S&#x2F;4HANA</span>
+        </div>
+        <h2 class="table-card-title">
+          <a href="&#x2F;tables&#x2F;vbak&#x2F;">VBAK</a>
+        </h2>
+        <p class="table-card-subtitle">Sales Document Header</p>
+      </header>
+      <p class="table-card-description">Header record for sales documents (orders, quotations, contracts). One row per sales document.</p>
+      <footer class="table-card-footer">
+        <div class="table-card-meta">
+          <span class="meta-item">
+            <span class="meta-label">Volume</span>
+            <span class="meta-value">Medium</span>
+          </span>
+          <span class="meta-item">
+            <span class="meta-label">Walkthroughs</span>
+            <span class="meta-value">3 levels</span>
+          </span>
+        </div>
+        <a class="table-card-link" href="&#x2F;tables&#x2F;vbak&#x2F;">
+          Open table guide <span aria-hidden="true">→</span>
+        </a>
+      </footer>
+    </article>
+  </section>
+
+  <p class="table-grid-empty" data-empty-state hidden>
+    No tables match this filter.
+  </p>
+</div>
+
+<script type="module" src="/assets/js/table-filter.js?v=1" defer></script>
 
   </main>
 

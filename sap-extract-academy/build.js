@@ -23,7 +23,25 @@ const pageTemplates = {
   article: fs.readFileSync(path.join(TEMPLATES_DIR, 'article.html'), 'utf-8'),
   glossary: fs.readFileSync(path.join(TEMPLATES_DIR, 'glossary-term.html'), 'utf-8'),
   list: fs.readFileSync(path.join(TEMPLATES_DIR, 'list.html'), 'utf-8'),
-  page: fs.readFileSync(path.join(TEMPLATES_DIR, 'page.html'), 'utf-8')
+  page: fs.readFileSync(path.join(TEMPLATES_DIR, 'page.html'), 'utf-8'),
+  tablesIndex: fs.readFileSync(path.join(TEMPLATES_DIR, 'tables-index.html'), 'utf-8')
+};
+
+const MODULE_LABELS = {
+  FI: 'Finance',
+  SD: 'Sales',
+  MD: 'Master Data',
+  MM: 'Materials',
+  CO: 'Controlling',
+  HR: 'Human Resources'
+};
+
+const VOLUME_LABELS = {
+  small: 'Small',
+  medium: 'Medium',
+  heavy: 'Heavy',
+  heavyweight: 'Heavyweight',
+  large: 'Large'
 };
 
 const sitemapEntries = [];
@@ -302,7 +320,10 @@ function generateIndexPages() {
           code: data.code,
           name: data.name,
           module: data.module,
-          businessDescription: data.businessDescription
+          businessDescription: data.businessDescription,
+          volumeClass: data.volumeClass,
+          availableLevels: Array.isArray(data.availableLevels) ? data.availableLevels : [],
+          sourceSystem: data.sourceSystem || 'S/4HANA'
         });
       }
     }
@@ -348,18 +369,34 @@ function generateIndexPages() {
 
   // Generate tables index page
   if (tables.length > 0) {
+    const moduleCodes = Array.from(new Set(tables.map(t => t.module).filter(Boolean))).sort();
+    const moduleChips = moduleCodes.map(code => ({ code, label: MODULE_LABELS[code] || code }));
+
+    const items = tables.map(t => {
+      const levelCount = t.availableLevels.length;
+      return {
+        code: t.code,
+        name: t.name,
+        module: t.module,
+        source: t.sourceSystem,
+        description: t.businessDescription,
+        volumeLabel: VOLUME_LABELS[t.volumeClass] || (t.volumeClass
+          ? t.volumeClass.charAt(0).toUpperCase() + t.volumeClass.slice(1)
+          : 'Unspecified'),
+        walkthroughLabel: levelCount > 0
+          ? `${levelCount} level${levelCount === 1 ? '' : 's'}`
+          : 'Planned',
+        url: `/tables/${t.slug}/`
+      };
+    });
+
     const tablesPage = {
       slug: '/tables/',
-      title: 'SAP Tables',
       seoTitle: 'SAP Tables — Extract ACDOCA, BKPF, VBAK, MARA, LFA1',
       seoDescription: 'Complete library of SAP tables for extraction. ACDOCA, BKPF, VBAK, MARA, LFA1. Each with beginner, intermediate, expert walkthroughs.',
-      items: tables.map(t => ({
-        title: `${t.code}: ${t.name}`,
-        subtitle: `Module: ${t.module}`,
-        description: t.businessDescription,
-        url: `/tables/${t.slug}/`,
-        label: 'View Table'
-      }))
+      items,
+      moduleChips,
+      itemCount: items.length
     };
     buildIndexPage('tables', tablesPage);
   }
@@ -411,6 +448,8 @@ function buildIndexPage(category, data) {
     seoDescription: data.seoDescription,
     canonicalPath: data.slug,
     items: data.items,
+    moduleChips: data.moduleChips,
+    itemCount: data.itemCount,
     strings,
     currentYear,
     basePath: BASE_PATH,
@@ -418,7 +457,8 @@ function buildIndexPage(category, data) {
     ogType: 'website'
   };
 
-  const pageContent = Mustache.render(pageTemplates.list, mergedData);
+  const template = category === 'tables' ? pageTemplates.tablesIndex : pageTemplates.list;
+  const pageContent = Mustache.render(template, mergedData);
   const baseData = {
     ...mergedData,
     content: pageContent
