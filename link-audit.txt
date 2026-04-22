@@ -1,0 +1,126 @@
+# link-audit.txt
+#
+# All help.sap.com URLs referenced in content/en/**.
+# Format: <file>:<line> <URL>
+# Worker C runs this through a live fetch and marks OK / 404 / REDIRECT → url / TIMEOUT.
+#
+# Three GUID families are suspect (placeholder, likely 404 in bulk):
+#   SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/
+#   SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/
+#   SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ + sub-GUIDs
+#
+# ============================================================
+# TABLES
+# ============================================================
+sap-extract-academy/content/en/tables/acdoca.md:30  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/journal-entry-item-cds.html
+sap-extract-academy/content/en/tables/acdoca.md:31  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/universal-journal.html
+sap-extract-academy/content/en/tables/acdoca.md:34  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/acdoca-partitioning.html
+sap-extract-academy/content/en/tables/acdoca.md:36  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/acdoca-perf.html
+sap-extract-academy/content/en/tables/acdoca.md:38  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/acdoca-design.html
+sap-extract-academy/content/en/tables/acdoca.md:40  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/slt-licensing.html
+sap-extract-academy/content/en/tables/acdoca.md:54  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/universal-journal-overview.html
+sap-extract-academy/content/en/tables/acdoca.md:54  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/acdoca-arch.html
+sap-extract-academy/content/en/tables/bkpf.md:24  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/accounting-doc-cds.html
+sap-extract-academy/content/en/tables/bkpf.md:25  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/accounting-doc.html
+sap-extract-academy/content/en/tables/bkpf.md:28  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/bkpf-partitioning.html
+sap-extract-academy/content/en/tables/bkpf.md:30  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/bseg.html
+sap-extract-academy/content/en/tables/bkpf.md:32  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/reversals.html
+sap-extract-academy/content/en/tables/bkpf.md:46  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/accounting-doc-overview.html
+sap-extract-academy/content/en/tables/lfa1.md:18  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/supplier-cds.html
+sap-extract-academy/content/en/tables/lfa1.md:19  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/vendor-master.html
+sap-extract-academy/content/en/tables/lfa1.md:22  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/vendor-tables.html
+sap-extract-academy/content/en/tables/lfa1.md:36  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/vendor-master-overview.html
+sap-extract-academy/content/en/tables/mara.md:18  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/product-cds.html
+sap-extract-academy/content/en/tables/mara.md:19  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/material-master.html
+sap-extract-academy/content/en/tables/mara.md:22  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/material-tables.html
+sap-extract-academy/content/en/tables/mara.md:24  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/zfields.html
+sap-extract-academy/content/en/tables/mara.md:38  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/material-master-overview.html
+sap-extract-academy/content/en/tables/vbak.md:18  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/e4a58de831c54ea89e2d9f07a2a8e3c7.html
+sap-extract-academy/content/en/tables/vbak.md:19  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/4e4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b.html
+sap-extract-academy/content/en/tables/vbak.md:22  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/sales-doc-types.html
+sap-extract-academy/content/en/tables/vbak.md:24  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/partitioning.html
+sap-extract-academy/content/en/tables/vbak.md:38  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/sales-doc-overview.html
+
+# ============================================================
+# GLOSSARY (sapDocUrl front-matter)
+# ============================================================
+sap-extract-academy/content/en/glossary/abap.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/abap.html
+sap-extract-academy/content/en/glossary/adt.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/adt.html
+sap-extract-academy/content/en/glossary/append-structure.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/append-structures.html
+sap-extract-academy/content/en/glossary/badi.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/badi.html
+sap-extract-academy/content/en/glossary/bw.md:7  https://help.sap.com/docs/SAP_BUSINESSWAREHOUSE/0f69a8fb28ac48d89de2381c2f02a1e9/bw.html
+sap-extract-academy/content/en/glossary/cds.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/cds.html
+sap-extract-academy/content/en/glossary/cuky.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-cuky.html
+sap-extract-academy/content/en/glossary/curr.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-curr.html
+sap-extract-academy/content/en/glossary/dats.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-dats.html
+sap-extract-academy/content/en/glossary/delta.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/operational-data-provisioning.html
+sap-extract-academy/content/en/glossary/dialog-work-process.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/sm50.html
+sap-extract-academy/content/en/glossary/extractor.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/operational-data-provisioning.html
+sap-extract-academy/content/en/glossary/ltrc.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRC.html
+sap-extract-academy/content/en/glossary/ltrs.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html
+sap-extract-academy/content/en/glossary/mandt.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/client.html
+sap-extract-academy/content/en/glossary/meins.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-meins.html
+sap-extract-academy/content/en/glossary/numc.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-numc.html
+sap-extract-academy/content/en/glossary/odp.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/operational-data-provisioning.html
+sap-extract-academy/content/en/glossary/odqmon.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html
+sap-extract-academy/content/en/glossary/openhub.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/openhub.html
+sap-extract-academy/content/en/glossary/quan.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-quan.html
+sap-extract-academy/content/en/glossary/rfc.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/rfc.html
+sap-extract-academy/content/en/glossary/s4hana.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/s4hana.html
+sap-extract-academy/content/en/glossary/se11.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html
+sap-extract-academy/content/en/glossary/se16n.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html
+sap-extract-academy/content/en/glossary/sicf.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SICF.html
+sap-extract-academy/content/en/glossary/slt.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/slt.html
+sap-extract-academy/content/en/glossary/sm59.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SM59.html
+sap-extract-academy/content/en/glossary/transport-request.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/transport-request.html
+sap-extract-academy/content/en/glossary/tsv-tnew-page-alloc-failed.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/memory-error.html
+sap-extract-academy/content/en/glossary/vbeln.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/vbak.html
+sap-extract-academy/content/en/glossary/z-field.md:7  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/custom-fields.html
+
+# ============================================================
+# WALKTHROUGHS — BEGINNER
+# ============================================================
+sap-extract-academy/content/en/walkthroughs/beginner/acdoca.md:24  https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/journal-entry-item-cds.html
+sap-extract-academy/content/en/walkthroughs/beginner/acdoca.md:28  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html
+sap-extract-academy/content/en/walkthroughs/beginner/acdoca.md:38  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html
+sap-extract-academy/content/en/walkthroughs/beginner/bkpf.md:20  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/accounting-doc-cds.html
+sap-extract-academy/content/en/walkthroughs/beginner/bkpf.md:24  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html
+sap-extract-academy/content/en/walkthroughs/beginner/bkpf.md:33  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html
+sap-extract-academy/content/en/walkthroughs/beginner/lfa1.md:20  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/supplier-cds.html
+sap-extract-academy/content/en/walkthroughs/beginner/lfa1.md:24  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html
+sap-extract-academy/content/en/walkthroughs/beginner/mara.md:20  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/product-cds.html
+sap-extract-academy/content/en/walkthroughs/beginner/mara.md:24  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html
+sap-extract-academy/content/en/walkthroughs/beginner/mara.md:33  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html
+sap-extract-academy/content/en/walkthroughs/beginner/vbak.md:20  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/4e4b4b4b.html
+sap-extract-academy/content/en/walkthroughs/beginner/vbak.md:24  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html
+sap-extract-academy/content/en/walkthroughs/beginner/vbak.md:30  https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html
+sap-extract-academy/content/en/walkthroughs/beginner/vbak.md:34  https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html
+sap-extract-academy/content/en/walkthroughs/beginner/vbak.md:47  https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/c9e46fe83e8a4cf1ba7f686e28c05236.html
+sap-extract-academy/content/en/walkthroughs/beginner/vbak.md:51  https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html
+
+# ============================================================
+# WALKTHROUGHS — INTERMEDIATE
+# ============================================================
+sap-extract-academy/content/en/walkthroughs/intermediate/acdoca.md:23  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html
+sap-extract-academy/content/en/walkthroughs/intermediate/acdoca.md:28  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html
+sap-extract-academy/content/en/walkthroughs/intermediate/acdoca.md:32  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html
+sap-extract-academy/content/en/walkthroughs/intermediate/mara.md:23  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html
+sap-extract-academy/content/en/walkthroughs/intermediate/vbak.md:23  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html
+sap-extract-academy/content/en/walkthroughs/intermediate/vbak.md:32  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html
+sap-extract-academy/content/en/walkthroughs/intermediate/vbak.md:72  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html
+
+# ============================================================
+# WALKTHROUGHS — EXPERT
+# ============================================================
+sap-extract-academy/content/en/walkthroughs/expert/acdoca.md:25  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html
+sap-extract-academy/content/en/walkthroughs/expert/acdoca.md:49  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html
+sap-extract-academy/content/en/walkthroughs/expert/acdoca.md:58  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html
+sap-extract-academy/content/en/walkthroughs/expert/acdoca.md:67  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SM50.html
+sap-extract-academy/content/en/walkthroughs/expert/acdoca.md:76  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html
+sap-extract-academy/content/en/walkthroughs/expert/lfa1.md:23  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/vendor-tables.html
+sap-extract-academy/content/en/walkthroughs/expert/vbak.md:21  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SLT.html
+sap-extract-academy/content/en/walkthroughs/expert/vbak.md:25  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html
+sap-extract-academy/content/en/walkthroughs/expert/vbak.md:34  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SM59.html
+sap-extract-academy/content/en/walkthroughs/expert/vbak.md:57  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html
+sap-extract-academy/content/en/walkthroughs/expert/vbak.md:78  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html
+sap-extract-academy/content/en/walkthroughs/expert/vbak.md:109  https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html
