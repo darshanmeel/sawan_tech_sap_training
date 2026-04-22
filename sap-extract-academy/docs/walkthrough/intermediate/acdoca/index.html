@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,16 +106,8 @@
     <p>All licenses. ODP is application-layer, works under Runtime License.</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed any Intermediate walkthrough</li>
-      <li>Understanding of ACDOCA size&#x2F;complexity from table overview</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
 <p>Your finance team needs ACDOCA data for year-end close analytics. You&#39;ll extract one company, one fiscal year — enough for meaningful analysis without hitting system limits. This walkthrough teaches the safe approach; the Expert walkthrough scales to multi-year, multi-company via SLT.</p>
@@ -127,192 +120,202 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Completed any Intermediate walkthrough</li>
+      <li>Understanding of ACDOCA size&#x2F;complexity from table overview</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 5 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">Confirm ACDOCA is massive</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark Confirm ACDOCA is massive as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Use <a href='/glossary/acdoca/'>ACDOCA</a> SE16N to count rows in one company code for one fiscal year. Budget 2-4 hours for extraction if rows exceed 100M.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → ACDOCA, filter RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">You know the row count for your partition. If &gt; 500M, move to Expert walkthrough.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark Confirm ACDOCA is massive as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Use <a href='/glossary/acdoca/'>ACDOCA</a> SE16N to count rows in one company code for one fiscal year. Budget 2-4 hours for extraction if rows exceed 100M.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
-              SE16N
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Execute → ACDOCA, filter RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>You know the row count for your partition. If &gt; 500M, move to Expert walkthrough.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Use I_JournalEntryItem CDS view (NOT raw ACDOCA)</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Use I_JournalEntryItem CDS view (NOT raw ACDOCA) as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Raw SELECT * on ACDOCA crashes SAP. Always use <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html'>I_JournalEntryItem</a>, which enforces authorization and applies currency conversion.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Search → I_JournalEntryItem</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">CDS view exists with @Analytics.dataExtract: true.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Use I_JournalEntryItem CDS view (NOT raw ACDOCA) as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Raw SELECT * on ACDOCA crashes SAP. Always use <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html'>I_JournalEntryItem</a>, which enforces authorization and applies currency conversion.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
-              SE80
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Search → I_JournalEntryItem</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>CDS view exists with @Analytics.dataExtract: true.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
           <h2 class="step-title">Extract with fiscal year + company code filters</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Extract with fiscal year + company code filters as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Extract with fiscal year + company code filters as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Python/pyrfc with ODP. Filter: RBUKRS='1000' AND RYEAR=2024. Set timeouts high (60 min) because ACDOCA is slow even with filters.</p>
+        <div class="step-body">
+          <p class="step-intro">Python/pyrfc with ODP. Filter: RBUKRS='1000' AND RYEAR=2024. Set timeouts high (60 min) because ACDOCA is slow even with filters.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Filtered ODP extraction</figcaption>
-          <pre><code class="language-python">filter_str &#x3D; &quot;(RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024)&quot;
+          <figure class="code-block">
+            <figcaption>Filtered ODP extraction</figcaption>
+            <pre><code class="language-python">filter_str &#x3D; &quot;(RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024)&quot;
 result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROWCOUNT&#x3D;1000000)
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Extraction completes. Logs show &#39;Fetched X million rows&#39;.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Extraction completes. Logs show &#39;Fetched X million rows&#39;.</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
           <h2 class="step-title">Stream to Snowflake to avoid memory issues</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Stream to Snowflake to avoid memory issues as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Don't load all rows into Python memory. Stream in batches of 100K rows, upsert to Snowflake in micro-batches.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Snowflake table fills incrementally. Monitor via Snowflake query history.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Stream to Snowflake to avoid memory issues as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Don't load all rows into Python memory. Stream in batches of 100K rows, upsert to Snowflake in micro-batches.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Snowflake table fills incrementally. Monitor via Snowflake query history.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-05">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-05</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
           <h2 class="step-title">Reconcile with BKPF totals</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-05"
-            aria-label="Mark Reconcile with BKPF totals as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Reconcile with BKPF totals as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Sum amounts in ACDOCA (by company, year) and compare to BKPF aggregates. They should match (within rounding).</p>
+        <div class="step-body">
+          <p class="step-intro">Sum amounts in ACDOCA (by company, year) and compare to BKPF aggregates. They should match (within rounding).</p>
 
 
-        <figure class="code-block">
-          <figcaption>Reconciliation query</figcaption>
-          <pre><code class="language-sql">SELECT SUM(AMOUNT_DEBIT) FROM ACDOCA WHERE RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024
+          <figure class="code-block">
+            <figcaption>Reconciliation query</figcaption>
+            <pre><code class="language-sql">SELECT SUM(AMOUNT_DEBIT) FROM ACDOCA WHERE RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024
 -- should match manual BKPF total for same company&#x2F;year
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Totals match within 0.01%.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Totals match within 0.01%.</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
   </ol>
 
@@ -334,7 +337,7 @@ result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROW
     </dl>
   </section>
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the intermediate walkthrough for ACDOCA. You now have 5 steps of experience extracting this table, and you understand the key considerations for the ACDOCA use case.</p>
   </section>
@@ -347,10 +350,13 @@ result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROW
     </ul>
   </section>
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

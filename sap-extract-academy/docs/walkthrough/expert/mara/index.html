@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,16 +106,8 @@
     <p>All licenses.</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed MARA Intermediate</li>
-      <li>Understanding of MARC and MVKE tables</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
 <p>Your company&#39;s MARA is heavily extended with custom fields. Manually managing 20+ Z-field extractions is error-prone. Fivetran&#39;s Application Layer connector discovers and extracts everything automatically.</p>
@@ -125,158 +118,168 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Completed MARA Intermediate</li>
+      <li>Understanding of MARC and MVKE tables</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 5 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">Profile the extended MARA structure</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark Profile the extended MARA structure as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Your MARA has 20+ Z-fields across multiple append structures. Fivetran's Application Layer can extract all at once.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Count Z-fields in SE11 MARA → Append Structures.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark Profile the extended MARA structure as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Your MARA has 20+ Z-fields across multiple append structures. Fivetran's Application Layer can extract all at once.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Count Z-fields in SE11 MARA → Append Structures.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Set up Fivetran Connector for SAP</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Set up Fivetran Connector for SAP as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">In Fivetran, create connector for SAP Application Layer. Authenticate with EXTRACT user.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Fivetran dashboard shows SAP connection status: Connected.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Set up Fivetran Connector for SAP as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">In Fivetran, create connector for SAP Application Layer. Authenticate with EXTRACT user.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Fivetran dashboard shows SAP connection status: Connected.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
           <h2 class="step-title">Enable MARA, MARC, MVKE tables in Fivetran</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Enable MARA, MARC, MVKE tables in Fivetran as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Select all three tables. Fivetran auto-discovers joins and Z-fields.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Fivetran shows 3 tables with all Z-fields listed.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Enable MARA, MARC, MVKE tables in Fivetran as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Select all three tables. Fivetran auto-discovers joins and Z-fields.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Fivetran shows 3 tables with all Z-fields listed.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
           <h2 class="step-title">Configure Snowflake destination</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Configure Snowflake destination as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Map to Snowflake schemas: raw.MARA, raw.MARC, raw.MVKE.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Initial load completes.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Configure Snowflake destination as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Map to Snowflake schemas: raw.MARA, raw.MARC, raw.MVKE.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Initial load completes.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-05">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-05</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
           <h2 class="step-title">Create Snowflake views with joins</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Create Snowflake views with joins as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Create DIM_MATERIAL_COMPLETE joining MARA + MARC + MVKE + all Z-fields.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">View query works and returns denormalized material records.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-05"
-            aria-label="Mark Create Snowflake views with joins as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Create DIM_MATERIAL_COMPLETE joining MARA + MARC + MVKE + all Z-fields.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>View query works and returns denormalized material records.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
   </ol>
 
@@ -292,7 +295,7 @@
     </dl>
   </section>
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the expert walkthrough for MARA. You now have 5 steps of experience extracting this table, and you understand the key considerations for the MARA use case.</p>
   </section>
@@ -304,10 +307,13 @@
     </ul>
   </section>
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

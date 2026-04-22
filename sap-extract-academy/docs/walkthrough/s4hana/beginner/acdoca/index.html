@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,18 +106,8 @@
     <p>IMPORTANT — Read SAP Note 3255746 before choosing your extraction tool. SAP updated this note in February 2024 (version 4): ODP via RFC is no longer permitted. This affects ADF SAP CDC connector, Qlik Replicate, Fivetran ODP connector, and most third-party tools. The compliant paths are: ODP via OData (slower, ~10x), SLT replication (separate license), or SAP Datasphere. If your tool uses RFC to call ODP, confirm the status with your SAP account executive before going live. Full note at: https:&#x2F;&#x2F;support.sap.com&#x2F;notes&#x2F;3255746 (SAP login required)</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Access to an S&#x2F;4HANA on-premise system (not ECC — ACDOCA is S&#x2F;4HANA only)</li>
-      <li>A technical SAP user account you control, or a BASIS team contact who can create one</li>
-      <li>An extraction tool that supports ODP with context ABAP_CDS (ADF SAP CDC, Qlik Replicate, Fivetran, Matillion, etc.)</li>
-      <li>Write access to your cloud platform&#39;s raw&#x2F;landing zone</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
 <p>Your analytics team needs financial data — GL line items, cost center postings, profit center actuals. In S/4HANA, all of that lives in ACDOCA. You know SQL. You know your cloud platform. You just need to get the data out safely without breaking SAP or violating your license agreement.</p>
@@ -131,104 +122,115 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Access to an S&#x2F;4HANA on-premise system (not ECC — ACDOCA is S&#x2F;4HANA only)</li>
+      <li>A technical SAP user account you control, or a BASIS team contact who can create one</li>
+      <li>An extraction tool that supports ODP with context ABAP_CDS (ADF SAP CDC, Qlik Replicate, Fivetran, Matillion, etc.)</li>
+      <li>Write access to your cloud platform&#39;s raw&#x2F;landing zone</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 9 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">Understand what you&#39;re about to extract</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark Understand what you&#39;re about to extract as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">ACDOCA is SAP's Universal Journal — the single table that stores every financial posting in S/4HANA. It replaced BSEG (GL line items), COEP (CO postings), and several other FI/CO tables. Every GL entry, every cost center posting, every internal order settlement lands here. At a mid-size enterprise ACDOCA has 500M rows. At a large one it has 3B+ rows. You are not extracting a small table. This is manageable if you do it right. It is a problem if you do it wrong.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">You understand: ACDOCA exists only in S&#x2F;4HANA (not ECC). On ECC, use BSEG + 0FI_GL_50 extractor instead. Confirm with your BASIS team which system type you&#39;re connecting to before proceeding.</div>
+          </div>
+
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>Connecting to an ECC system and searching for ACDOCA will return 0 rows — the table schema exists in ECC for compatibility but is always empty. If your first extract returns 0 rows, check the system type first.</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark Understand what you&#39;re about to extract as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">ACDOCA is SAP's Universal Journal — the single table that stores every financial posting in S/4HANA. It replaced BSEG (GL line items), COEP (CO postings), and several other FI/CO tables. Every GL entry, every cost center posting, every internal order settlement lands here. At a mid-size enterprise ACDOCA has 500M rows. At a large one it has 3B+ rows. You are not extracting a small table. This is manageable if you do it right. It is a problem if you do it wrong.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>You understand: ACDOCA exists only in S&#x2F;4HANA (not ECC). On ECC, use BSEG + 0FI_GL_50 extractor instead. Confirm with your BASIS team which system type you&#39;re connecting to before proceeding.</p>
-        </aside>
-
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>Connecting to an ECC system and searching for ACDOCA will return 0 rows — the table schema exists in ECC for compatibility but is always empty. If your first extract returns 0 rows, check the system type first.</p>
-        </details>
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Understand why SELECT * is not an option</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Understand why SELECT * is not an option as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Three reasons you cannot do a direct table read on ACDOCA. First: size. A 1B-row extract in one request will run for hours and put significant load on your SAP system's dialog work processes — your BASIS team will terminate it. [SME_KNOWLEDGE] Second: license. Direct table read of ACDOCA via RFC (e.g. RFC_READ_TABLE) requires Full Use license. If you're on Runtime Use license, you are blocked at the authorization level. Third: correctness. ACDOCA stores amounts in multiple currency fields (HSL, KSL, MSL, TSL, WSL) that only make sense with their paired currency code fields. The released CDS view handles these correctly via @Semantics annotations. A raw table read does not. The safe path: ODP via CDS view I_JournalEntryItem.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">You will not use RFC_READ_TABLE on ACDOCA. RFC_READ_TABLE is explicitly not intended for productive use ([SAP Note 382318](https:&#x2F;&#x2F;support.sap.com&#x2F;notes&#x2F;382318)) and will either be blocked by authorization (Runtime license) or will cause visible system slowdown.</div>
+          </div>
+
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>This is not a theoretical concern. RFC_READ_TABLE on ACDOCA is blocked for Runtime Use license holders by authorization. For Full Use license holders, it still runs but puts serious load on the SAP application server. Note 382318 documents that RFC_READ_TABLE is not for production use.</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Understand why SELECT * is not an option as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Three reasons you cannot do a direct table read on ACDOCA. First: size. A 1B-row extract in one request will run for hours and put significant load on your SAP system's dialog work processes — your BASIS team will terminate it. [SME_KNOWLEDGE] Second: license. Direct table read of ACDOCA via RFC (e.g. RFC_READ_TABLE) requires Full Use license. If you're on Runtime Use license, you are blocked at the authorization level. Third: correctness. ACDOCA stores amounts in multiple currency fields (HSL, KSL, MSL, TSL, WSL) that only make sense with their paired currency code fields. The released CDS view handles these correctly via @Semantics annotations. A raw table read does not. The safe path: ODP via CDS view I_JournalEntryItem.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>You will not use RFC_READ_TABLE on ACDOCA. RFC_READ_TABLE is explicitly not intended for productive use ([SAP Note 382318](https:&#x2F;&#x2F;support.sap.com&#x2F;notes&#x2F;382318)) and will either be blocked by authorization (Runtime license) or will cause visible system slowdown.</p>
-        </aside>
-
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>This is not a theoretical concern. RFC_READ_TABLE on ACDOCA is blocked for Runtime Use license holders by authorization. For Full Use license holders, it still runs but puts serious load on the SAP application server. Note 382318 documents that RFC_READ_TABLE is not for production use.</p>
-        </details>
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
           <h2 class="step-title">Check your license and talk to your BASIS team</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Check your license and talk to your BASIS team as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Check your license and talk to your BASIS team as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Before touching your extraction tool, confirm these five items with your BASIS team. This is a checklist, not a lecture — email it to them.</p>
+        <div class="step-body">
+          <p class="step-intro">Before touching your extraction tool, confirm these five items with your BASIS team. This is a checklist, not a lecture — email it to them.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Send this to your BASIS team before starting configuration</figcaption>
-          <pre><code class="language-plaintext">BASIS CHECKLIST — ACDOCA Extraction Setup
+          <figure class="code-block">
+            <figcaption>Send this to your BASIS team before starting configuration</figcaption>
+            <pre><code class="language-plaintext">BASIS CHECKLIST — ACDOCA Extraction Setup
 
 1. LICENSE
    Confirm Runtime Use License covers ODP via CDS extraction.
@@ -256,54 +258,51 @@
    Request read access to transaction ODQMON
    so you can monitor delta queues after extraction runs.
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Your extraction user can log in to the SAP system, and your BASIS team has confirmed S_RFC and S_ODP_READ are assigned. Ask them to run SU01 → your username → Authorizations and confirm both objects are present.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Your extraction user can log in to the SAP system, and your BASIS team has confirmed S_RFC and S_ODP_READ are assigned. Ask them to run SU01 → your username → Authorizations and confirm both objects are present.</div>
+          </div>
 
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>Missing S_ODP_READ with context ABAP_CDS is the most common cause of failed ACDOCA extractions. The error message varies by tool but often looks like SAP_ODP_AUTHORIZATION_MISSING or simply returns 0 rows without an error. [SME_KNOWLEDGE]</p>
-        </details>
-      </div>
-    </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
-          <h2 class="step-title">Find and verify I_JournalEntryItem in SAP</h2>
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>Missing S_ODP_READ with context ABAP_CDS is the most common cause of failed ACDOCA extractions. The error message varies by tool but often looks like SAP_ODP_AUTHORIZATION_MISSING or simply returns 0 rows without an error. [SME_KNOWLEDGE]</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Find and verify I_JournalEntryItem in SAP as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
+          <h2 class="step-title">Find and verify I_JournalEntryItem in SAP</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Find and verify I_JournalEntryItem in SAP as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Log in to your SAP system and open SE80 (ABAP Workbench) or ADT (SAP ABAP Development Tools in Eclipse). Search for the CDS view I_JournalEntryItem. You are looking for two things: the view exists and is active, and it carries extraction annotations enabling ODP consumption.</p>
+        <div class="step-body">
+          <p class="step-intro">Log in to your SAP system and open SE80 (ABAP Workbench) or ADT (SAP ABAP Development Tools in Eclipse). Search for the CDS view I_JournalEntryItem. You are looking for two things: the view exists and is active, and it carries extraction annotations enabling ODP consumption.</p>
 
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="[NEEDS_SAP_CITATION]" target="_blank" rel="noopener noreferrer">
-              SE80
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Repository Browser → Other Objects → select &#39;CDS Entity&#39; → enter I_JournalEntryItem → press Enter → switch to Source Code tab</em>.
-          </p>
-        </aside>
-
-        <figure class="code-block">
-          <figcaption>Annotations to verify in SE80 source view — source: wiki&#x2F;concepts&#x2F;CDS_views.md</figcaption>
-          <pre><code class="language-abap">-- In SE80: after opening I_JournalEntryItem, switch to the
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="[NEEDS_SAP_CITATION]" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Repository Browser → Other Objects → select &#39;CDS Entity&#39; → enter I_JournalEntryItem → press Enter → switch to Source Code tab</em>.
+              <figure class="code-block">
+                <figcaption>Annotations to verify in SE80 source view — source: wiki&#x2F;concepts&#x2F;CDS_views.md</figcaption>
+                <pre><code class="language-abap">-- In SE80: after opening I_JournalEntryItem, switch to the
 -- &quot;Source Code&quot; tab and look for these annotations near the top:
 
 -- This annotation enables ODP extraction of this view:
@@ -316,43 +315,46 @@
 -- If only the first is present, full extraction works but delta does not.
 -- If neither is present, this view is not ODP-enabled on your system.
 </code></pre>
-        </figure>
+              </figure>
+            </div>
+          </div>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>I_JournalEntryItem opens in SE80 without error and the @Analytics.dataExtraction.enabled annotation is present. If the view does not exist or has no annotation, your S&#x2F;4HANA release may not include this view — confirm with BASIS. On S&#x2F;4HANA on-prem, use I_JournalEntryItem. On S&#x2F;4HANA Cloud, this view is confirmed released. Delta behavior documented in [SAP Note 2884410](https:&#x2F;&#x2F;support.sap.com&#x2F;notes&#x2F;2884410).</p>
-        </aside>
 
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>Some S/4HANA releases or SPS levels have I_JournalEntryItem deactivated or use a different CDS view. Confirming in SE80 before tool configuration saves hours of debugging later. [SME_KNOWLEDGE] The safer confirmed on-prem extractor path is 0FI_ACDOCA_10 via SAPI context — if I_JournalEntryItem is not available on your system, use that instead.</p>
-        </details>
-      </div>
-    </li>
-    <li class="step" id="step-step-05">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-05</span>
-          <h2 class="step-title">Select your initial fields</h2>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">I_JournalEntryItem opens in SE80 without error and the @Analytics.dataExtraction.enabled annotation is present. If the view does not exist or has no annotation, your S&#x2F;4HANA release may not include this view — confirm with BASIS. On S&#x2F;4HANA on-prem, use I_JournalEntryItem. On S&#x2F;4HANA Cloud, this view is confirmed released. Delta behavior documented in [SAP Note 2884410](https:&#x2F;&#x2F;support.sap.com&#x2F;notes&#x2F;2884410).</div>
+          </div>
+
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>Some S/4HANA releases or SPS levels have I_JournalEntryItem deactivated or use a different CDS view. Confirming in SE80 before tool configuration saves hours of debugging later. [SME_KNOWLEDGE] The safer confirmed on-prem extractor path is 0FI_ACDOCA_10 via SAPI context — if I_JournalEntryItem is not available on your system, use that instead.</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-05"
-            aria-label="Mark Select your initial fields as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
+          <h2 class="step-title">Select your initial fields</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Select your initial fields as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">For your first extraction, start with the core financial fields only. Add currency fields, extension fields, and segment fields in the Intermediate walkthrough once you have the pipeline working.</p>
+        <div class="step-body">
+          <p class="step-intro">For your first extraction, start with the core financial fields only. Add currency fields, extension fields, and segment fields in the Intermediate walkthrough once you have the pipeline working.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Starting field selection for ACDOCA beginner extract — source: wiki&#x2F;tables&#x2F;ACDOCA.md</figcaption>
-          <pre><code class="language-plaintext">FIELDS TO INCLUDE IN INITIAL EXTRACT:
+          <figure class="code-block">
+            <figcaption>Starting field selection for ACDOCA beginner extract — source: wiki&#x2F;tables&#x2F;ACDOCA.md</figcaption>
+            <pre><code class="language-plaintext">FIELDS TO INCLUDE IN INITIAL EXTRACT:
 
 MANDT      -- Client (filter this &#x3D; your client number, e.g. 100)
 RLDNR      -- Ledger (0L &#x3D; leading ledger)
@@ -375,43 +377,43 @@ TSL, WSL, MSL  -- Additional currency amounts (confusing without context)
 ZZFIELD*       -- Customer Z-fields (require CDS Extension View understanding)
 SEGMENT fields -- PSEGMENT, RFAREA (segment reporting — add later)
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>You have a field list of ~15 fields. You have excluded all Z-fields (ZZFIELD*, ZFIELD*) and secondary currency amounts (TSL, WSL, MSL) for now.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">You have a field list of ~15 fields. You have excluded all Z-fields (ZZFIELD*, ZFIELD*) and secondary currency amounts (TSL, WSL, MSL) for now.</div>
+          </div>
 
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>I_JournalEntryItem exposes 200+ fields. Extracting all of them on a 1B-row table creates a very wide, very slow extract. [SME_KNOWLEDGE] Start narrow — add fields as analytics teams ask for them.</p>
-        </details>
-      </div>
-    </li>
-    <li class="step" id="step-step-06">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-06</span>
-          <h2 class="step-title">Set up partitioning — the single most important step</h2>
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>I_JournalEntryItem exposes 200+ fields. Extracting all of them on a 1B-row table creates a very wide, very slow extract. [SME_KNOWLEDGE] Start narrow — add fields as analytics teams ask for them.</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-06"
-            aria-label="Mark Set up partitioning — the single most important step as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
+        <header class="step-header">
+          <div class="step-number">Step 6</div>
+          <h2 class="step-title">Set up partitioning — the single most important step</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-06"
+              aria-label="Mark Set up partitioning — the single most important step as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Never extract all of ACDOCA in one request. Partition by GJAHR (fiscal year) and optionally RBUKRS (company code). Start with the current fiscal year and a single company code. This is not optional — an unpartitioned ACDOCA extract at a large enterprise will consume SAP dialog work processes for hours and trigger BASIS team intervention.</p>
+        <div class="step-body">
+          <p class="step-intro">Never extract all of ACDOCA in one request. Partition by GJAHR (fiscal year) and optionally RBUKRS (company code). Start with the current fiscal year and a single company code. This is not optional — an unpartitioned ACDOCA extract at a large enterprise will consume SAP dialog work processes for hours and trigger BASIS team intervention.</p>
 
 
-        <figure class="code-block">
-          <figcaption>ODP filter for ACDOCA initial extract — replace with your values</figcaption>
-          <pre><code class="language-sql">-- Your extraction tool will expose ODP filters as a WHERE clause.
+          <figure class="code-block">
+            <figcaption>ODP filter for ACDOCA initial extract — replace with your values</figcaption>
+            <pre><code class="language-sql">-- Your extraction tool will expose ODP filters as a WHERE clause.
 -- For your first run, use this filter:
 
 GJAHR &#x3D; &#39;2024&#39; AND RBUKRS &#x3D; &#39;1000&#39;
@@ -426,43 +428,43 @@ GJAHR &#x3D; &#39;2024&#39; AND RBUKRS &#x3D; &#39;1000&#39;
 --   GJAHR &#x3D; &#39;2024&#39;   ✓ correct
 --   GJAHR &#x3D; 2024     ✗ will return 0 rows or error in most tools
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Your extraction tool shows a GJAHR filter value set to a string (quoted year, e.g. &#39;2024&#39;) and a RBUKRS filter set to your company code. If your system has one company code, RBUKRS filter is optional but still recommended for the first run.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Your extraction tool shows a GJAHR filter value set to a string (quoted year, e.g. &#39;2024&#39;) and a RBUKRS filter set to your company code. If your system has one company code, RBUKRS filter is optional but still recommended for the first run.</div>
+          </div>
 
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>GJAHR partitioning is the standard approach for ACDOCA initial load. [SME_KNOWLEDGE] Load year by year: historical years as a one-time full load, current year with delta afterwards. This maps naturally to how finance teams consume the data — by fiscal year.</p>
-        </details>
-      </div>
-    </li>
-    <li class="step" id="step-step-07">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-07</span>
-          <h2 class="step-title">Configure your extraction tool</h2>
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>GJAHR partitioning is the standard approach for ACDOCA initial load. [SME_KNOWLEDGE] Load year by year: historical years as a one-time full load, current year with delta afterwards. This maps naturally to how finance teams consume the data — by fiscal year.</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-07"
-            aria-label="Mark Configure your extraction tool as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
+        <header class="step-header">
+          <div class="step-number">Step 7</div>
+          <h2 class="step-title">Configure your extraction tool</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-07"
+              aria-label="Mark Configure your extraction tool as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">In whatever tool you are using (ADF SAP CDC, Qlik, Fivetran, Matillion, custom client), configure the ODP source with these exact settings. Pay attention to the delta type — ABAP_CDS uses CDC (Change Data Capture), not AIE. This is a common misconfiguration.</p>
+        <div class="step-body">
+          <p class="step-intro">In whatever tool you are using (ADF SAP CDC, Qlik, Fivetran, Matillion, custom client), configure the ODP source with these exact settings. Pay attention to the delta type — ABAP_CDS uses CDC (Change Data Capture), not AIE. This is a common misconfiguration.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Exact ODP settings — copy to your tool&#39;s configuration</figcaption>
-          <pre><code class="language-plaintext">ODP CONFIGURATION — ACDOCA Beginner Extract
+          <figure class="code-block">
+            <figcaption>Exact ODP settings — copy to your tool&#39;s configuration</figcaption>
+            <pre><code class="language-plaintext">ODP CONFIGURATION — ACDOCA Beginner Extract
 
 ODP Context:     ABAP_CDS
 Object Name:     I_JournalEntryItem
@@ -491,54 +493,51 @@ LICENSE COMPLIANCE — SAP Note 3255746 (Feb 2024):
     - SLT replication (separate license, real-time capable)
   Review with your SAP account executive before go-live.
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Your tool shows ODP context ABAP_CDS, object I_JournalEntryItem, delta type CDC, and the filter fields. The test connection succeeds. If it fails with an authorization error, return to Step 3 and recheck S_ODP_READ.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Your tool shows ODP context ABAP_CDS, object I_JournalEntryItem, delta type CDC, and the filter fields. The test connection succeeds. If it fails with an authorization error, return to Step 3 and recheck S_ODP_READ.</div>
+          </div>
 
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>ABAP_CDS is the exact string — not 'CDS', not 'ODP_CDS', not 'ABAP CDS'. Most tools present a dropdown. If you do not see ABAP_CDS as an option, your tool version may not support CDS-based ODP. Check vendor documentation. The delta type CDC distinction matters: using AIE on an ABAP_CDS source will produce incorrect delta behavior. [SME_KNOWLEDGE]</p>
-        </details>
-      </div>
-    </li>
-    <li class="step" id="step-step-08">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-08</span>
-          <h2 class="step-title">Run your first extract and monitor in ODQMON</h2>
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>ABAP_CDS is the exact string — not 'CDS', not 'ODP_CDS', not 'ABAP CDS'. Most tools present a dropdown. If you do not see ABAP_CDS as an option, your tool version may not support CDS-based ODP. Check vendor documentation. The delta type CDC distinction matters: using AIE on an ABAP_CDS source will produce incorrect delta behavior. [SME_KNOWLEDGE]</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-08"
-            aria-label="Mark Run your first extract and monitor in ODQMON as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-08" data-step-id="step-08">
+        <header class="step-header">
+          <div class="step-number">Step 8</div>
+          <h2 class="step-title">Run your first extract and monitor in ODQMON</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-08"
+              aria-label="Mark Run your first extract and monitor in ODQMON as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Trigger the extraction. While it runs, open ODQMON in SAP to watch the delta queue. This is how you monitor every ACDOCA extraction — know how to read it before your first production run.</p>
+        <div class="step-body">
+          <p class="step-intro">Trigger the extraction. While it runs, open ODQMON in SAP to watch the delta queue. This is how you monitor every ACDOCA extraction — know how to read it before your first production run.</p>
 
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="[NEEDS_SAP_CITATION]" target="_blank" rel="noopener noreferrer">
-              ODQMON
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Enter ODQMON in transaction code bar → Context: ABAP_CDS → Queue Name: I_JOURNALENTRYITEM → Subscriber: your tool&#39;s subscription name → F8 to execute</em>.
-          </p>
-        </aside>
-
-        <figure class="code-block">
-          <figcaption>ODQMON reading guide for ACDOCA extraction</figcaption>
-          <pre><code class="language-plaintext">ODQMON — WHAT YOU&#39;RE LOOKING FOR
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="[NEEDS_SAP_CITATION]" target="_blank" rel="noopener noreferrer">
+                ODQMON
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Enter ODQMON in transaction code bar → Context: ABAP_CDS → Queue Name: I_JOURNALENTRYITEM → Subscriber: your tool&#39;s subscription name → F8 to execute</em>.
+              <figure class="code-block">
+                <figcaption>ODQMON reading guide for ACDOCA extraction</figcaption>
+                <pre><code class="language-plaintext">ODQMON — WHAT YOU&#39;RE LOOKING FOR
 
 Status: FETCHING      → extract is running, rows are being sent
 Status: EXTRACTED     → extract complete, ready for next delta
@@ -563,43 +562,46 @@ ODQMON shows &quot;Extracted Units&quot; — this is the row count sent.
 Compare to SE16N count for ACDOCA WHERE GJAHR &#x3D; &#39;2024&#39;
 AND RBUKRS &#x3D; &#39;1000&#39;. They should match within ~1% (timing skew).
 </code></pre>
-        </figure>
+              </figure>
+            </div>
+          </div>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>ODQMON shows status EXTRACTED after the run completes. The Extracted Units count is non-zero and plausible for your filter (5M to 200M rows per fiscal year is normal; &lt; 10K rows suggests the filter excluded almost everything — recheck GJAHR format is a quoted string).</p>
-        </aside>
 
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>ODQMON is your primary debugging tool for all ODP extractions. If you do not know how to read it, the first stuck queue will cost hours. The 0-record first delta is the most common 'bug' that isn't a bug — knowing this upfront prevents a false alarm escalation. [SME_KNOWLEDGE]</p>
-        </details>
-      </div>
-    </li>
-    <li class="step" id="step-step-09">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-09</span>
-          <h2 class="step-title">Load into your cloud platform — data type guidance</h2>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">ODQMON shows status EXTRACTED after the run completes. The Extracted Units count is non-zero and plausible for your filter (5M to 200M rows per fiscal year is normal; &lt; 10K rows suggests the filter excluded almost everything — recheck GJAHR format is a quoted string).</div>
+          </div>
+
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>ODQMON is your primary debugging tool for all ODP extractions. If you do not know how to read it, the first stuck queue will cost hours. The 0-record first delta is the most common 'bug' that isn't a bug — knowing this upfront prevents a false alarm escalation. [SME_KNOWLEDGE]</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-09"
-            aria-label="Mark Load into your cloud platform — data type guidance as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-09" data-step-id="step-09">
+        <header class="step-header">
+          <div class="step-number">Step 9</div>
+          <h2 class="step-title">Load into your cloud platform — data type guidance</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-09"
+              aria-label="Mark Load into your cloud platform — data type guidance as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">When creating your target table schema, SAP field types do not map cleanly to SQL or cloud data types. ACDOCA has several fields where the wrong data type causes subtle bugs that are hard to find later.</p>
+        <div class="step-body">
+          <p class="step-intro">When creating your target table schema, SAP field types do not map cleanly to SQL or cloud data types. ACDOCA has several fields where the wrong data type causes subtle bugs that are hard to find later.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Target table schema — ACDOCA on any cloud platform</figcaption>
-          <pre><code class="language-sql">-- ACDOCA target table: recommended data types
+          <figure class="code-block">
+            <figcaption>Target table schema — ACDOCA on any cloud platform</figcaption>
+            <pre><code class="language-sql">-- ACDOCA target table: recommended data types
 
 MANDT      VARCHAR(3)        -- not INTEGER
 RLDNR      VARCHAR(2)        -- ledger, e.g. &#39;0L&#39;
@@ -627,18 +629,19 @@ KSL        DECIMAL(23, 2)    -- amount in global currency
 -- Currency AMOUNT fields (HSL, KSL) are DECIMAL.
 -- Confusing the two causes silent data loss.
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Your target table exists with GJAHR as VARCHAR(4) and WAERS as VARCHAR(5). Run a SELECT DISTINCT GJAHR FROM your_table — the result should be &#39;2024&#39;, a four-character string. If you see 2024 as an integer, the type is wrong and leading-zero fiscal years will be corrupted.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Your target table exists with GJAHR as VARCHAR(4) and WAERS as VARCHAR(5). Run a SELECT DISTINCT GJAHR FROM your_table — the result should be &#39;2024&#39;, a four-character string. If you see 2024 as an integer, the type is wrong and leading-zero fiscal years will be corrupted.</div>
+          </div>
 
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>GJAHR as INTEGER seems harmless but breaks fiscal year comparisons — SAP uses '0001' for fiscal year 1 in some configurations, leading zeros in document numbers (BELNR) are significant for matching back to SAP, and partition pruning fails in Snowflake and BigQuery when analysts filter WHERE GJAHR = '2024' on an INTEGER column. [SME_KNOWLEDGE]</p>
-        </details>
-      </div>
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>GJAHR as INTEGER seems harmless but breaks fiscal year comparisons — SAP uses '0001' for fiscal year 1 in some configurations, leading zeros in document numbers (BELNR) are significant for matching back to SAP, and partition pruning fails in Snowflake and BigQuery when analysts filter WHERE GJAHR = '2024' on an INTEGER column. [SME_KNOWLEDGE]</p>
+          </details>
+        </div>
+      </article>
     </li>
   </ol>
 
@@ -684,7 +687,7 @@ KSL        DECIMAL(23, 2)    -- amount in global currency
     </dl>
   </section>
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the beginner walkthrough for ACDOCA. You now have 9 steps of experience extracting this table, and you understand the key considerations for the ACDOCA use case.</p>
   </section>
@@ -700,10 +703,13 @@ KSL        DECIMAL(23, 2)    -- amount in global currency
     </ul>
   </section>
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

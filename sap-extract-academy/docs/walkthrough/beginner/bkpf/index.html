@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,17 +106,8 @@
     <p>All license types. ODP is application-layer.</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed VBAK or LFA1 beginner walkthrough</li>
-      <li>ADF infrastructure and EXTRACT_VBAK user</li>
-      <li>S&#x2F;4HANA access; finance module</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
 <p>Your finance team needs accounting documents in the data lake for reconciliation and analytics. BKPF is large, so you&#39;ll start small: one company code, one fiscal year. This teaches you the partitioning pattern you&#39;ll use for multi-year, multi-company extractions later.</p>
@@ -127,118 +119,128 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Completed VBAK or LFA1 beginner walkthrough</li>
+      <li>ADF infrastructure and EXTRACT_VBAK user</li>
+      <li>S&#x2F;4HANA access; finance module</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 7 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">Identify the I_AccountingDocument CDS view</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark Identify the I_AccountingDocument CDS view as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro"><a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/accounting-doc-cds.html'>I_AccountingDocument</a> is the released CDS view for BKPF.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Repository Browser → I_AccountingDocument</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">View exists with @Analytics.dataExtract: true.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark Identify the I_AccountingDocument CDS view as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation"><a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/accounting-doc-cds.html'>I_AccountingDocument</a> is the released CDS view for BKPF.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
-              SE80
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Repository Browser → I_AccountingDocument</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>View exists with @Analytics.dataExtract: true.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Understand BKPF partitioning (BUKRS, GJAHR)</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Understand BKPF partitioning (BUKRS, GJAHR) as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">BKPF is large. The primary key is MANDT, BUKRS (company code), GJAHR (fiscal year), BELNR (document number). Always partition extractions by BUKRS and GJAHR to avoid memory exhaustion.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → BKPF</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">You see rows with BUKRS&#x3D;&#39;1000&#39; and GJAHR&#x3D;&#39;2024&#39; (or latest year). Count them — this is your expected row count for one partition.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Understand BKPF partitioning (BUKRS, GJAHR) as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">BKPF is large. The primary key is MANDT, BUKRS (company code), GJAHR (fiscal year), BELNR (document number). Always partition extractions by BUKRS and GJAHR to avoid memory exhaustion.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
-              SE16N
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Execute → BKPF</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>You see rows with BUKRS&#x3D;&#39;1000&#39; and GJAHR&#x3D;&#39;2024&#39; (or latest year). Count them — this is your expected row count for one partition.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
           <h2 class="step-title">Create ADF source dataset with BUKRS and GJAHR filters</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Create ADF source dataset with BUKRS and GJAHR filters as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Create ADF source dataset with BUKRS and GJAHR filters as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Create the I_AccountingDocument source dataset. Add parameters for BUKRS and GJAHR so you can partition the extraction. For this beginner walkthrough, fix them to one company code and one fiscal year.</p>
+        <div class="step-body">
+          <p class="step-intro">Create the I_AccountingDocument source dataset. Add parameters for BUKRS and GJAHR so you can partition the extraction. For this beginner walkthrough, fix them to one company code and one fiscal year.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Dataset with fiscal year filter</figcaption>
-          <pre><code class="language-json">{
+          <figure class="code-block">
+            <figcaption>Dataset with fiscal year filter</figcaption>
+            <pre><code class="language-json">{
   &quot;name&quot;: &quot;SAP_BKPF_Source&quot;,
   &quot;properties&quot;: {
     &quot;linkedServiceName&quot;: { &quot;referenceName&quot;: &quot;SAP_S4HANA_Source&quot; },
@@ -251,130 +253,131 @@
   }
 }
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Preview shows documents from company code 1000, fiscal year 2024 only.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Preview shows documents from company code 1000, fiscal year 2024 only.</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
           <h2 class="step-title">Create ADLS folder structure</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Create ADLS folder structure as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">In sap-raw, create finance/accounting/full-load/fy2024/bukrs1000/.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Folder structure exists.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Create ADLS folder structure as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">In sap-raw, create finance/accounting/full-load/fy2024/bukrs1000/.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Folder structure exists.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-05">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-05</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
           <h2 class="step-title">Create sink dataset and pipeline</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Create sink dataset and pipeline as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Sink to ADLS Parquet under finance/accounting/full-load/fy2024/bukrs1000/. Build pipeline with Copy activity.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Pipeline succeeds.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-05"
-            aria-label="Mark Create sink dataset and pipeline as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Sink to ADLS Parquet under finance/accounting/full-load/fy2024/bukrs1000/. Build pipeline with Copy activity.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Pipeline succeeds.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-06">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-06</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
+        <header class="step-header">
+          <div class="step-number">Step 6</div>
           <h2 class="step-title">Verify document count matches SAP</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-06"
+              aria-label="Mark Verify document count matches SAP as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Count rows in the Parquet file. Cross-check with SE16N (BUKRS=1000, GJAHR=2024) row count.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Row count matches. Sample documents show posting dates in 2024, company code 1000.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-06"
-            aria-label="Mark Verify document count matches SAP as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Count rows in the Parquet file. Cross-check with SE16N (BUKRS=1000, GJAHR=2024) row count.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Row count matches. Sample documents show posting dates in 2024, company code 1000.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-07">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-07</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
+        <header class="step-header">
+          <div class="step-number">Step 7</div>
           <h2 class="step-title">Document the partitioning strategy</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-07"
+              aria-label="Mark Document the partitioning strategy as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">For future fiscal years or additional company codes, clone this ADF pipeline and adjust the BUKRS and GJAHR filters. Document the folder structure so downstream users understand the partition scheme.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Runbook or README in ADLS documents: &#39;finance&#x2F;accounting&#x2F;full-load&#x2F;fy[YEAR]&#x2F;bukrs[CODE]&#x2F;&#39;.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-07"
-            aria-label="Mark Document the partitioning strategy as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">For future fiscal years or additional company codes, clone this ADF pipeline and adjust the BUKRS and GJAHR filters. Document the folder structure so downstream users understand the partition scheme.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Runbook or README in ADLS documents: &#39;finance&#x2F;accounting&#x2F;full-load&#x2F;fy[YEAR]&#x2F;bukrs[CODE]&#x2F;&#39;.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
   </ol>
 
@@ -396,7 +399,7 @@
     </dl>
   </section>
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the beginner walkthrough for BKPF. You now have 7 steps of experience extracting this table, and you understand the key considerations for the BKPF use case.</p>
   </section>
@@ -409,10 +412,13 @@
     </ul>
   </section>
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

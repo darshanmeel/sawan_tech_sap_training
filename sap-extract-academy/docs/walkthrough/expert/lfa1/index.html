@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,16 +106,8 @@
     <p>All licenses.</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed LFA1 Intermediate</li>
-      <li>Understanding of vendor master table relationships</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
 <p>Your data warehouse needs a complete vendor dimension: general data (LFA1) + company code details (LFB1) + bank info (LFBK). You&#39;ll extract all three tables in parallel and validate referential integrity.</p>
@@ -125,78 +118,87 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Completed LFA1 Intermediate</li>
+      <li>Understanding of vendor master table relationships</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 5 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">Understand vendor table structure</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark Understand vendor table structure as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">LFA1 (general) links to LFB1 (company code) via LIFNR; LFB1 links to LFBK (bank details). One vendor may have multiple company codes and multiple bank details.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;vendor-tables.html" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Search → LFA1, LFB1, LFBK relationships</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">You understand 1:N relationships.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark Understand vendor table structure as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">LFA1 (general) links to LFB1 (company code) via LIFNR; LFB1 links to LFBK (bank details). One vendor may have multiple company codes and multiple bank details.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;vendor-tables.html" target="_blank" rel="noopener noreferrer">
-              SE80
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Search → LFA1, LFB1, LFBK relationships</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>You understand 1:N relationships.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Extract all three tables in parallel</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Extract all three tables in parallel as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Extract all three tables in parallel as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Launch three simultaneous ODP extractions for I_Supplier (LFA1), I_SupplierCompanyCode (LFB1), I_SupplierBankDetail (LFBK). This avoids cascading delays.</p>
+        <div class="step-body">
+          <p class="step-intro">Launch three simultaneous ODP extractions for I_Supplier (LFA1), I_SupplierCompanyCode (LFB1), I_SupplierBankDetail (LFBK). This avoids cascading delays.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Parallel extraction</figcaption>
-          <pre><code class="language-python">import asyncio
+          <figure class="code-block">
+            <figcaption>Parallel extraction</figcaption>
+            <pre><code class="language-python">import asyncio
 tasks &#x3D; [
   asyncio.create_task(extract_supplier()),
   asyncio.create_task(extract_supplier_cc()),
@@ -204,107 +206,108 @@ tasks &#x3D; [
 ]
 await asyncio.gather(*tasks)
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>All three tables load into Snowflake simultaneously.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">All three tables load into Snowflake simultaneously.</div>
+          </div>
 
-      </div>
-    </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
-          <h2 class="step-title">Reconcile extracted data</h2>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Reconcile extracted data as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
+          <h2 class="step-title">Reconcile extracted data</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Reconcile extracted data as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Validate referential integrity: every LFB1.LIFNR exists in LFA1, every LFBK.LIFNR+BANKL exists in LFB1.</p>
+        <div class="step-body">
+          <p class="step-intro">Validate referential integrity: every LFB1.LIFNR exists in LFA1, every LFBK.LIFNR+BANKL exists in LFB1.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Orphan check</figcaption>
-          <pre><code class="language-sql">SELECT COUNT(*) AS orphan_lfb1 FROM SUPPLIER_CC cc
+          <figure class="code-block">
+            <figcaption>Orphan check</figcaption>
+            <pre><code class="language-sql">SELECT COUNT(*) AS orphan_lfb1 FROM SUPPLIER_CC cc
 WHERE NOT EXISTS (SELECT 1 FROM SUPPLIER s WHERE s.LIFNR &#x3D; cc.LIFNR);
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Query returns 0 rows.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Query returns 0 rows.</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
           <h2 class="step-title">Create conformed dimension in Snowflake</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Create conformed dimension in Snowflake as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Join the three tables into a single VENDOR dimension with denormalized company code and bank details. Store in a Snowflake view.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">View DIM_VENDOR_COMPLETE exists and queries return expected vendor records with company code and bank details.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Create conformed dimension in Snowflake as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Join the three tables into a single VENDOR dimension with denormalized company code and bank details. Store in a Snowflake view.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>View DIM_VENDOR_COMPLETE exists and queries return expected vendor records with company code and bank details.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-05">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-05</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
           <h2 class="step-title">Monitor multi-table delta coherence</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Monitor multi-table delta coherence as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">When a vendor changes in LFA1 and adds a bank detail in LFBK, ensure both changes land in the same load window to avoid stale data in DIM_VENDOR_COMPLETE.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Test by manually changing a vendor in SAP, verifying both LFA1 and LFBK updates reach Snowflake in the same load.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-05"
-            aria-label="Mark Monitor multi-table delta coherence as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">When a vendor changes in LFA1 and adds a bank detail in LFBK, ensure both changes land in the same load window to avoid stale data in DIM_VENDOR_COMPLETE.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Test by manually changing a vendor in SAP, verifying both LFA1 and LFBK updates reach Snowflake in the same load.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
   </ol>
 
@@ -320,7 +323,7 @@ WHERE NOT EXISTS (SELECT 1 FROM SUPPLIER s WHERE s.LIFNR &#x3D; cc.LIFNR);
     </dl>
   </section>
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the expert walkthrough for LFA1. You now have 5 steps of experience extracting this table, and you understand the key considerations for the LFA1 use case.</p>
   </section>
@@ -332,10 +335,13 @@ WHERE NOT EXISTS (SELECT 1 FROM SUPPLIER s WHERE s.LIFNR &#x3D; cc.LIFNR);
     </ul>
   </section>
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,16 +106,8 @@
     <p>All licenses.</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed BKPF Beginner</li>
-      <li>Python&#x2F;pyrfc expertise</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
 <p>Your finance warehouse needs 3 years of accounting documents. You&#39;ll extract in parallel by fiscal year and company code to minimize extraction time.</p>
@@ -125,38 +118,47 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Completed BKPF Beginner</li>
+      <li>Python&#x2F;pyrfc expertise</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 4 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">Design multi-year extraction strategy</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark Design multi-year extraction strategy as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark Design multi-year extraction strategy as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Extract 2022, 2023, 2024 in parallel. Each year partitioned by BUKRS for further parallelism.</p>
+        <div class="step-body">
+          <p class="step-intro">Extract 2022, 2023, 2024 in parallel. Each year partitioned by BUKRS for further parallelism.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Multi-year, multi-company task matrix</figcaption>
-          <pre><code class="language-python">years &#x3D; [2022, 2023, 2024]
+          <figure class="code-block">
+            <figcaption>Multi-year, multi-company task matrix</figcaption>
+            <pre><code class="language-python">years &#x3D; [2022, 2023, 2024]
 companies &#x3D; [1000, 1001, 2000]
 tasks &#x3D; [
   (year, bukrs)
@@ -164,101 +166,102 @@ tasks &#x3D; [
   for bukrs in companies
 ]
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>9 extraction tasks planned (3 years × 3 companies).</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">9 extraction tasks planned (3 years × 3 companies).</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Execute parallel extractions</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Execute parallel extractions as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Use ThreadPoolExecutor to run up to 4 parallel pyrfc connections. Each extracts one (BUKRS, GJAHR) partition.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">All 9 partitions complete in ~30 minutes (vs sequential 90+ minutes).</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Execute parallel extractions as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Use ThreadPoolExecutor to run up to 4 parallel pyrfc connections. Each extracts one (BUKRS, GJAHR) partition.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>All 9 partitions complete in ~30 minutes (vs sequential 90+ minutes).</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
           <h2 class="step-title">Load into Snowflake with partitioned schema</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Load into Snowflake with partitioned schema as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Store in ACCOUNTING.BKPF_RAW partitioned by GJAHR and BUKRS.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">ACCOUNTING.BKPF_RAW has 9 partitions, all populated.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Load into Snowflake with partitioned schema as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Store in ACCOUNTING.BKPF_RAW partitioned by GJAHR and BUKRS.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>ACCOUNTING.BKPF_RAW has 9 partitions, all populated.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
           <h2 class="step-title">Reconcile aggregate totals</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Reconcile aggregate totals as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">For each fiscal year and company code, sum amounts in Parquet and compare to SAP via FM_GET_DOCUMENT_HEADER RFC (if available).</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Total amounts match within 0.01% (allowance for rounding).</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Reconcile aggregate totals as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">For each fiscal year and company code, sum amounts in Parquet and compare to SAP via FM_GET_DOCUMENT_HEADER RFC (if available).</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Total amounts match within 0.01% (allowance for rounding).</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
   </ol>
 
@@ -274,7 +277,7 @@ tasks &#x3D; [
     </dl>
   </section>
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the intermediate walkthrough for BKPF. You now have 4 steps of experience extracting this table, and you understand the key considerations for the BKPF use case.</p>
   </section>
@@ -286,10 +289,13 @@ tasks &#x3D; [
     </ul>
   </section>
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

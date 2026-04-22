@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,18 +106,8 @@
     <p>MANDATORY: Full Use SAP License. SLT replication is NOT permitted under Runtime License. Verify licensing with SAP before proceeding.</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed ACDOCA Intermediate</li>
-      <li>Completed BKPF Expert</li>
-      <li>SLT licensed and configured (Full Use)</li>
-      <li>Kafka cluster (10+ brokers, 500GB+ storage)</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
 <p>You are the data architect for a multi-billion-dollar enterprise. The CFO needs real-time GL data in the data warehouse: every posting visible within minutes, all historical ACDOCA (decades of data), correct currency handling, and airtight reconciliation to SAP&#39;s GL.</p>
@@ -150,309 +141,320 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Completed ACDOCA Intermediate</li>
+      <li>Completed BKPF Expert</li>
+      <li>SLT licensed and configured (Full Use)</li>
+      <li>Kafka cluster (10+ brokers, 500GB+ storage)</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 10 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">License check: Full Use or fail fast</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark License check: Full Use or fail fast as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">SLT replication of ACDOCA requires Full Use License. Runtime Licenses are rejected by SAP. Check your license certificate in SLICENSE before proceeding. This is non-negotiable.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;license.html" target="_blank" rel="noopener noreferrer">
+                SLICENSE
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>License → License Overview → Check SLT entry</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">License shows &#39;SLT Landscape Transformation&#39; &#x3D; Active, Type &#x3D; Full Use</div>
+          </div>
+
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>Proceeding without correct license will result in licensing violations and potential audit findings. SAP audits SLT usage rigorously.</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark License check: Full Use or fail fast as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">SLT replication of ACDOCA requires Full Use License. Runtime Licenses are rejected by SAP. Check your license certificate in SLICENSE before proceeding. This is non-negotiable.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;license.html" target="_blank" rel="noopener noreferrer">
-              SLICENSE
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>License → License Overview → Check SLT entry</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>License shows &#39;SLT Landscape Transformation&#39; &#x3D; Active, Type &#x3D; Full Use</p>
-        </aside>
-
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>Proceeding without correct license will result in licensing violations and potential audit findings. SAP audits SLT usage rigorously.</p>
-        </details>
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Right-size Kafka infrastructure</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Right-size Kafka infrastructure as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Right-size Kafka infrastructure as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">ACDOCA can be 500B+ rows annually. Kafka cluster needs adequate disk space, replication factor 3, and log compaction enabled. Budget 10+ brokers, 500GB minimum.</p>
+        <div class="step-body">
+          <p class="step-intro">ACDOCA can be 500B+ rows annually. Kafka cluster needs adequate disk space, replication factor 3, and log compaction enabled. Budget 10+ brokers, 500GB minimum.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Large Kafka topic for ACDOCA</figcaption>
-          <pre><code class="language-bash">kafka-topics --create --topic acdoca-source \
+          <figure class="code-block">
+            <figcaption>Large Kafka topic for ACDOCA</figcaption>
+            <pre><code class="language-bash">kafka-topics --create --topic acdoca-source \
   --partitions 30 \
   --replication-factor 3 \
   --config log.cleanup.policy&#x3D;compact \
   --config log.segment.bytes&#x3D;1073741824
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Topic acdoca-source exists with 30 partitions.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Topic acdoca-source exists with 30 partitions.</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
           <h2 class="step-title">Configure SLT to partition by BUKRS + GJAHR</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Configure SLT to partition by BUKRS + GJAHR as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">In LTCO, define replication object for ACDOCA with partitioning: BUKRS + GJAHR. This avoids hot partitions and enables parallel SLT readers.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
+                LTCO
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Replication Objects → ACDOCA → Partitioning</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">LTCO shows ACDOCA_KAFKA replication object with partition key BUKRS+GJAHR.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Configure SLT to partition by BUKRS + GJAHR as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">In LTCO, define replication object for ACDOCA with partitioning: BUKRS + GJAHR. This avoids hot partitions and enables parallel SLT readers.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
-              LTCO
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Replication Objects → ACDOCA → Partitioning</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>LTCO shows ACDOCA_KAFKA replication object with partition key BUKRS+GJAHR.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
           <h2 class="step-title">Enable LTRS parallel readers (4-8 readers)</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Enable LTRS parallel readers (4-8 readers) as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">SLT's Landscape Transformation Replication Server (LTRS) can run 4-8 parallel database readers. Each reader processes a company code + fiscal year partition independently.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTRS.html" target="_blank" rel="noopener noreferrer">
+                LTRS
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Administration → Settings → Parallel Readers</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">LTRS shows 4 reader processes active and running.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Enable LTRS parallel readers (4-8 readers) as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">SLT's Landscape Transformation Replication Server (LTRS) can run 4-8 parallel database readers. Each reader processes a company code + fiscal year partition independently.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTRS.html" target="_blank" rel="noopener noreferrer">
-              LTRS
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Administration → Settings → Parallel Readers</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>LTRS shows 4 reader processes active and running.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-05">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-05</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
           <h2 class="step-title">Monitor SAP load during full replication</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Monitor SAP load during full replication as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">ACDOCA full replication will stress SAP for days. Monitor CPU, memory, lock wait times via SM50. Coordinate with SAP Basis to ensure no conflicts with batch jobs.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SM50.html" target="_blank" rel="noopener noreferrer">
+                SM50
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Monitor → Active Sessions</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">SM50 shows SLT processes (wp_SLT*) running, CPU usage acceptable (&lt; 80%).</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-05"
-            aria-label="Mark Monitor SAP load during full replication as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">ACDOCA full replication will stress SAP for days. Monitor CPU, memory, lock wait times via SM50. Coordinate with SAP Basis to ensure no conflicts with batch jobs.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SM50.html" target="_blank" rel="noopener noreferrer">
-              SM50
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Monitor → Active Sessions</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>SM50 shows SLT processes (wp_SLT*) running, CPU usage acceptable (&lt; 80%).</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-06">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-06</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
+        <header class="step-header">
+          <div class="step-number">Step 6</div>
           <h2 class="step-title">Trigger full load</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-06"
+              aria-label="Mark Trigger full load as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">In LTCO, trigger full replication. This will run for 24-72 hours depending on ACDOCA size. Kafka topic will fill with billions of rows.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
+                LTCO
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Replication Objects → ACDOCA_KAFKA → Full Replication</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Replication status &#x3D; &#39;RUNNING&#39;. Monitor Kafka topic growth via kafka-log-dirs tool.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-06"
-            aria-label="Mark Trigger full load as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">In LTCO, trigger full replication. This will run for 24-72 hours depending on ACDOCA size. Kafka topic will fill with billions of rows.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
-              LTCO
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Replication Objects → ACDOCA_KAFKA → Full Replication</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Replication status &#x3D; &#39;RUNNING&#39;. Monitor Kafka topic growth via kafka-log-dirs tool.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-07">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-07</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
+        <header class="step-header">
+          <div class="step-number">Step 7</div>
           <h2 class="step-title">Switch to real-time delta</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-07"
+              aria-label="Mark Switch to real-time delta as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Once full load completes, SLT automatically captures delta. Real-time posting updates flow to Kafka within seconds.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">LTCO status &#x3D; &#39;DELTA&#39;. LTRS shows delta queue depth (should be near zero if no backlog).</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-07"
-            aria-label="Mark Switch to real-time delta as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Once full load completes, SLT automatically captures delta. Real-time posting updates flow to Kafka within seconds.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>LTCO status &#x3D; &#39;DELTA&#39;. LTRS shows delta queue depth (should be near zero if no backlog).</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-08">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-08</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-08" data-step-id="step-08">
+        <header class="step-header">
+          <div class="step-number">Step 8</div>
           <h2 class="step-title">Consume from Kafka with Snowflake Connector</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-08"
-            aria-label="Mark Consume from Kafka with Snowflake Connector as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-08"
+              aria-label="Mark Consume from Kafka with Snowflake Connector as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Snowflake Kafka Connector reads acdoca-source topic, applies Z-field transformations (CUKY pairing for currencies), upserts into Snowflake GL_ACDOCA_RAW.</p>
+        <div class="step-body">
+          <p class="step-intro">Snowflake Kafka Connector reads acdoca-source topic, applies Z-field transformations (CUKY pairing for currencies), upserts into Snowflake GL_ACDOCA_RAW.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Snowflake Kafka Connector config</figcaption>
-          <pre><code class="language-json">{
+          <figure class="code-block">
+            <figcaption>Snowflake Kafka Connector config</figcaption>
+            <pre><code class="language-json">{
   &quot;name&quot;: &quot;snowflake-acdoca-sink&quot;,
   &quot;config&quot;: {
     &quot;connector.class&quot;: &quot;com.snowflake.kafka.connector.SnowflakeSinkConnector&quot;,
@@ -465,80 +467,81 @@
   }
 }
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Connector status &#x3D; RUNNING. Snowflake GL_ACDOCA_RAW table grows.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Connector status &#x3D; RUNNING. Snowflake GL_ACDOCA_RAW table grows.</div>
+          </div>
 
-      </div>
-    </li>
-    <li class="step" id="step-step-09">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-09</span>
-          <h2 class="step-title">Reconcile amounts and cardinality</h2>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-09"
-            aria-label="Mark Reconcile amounts and cardinality as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-09" data-step-id="step-09">
+        <header class="step-header">
+          <div class="step-number">Step 9</div>
+          <h2 class="step-title">Reconcile amounts and cardinality</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-09"
+              aria-label="Mark Reconcile amounts and cardinality as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Compare aggregate amounts in ACDOCA (SAP) vs GL_ACDOCA_RAW (Snowflake) for each company + year. Cardinality should match exactly. Monitor for 24 hours to ensure delta is stable.</p>
+        <div class="step-body">
+          <p class="step-intro">Compare aggregate amounts in ACDOCA (SAP) vs GL_ACDOCA_RAW (Snowflake) for each company + year. Cardinality should match exactly. Monitor for 24 hours to ensure delta is stable.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Reconciliation query</figcaption>
-          <pre><code class="language-sql">SELECT RBUKRS, RYEAR, SUM(AMOUNT_DEBIT), SUM(AMOUNT_CREDIT)
+          <figure class="code-block">
+            <figcaption>Reconciliation query</figcaption>
+            <pre><code class="language-sql">SELECT RBUKRS, RYEAR, SUM(AMOUNT_DEBIT), SUM(AMOUNT_CREDIT)
 FROM GL_ACDOCA_RAW
 GROUP BY RBUKRS, RYEAR
 -- Cross-check with SE16N ACDOCA query results
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Totals match exactly. No orphan or duplicate rows.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Totals match exactly. No orphan or duplicate rows.</div>
+          </div>
 
-      </div>
-    </li>
-    <li class="step" id="step-step-10">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-10</span>
-          <h2 class="step-title">Document Z-field transformations</h2>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-10"
-            aria-label="Mark Document Z-field transformations as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-10" data-step-id="step-10">
+        <header class="step-header">
+          <div class="step-number">Step 10</div>
+          <h2 class="step-title">Document Z-field transformations</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-10"
+              aria-label="Mark Document Z-field transformations as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">ACDOCA contains CUKY (currency key) and related amount fields (AMOUNT_TRANS in transaction currency vs AMOUNT_LOCAL in local currency). Document the transformation logic in your data dictionary.</p>
+        <div class="step-body">
+          <p class="step-intro">ACDOCA contains CUKY (currency key) and related amount fields (AMOUNT_TRANS in transaction currency vs AMOUNT_LOCAL in local currency). Document the transformation logic in your data dictionary.</p>
 
 
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Data dictionary includes: ACDOCA.AMOUNT_TRANS → GL_ACDOCA_RAW.AMOUNT_TXN_CURRENCY, with conversion rules.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Data dictionary includes: ACDOCA.AMOUNT_TRANS → GL_ACDOCA_RAW.AMOUNT_TXN_CURRENCY, with conversion rules.</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
   </ol>
 
@@ -566,7 +569,7 @@ GROUP BY RBUKRS, RYEAR
     </dl>
   </section>
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the expert walkthrough for ACDOCA. You now have 10 steps of experience extracting this table, and you understand the key considerations for the ACDOCA use case.</p>
   </section>
@@ -580,10 +583,13 @@ GROUP BY RBUKRS, RYEAR
     </ul>
   </section>
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

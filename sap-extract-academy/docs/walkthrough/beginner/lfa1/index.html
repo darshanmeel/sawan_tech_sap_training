@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,17 +106,8 @@
     <p>Works under all SAP license types. ODP extraction is application-layer and permitted for all licenses.</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Access to an S&#x2F;4HANA on-premise system with SE80</li>
-      <li>Azure Data Factory and ADLS Gen2 infrastructure (from VBAK Beginner walkthrough)</li>
-      <li>EXTRACT_VBAK technical user (can reuse from VBAK walkthrough)</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
 <p>Your procurement analytics team needs a weekly feed of all active vendors in the system. Vendor master is small, stable, and doesn&#39;t change hourly. A simple full-load every Sunday morning is perfect.</p>
@@ -129,256 +121,267 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Access to an S&#x2F;4HANA on-premise system with SE80</li>
+      <li>Azure Data Factory and ADLS Gen2 infrastructure (from VBAK Beginner walkthrough)</li>
+      <li>EXTRACT_VBAK technical user (can reuse from VBAK walkthrough)</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 8 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">Verify the I_Supplier CDS view exists</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark Verify the I_Supplier CDS view exists as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Vendor master is exposed via the <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/supplier-cds.html'>I_Supplier</a> CDS view. Confirm it's available in your system using SE80.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Repository Browser → Search → I_Supplier</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">I_Supplier appears in SE80 with @Analytics.dataExtract: true.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark Verify the I_Supplier CDS view exists as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Vendor master is exposed via the <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/supplier-cds.html'>I_Supplier</a> CDS view. Confirm it's available in your system using SE80.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
-              SE80
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Repository Browser → Search → I_Supplier</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>I_Supplier appears in SE80 with @Analytics.dataExtract: true.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Create ADF source dataset for I_Supplier</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Create ADF source dataset for I_Supplier as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Use the SAP CDC linked service (from VBAK Beginner) and create a new source dataset targeting I_Supplier through ODP.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Dataset preview shows vendor records with LIFNR, NAME1, LAND1, ORT01.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Create ADF source dataset for I_Supplier as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Use the SAP CDC linked service (from VBAK Beginner) and create a new source dataset targeting I_Supplier through ODP.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Dataset preview shows vendor records with LIFNR, NAME1, LAND1, ORT01.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
           <h2 class="step-title">Create ADLS folder structure</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Create ADLS folder structure as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">In the sap-raw container, create a subfolder vendor/full-load/ for the LFA1 Parquet files.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Folder vendor&#x2F;full-load&#x2F; exists in Azure Storage Explorer.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Create ADLS folder structure as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">In the sap-raw container, create a subfolder vendor/full-load/ for the LFA1 Parquet files.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Folder vendor&#x2F;full-load&#x2F; exists in Azure Storage Explorer.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
           <h2 class="step-title">Create ADF sink dataset to ADLS</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Create ADF sink dataset to ADLS as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Create a Parquet sink dataset pointing to sap-raw/vendor/full-load/. Use Snappy compression.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Sink dataset Test Connection returns green.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Create ADF sink dataset to ADLS as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Create a Parquet sink dataset pointing to sap-raw/vendor/full-load/. Use Snappy compression.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Sink dataset Test Connection returns green.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-05">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-05</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
           <h2 class="step-title">Build and run the ADF pipeline</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Build and run the ADF pipeline as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Create a new pipeline with a single Copy activity. Source = I_Supplier dataset, Sink = ADLS Parquet dataset. Trigger and monitor.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Pipeline completes successfully and Parquet files appear in sap-raw&#x2F;vendor&#x2F;full-load&#x2F;.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-05"
-            aria-label="Mark Build and run the ADF pipeline as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Create a new pipeline with a single Copy activity. Source = I_Supplier dataset, Sink = ADLS Parquet dataset. Trigger and monitor.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Pipeline completes successfully and Parquet files appear in sap-raw&#x2F;vendor&#x2F;full-load&#x2F;.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-06">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-06</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
+        <header class="step-header">
+          <div class="step-number">Step 6</div>
           <h2 class="step-title">Verify row count in ADLS</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-06"
+              aria-label="Mark Verify row count in ADLS as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Query the Parquet files to count rows. Cross-check with SE16N count of LFA1 to ensure no data loss.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Row count in Parquet matches (or is very close to) LFA1 count in SAP. Sample columns (LIFNR, NAME1, LAND1) have expected values.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-06"
-            aria-label="Mark Verify row count in ADLS as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Query the Parquet files to count rows. Cross-check with SE16N count of LFA1 to ensure no data loss.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Row count in Parquet matches (or is very close to) LFA1 count in SAP. Sample columns (LIFNR, NAME1, LAND1) have expected values.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-07">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-07</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
+        <header class="step-header">
+          <div class="step-number">Step 7</div>
           <h2 class="step-title">Document the pipeline</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-07"
+              aria-label="Mark Document the pipeline as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Add tags and descriptions to the ADF pipeline. Note that this is a full-load, weekly refresh scenario. Include a link to this walkthrough in the documentation.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Pipeline has meaningful tags (e.g., &#39;vendor-master&#39;, &#39;weekly&#39;, &#39;sap-extract&#39;) and description.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-07"
-            aria-label="Mark Document the pipeline as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Add tags and descriptions to the ADF pipeline. Note that this is a full-load, weekly refresh scenario. Include a link to this walkthrough in the documentation.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Pipeline has meaningful tags (e.g., &#39;vendor-master&#39;, &#39;weekly&#39;, &#39;sap-extract&#39;) and description.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-08">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-08</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-08" data-step-id="step-08">
+        <header class="step-header">
+          <div class="step-number">Step 8</div>
           <h2 class="step-title">Schedule the pipeline for weekly runs</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-08"
+              aria-label="Mark Schedule the pipeline for weekly runs as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Use ADF's Schedule trigger to run the pipeline every Sunday at 2 AM UTC. Adjust based on your maintenance window.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">A Schedule trigger exists on the pipeline and shows the next scheduled execution.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-08"
-            aria-label="Mark Schedule the pipeline for weekly runs as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Use ADF's Schedule trigger to run the pipeline every Sunday at 2 AM UTC. Adjust based on your maintenance window.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>A Schedule trigger exists on the pipeline and shows the next scheduled execution.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
   </ol>
 
@@ -406,7 +409,7 @@
     </dl>
   </section>
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the beginner walkthrough for LFA1. You now have 8 steps of experience extracting this table, and you understand the key considerations for the LFA1 use case.</p>
   </section>
@@ -420,10 +423,13 @@
     </ul>
   </section>
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

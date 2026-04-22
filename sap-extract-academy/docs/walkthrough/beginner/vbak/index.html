@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,17 +106,8 @@
     <p>Works under both Full Use and Runtime SAP licenses. The ODP-based path used by ADF&#39;s SAP CDC connector is application-layer extraction, which is permitted under all license types.</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Access to an S&#x2F;4HANA on-premise system with SE80 and authorization to create a technical user</li>
-      <li>An Azure subscription with rights to create Data Factory and Storage Account resources</li>
-      <li>A Windows VM or workstation for the Self-Hosted Integration Runtime (6 GB RAM minimum)</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
 <p>Your team&#39;s finance analytics project needs sales order data in the data lake. Specifically, they want the header record for every sales order — orders, quotations, contracts — loaded into ADLS Gen2 as Parquet. This is the classic first SAP extraction task.</p>
@@ -129,203 +121,213 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Access to an S&#x2F;4HANA on-premise system with SE80 and authorization to create a technical user</li>
+      <li>An Azure subscription with rights to create Data Factory and Storage Account resources</li>
+      <li>A Windows VM or workstation for the Self-Hosted Integration Runtime (6 GB RAM minimum)</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 10 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">Confirm the released CDS view for VBAK</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark Confirm the released CDS view for VBAK as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">SAP ships released CDS views for many standard tables. These views come with business logic, authorization, and delta support built in — they are always the preferred extraction source over raw tables. For VBAK, the view is <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/4e4b4b4b.html">I_SalesDocument</a>.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Repository Browser → Search → I_SalesDocument</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">You can open I_SalesDocument in SE80 and confirm it has the annotation @Analytics.dataExtract: true in its header.</div>
+          </div>
+
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>Extracting from a released CDS view is the SAP-recommended approach. It respects authorization, applies business logic (currency translation, unit conversion), and exposes data through <a href="/glossary/odp/">ODP</a> cleanly. Reading VBAK directly skips all of this.</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark Confirm the released CDS view for VBAK as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">SAP ships released CDS views for many standard tables. These views come with business logic, authorization, and delta support built in — they are always the preferred extraction source over raw tables. For VBAK, the view is <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/4e4b4b4b.html">I_SalesDocument</a>.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
-              SE80
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Repository Browser → Search → I_SalesDocument</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>You can open I_SalesDocument in SE80 and confirm it has the annotation @Analytics.dataExtract: true in its header.</p>
-        </aside>
-
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>Extracting from a released CDS view is the SAP-recommended approach. It respects authorization, applies business logic (currency translation, unit conversion), and exposes data through <a href="/glossary/odp/">ODP</a> cleanly. Reading VBAK directly skips all of this.</p>
-        </details>
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Create a technical RFC user in SAP</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Create a technical RFC user in SAP as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Create a technical RFC user in SAP as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">The extraction process needs a dedicated SAP user with minimal permissions. Never use a dialog user. Create a Communication or System type user via <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html">SU01</a>.</p>
+        <div class="step-body">
+          <p class="step-intro">The extraction process needs a dedicated SAP user with minimal permissions. Never use a dialog user. Create a Communication or System type user via <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html">SU01</a>.</p>
 
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;ae58e3c3a8c54e6f9573f3b0ee75ea94.html" target="_blank" rel="noopener noreferrer">
-              SU01
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>User → Create</em>.
-          </p>
-        </aside>
-
-        <figure class="code-block">
-          <figcaption>Recommended user settings</figcaption>
-          <pre><code class="language-plaintext">User name: EXTRACT_VBAK
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;ae58e3c3a8c54e6f9573f3b0ee75ea94.html" target="_blank" rel="noopener noreferrer">
+                SU01
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>User → Create</em>.
+              <figure class="code-block">
+                <figcaption>Recommended user settings</figcaption>
+                <pre><code class="language-plaintext">User name: EXTRACT_VBAK
 User type: System
 First name: Extract
 Last name: VBAK Service User
 </code></pre>
-        </figure>
+              </figure>
+            </div>
+          </div>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>The user EXTRACT_VBAK appears in SU01&#39;s user list and is locked for interactive login.</p>
-        </aside>
 
-      </div>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">The user EXTRACT_VBAK appears in SU01&#39;s user list and is locked for interactive login.</div>
+          </div>
+
+        </div>
+      </article>
     </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
           <h2 class="step-title">Assign authorizations to the RFC user</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Assign authorizations to the RFC user as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">The user needs three authorization objects: <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/c9e46fe83e8a4cf1ba7f686e28c05236.html">S_RFC</a> (RFC call), S_TABU_DIS (table display), and S_ODP_READ (ODP read access).</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;e5e83c2825c34a7896bdb97c0da65fb5.html" target="_blank" rel="noopener noreferrer">
+                PFCG
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Role → Create → Authorizations</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">In SU01, the EXTRACT_VBAK user has a single custom role assigned that grants S_RFC for RFC_TYPE&#x3D;FUNC, S_TABU_DIS for authorization group SD, and S_ODP_READ for context ABAP_CDS.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Assign authorizations to the RFC user as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">The user needs three authorization objects: <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/c9e46fe83e8a4cf1ba7f686e28c05236.html">S_RFC</a> (RFC call), S_TABU_DIS (table display), and S_ODP_READ (ODP read access).</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;e5e83c2825c34a7896bdb97c0da65fb5.html" target="_blank" rel="noopener noreferrer">
-              PFCG
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Role → Create → Authorizations</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>In SU01, the EXTRACT_VBAK user has a single custom role assigned that grants S_RFC for RFC_TYPE&#x3D;FUNC, S_TABU_DIS for authorization group SD, and S_ODP_READ for context ABAP_CDS.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
           <h2 class="step-title">Install the Self-Hosted Integration Runtime</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Install the Self-Hosted Integration Runtime as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Azure Data Factory connects to SAP through a Self-Hosted Integration Runtime (SHIR) that runs on a Windows VM with network access to the SAP system. The SHIR also requires the SAP .NET Connector (NCo) 3.0 installed separately.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">In the ADF portal, the new SHIR shows Status: Running and the NCo 3.0 library is installed on the VM.</div>
+          </div>
+
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>SHIR is the bridge between Azure and your SAP system. Without it, ADF cannot reach SAP. Most extraction errors at this stage trace back to SHIR network rules or a missing NCo library.</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Install the Self-Hosted Integration Runtime as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Azure Data Factory connects to SAP through a Self-Hosted Integration Runtime (SHIR) that runs on a Windows VM with network access to the SAP system. The SHIR also requires the SAP .NET Connector (NCo) 3.0 installed separately.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>In the ADF portal, the new SHIR shows Status: Running and the NCo 3.0 library is installed on the VM.</p>
-        </aside>
-
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>SHIR is the bridge between Azure and your SAP system. Without it, ADF cannot reach SAP. Most extraction errors at this stage trace back to SHIR network rules or a missing NCo library.</p>
-        </details>
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-05">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-05</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
           <h2 class="step-title">Create an ADF linked service for SAP CDC</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-05"
-            aria-label="Mark Create an ADF linked service for SAP CDC as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Create an ADF linked service for SAP CDC as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">In the Azure Data Factory studio, create a new linked service of type SAP CDC. Point it at your SAP system's application server hostname and system number. Use the EXTRACT_VBAK user credentials.</p>
+        <div class="step-body">
+          <p class="step-intro">In the Azure Data Factory studio, create a new linked service of type SAP CDC. Point it at your SAP system's application server hostname and system number. Use the EXTRACT_VBAK user credentials.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Linked service JSON (replace placeholders)</figcaption>
-          <pre><code class="language-json">{
+          <figure class="code-block">
+            <figcaption>Linked service JSON (replace placeholders)</figcaption>
+            <pre><code class="language-json">{
   &quot;name&quot;: &quot;SAP_S4HANA_Source&quot;,
   &quot;type&quot;: &quot;SapOdpLinkedService&quot;,
   &quot;typeProperties&quot;: {
@@ -339,163 +341,164 @@ Last name: VBAK Service User
   }
 }
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>The Test Connection button returns green in the ADF linked service editor.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">The Test Connection button returns green in the ADF linked service editor.</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
-    <li class="step" id="step-step-06">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-06</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
+        <header class="step-header">
+          <div class="step-number">Step 6</div>
           <h2 class="step-title">Create the ADF source dataset</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-06"
+              aria-label="Mark Create the ADF source dataset as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Create a dataset on the linked service that targets the CDS view I_SalesDocument through ODP. ADF's SAP CDC connector handles the ODP subscription transparently.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">The dataset preview loads a sample of rows from I_SalesDocument with the expected VBAK columns (VBELN, AUART, VKORG, ERDAT, NETWR).</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-06"
-            aria-label="Mark Create the ADF source dataset as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Create a dataset on the linked service that targets the CDS view I_SalesDocument through ODP. ADF's SAP CDC connector handles the ODP subscription transparently.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>The dataset preview loads a sample of rows from I_SalesDocument with the expected VBAK columns (VBELN, AUART, VKORG, ERDAT, NETWR).</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-07">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-07</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
+        <header class="step-header">
+          <div class="step-number">Step 7</div>
           <h2 class="step-title">Create the ADLS Gen2 storage and container</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-07"
+              aria-label="Mark Create the ADLS Gen2 storage and container as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">In the Azure portal, create a Storage Account with hierarchical namespace enabled (ADLS Gen2). Create a container named sap-raw. Within it, create a folder path vbak/full-load/.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">The container sap-raw exists and you can browse to sap-raw&#x2F;vbak&#x2F;full-load&#x2F; in Azure Storage Explorer.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-07"
-            aria-label="Mark Create the ADLS Gen2 storage and container as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">In the Azure portal, create a Storage Account with hierarchical namespace enabled (ADLS Gen2). Create a container named sap-raw. Within it, create a folder path vbak/full-load/.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>The container sap-raw exists and you can browse to sap-raw&#x2F;vbak&#x2F;full-load&#x2F; in Azure Storage Explorer.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-08">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-08</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-08" data-step-id="step-08">
+        <header class="step-header">
+          <div class="step-number">Step 8</div>
           <h2 class="step-title">Create the ADF sink dataset</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-08"
+              aria-label="Mark Create the ADF sink dataset as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Create a second dataset pointing at the ADLS container, format Parquet, compression Snappy. Set the file path to sap-raw/vbak/full-load/ and use a date-based file naming pattern.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">The sink dataset&#39;s Test Connection returns green and the file path is correct.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-08"
-            aria-label="Mark Create the ADF sink dataset as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Create a second dataset pointing at the ADLS container, format Parquet, compression Snappy. Set the file path to sap-raw/vbak/full-load/ and use a date-based file naming pattern.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>The sink dataset&#39;s Test Connection returns green and the file path is correct.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-09">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-09</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-09" data-step-id="step-09">
+        <header class="step-header">
+          <div class="step-number">Step 9</div>
           <h2 class="step-title">Build the ADF pipeline with a Copy activity</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-09"
+              aria-label="Mark Build the ADF pipeline with a Copy activity as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Create a new pipeline. Add a Copy activity. Source = the SAP CDC dataset, Sink = the ADLS Parquet dataset. Configure Run mode = Full on Every Run for this first scenario. Save and publish the pipeline.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">The pipeline exists in Published state in ADF and has no validation errors.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-09"
-            aria-label="Mark Build the ADF pipeline with a Copy activity as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Create a new pipeline. Add a Copy activity. Source = the SAP CDC dataset, Sink = the ADLS Parquet dataset. Configure Run mode = Full on Every Run for this first scenario. Save and publish the pipeline.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>The pipeline exists in Published state in ADF and has no validation errors.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-10">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-10</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-10" data-step-id="step-10">
+        <header class="step-header">
+          <div class="step-number">Step 10</div>
           <h2 class="step-title">Run the pipeline and verify data in ADLS</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-10"
+              aria-label="Mark Run the pipeline and verify data in ADLS as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Trigger the pipeline with Trigger Now. Monitor progress in the Monitor tab. When complete, browse to the ADLS container and confirm one or more Parquet files exist containing VBAK data.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">At least one Parquet file exists under sap-raw&#x2F;vbak&#x2F;full-load&#x2F;. Opening it with a tool like Azure Data Studio or a pandas notebook shows rows with VBAK columns and a row count that roughly matches the table count from SE16N.</div>
+          </div>
+
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>Row count reconciliation between SAP (via SE16N) and the target (via Parquet file count) is the most important verification in any extraction. Always reconcile after the initial load.</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-10"
-            aria-label="Mark Run the pipeline and verify data in ADLS as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Trigger the pipeline with Trigger Now. Monitor progress in the Monitor tab. When complete, browse to the ADLS container and confirm one or more Parquet files exist containing VBAK data.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>At least one Parquet file exists under sap-raw&#x2F;vbak&#x2F;full-load&#x2F;. Opening it with a tool like Azure Data Studio or a pandas notebook shows rows with VBAK columns and a row count that roughly matches the table count from SE16N.</p>
-        </aside>
-
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>Row count reconciliation between SAP (via SE16N) and the target (via Parquet file count) is the most important verification in any extraction. Always reconcile after the initial load.</p>
-        </details>
-      </div>
+      </article>
     </li>
   </ol>
 
@@ -529,7 +532,7 @@ Last name: VBAK Service User
     </dl>
   </section>
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the beginner walkthrough for VBAK. You now have 10 steps of experience extracting this table, and you understand the key considerations for the VBAK use case.</p>
   </section>
@@ -543,10 +546,13 @@ Last name: VBAK Service User
     </ul>
   </section>
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

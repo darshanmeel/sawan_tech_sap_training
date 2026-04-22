@@ -1133,6 +1133,237 @@ legend {
   --space-6: 2rem;
 }
 
+/* ===== Walkthrough step cards ===== */
+
+.prerequisites-list {
+  list-style: disc;
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.prerequisites-list li {
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.walkthrough-progress {
+  position: sticky;
+  top: var(--space-4);
+  z-index: 5;
+  margin: var(--space-6) 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.walkthrough-progress .progress-indicator {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-bottom: var(--space-2);
+}
+.walkthrough-progress .progress-indicator #progress-count {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.walkthrough-progress .progress-bar {
+  height: 3px;
+  background: var(--color-surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.walkthrough-progress .progress-bar-fill {
+  height: 100%;
+  background: var(--color-primary);
+  width: 0;
+  transition: width 0.2s ease-out;
+}
+
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.walkthrough-step {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: var(--space-6);
+}
+
+.walkthrough-step .step-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-5);
+}
+
+.walkthrough-step .step-number {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+}
+
+.walkthrough-step .step-title {
+  flex: 1;
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+}
+
+.walkthrough-step .step-check {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.walkthrough-step .step-check input {
+  accent-color: var(--color-primary);
+}
+
+.walkthrough-step .step-check input:checked + .step-check-label {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.step-body .step-intro {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 var(--space-5) 0;
+  color: var(--color-text);
+}
+
+.step-action {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: var(--space-5);
+  padding: var(--space-4);
+  border-radius: 4px;
+  margin-bottom: var(--space-4);
+  background: var(--color-surface);
+}
+
+.step-action--sap {
+  border-left: 3px solid var(--color-primary);
+}
+
+.step-action--verify {
+  border-left: 3px solid var(--color-success);
+}
+
+.step-action-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+}
+
+.step-action-body {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.step-action-body a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+.step-action-body a:hover {
+  text-decoration: underline;
+}
+
+.step-why {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px dashed var(--color-border);
+}
+
+.step-why summary {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-weight: 500;
+  list-style: none;
+}
+.step-why summary::-webkit-details-marker { display: none; }
+.step-why summary::before {
+  content: '▸ ';
+  color: var(--color-text-muted);
+  display: inline-block;
+  transition: transform 0.15s;
+}
+.step-why[open] summary::before {
+  content: '▾ ';
+}
+.step-why summary:hover {
+  color: var(--color-primary);
+}
+.step-why p {
+  margin-top: var(--space-3);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.walkthrough-footer {
+  margin-top: var(--space-8);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-decoration: underline;
+}
+.btn-link:hover {
+  color: var(--color-danger);
+}
+
+@media (max-width: 640px) {
+  .step-action {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  .walkthrough-progress {
+    position: static;
+  }
+}
+
 /* ===== Gotchas list ===== */
 
 .gotchas-list {

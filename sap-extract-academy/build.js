@@ -232,6 +232,14 @@ function buildPage(filePath, content) {
   const troubleshooting = Array.isArray(data.troubleshooting) ? data.troubleshooting : [];
   const nextSteps = Array.isArray(data.nextSteps) ? data.nextSteps : [];
 
+  const stepsWithDisplay = Array.isArray(data.steps)
+    ? data.steps.map((step, idx) => {
+        const match = typeof step.id === 'string' ? step.id.match(/\d+/) : null;
+        const displayNumber = match ? parseInt(match[0], 10) : idx + 1;
+        return { ...step, displayNumber };
+      })
+    : data.steps;
+
   const mergedData = {
     ...data,
     strings,
@@ -250,6 +258,7 @@ function buildPage(filePath, content) {
     extractionGotchas,
     troubleshooting,
     nextSteps,
+    steps: stepsWithDisplay,
     keyFields,
     hasKeyFields: keyFields.length > 0,
     hasExtractionGotchas: extractionGotchas.length > 0,

@@ -1,5 +1,6 @@
 <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="{{basePath}}/">Home</a></li>
@@ -45,10 +46,17 @@
   </section>
   {{/licenseRelevance}}
 
+  <section class="walkthrough-intro">
+    <h2>Overview</h2>
+    <div class="prose">
+      {{{body}}}
+    </div>
+  </section>
+
   {{#hasPrerequisites}}
   <section class="prerequisites">
     <h2>Before you start</h2>
-    <ul>
+    <ul class="prerequisites-list">
       {{#prerequisites}}
       <li>{{.}}</li>
       {{/prerequisites}}
@@ -56,75 +64,80 @@
   </section>
   {{/hasPrerequisites}}
 
-  <section class="walkthrough-intro">
-    <h2>Getting started</h2>
-    <div class="prose">
-      {{{body}}}
-    </div>
-  </section>
-
-  <section class="walkthrough-progress">
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of {{stepCount}} steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>{{strings.cta.resetProgress}}</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
     {{#steps}}
-    <li class="step" id="step-{{id}}">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step {{id}}</span>
+    <li>
+      <article class="walkthrough-step" id="step-{{id}}" data-step-id="{{id}}">
+        <header class="step-header">
+          <div class="step-number">Step {{displayNumber}}</div>
           <h2 class="step-title">{{title}}</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="{{id}}"
+              aria-label="Mark {{title}} as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">{{{explanation}}}</p>
+
+          {{#sapTransaction}}
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">{{strings.walkthrough.doThisInSapLabel}}</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="{{helpUrl}}" target="_blank" rel="noopener noreferrer">
+                {{code}}
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              {{#menuPath}}and navigate to <em>{{menuPath}}</em>{{/menuPath}}.
+              {{#codeBlock}}
+              <figure class="code-block">
+                <figcaption>{{caption}}</figcaption>
+                <pre><code class="language-{{language}}">{{content}}</code></pre>
+              </figure>
+              {{/codeBlock}}
+            </div>
+          </div>
+          {{/sapTransaction}}
+
+          {{^sapTransaction}}
+          {{#codeBlock}}
+          <figure class="code-block">
+            <figcaption>{{caption}}</figcaption>
+            <pre><code class="language-{{language}}">{{content}}</code></pre>
+          </figure>
+          {{/codeBlock}}
+          {{/sapTransaction}}
+
+          {{#verify}}
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">{{strings.walkthrough.verifyLabel}}</div>
+            <div class="step-action-body">{{verify}}</div>
+          </div>
+          {{/verify}}
+
+          {{#whyItMatters}}
+          <details class="step-why">
+            <summary>{{strings.walkthrough.whyLabel}}</summary>
+            <p>{{{.}}}</p>
+          </details>
+          {{/whyItMatters}}
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="{{id}}"
-            aria-label="Mark {{title}} as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">{{{explanation}}}</p>
-
-        {{#sapTransaction}}
-        <aside class="callout callout-sap">
-          <h3>{{strings.walkthrough.doThisInSapLabel}}</h3>
-          <p>
-            Open transaction
-            <a href="{{helpUrl}}" target="_blank" rel="noopener noreferrer">
-              {{code}}
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            {{#menuPath}}and navigate to <em>{{menuPath}}</em>{{/menuPath}}.
-          </p>
-        </aside>
-        {{/sapTransaction}}
-
-        {{#codeBlock}}
-        <figure class="code-block">
-          <figcaption>{{caption}}</figcaption>
-          <pre><code class="language-{{language}}">{{content}}</code></pre>
-        </figure>
-        {{/codeBlock}}
-
-        <aside class="callout callout-verify">
-          <h3>{{strings.walkthrough.verifyLabel}}</h3>
-          <p>{{verify}}</p>
-        </aside>
-
-        {{#whyItMatters}}
-        <details class="why-it-matters">
-          <summary>{{strings.walkthrough.whyLabel}}</summary>
-          <p>{{{.}}}</p>
-        </details>
-        {{/whyItMatters}}
-      </div>
+      </article>
     </li>
     {{/steps}}
   </ol>
@@ -153,7 +166,7 @@
   </section>
   {{/hasTroubleshooting}}
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the {{level}} walkthrough for {{table}}. You now have {{stepCount}} steps of experience extracting this table, and you understand the key considerations for the {{table}} use case.</p>
   </section>
@@ -169,9 +182,12 @@
   </section>
   {{/hasNextSteps}}
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>{{strings.cta.downloadPdf}}</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>{{strings.cta.resetProgress}}</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="{{basePath}}/assets/js/checklist.js?v=1" defer></script>

@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,18 +106,8 @@
     <p>ODP-based extraction of ACDOCA works under Runtime License. SLT replication of ACDOCA requires Full Use License. This walkthrough uses ODP (CDC connector) and is Runtime-safe.</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed at least one beginner walkthrough (VBAK or BKPF recommended)</li>
-      <li>S&#x2F;4HANA on-premise access with SE80 and SE16N authorization</li>
-      <li>Technical RFC user with S_ODP_READ authorization for ABAP_CDS context</li>
-      <li>A target landing zone (ADLS, local filesystem, or any supported sink)</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <p>ACDOCA is the Universal Journal — every financial posting in S/4HANA ends up here. Unlike VBAK or LFA1, ACDOCA has no safe beginner path that ignores partitioning. The table routinely exceeds a billion rows in production systems. This walkthrough gives you the minimum viable extraction: one company code, one fiscal year, written to a generic landing zone.</p>
 <p>Completing this walkthrough means you have confirmed the partition strategy works and have a Parquet file you can query. Intermediate and expert walkthroughs build on this by adding parallelism, delta extraction, and multi-year full loads.</p>
@@ -124,126 +115,137 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Completed at least one beginner walkthrough (VBAK or BKPF recommended)</li>
+      <li>S&#x2F;4HANA on-premise access with SE80 and SE16N authorization</li>
+      <li>Technical RFC user with S_ODP_READ authorization for ABAP_CDS context</li>
+      <li>A target landing zone (ADLS, local filesystem, or any supported sink)</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 5 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">Confirm the released CDS view I_JournalEntryItem</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark Confirm the released CDS view I_JournalEntryItem as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Never extract raw ACDOCA directly. SAP ships <a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/journal-entry-item-cds.html">I_JournalEntryItem</a> as the released CDS view for the Universal Journal. It enforces authorization, applies currency conversion, and exposes the table through ODP without triggering a full table scan.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Repository Browser → Search → I_JournalEntryItem</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">I_JournalEntryItem opens in SE80 and the header annotation @Analytics.dataExtract: true is present.</div>
+          </div>
+
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>A raw SELECT * on ACDOCA exhausts SAP dialog work process memory within seconds on any production system. I_JournalEntryItem is the only extraction-safe path.</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark Confirm the released CDS view I_JournalEntryItem as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Never extract raw ACDOCA directly. SAP ships <a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/journal-entry-item-cds.html">I_JournalEntryItem</a> as the released CDS view for the Universal Journal. It enforces authorization, applies currency conversion, and exposes the table through ODP without triggering a full table scan.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
-              SE80
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Repository Browser → Search → I_JournalEntryItem</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>I_JournalEntryItem opens in SE80 and the header annotation @Analytics.dataExtract: true is present.</p>
-        </aside>
-
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>A raw SELECT * on ACDOCA exhausts SAP dialog work process memory within seconds on any production system. I_JournalEntryItem is the only extraction-safe path.</p>
-        </details>
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Understand ACDOCA partitioning (RBUKRS, RYEAR, POPER)</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Understand ACDOCA partitioning (RBUKRS, RYEAR, POPER) as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">ACDOCA primary key fields are MANDT, RBUKRS (company code), RYEAR (reporting year), POPER (posting period), BELNR (document number), and DOCLN (line number). For a beginner extraction, always fix to one company code and one reporting year. This gives a manageable partition that completes in minutes rather than hours.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → ACDOCA → Filter RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">You see a row count for RBUKRS&#x3D;&#39;1000&#39; and RYEAR&#x3D;2024. This is the expected output row count for your first partition. Typical values are 5M-50M rows per company code per year.</div>
+          </div>
+
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>ACDOCA without partitioning crashes SAP. Partitioning by RBUKRS+RYEAR is the minimum viable approach and is the pattern you will scale to parallel jobs in intermediate and expert walkthroughs.</p>
+          </details>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Understand ACDOCA partitioning (RBUKRS, RYEAR, POPER) as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">ACDOCA primary key fields are MANDT, RBUKRS (company code), RYEAR (reporting year), POPER (posting period), BELNR (document number), and DOCLN (line number). For a beginner extraction, always fix to one company code and one reporting year. This gives a manageable partition that completes in minutes rather than hours.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
-              SE16N
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Execute → ACDOCA → Filter RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>You see a row count for RBUKRS&#x3D;&#39;1000&#39; and RYEAR&#x3D;2024. This is the expected output row count for your first partition. Typical values are 5M-50M rows per company code per year.</p>
-        </aside>
-
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>ACDOCA without partitioning crashes SAP. Partitioning by RBUKRS+RYEAR is the minimum viable approach and is the pattern you will scale to parallel jobs in intermediate and expert walkthroughs.</p>
-        </details>
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
           <h2 class="step-title">Create a source dataset pointing to I_JournalEntryItem</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Create a source dataset pointing to I_JournalEntryItem as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Create a source dataset pointing to I_JournalEntryItem as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">In your extraction tool (ADF or equivalent), create a new source dataset of type SAP ODP Resource pointing to the I_JournalEntryItem context. Add filter parameters for RBUKRS and RYEAR so you can fix them to one value for this walkthrough.</p>
+        <div class="step-body">
+          <p class="step-intro">In your extraction tool (ADF or equivalent), create a new source dataset of type SAP ODP Resource pointing to the I_JournalEntryItem context. Add filter parameters for RBUKRS and RYEAR so you can fix them to one value for this walkthrough.</p>
 
 
-        <figure class="code-block">
-          <figcaption>ADF ODP source dataset — replace CompanyCode and FiscalYear with your values</figcaption>
-          <pre><code class="language-json">{
+          <figure class="code-block">
+            <figcaption>ADF ODP source dataset — replace CompanyCode and FiscalYear with your values</figcaption>
+            <pre><code class="language-json">{
   &quot;name&quot;: &quot;SAP_ACDOCA_Source&quot;,
   &quot;properties&quot;: {
     &quot;linkedServiceName&quot;: { &quot;referenceName&quot;: &quot;SAP_S4HANA_Source&quot; },
@@ -256,78 +258,78 @@
   }
 }
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Preview returns rows and the column list includes CompanyCode, FiscalYear, PostingDate, AmountInCompanyCodeCurrency, and CurrencyCode.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Preview returns rows and the column list includes CompanyCode, FiscalYear, PostingDate, AmountInCompanyCodeCurrency, and CurrencyCode.</div>
+          </div>
 
-      </div>
-    </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
-          <h2 class="step-title">Create the target folder structure</h2>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Create the target folder structure as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
+          <h2 class="step-title">Create the target folder structure</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Create the target folder structure as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Create a folder path in your landing zone that reflects the partition. A clear naming convention is essential when you scale to multiple company codes and years.</p>
+        <div class="step-body">
+          <p class="step-intro">Create a folder path in your landing zone that reflects the partition. A clear naming convention is essential when you scale to multiple company codes and years.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Recommended folder layout for ACDOCA beginner extraction</figcaption>
-          <pre><code class="language-plaintext">sap-raw&#x2F;
+          <figure class="code-block">
+            <figcaption>Recommended folder layout for ACDOCA beginner extraction</figcaption>
+            <pre><code class="language-plaintext">sap-raw&#x2F;
   finance&#x2F;
     universal-journal&#x2F;
       full-load&#x2F;
         fy2024&#x2F;
           bukrs1000&#x2F;
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>The target folder exists and is empty before you run the pipeline.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">The target folder exists and is empty before you run the pipeline.</div>
+          </div>
 
-      </div>
-    </li>
-    <li class="step" id="step-step-05">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-05</span>
-          <h2 class="step-title">Configure the copy pipeline and run</h2>
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-05"
-            aria-label="Mark Configure the copy pipeline and run as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+      </article>
+    </li>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
+          <h2 class="step-title">Configure the copy pipeline and run</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Configure the copy pipeline and run as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Create a Copy activity with the ACDOCA source and your target sink. Set the sink format to Parquet with Snappy compression — ACDOCA rows are wide and Parquet column pruning will significantly reduce storage. Run the pipeline and monitor progress.</p>
+        <div class="step-body">
+          <p class="step-intro">Create a Copy activity with the ACDOCA source and your target sink. Set the sink format to Parquet with Snappy compression — ACDOCA rows are wide and Parquet column pruning will significantly reduce storage. Run the pipeline and monitor progress.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Pipeline Copy activity JSON (single-thread — safe for beginner run)</figcaption>
-          <pre><code class="language-json">{
+          <figure class="code-block">
+            <figcaption>Pipeline Copy activity JSON (single-thread — safe for beginner run)</figcaption>
+            <pre><code class="language-json">{
   &quot;name&quot;: &quot;CopyACDOCA_FY2024_BuKrs1000&quot;,
   &quot;type&quot;: &quot;Copy&quot;,
   &quot;inputs&quot;: [{ &quot;referenceName&quot;: &quot;SAP_ACDOCA_Source&quot;, &quot;type&quot;: &quot;DatasetReference&quot; }],
@@ -343,32 +345,36 @@
   }
 }
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Pipeline completes with status Succeeded. The output folder contains one or more .parquet files. Row count in the pipeline monitor matches your SE16N estimate from step 02.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Pipeline completes with status Succeeded. The output folder contains one or more .parquet files. Row count in the pipeline monitor matches your SE16N estimate from step 02.</div>
+          </div>
 
-        <details class="why-it-matters">
-          <summary>Why this matters</summary>
-          <p>parallelCopies: 1 keeps the extraction single-threaded, which is safest for a first run on ACDOCA. Intermediate walkthrough covers parallel execution.</p>
-        </details>
-      </div>
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>parallelCopies: 1 keeps the extraction single-threaded, which is safest for a first run on ACDOCA. Intermediate walkthrough covers parallel execution.</p>
+          </details>
+        </div>
+      </article>
     </li>
   </ol>
 
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the beginner walkthrough for ACDOCA. You now have 5 steps of experience extracting this table, and you understand the key considerations for the ACDOCA use case.</p>
   </section>
 
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

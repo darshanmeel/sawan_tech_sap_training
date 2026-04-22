@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,18 +106,8 @@
     <p>SLT replication of VBAK requires Full Use SAP License. This is NOT permitted under Runtime License.</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed VBAK Intermediate</li>
-      <li>S&#x2F;4HANA system with SLT configured (RFC connection to source)</li>
-      <li>Kafka cluster (3+ brokers, min 20GB storage)</li>
-      <li>Full Use SAP License (SLT requires it)</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
 <p>Your company&#39;s real-time analytics platform needs VBAK updates in near-real-time. SLT push replication to Kafka is the industry-standard approach: it captures every change at the database level and delivers rows to Kafka faster than any application-level extraction.</p>
@@ -129,301 +120,312 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Completed VBAK Intermediate</li>
+      <li>S&#x2F;4HANA system with SLT configured (RFC connection to source)</li>
+      <li>Kafka cluster (3+ brokers, min 20GB storage)</li>
+      <li>Full Use SAP License (SLT requires it)</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 10 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">Verify SLT is installed and licensed</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark Verify SLT is installed and licensed as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro"><a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SLT.html'>SAP Landscape Transformation (SLT)</a> replicates tables at the database level, capturing every insert/update/delete. Confirm license with SAP.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;license.html" target="_blank" rel="noopener noreferrer">
+                LTCO
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Administration → System → License</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Full Use License is visible and SLT is listed as an active module.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark Verify SLT is installed and licensed as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation"><a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SLT.html'>SAP Landscape Transformation (SLT)</a> replicates tables at the database level, capturing every insert/update/delete. Confirm license with SAP.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;license.html" target="_blank" rel="noopener noreferrer">
-              LTCO
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Administration → System → License</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Full Use License is visible and SLT is listed as an active module.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Configure SLT Kafka connector</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Configure SLT Kafka connector as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">In the SLT cluster (HANA appliance or separate instance), configure the Kafka RFC destination and login credentials.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SM59.html" target="_blank" rel="noopener noreferrer">
+                SM59
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>RFC Connections → Create → TCP&#x2F;IP</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Test connection returns green for the Kafka RFC destination.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Configure SLT Kafka connector as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">In the SLT cluster (HANA appliance or separate instance), configure the Kafka RFC destination and login credentials.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SM59.html" target="_blank" rel="noopener noreferrer">
-              SM59
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>RFC Connections → Create → TCP&#x2F;IP</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Test connection returns green for the Kafka RFC destination.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
           <h2 class="step-title">Create Kafka topics for VBAK</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Create Kafka topics for VBAK as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Create Kafka topics for VBAK as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Create a compacted Kafka topic for VBAK: vbak-source-topic, replication=3, log.retention=-1, log.cleanup.policy=compact.</p>
+        <div class="step-body">
+          <p class="step-intro">Create a compacted Kafka topic for VBAK: vbak-source-topic, replication=3, log.retention=-1, log.cleanup.policy=compact.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Kafka topic creation</figcaption>
-          <pre><code class="language-bash">kafka-topics --create --topic vbak-source-topic \
+          <figure class="code-block">
+            <figcaption>Kafka topic creation</figcaption>
+            <pre><code class="language-bash">kafka-topics --create --topic vbak-source-topic \
   --partitions 10 \
   --replication-factor 3 \
   --config log.cleanup.policy&#x3D;compact \
   --config log.retention.ms&#x3D;-1
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Topic vbak-source-topic exists with 10 partitions and log compaction enabled.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Topic vbak-source-topic exists with 10 partitions and log compaction enabled.</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
           <h2 class="step-title">Configure SLT Replication Object for VBAK</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Configure SLT Replication Object for VBAK as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">In LTCO, create a new replication object: source table VBAK, target Kafka topic vbak-source-topic. Include all fields, enable key-based delta (to leverage log compaction).</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
+                LTCO
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Replication Objects → Create</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Replication object VBAK_KAFKA is created with status ACTIVE.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Configure SLT Replication Object for VBAK as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">In LTCO, create a new replication object: source table VBAK, target Kafka topic vbak-source-topic. Include all fields, enable key-based delta (to leverage log compaction).</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
-              LTCO
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Replication Objects → Create</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Replication object VBAK_KAFKA is created with status ACTIVE.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-05">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-05</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
           <h2 class="step-title">Define partitioning strategy</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-05"
-            aria-label="Mark Define partitioning strategy as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Define partitioning strategy as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">To avoid hot partitions, partition VBAK by VKORG (sales org) at the SLT level. This distributes load evenly across Kafka partitions.</p>
+        <div class="step-body">
+          <p class="step-intro">To avoid hot partitions, partition VBAK by VKORG (sales org) at the SLT level. This distributes load evenly across Kafka partitions.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Partitioning strategy</figcaption>
-          <pre><code class="language-plaintext">Partition key: VKORG (Sales Organization)
+          <figure class="code-block">
+            <figcaption>Partitioning strategy</figcaption>
+            <pre><code class="language-plaintext">Partition key: VKORG (Sales Organization)
 Rationale: Sales orgs are typically 10-20 distinct values, distributing rows evenly.
 Alternative: VBELN_HASH % 10 for numeric key distribution.
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>In LTCO, the replication object shows VKORG as partition key.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">In LTCO, the replication object shows VKORG as partition key.</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
-    <li class="step" id="step-step-06">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-06</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
+        <header class="step-header">
+          <div class="step-number">Step 6</div>
           <h2 class="step-title">Perform initial full load via SLT</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-06"
+              aria-label="Mark Perform initial full load via SLT as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Trigger a full load: SLT reads all VBAK rows and pushes to Kafka in a single batch. Depending on VBAK size, this may take hours.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
+                LTCO
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Replication Objects → VBAK_KAFKA → Full Replication</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Full load completes. Kafka topic vbak-source-topic has partitions filled with VBAK rows.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-06"
-            aria-label="Mark Perform initial full load via SLT as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Trigger a full load: SLT reads all VBAK rows and pushes to Kafka in a single batch. Depending on VBAK size, this may take hours.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
-              LTCO
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Replication Objects → VBAK_KAFKA → Full Replication</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Full load completes. Kafka topic vbak-source-topic has partitions filled with VBAK rows.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-07">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-07</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
+        <header class="step-header">
+          <div class="step-number">Step 7</div>
           <h2 class="step-title">Enable real-time delta (CDC)</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-07"
+              aria-label="Mark Enable real-time delta (CDC) as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">After full load, SLT automatically captures deltas from the VBAK log. New/changed rows are pushed to Kafka in near-real-time (typically sub-minute latency).</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">In LTCO, monitor shows &#39;DELTA&#39; status and a heartbeat&#x2F;row count in LTRS.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-07"
-            aria-label="Mark Enable real-time delta (CDC) as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">After full load, SLT automatically captures deltas from the VBAK log. New/changed rows are pushed to Kafka in near-real-time (typically sub-minute latency).</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>In LTCO, monitor shows &#39;DELTA&#39; status and a heartbeat&#x2F;row count in LTRS.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-08">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-08</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-08" data-step-id="step-08">
+        <header class="step-header">
+          <div class="step-number">Step 8</div>
           <h2 class="step-title">Consume from Kafka and land in Snowflake</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-08"
-            aria-label="Mark Consume from Kafka and land in Snowflake as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-08"
+              aria-label="Mark Consume from Kafka and land in Snowflake as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">Use Kafka Connect (Snowflake Connector) or Python Kafka consumer to read vbak-source-topic and upsert into Snowflake. Use VBELN (document number) + MANDT as the upsert key.</p>
+        <div class="step-body">
+          <p class="step-intro">Use Kafka Connect (Snowflake Connector) or Python Kafka consumer to read vbak-source-topic and upsert into Snowflake. Use VBELN (document number) + MANDT as the upsert key.</p>
 
 
-        <figure class="code-block">
-          <figcaption>Kafka consumer for Snowflake upsert</figcaption>
-          <pre><code class="language-python">from kafka import KafkaConsumer
+          <figure class="code-block">
+            <figcaption>Kafka consumer for Snowflake upsert</figcaption>
+            <pre><code class="language-python">from kafka import KafkaConsumer
 import snowflake.connector
 
 consumer &#x3D; KafkaConsumer(&#39;vbak-source-topic&#39;, bootstrap_servers&#x3D;[&#39;kafka:9092&#39;])
@@ -432,83 +434,84 @@ for message in consumer:
   row &#x3D; json.loads(message.value)
   # INSERT or UPDATE Snowflake on (MANDT, VBELN)
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Consumer runs and rows appear in Snowflake VBAK table in real-time.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Consumer runs and rows appear in Snowflake VBAK table in real-time.</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
-    <li class="step" id="step-step-09">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-09</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-09" data-step-id="step-09">
+        <header class="step-header">
+          <div class="step-number">Step 9</div>
           <h2 class="step-title">Monitor SLT replication lag</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-09"
+              aria-label="Mark Monitor SLT replication lag as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">In LTRS, monitor the delta queue. Confirm replication lag is within your SLA (e.g., < 5 minutes).</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTRS.html" target="_blank" rel="noopener noreferrer">
+                LTRS
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Monitor → Replication Status</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">LTRS shows green status, replication lag &lt; SLA.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-09"
-            aria-label="Mark Monitor SLT replication lag as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">In LTRS, monitor the delta queue. Confirm replication lag is within your SLA (e.g., < 5 minutes).</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTRS.html" target="_blank" rel="noopener noreferrer">
-              LTRS
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Monitor → Replication Status</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>LTRS shows green status, replication lag &lt; SLA.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-10">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-10</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-10" data-step-id="step-10">
+        <header class="step-header">
+          <div class="step-number">Step 10</div>
           <h2 class="step-title">Handle multi-Z-field scenarios</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-10"
+              aria-label="Mark Handle multi-Z-field scenarios as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">At scale, VBAK may have 5+ Z-fields. Confirm SLT includes all in the Kafka payload. If custom extraction is needed, use parallel SLT jobs per VKORG to avoid contention.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">VBAK records in Kafka and Snowflake include all Z-fields (verified via SELECT *)</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-10"
-            aria-label="Mark Handle multi-Z-field scenarios as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">At scale, VBAK may have 5+ Z-fields. Confirm SLT includes all in the Kafka payload. If custom extraction is needed, use parallel SLT jobs per VKORG to avoid contention.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>VBAK records in Kafka and Snowflake include all Z-fields (verified via SELECT *)</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
   </ol>
 
@@ -530,7 +533,7 @@ for message in consumer:
     </dl>
   </section>
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the expert walkthrough for VBAK. You now have 10 steps of experience extracting this table, and you understand the key considerations for the VBAK use case.</p>
   </section>
@@ -543,10 +546,13 @@ for message in consumer:
     </ul>
   </section>
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

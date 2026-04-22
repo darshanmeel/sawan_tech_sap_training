@@ -66,6 +66,7 @@
     </div>
     <!-- Walkthrough detail page -->
 
+<div class="container">
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -105,16 +106,8 @@
     <p>All licenses.</p>
   </section>
 
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed MARA Beginner</li>
-      <li>SE80 expertise</li>
-    </ul>
-  </section>
-
   <section class="walkthrough-intro">
-    <h2>Getting started</h2>
+    <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
 <p>Your company extended MARA with Z-fields for brand and sustainability tracking. You need these in the data warehouse without modifying the released CDS view.</p>
@@ -125,78 +118,87 @@
     </div>
   </section>
 
-  <section class="walkthrough-progress">
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul class="prerequisites-list">
+      <li>Completed MARA Beginner</li>
+      <li>SE80 expertise</li>
+    </ul>
+  </section>
+
+  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
     <div role="status" aria-live="polite" class="progress-indicator">
       <span id="progress-count">0</span> of 5 steps complete
     </div>
-    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
-  </section>
+    <div class="progress-bar" aria-hidden="true">
+      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+    </div>
+  </aside>
 
   <ol class="steps-list">
-    <li class="step" id="step-step-01">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-01</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+        <header class="step-header">
+          <div class="step-number">Step 1</div>
           <h2 class="step-title">Identify Z-fields in MARA</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-01"
+              aria-label="Mark Identify Z-fields in MARA as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Your MARA has Z-fields: ZZ_BRAND (20 char), ZZ_SUSTAINABILITY (1 char). Confirm in SE11.</p>
+
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE11.html" target="_blank" rel="noopener noreferrer">
+                SE11
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Data Dictionary → Tables → MARA → Fields → Find Z*</em>.
+            </div>
+          </div>
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">ZZ_BRAND and ZZ_SUSTAINABILITY appear in MARA.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-01"
-            aria-label="Mark Identify Z-fields in MARA as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Your MARA has Z-fields: ZZ_BRAND (20 char), ZZ_SUSTAINABILITY (1 char). Confirm in SE11.</p>
-
-        <aside class="callout callout-sap">
-          <h3>Do this in SAP</h3>
-          <p>
-            Open transaction
-            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE11.html" target="_blank" rel="noopener noreferrer">
-              SE11
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-            and navigate to <em>Data Dictionary → Tables → MARA → Fields → Find Z*</em>.
-          </p>
-        </aside>
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>ZZ_BRAND and ZZ_SUSTAINABILITY appear in MARA.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-02">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-02</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+        <header class="step-header">
+          <div class="step-number">Step 2</div>
           <h2 class="step-title">Create CDS extension view for Z-fields</h2>
-        </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-02"
-            aria-label="Mark Create CDS extension view for Z-fields as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-02"
+              aria-label="Mark Create CDS extension view for Z-fields as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
 
-      <div class="step-body">
-        <p class="step-explanation">In SE80, create a CDS extension view ZPROD_ZFIELDS that adds Z-fields to I_Product without modifying the released view.</p>
+        <div class="step-body">
+          <p class="step-intro">In SE80, create a CDS extension view ZPROD_ZFIELDS that adds Z-fields to I_Product without modifying the released view.</p>
 
 
-        <figure class="code-block">
-          <figcaption>CDS extension view</figcaption>
-          <pre><code class="language-abap">@AccessControl.authorizationCheck: #CHECK
+          <figure class="code-block">
+            <figcaption>CDS extension view</figcaption>
+            <pre><code class="language-abap">@AccessControl.authorizationCheck: #CHECK
 define view ZPROD_ZFIELDS as select from I_Product
 {
   *,
@@ -204,101 +206,102 @@ define view ZPROD_ZFIELDS as select from I_Product
   mara.ZZ_SUSTAINABILITY
 }
 </code></pre>
-        </figure>
+          </figure>
 
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>View ZPROD_ZFIELDS appears in SE80 with @Analytics.dataExtract: true.</p>
-        </aside>
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">View ZPROD_ZFIELDS appears in SE80 with @Analytics.dataExtract: true.</div>
+          </div>
 
-      </div>
+        </div>
+      </article>
     </li>
-    <li class="step" id="step-step-03">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-03</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+        <header class="step-header">
+          <div class="step-number">Step 3</div>
           <h2 class="step-title">Extract via the extension view</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-03"
+              aria-label="Mark Extract via the extension view as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Use pyrfc to extract from ZPROD_ZFIELDS instead of I_Product. This includes Z-fields safely.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Python script successfully reads ZZ_BRAND and ZZ_SUSTAINABILITY values.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-03"
-            aria-label="Mark Extract via the extension view as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Use pyrfc to extract from ZPROD_ZFIELDS instead of I_Product. This includes Z-fields safely.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Python script successfully reads ZZ_BRAND and ZZ_SUSTAINABILITY values.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-04">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-04</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+        <header class="step-header">
+          <div class="step-number">Step 4</div>
           <h2 class="step-title">Land in Snowflake with Z-field columns</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-04"
+              aria-label="Mark Land in Snowflake with Z-field columns as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">Parquet schema now includes ZZ_BRAND and ZZ_SUSTAINABILITY. Store in Snowflake MATERIAL table.</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">SELECT ZZ_BRAND, ZZ_SUSTAINABILITY FROM MATERIAL returns expected values.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-04"
-            aria-label="Mark Land in Snowflake with Z-field columns as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">Parquet schema now includes ZZ_BRAND and ZZ_SUSTAINABILITY. Store in Snowflake MATERIAL table.</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>SELECT ZZ_BRAND, ZZ_SUSTAINABILITY FROM MATERIAL returns expected values.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
-    <li class="step" id="step-step-05">
-      <header class="step-header">
-        <div class="step-number-and-title">
-          <span class="step-number">Step step-05</span>
+    <li>
+      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+        <header class="step-header">
+          <div class="step-number">Step 5</div>
           <h2 class="step-title">Document Z-field lineage</h2>
+          <label class="step-check">
+            <input
+              type="checkbox"
+              class="step-checkbox"
+              data-step-id="step-05"
+              aria-label="Mark Document Z-field lineage as complete"
+            >
+            <span class="step-check-label">Mark complete</span>
+          </label>
+        </header>
+
+        <div class="step-body">
+          <p class="step-intro">In your data dictionary, document: MARA.ZZ_BRAND → MATERIAL.ZZ_BRAND, MARA.ZZ_SUSTAINABILITY → MATERIAL.ZZ_SUSTAINABILITY. Note that these are append-structure fields (custom, not part of standard table).</p>
+
+
+
+          <div class="step-action step-action--verify">
+            <div class="step-action-label">Verify</div>
+            <div class="step-action-body">Data dictionary includes Z-field lineage.</div>
+          </div>
+
         </div>
-        <label class="step-checkbox-label">
-          <input
-            type="checkbox"
-            class="step-checkbox"
-            data-step-id="step-05"
-            aria-label="Mark Document Z-field lineage as complete"
-          >
-          <span class="sr-only">Complete</span>
-        </label>
-      </header>
-
-      <div class="step-body">
-        <p class="step-explanation">In your data dictionary, document: MARA.ZZ_BRAND → MATERIAL.ZZ_BRAND, MARA.ZZ_SUSTAINABILITY → MATERIAL.ZZ_SUSTAINABILITY. Note that these are append-structure fields (custom, not part of standard table).</p>
-
-
-
-        <aside class="callout callout-verify">
-          <h3>Verify</h3>
-          <p>Data dictionary includes Z-field lineage.</p>
-        </aside>
-
-      </div>
+      </article>
     </li>
   </ol>
 
@@ -314,7 +317,7 @@ define view ZPROD_ZFIELDS as select from I_Product
     </dl>
   </section>
 
-  <section class="walkthrough-summary">
+  <section class="walkthrough-summary-section">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the intermediate walkthrough for MARA. You now have 5 steps of experience extracting this table, and you understand the key considerations for the MARA use case.</p>
   </section>
@@ -326,10 +329,13 @@ define view ZPROD_ZFIELDS as select from I_Product
     </ul>
   </section>
 
-  <section class="walkthrough-actions">
+  <footer class="walkthrough-footer">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-  </section>
+    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+  </footer>
 </article>
+
+</div>
 
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 

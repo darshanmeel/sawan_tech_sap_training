@@ -63,6 +63,16 @@
     if (progressText) {
       progressText.textContent = `${completed}/${total} steps completed`;
     }
+
+    // Walkthrough-specific progress widgets
+    const countEl = document.getElementById('progress-count');
+    if (countEl) countEl.textContent = String(completed);
+
+    const barFill = document.getElementById('progress-bar-fill');
+    if (barFill) barFill.style.width = `${percentage}%`;
+
+    const resetBtn = document.getElementById('reset-progress');
+    if (resetBtn) resetBtn.hidden = completed === 0;
   }
 
   function clearChecklist() {
@@ -93,4 +103,10 @@
 
   // Expose clearChecklist to global scope for button clicks
   window.clearWalkthroughChecklist = clearChecklist;
+
+  // Wire up reset button if present
+  document.addEventListener('click', (event) => {
+    const target = event.target.closest('#reset-progress');
+    if (target) clearChecklist();
+  });
 })();
