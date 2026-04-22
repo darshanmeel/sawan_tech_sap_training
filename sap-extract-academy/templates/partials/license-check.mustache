@@ -1,0 +1,117 @@
+<section class="callout callout-warning license-check">
+  <h2>License check</h2>
+
+  {{#licenseRelevance}}
+  <p>{{licenseRelevance}}</p>
+  {{/licenseRelevance}}
+
+  {{^licenseRelevance}}
+  <p>
+    Confirm your SAP license covers the extraction method you plan to use
+    before building any pipeline. See
+    <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use →</a>
+  </p>
+  {{/licenseRelevance}}
+
+  <div class="license-check-detail" id="license-check-detail">
+    <!--
+      JS-controlled variants — picker.js shows/hides the relevant block
+      based on ?method= in the URL. All four variants are rendered; only
+      the active one is visible at runtime.
+    -->
+    <div class="license-variant" data-method="odp">
+      <p>
+        <strong>ODP (Operational Data Provisioning)</strong> is permitted
+        under both Runtime and Full Use SAP licenses when you access data
+        through published CDS views via the OData API.
+      </p>
+      <p class="license-check-warning">
+        <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
+        call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
+        etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
+        Verify with your licensing contact.
+        <a href="https://support.sap.com/notes/3255746" target="_blank"
+          rel="noopener noreferrer">Full note (SAP login required)</a>.
+        [NEEDS_SAP_CITATION — confirm current note state]
+      </p>
+    </div>
+
+    <div class="license-variant" data-method="slt" hidden>
+      <p>
+        <strong>SLT (SAP Landscape Transformation)</strong> requires a
+        <strong>Full Use SAP license</strong>. It is not permitted under
+        Runtime licenses. Verify in
+        <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+          target="_blank" rel="noopener noreferrer">SLICENSE</a>
+        that "SLT Landscape Transformation" is listed as Active, Type = Full
+        Use before you configure anything in
+        <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          target="_blank" rel="noopener noreferrer">LTCO</a>.
+      </p>
+      <p>
+        License trap: Runtime vs Full Use
+        <a href="/articles/runtime-vs-full-use/">→</a>
+      </p>
+    </div>
+
+    <div class="license-variant" data-method="rfc" hidden>
+      <p>
+        <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
+        generally permitted for read-only access under Runtime and Full Use
+        licenses, but is not recommended for production use — it bypasses
+        authorization checks that released CDS views enforce and is subject
+        to SAP Note 3255746 restrictions when wrapped by third-party ODP
+        connectors. [NEEDS_SAP_CITATION — verify Runtime license scope for
+        direct RFC read]
+      </p>
+      <p>
+        License trap: Runtime vs Full Use
+        <a href="/articles/runtime-vs-full-use/">→</a>
+      </p>
+    </div>
+
+    <div class="license-variant" data-method="ref" hidden>
+      <p>
+        <strong>Reference mode:</strong> you are reviewing this walkthrough
+        for SAP-side context only. No tool-specific pipeline steps are shown.
+        Check your license before selecting a tool.
+      </p>
+      <p>
+        License trap: Runtime vs Full Use
+        <a href="/articles/runtime-vs-full-use/">→</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+// Inline snippet: switch visible license-variant on picker change.
+// Runs immediately so no flash-of-wrong-content.
+(function () {
+  function showMethod(method) {
+    var variants = document.querySelectorAll('.license-variant');
+    variants.forEach(function (el) {
+      if (el.getAttribute('data-method') === method) {
+        el.removeAttribute('hidden');
+      } else {
+        el.setAttribute('hidden', '');
+      }
+    });
+  }
+
+  function readMethod() {
+    var params = new URLSearchParams(window.location.search);
+    return params.get('method') || 'odp';
+  }
+
+  // Apply on load.
+  showMethod(readMethod());
+
+  // Re-apply when picker radios change (picker.js fires change events).
+  document.addEventListener('change', function (e) {
+    if (e.target && e.target.name === 'method') {
+      showMethod(e.target.value);
+    }
+  });
+})();
+</script>
