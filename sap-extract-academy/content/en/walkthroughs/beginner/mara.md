@@ -2,100 +2,96 @@
 table: MARA
 level: beginner
 slug: mara
-title: "Extract MARA Material Master to ADLS (Beginner)"
-summary: "Full-load extraction of material master general data. Introduces handling of numeric (UOM) and character (classification) fields. No Z-fields yet, but lays groundwork for later."
+title: "Extract MARA Material Master (Beginner)"
+summary: "SAP-side preparation for full-load extraction of material master general data. Covers the released CDS view I_Product, authorization for material master tables, key field characteristics (MATNR, MTART, MEINS), and SE16N reconciliation."
 estimatedMinutes: 45
 prerequisites:
-  - "Completed VBAK Beginner or VBAK Beginner experience"
-  - "ADF infrastructure (linked service, ADLS)"
-  - "S/4HANA access and EXTRACT_VBAK user"
-licenseRelevance: "All license types. ODP extraction is application-layer."
+  - "Completed VBAK beginner walkthrough (extraction user and SE80 familiarity)"
+  - "S/4HANA access with SE80 and SE11 authorization"
+licenseRelevance: "All license types. ODP extraction via OData is permitted for all licenses. License trap: Runtime vs Full Use →"
 destinations:
-  - ADLS
+  - Generic
 extractors:
-  - ADF
+  - ODP
+method: odp
+seoTitle: "Extract MARA Material Master (Beginner) — SAP-Side Guide"
+seoDescription: "SAP-side beginner guide for MARA material master extraction. Confirm I_Product CDS view, check field types in SE11, assign authorizations, reconcile with SE16N."
 steps:
   - id: step-01
-    title: "Locate the I_Product CDS view"
-    explanation: "Material master is exposed via <a href='https://help.sap.com/"
+    title: "Locate and confirm the released CDS view I_Product"
+    explanation: 'Material master general data is exposed via <a href="https://help.sap.com/">I_Product</a>. Confirm it exists in your system and carries the extraction annotation.'
     sapTransaction:
       code: SE80
       menuPath: "Repository Browser → Search → I_Product"
       helpUrl: "https://help.sap.com/"
-    verify: "I_Product appears with @Analytics.dataExtract: true."
-  
+    verify: "I_Product appears in SE80 with @Analytics.dataExtract: true."
+
   - id: step-02
-    title: "Review MARA key fields (MATNR, MTART, MATKL)"
-    explanation: "Use SE16N to browse MARA and understand data patterns. MATNR is the material number (key), MTART is material type (key business dimension), MATKL is product category."
+    title: "Inspect key field characteristics in SE11"
+    explanation: 'Before extracting, understand the field types in MARA that affect downstream processing. Use <a href="https://help.sap.com/">SE11</a> to inspect the table definition. Key fields: MATNR (material number — 18-char numeric-character, often zero-padded), MTART (material type — 4-char, important for filtering), MATKL (product category), MEINS (base unit of measure — 3-char, may carry trailing spaces).'
     sapTransaction:
-      code: SE16N
-      menuPath: "Execute → MARA"
+      code: SE11
+      menuPath: "Data Dictionary → Database Tables → MARA → Display"
       helpUrl: "https://help.sap.com/"
-    verify: "You can see rows in SE16N with different MTART and MATKL values. Count is reasonable (100K-10M typical)."
+    verify: "SE11 shows MATNR as CHAR(18), MEINS as UNIT(3), MTART as CHAR(4)."
+    whyItMatters: "MATNR is zero-padded in SAP (material 1 is stored as '000000000000000001'). Your downstream SQL may need LTRIM or CAST. MEINS trailing spaces are common and break string joins if not trimmed."
 
   - id: step-03
-    title: "Create source dataset for I_Product"
-    explanation: "In ADF, create a new source dataset using the SAP CDC linked service, targeting I_Product through ODP."
-    verify: "Preview loads material records with columns MATNR, MTART, MATKL, MEINS (UOM)."
+    title: "Count materials in SE16N (baseline)"
+    explanation: 'Use <a href="https://help.sap.com/">SE16N</a> to count MARA rows. You can optionally filter by MTART to count a specific material type. Write the count down.'
+    sapTransaction:
+      code: SE16N
+      menuPath: "Execute → MARA → Count"
+      helpUrl: "https://help.sap.com/"
+    verify: "You have a total row count for MARA. Typical range: 100K–10M materials."
 
   - id: step-04
-    title: "Note numeric vs character field handling"
-    explanation: "MEINS (UOM) is a 3-char field, often padded (e.g., 'EA ', 'PC '); MATNR is numeric-character (18 digits). Parquet preserves types; you'll handle trimming in downstream SQL if needed."
-    verify: "In the preview, observe that MEINS values include trailing spaces and MATNR is zero-padded."
+    title: "Confirm the extraction user has MM authorization"
+    explanation: 'Material master tables are in authorization group MM. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM (or broader) in <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html">PFCG</a>.'
+    sapTransaction:
+      code: PFCG
+      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+    verify: "Role includes S_TABU_DIS for authorization group MM."
 
   - id: step-05
-    title: "Create ADLS folder structure"
-    explanation: "In sap-raw, create material/full-load/ for the extraction."
-    verify: "Folder exists in ADLS."
+    title: "Check ODQMON after first tool run"
+    explanation: 'Verify an active subscription appears in <a href="https://help.sap.com/">ODQMON</a> for I_Product under context ABAP_CDS.'
+    sapTransaction:
+      code: ODQMON
+      menuPath: "Subscriptions → Context: ABAP_CDS → I_Product"
+      helpUrl: "https://help.sap.com/"
+    verify: "Active subscription for I_Product. No errors."
 
   - id: step-06
-    title: "Create sink dataset to ADLS Parquet"
-    explanation: "Point to sap-raw/material/full-load/. Snappy compression."
-    verify: "Test connection succeeds."
-
-  - id: step-07
-    title: "Build and trigger the ADF pipeline"
-    explanation: "Copy activity: I_Product → ADLS Parquet."
-    verify: "Pipeline completes and files appear."
-
-  - id: step-08
-    title: "Validate row count and column count"
-    explanation: "Query the Parquet files. Confirm row count matches SE16N. Check that expected columns (MATNR, MTART, MATKL, MEINS) are present with correct data types (MATNR string/numeric, MEINS string)."
-    verify: "Parquet row count ≈ SE16N count. MEINS values may have trailing spaces."
-
-  - id: step-09
-    title: "Document field transformations needed"
-    explanation: "In your data warehouse schema, note that MEINS will need TRIM(), and MATNR may need conversion to numeric or stays as string. Create a data dictionary for the downstream SQL ETL."
-    verify: "Data dictionary includes MARA → ADLS mappings with transformation notes."
+    title: "Reconcile row count and note field quirks"
+    explanation: "After the extraction completes, count rows in your landing zone and compare to SE16N. Then check a sample of MATNR values — confirm they match expected zero-padding. Check MEINS values for trailing spaces."
+    sapTransaction:
+      code: SE16N
+      menuPath: "Execute → MARA → Count"
+      helpUrl: "https://help.sap.com/"
+    verify: "Row count matches SE16N. Sample MATNR values show expected zero-padding (if present on your system). MEINS values include trailing spaces."
 
 troubleshooting:
-  - problem: "Preview shows very few rows (suspiciously low count)"
-    solution: "I_Product may apply a hidden filter (e.g., only active materials). Verify with SE16N MARA count."
-  
-  - problem: "Parquet file is huge (>10GB for MARA)"
-    solution: "Material master is large in some systems. Consider partitioning by MTART (material type) in ADF to parallelize."
+  - problem: "Extracted row count is lower than SE16N"
+    solution: "I_Product may apply a filter — for example, only active materials (LVORM = ' '). Check the CDS view definition in SE80 for WHERE clause conditions. If this is intentional, document that the extraction represents active materials only."
+
+  - problem: "MATNR values in landing zone are missing leading zeros"
+    solution: "Some extraction tools strip leading zeros from MATNR during type casting. Check your tool's type mapping for CHAR fields. Either configure the tool to preserve leading zeros, or add a LPAD transformation downstream."
 
 nextSteps:
-  - label: "Try MARA Intermediate walkthrough — introduces Z-fields"
+  - label: "Try MARA Intermediate — introduces Z-fields via CDS extension"
     url: "/walkthrough/intermediate/mara/"
   - label: "Table overview: MARA Material Master"
     url: "/tables/mara/"
-
-seoTitle: "Extract MARA Material Master to ADLS (Beginner) — S/4HANA"
-seoDescription: "Beginner walkthrough for extracting material master (MARA) from S/4HANA to ADLS. Learn field type handling (UOM trimming, numeric keys) and Parquet best practices."
 updatedAt: 2026-04-22
 ---
 
-## Scenario
+Your product analytics team needs material master data to build product dimension tables. MARA (material master general section) is a manageable table for a first extraction: typically 100K to 10M rows depending on system size and data retention.
 
-Your product analytics team needs material master data to build product dimension tables. You'll extract MARA (material master general section) to ADLS as Parquet, focusing on understanding how different field types (numeric-character, UOM strings) come across in the extraction.
-
-This walkthrough builds on VBAK and LFA1 patterns but introduces field type awareness, which becomes critical when you add Z-fields in the intermediate walkthrough.
-
-Estimated time: 45 minutes.
+This walkthrough covers the SAP-side work: confirming the released CDS view, understanding how MARA's key fields (MATNR, MEINS) behave in extraction, and reconciling counts with SE16N. The field type quirks you learn here — zero-padding, trailing spaces — apply to dozens of other SAP tables.
 
 ---
 
-## What you've built
+## What you have established
 
-You've extracted material master data and learned how field types differ between SAP and Parquet. MEINS (UOM) may have trailing spaces; MATNR is zero-padded numeric-character. Your downstream SQL will account for these via TRIM() and casting. You're now ready to handle Z-fields in the next walkthrough.
+You have confirmed the SAP side is ready for MARA extraction and you understand the key field characteristics that affect downstream processing. Your tool team can extract from I_Product. In the intermediate walkthrough, you will add Z-fields via a CDS extension view.

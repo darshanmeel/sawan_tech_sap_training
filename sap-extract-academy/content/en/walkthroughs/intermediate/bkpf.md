@@ -2,68 +2,87 @@
 table: BKPF
 level: intermediate
 slug: bkpf
-title: "Extract BKPF Multi-Year with Python ODP"
-summary: "Full extraction of multiple fiscal years (2022-2024), partitioned by BUKRS and GJAHR. Python/pyrfc with parallel loading."
+title: "Extract BKPF Multi-Year (Intermediate)"
+summary: "SAP-side intermediate guide for multi-year BKPF extraction. Covers partitioning by BUKRS and GJAHR across multiple years, SM50 load monitoring during multi-partition runs, and ODQMON queue health checks."
 estimatedMinutes: 75
 prerequisites:
-  - "Completed BKPF Beginner"
-  - "Python/pyrfc expertise"
-licenseRelevance: "All licenses."
+  - "Completed BKPF Beginner walkthrough"
+  - "SE16N familiarity for counting across multiple fiscal year filters"
+licenseRelevance: "All licenses. ODP via OData API. License trap: Runtime vs Full Use →"
 destinations:
-  - Snowflake
+  - Generic
 extractors:
-  - Python
+  - ODP
+method: odp
+seoTitle: "Extract BKPF Multi-Year (Intermediate) — SAP-Side Guide"
+seoDescription: "SAP-side intermediate guide for multi-year BKPF extraction. Partition by BUKRS+GJAHR, monitor SM50 during parallel runs, verify ODQMON queue health."
 steps:
   - id: step-01
-    title: "Design multi-year extraction strategy"
-    explanation: "Extract 2022, 2023, 2024 in parallel. Each year partitioned by BUKRS for further parallelism."
-    codeBlock:
-      language: python
-      content: |
-        years = [2022, 2023, 2024]
-        companies = [1000, 1001, 2000]
-        tasks = [
-          (year, bukrs)
-          for year in years
-          for bukrs in companies
-        ]
-      caption: "Multi-year, multi-company task matrix"
-    verify: "9 extraction tasks planned (3 years × 3 companies)."
-  
+    title: "Count rows per partition in SE16N"
+    explanation: 'For each fiscal year and company code combination you plan to extract, run a count in <a href="https://help.sap.com/">SE16N</a> with BUKRS and GJAHR filters. Record each count. This gives you a per-partition reconciliation baseline and helps you estimate total extraction time.'
+    sapTransaction:
+      code: SE16N
+      menuPath: "Execute → BKPF → Filter BUKRS='1000' AND GJAHR=2022 → Count; repeat for 2023, 2024"
+      helpUrl: "https://help.sap.com/"
+    verify: "You have row counts for each (BUKRS, GJAHR) combination. Total row count across all partitions is documented."
+
   - id: step-02
-    title: "Execute parallel extractions"
-    explanation: "Use ThreadPoolExecutor to run up to 4 parallel pyrfc connections. Each extracts one (BUKRS, GJAHR) partition."
-    verify: "All 9 partitions complete in ~30 minutes (vs sequential 90+ minutes)."
-  
+    title: "Confirm I_AccountingDocument CDS view is available for all target years"
+    explanation: 'The released CDS view I_AccountingDocument exposes BKPF through ODP. Verify it is active in <a href="https://help.sap.com/">SE80</a>. Also confirm that your extraction does not need data from before the system cut-over date — for systems migrated from ECC to S/4HANA, historical data may not be in BKPF (it may be in BKPF_OLD or have been migrated). [NEEDS_SAP_CITATION — confirm BKPF_OLD behavior for migrated systems]'
+    sapTransaction:
+      code: SE80
+      menuPath: "Repository Browser → I_AccountingDocument"
+      helpUrl: "https://help.sap.com/"
+    verify: "I_AccountingDocument is active. Ask Basis team whether pre-migration documents are in scope and where they are stored."
+
   - id: step-03
-    title: "Load into Snowflake with partitioned schema"
-    explanation: "Store in ACCOUNTING.BKPF_RAW partitioned by GJAHR and BUKRS."
-    verify: "ACCOUNTING.BKPF_RAW has 9 partitions, all populated."
-  
+    title: "Monitor SAP system load during multi-partition extraction (SM50)"
+    explanation: 'When running multiple partition extractions in parallel, your extraction tool opens multiple RFC connections simultaneously. Each connection consumes a work process. Monitor <a href="https://help.sap.com/">SM50</a> to confirm work process utilization stays below 80%. If it climbs higher, the finance team (who are posting documents) will be affected.'
+    sapTransaction:
+      code: SM50
+      menuPath: "Work Process Overview"
+      helpUrl: "https://help.sap.com/"
+    verify: "During extraction, SM50 shows work processes for your extraction user (DIA or BTC type) with CPU and status. Total work process utilization stays below 80%."
+    whyItMatters: "If your extraction saturates all available work processes, finance users cannot post documents. Coordinate extraction windows with the finance team — run multi-partition extractions outside posting hours."
+
   - id: step-04
-    title: "Reconcile aggregate totals"
-    explanation: "For each fiscal year and company code, sum amounts in Parquet and compare to SAP via FM_GET_DOCUMENT_HEADER RFC (if available)."
-    verify: "Total amounts match within 0.01% (allowance for rounding)."
+    title: "Check ODQMON for multiple active subscriptions"
+    explanation: 'If your tool runs multiple partitions in parallel via multiple ODP subscriptions, <a href="https://help.sap.com/">ODQMON</a> shows all active subscriptions. Monitor that each subscription is progressing and none is stuck in an error or fetching state. A stuck subscription consumes resources and blocks that partition.'
+    sapTransaction:
+      code: ODQMON
+      menuPath: "Subscriptions → Context: ABAP_CDS → Filter by I_AccountingDocument"
+      helpUrl: "https://help.sap.com/"
+    verify: "All subscriptions for I_AccountingDocument are in active (not error) state. Queue depths are decreasing over time."
+
+  - id: step-05
+    title: "Reconcile totals per partition after extraction"
+    explanation: 'For each (BUKRS, GJAHR) partition, re-run the SE16N count you recorded in step 01 and compare to the row count in your target. All partitions must reconcile before you sign off on the extraction.'
+    sapTransaction:
+      code: SE16N
+      helpUrl: "https://help.sap.com/"
+    verify: "Row counts in target match SE16N for each (BUKRS, GJAHR) partition. Document any acceptable variance for in-flight postings."
 
 troubleshooting:
-  - problem: "ThreadPoolExecutor exhausts SAP connection pool"
-    solution: "Limit to 4 parallel threads. Queue remaining tasks."
+  - problem: "SM50 shows work process saturation during extraction"
+    solution: "Reduce the number of parallel extraction connections. Limit to 3–4 concurrent partitions maximum. Queue remaining partitions to run sequentially after the first batch completes. Run extractions outside peak posting hours."
+
+  - problem: "One partition fails while others succeed"
+    solution: "BKPF for a specific fiscal year may have unusual volume (e.g., a year-end closing run generated more documents than normal). Re-run the failed partition with a smaller sub-partition (e.g., add a BLART filter for document types). Check ODQMON for the specific subscription error message."
 
 nextSteps:
-  - label: "Try BKPF Expert"
+  - label: "Try BKPF Expert — SLT parallel readers for enterprise scale"
     url: "/walkthrough/expert/bkpf/"
-
-seoTitle: "Extract BKPF Multi-Year with Python ODP"
-seoDescription: "Intermediate BKPF extraction: multi-year (2022-2024), multi-company partitioned loading via Python and ODP. Parallel processing and reconciliation."
+  - label: "License trap: Runtime vs Full Use"
+    url: "/articles/runtime-vs-full-use/"
 updatedAt: 2026-04-22
 ---
 
 ## Scenario
 
-Your finance warehouse needs 3 years of accounting documents. You'll extract in parallel by fiscal year and company code to minimize extraction time.
+Your finance warehouse needs three years of accounting documents. You will extract in parallel by fiscal year and company code to minimize extraction time, while keeping SAP work process utilization safe for concurrent posting activity.
 
 ---
 
-## What you've built
+## What you have confirmed
 
-You've mastered multi-dimensional partitioning (fiscal year × company code) and parallel extraction. Finance can now run ad-hoc reports across years without waiting for sequential loads.
+You have a per-partition row-count baseline, know how to monitor SAP work process load during parallel extractions, and understand how to use ODQMON to track subscription health across multiple concurrent extractions. Enterprise-scale extraction (billions of rows, SLT) is covered in the Expert walkthrough.

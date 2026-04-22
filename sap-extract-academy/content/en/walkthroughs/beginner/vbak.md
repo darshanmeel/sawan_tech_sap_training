@@ -2,145 +2,118 @@
 table: VBAK
 level: beginner
 slug: vbak
-title: "Extract VBAK to ADLS (Beginner)"
-summary: "Full-load extraction of the Sales Document Header from S/4HANA to ADLS Gen2 as Parquet files. Uses Azure Data Factory's SAP CDC connector with the released CDS view I_SalesDocument. No Z-fields, no delta — the simplest production-like scenario."
+title: "Extract VBAK Sales Document Header (Beginner)"
+summary: "SAP-side preparation for full-load extraction of the Sales Document Header. Covers the released CDS view I_SalesDocument, technical user setup with minimum authorizations, and post-extraction row-count reconciliation using SE16N."
 estimatedMinutes: 45
 prerequisites:
-  - "Access to an S/4HANA on-premise system with SE80 and authorization to create a technical user"
-  - "An Azure subscription with rights to create Data Factory and Storage Account resources"
-  - "A Windows VM or workstation for the Self-Hosted Integration Runtime (6 GB RAM minimum)"
-licenseRelevance: "Works under both Full Use and Runtime SAP licenses. The ODP-based path used by ADF's SAP CDC connector is application-layer extraction, which is permitted under all license types."
+  - "Access to an S/4HANA on-premise system with SE80 and SE16N authorization"
+  - "Ability to create or request a technical user via SU01"
+  - "Awareness of your SAP license type"
+licenseRelevance: "Works under both Full Use and Runtime SAP licenses. ODP extraction through the OData API is permitted under all license types. License trap: Runtime vs Full Use →"
 destinations:
-  - ADLS
+  - Generic
 extractors:
-  - ADF
+  - ODP
+method: odp
+seoTitle: "Extract VBAK Sales Document Header (Beginner) — SAP-Side Guide"
+seoDescription: "SAP-side beginner guide for VBAK extraction. Confirm released CDS view I_SalesDocument, create RFC user, assign S_ODP_READ, verify with ODQMON and SE16N."
 steps:
   - id: step-01
-    title: "Confirm the released CDS view for VBAK"
-    explanation: 'SAP ships released CDS views for many standard tables. These views come with business logic, authorization, and delta support built in — they are always the preferred extraction source over raw tables. For VBAK, the view is <a href="https://help.sap.com/">I_SalesDocument</a>.'
+    title: "Confirm the released CDS view I_SalesDocument"
+    explanation: 'SAP ships released CDS views for standard tables. For VBAK, the view is <a href="https://help.sap.com/">I_SalesDocument</a>. It carries authorization, delta support, and the <code>@Analytics.dataExtract: true</code> annotation that signals ODP readiness. Using this view is the SAP-recommended approach — extracting raw VBAK bypasses authorization and has no delta support.'
     sapTransaction:
       code: SE80
       menuPath: "Repository Browser → Search → I_SalesDocument"
       helpUrl: "https://help.sap.com/"
-    verify: "You can open I_SalesDocument in SE80 and confirm it has the annotation @Analytics.dataExtract: true in its header."
-    whyItMatters: 'Extracting from a released CDS view is the SAP-recommended approach. It respects authorization, applies business logic (currency translation, unit conversion), and exposes data through <a href="/glossary/odp/">ODP</a> cleanly. Reading VBAK directly skips all of this.'
-  
+    verify: "I_SalesDocument opens in SE80 and the annotation @Analytics.dataExtract: true is visible in the header."
+    whyItMatters: "Extracting from a released CDS view respects authorization and provides built-in delta support. Reading VBAK directly skips both. Released views are also more stable across upgrades than raw table layouts."
+
   - id: step-02
-    title: "Create a technical RFC user in SAP"
-    explanation: 'The extraction process needs a dedicated SAP user with minimal permissions. Never use a dialog user. Create a Communication or System type user via <a href="https://help.sap.com/">SU01</a>.'
+    title: "Check row count in SE16N (establish a reconciliation baseline)"
+    explanation: 'Use <a href="https://help.sap.com/">SE16N</a> to count rows in VBAK without filters (or with the filter that matches your intended extraction scope). Write down the number. This is your target: after the extraction, the row count in your landing zone must match this number.'
     sapTransaction:
-      code: SU01
-      menuPath: "User → Create"
+      code: SE16N
+      menuPath: "Execute → VBAK → Count"
       helpUrl: "https://help.sap.com/"
-    codeBlock:
-      language: plaintext
-      content: |
-        User name: EXTRACT_VBAK
-        User type: System
-        First name: Extract
-        Last name: VBAK Service User
-      caption: "Recommended user settings"
-    verify: "The user EXTRACT_VBAK appears in SU01's user list and is locked for interactive login."
+    verify: "You have a row count for VBAK. Typical range is 1M–50M rows depending on system size and history retained."
 
   - id: step-03
-    title: "Assign authorizations to the RFC user"
-    explanation: 'The user needs three authorization objects: <a href="https://help.sap.com/">S_RFC</a> (RFC call), S_TABU_DIS (table display), and S_ODP_READ (ODP read access).'
+    title: "Create a technical RFC user with minimum permissions"
+    explanation: 'Create a System-type (non-dialog) user via <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html">SU01</a>. System users cannot log on interactively and do not consume a dialog work process. Never reuse a named user account for automated extraction — it creates audit, security, and performance problems.'
     sapTransaction:
-      code: PFCG
-      menuPath: "Role → Create → Authorizations"
-      helpUrl: "https://help.sap.com/"
-    verify: "In SU01, the EXTRACT_VBAK user has a single custom role assigned that grants S_RFC for RFC_TYPE=FUNC, S_TABU_DIS for authorization group SD, and S_ODP_READ for context ABAP_CDS."
+      code: SU01
+      menuPath: "User → Create → User type: System"
+      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+    verify: "User EXTRACT_VBAK exists in SU01 with User Type = System. The user is locked for interactive logon."
 
   - id: step-04
-    title: "Install the Self-Hosted Integration Runtime"
-    explanation: "Azure Data Factory connects to SAP through a Self-Hosted Integration Runtime (SHIR) that runs on a Windows VM with network access to the SAP system. The SHIR also requires the SAP .NET Connector (NCo) 3.0 installed separately."
-    verify: "In the ADF portal, the new SHIR shows Status: Running and the NCo 3.0 library is installed on the VM."
-    whyItMatters: "SHIR is the bridge between Azure and your SAP system. Without it, ADF cannot reach SAP. Most extraction errors at this stage trace back to SHIR network rules or a missing NCo library."
+    title: "Assign authorizations via PFCG"
+    explanation: 'In <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html">PFCG</a>, create a single custom role. Add three authorization objects: S_RFC (RFC_TYPE=FUNC), S_ODP_READ (ODPSOURCE=ABAP_CDS), and S_TABU_DIS (authorization group SD). Generate the profile and assign the role to EXTRACT_VBAK.'
+    sapTransaction:
+      code: PFCG
+      menuPath: "Role → Create → Authorizations → Add Object"
+      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+    verify: "In SU01, EXTRACT_VBAK shows one role assigned. In PFCG, the role authorization data contains S_ODP_READ with ODPSOURCE=ABAP_CDS."
 
   - id: step-05
-    title: "Create an ADF linked service for SAP CDC"
-    explanation: "In the Azure Data Factory studio, create a new linked service of type SAP CDC. Point it at your SAP system's application server hostname and system number. Use the EXTRACT_VBAK user credentials."
-    codeBlock:
-      language: json
-      content: |
-        {
-          "name": "SAP_S4HANA_Source",
-          "type": "SapOdpLinkedService",
-          "typeProperties": {
-            "server": "<YOUR_SAP_HOST>",
-            "systemNumber": "00",
-            "clientId": "100",
-            "language": "EN",
-            "userName": "EXTRACT_VBAK",
-            "password": { "type": "SecureString", "value": "<SECURE>" },
-            "connectVia": { "referenceName": "SHIR-name", "type": "IntegrationRuntimeReference" }
-          }
-        }
-      caption: "Linked service JSON (replace placeholders)"
-    verify: "The Test Connection button returns green in the ADF linked service editor."
+    title: "Verify the RFC destination is reachable (SM59)"
+    explanation: 'Your extraction tool connects to SAP over an RFC destination. Ask your Basis team to check <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/sm59.html">SM59</a> for the destination your tool will use. The test connection must pass before any extraction attempt.'
+    sapTransaction:
+      code: SM59
+      menuPath: "RFC Connections → ABAP Connections or TCP/IP → Test Connection"
+      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/sm59.html"
+    verify: "Test Connection returns green for the RFC destination your tool uses."
 
   - id: step-06
-    title: "Create the ADF source dataset"
-    explanation: "Create a dataset on the linked service that targets the CDS view I_SalesDocument through ODP. ADF's SAP CDC connector handles the ODP subscription transparently."
-    verify: "The dataset preview loads a sample of rows from I_SalesDocument with the expected VBAK columns (VBELN, AUART, VKORG, ERDAT, NETWR)."
+    title: "Check ODQMON after the tool's first run"
+    explanation: 'After your extraction tool makes its first connection, open <a href="https://help.sap.com/">ODQMON</a>. A subscription for I_SalesDocument should appear under context ABAP_CDS. No subscription means the tool did not register with ODP — this usually means it is using an unsupported path or the authorization is incorrect.'
+    sapTransaction:
+      code: ODQMON
+      menuPath: "Subscriptions → Context: ABAP_CDS → I_SalesDocument"
+      helpUrl: "https://help.sap.com/"
+    verify: "ODQMON shows an active subscription for I_SalesDocument. No error status."
+    whyItMatters: "ODQMON is your diagnostic console. If the extraction looks successful in your tool but the data count is wrong, ODQMON will show you why."
 
   - id: step-07
-    title: "Create the ADLS Gen2 storage and container"
-    explanation: "In the Azure portal, create a Storage Account with hierarchical namespace enabled (ADLS Gen2). Create a container named sap-raw. Within it, create a folder path vbak/full-load/."
-    verify: "The container sap-raw exists and you can browse to sap-raw/vbak/full-load/ in Azure Storage Explorer."
-
-  - id: step-08
-    title: "Create the ADF sink dataset"
-    explanation: "Create a second dataset pointing at the ADLS container, format Parquet, compression Snappy. Set the file path to sap-raw/vbak/full-load/ and use a date-based file naming pattern."
-    verify: "The sink dataset's Test Connection returns green and the file path is correct."
-
-  - id: step-09
-    title: "Build the ADF pipeline with a Copy activity"
-    explanation: "Create a new pipeline. Add a Copy activity. Source = the SAP CDC dataset, Sink = the ADLS Parquet dataset. Configure Run mode = Full on Every Run for this first scenario. Save and publish the pipeline."
-    verify: "The pipeline exists in Published state in ADF and has no validation errors."
-
-  - id: step-10
-    title: "Run the pipeline and verify data in ADLS"
-    explanation: "Trigger the pipeline with Trigger Now. Monitor progress in the Monitor tab. When complete, browse to the ADLS container and confirm one or more Parquet files exist containing VBAK data."
-    verify: "At least one Parquet file exists under sap-raw/vbak/full-load/. Opening it with a tool like Azure Data Studio or a pandas notebook shows rows with VBAK columns and a row count that roughly matches the table count from SE16N."
-    whyItMatters: "Row count reconciliation between SAP (via SE16N) and the target (via Parquet file count) is the most important verification in any extraction. Always reconcile after the initial load."
+    title: "Reconcile row counts after extraction"
+    explanation: "Return to SE16N and count VBAK rows with the same filters you used in step 02. Compare to the row count your landing zone reports. The counts should match or differ only by in-flight postings that arrived during the extraction window."
+    sapTransaction:
+      code: SE16N
+      menuPath: "Execute → VBAK → Count"
+      helpUrl: "https://help.sap.com/"
+    verify: "Row count in landing zone matches SE16N count within a tolerable margin."
+    whyItMatters: "Row-count reconciliation is the single most important verification in any extraction. Never hand data to the analytics team without it."
 
 troubleshooting:
-  - problem: "Linked service Test Connection fails with SAP SNC error"
-    solution: "SNC (Secure Network Communication) is a TLS layer for SAP RFC. Either disable SNC in the linked service if your SAP system allows plaintext on the RFC port, or configure SNC with a certificate. For beginner scenarios, plaintext within a secure network is acceptable."
-    sapNoteUrl: "https://launchpad.support.sap.com/#/notes/2362078"
-  
-  - problem: "Pipeline fails with SAP_ODP_AUTHORIZATION_MISSING"
-    solution: "The EXTRACT_VBAK user lacks S_ODP_READ for context ABAP_CDS. Return to PFCG and add this authorization with parameter ODPSOURCE = ABAP_CDS."
-  
-  - problem: "Parquet files are empty (0 rows written)"
-    solution: "The CDS view filter likely excluded all rows. Check the ADF dataset's filter settings. For a full load, there should be no WHERE clause."
+  - problem: "Test Connection in SM59 fails"
+    solution: "Check that network rules allow the tool's server to reach SAP's message server port (usually 3600+systemNumber) and application server host. Engage your Basis team — this is a network or SAP host configuration issue, not an extraction configuration issue."
+
+  - problem: "SAP_ODP_AUTHORIZATION_MISSING error"
+    solution: "The EXTRACT_VBAK user lacks S_ODP_READ for context ABAP_CDS. Return to PFCG and add this authorization with ODPSOURCE=ABAP_CDS. Regenerate the profile and test again."
+
+  - problem: "ODQMON shows no subscription after tool runs"
+    solution: "The tool may be calling ODP via RFC rather than OData. RFC-based ODP is restricted per SAP Note 3255746. Check the tool's connector configuration and switch to OData mode."
 
 nextSteps:
-  - label: "Try the VBAK Intermediate walkthrough — adds delta and one Z-field"
+  - label: "Try the VBAK Intermediate walkthrough — adds delta and Z-field"
     url: "/walkthrough/intermediate/vbak/"
-  - label: "Read: Why Reading ACDOCA Directly Breaks Your SAP System"
-    url: "/articles/why-acdoca-breaks-sap/"
+  - label: "License trap: Runtime vs Full Use"
+    url: "/articles/runtime-vs-full-use/"
   - label: "Glossary: Operational Data Provisioning (ODP)"
     url: "/glossary/odp/"
-
-seoTitle: "Extract VBAK to ADLS Parquet (Beginner) — S/4HANA Walkthrough"
-seoDescription: "Step-by-step beginner walkthrough for extracting VBAK (sales document header) from SAP S/4HANA to Azure Data Lake Storage Gen2 using ADF and the released CDS view."
 updatedAt: 2026-04-22
 ---
 
-## Scenario
+Your finance analytics project needs sales order data in the data lake. Specifically, the header record for every sales order — orders, quotations, contracts. This walkthrough covers the SAP-side work from confirming the released CDS view to verifying the extraction succeeded.
 
-Your team's finance analytics project needs sales order data in the data lake. Specifically, they want the header record for every sales order — orders, quotations, contracts — loaded into ADLS Gen2 as Parquet. This is the classic first SAP extraction task.
+Your tool team handles pipeline configuration (linked services, copy activities, Parquet sinks). This walkthrough is about the SAP side: what to check, which transactions to open, what authorizations to set, and how to know the extraction is correct.
 
-You've been handed access to an S/4HANA on-premise system and an Azure subscription. No Z-fields, no delta, no tight SLA — just get the data out correctly and hand it to the analytics team. This walkthrough covers every step from SAP authorization to a successful row-count reconciliation.
-
-If you complete this in one sitting, budget about 45 minutes. If this is your first time touching SAP, add an hour for navigating the screens.
+If you complete this in one sitting, budget about 45 minutes. If this is your first time navigating SAP transactions, add 30 minutes.
 
 ---
 
-## What you've built
+## What you have established
 
-You now have a working extraction pipeline from S/4HANA's sales document header to an Azure Data Lake. Every row of VBAK, accessed through the released CDS view I_SalesDocument, lands in Parquet files under a predictable folder structure. Row count reconciliation confirms nothing was dropped.
+You have confirmed that the SAP side is correctly configured for VBAK extraction: the released CDS view is present, a minimal-permission extraction user is in place, ODP is registering subscriptions, and you have a row-count baseline for reconciliation.
 
-The patterns you've learned — released CDS views, technical RFC users with minimum authorizations, ADF SAP CDC connector, ADLS Parquet with date-partitioned folders — are the foundation for every S/4HANA extraction you'll build next. When you're ready, the intermediate walkthrough for VBAK adds delta processing and introduces CDS extension views for Z-fields.
+The patterns you have learned — released CDS views, System-type RFC users, S_ODP_READ authorization, ODQMON monitoring, SE16N reconciliation — are the foundation for every S/4HANA extraction. When you move to the intermediate walkthrough, you will add delta processing and a Z-field.

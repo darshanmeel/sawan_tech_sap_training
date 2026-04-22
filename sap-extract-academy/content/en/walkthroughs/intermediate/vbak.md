@@ -3,130 +3,101 @@ table: VBAK
 level: intermediate
 slug: vbak
 title: "Extract VBAK with Delta and Z-Field (Intermediate)"
-summary: "Full + delta extraction of VBAK with a custom Z-field (ZZ_REGION). Introduces delta queues in ODP, CDS extension views for Z-fields, and incremental load patterns."
+summary: "SAP-side intermediate guide for VBAK extraction with delta processing and a custom Z-field. Covers ODP delta queue mechanics in ODQMON, CDS extension view creation in SE80 for Z-field inclusion, and checking delta subscription health."
 estimatedMinutes: 60
 prerequisites:
-  - "Completed VBAK Beginner"
-  - "Understanding of ODP delta concepts from glossary"
-lcenseRelevance: "All license types. CDS extension views are application-layer."
+  - "Completed VBAK Beginner walkthrough"
+  - "Understanding of ODP delta concepts from the ODP glossary entry"
+licenseRelevance: "All license types. CDS extension views are application-layer. License trap: Runtime vs Full Use →"
 destinations:
-  - Snowflake
+  - Generic
 extractors:
-  - Python
+  - ODP
+method: odp
+seoTitle: "Extract VBAK with Delta and Z-Field (Intermediate) — SAP-Side Guide"
+seoDescription: "SAP-side intermediate guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics."
 steps:
   - id: step-01
-    title: "Verify the I_SalesDocument CDS extension view supports ZZ_REGION"
-    explanation: "Your S/4HANA system has a custom Z-field ZZ_REGION on VBAK. Confirm the released CDS view I_SalesDocument includes this via an extension view or direct annotation."
+    title: "Verify I_SalesDocument supports delta extraction"
+    explanation: 'Open I_SalesDocument in <a href="https://help.sap.com/">SE80</a> and inspect the delta annotation. For ODP delta to work, the view must carry <code>@Analytics.dataExtraction.delta.changeDataCapture.automatic: true</code>.'
     sapTransaction:
       code: SE80
-      menuPath: "Repository Browser → I_SalesDocument"
+      menuPath: "Repository Browser → I_SalesDocument → Annotations"
       helpUrl: "https://help.sap.com/"
-    verify: "I_SalesDocument or an associated extension view exposes ZZ_REGION as a field."
+    verify: "I_SalesDocument has @Analytics.dataExtract: true. Delta annotation is present or Basis team confirms delta is supported."
 
   - id: step-02
-    title: "Understand ODP delta queues"
-    explanation: "<a href='/glossary/odp/'>ODP</a> maintains delta queues for each context (CDS view). The queue tracks insert, update, delete operations. You'll request a delta using a timestamp or sequence number."
+    title: "Check for the custom Z-field ZZ_REGION in VBAK"
+    explanation: 'Your S/4HANA system has a custom Z-field ZZ_REGION on VBAK (added via an Append Structure). Confirm this field exists in the table definition using <a href="https://help.sap.com/">SE11</a> before building a CDS extension view to expose it.'
     sapTransaction:
-      code: ODQMON
-      menuPath: "Subscriptions → Search I_SalesDocument"
+      code: SE11
+      menuPath: "Data Dictionary → Database Tables → VBAK → Display → Fields"
       helpUrl: "https://help.sap.com/"
-    verify: "ODQMON shows an ODP subscription for I_SalesDocument with a delta queue active."
+    verify: "ZZ_REGION appears in the VBAK field list under an Append Structure entry."
+    whyItMatters: "Z-fields added via Append Structures are part of the physical table but are not included in standard released CDS views. You must expose them explicitly through a CDS extension view to make them available for ODP extraction."
 
   - id: step-03
-    title: "Set up Python environment with pyrfc"
-    explanation: "Install pyrfc library for direct SAP RFC calls. This gives you finer control over delta requests than ADF's SAP CDC connector."
+    title: "Create a CDS extension view to expose ZZ_REGION"
+    explanation: 'In <a href="https://help.sap.com/">SE80</a> or ABAP Development Tools (ADT), create a CDS extension view that adds ZZ_REGION to I_SalesDocument. The extension view must not modify the released view — it extends it.'
+    sapTransaction:
+      code: SE80
+      menuPath: "Repository Browser → Create → CDS View Extension"
+      helpUrl: "https://help.sap.com/"
     codeBlock:
-      language: bash
+      language: abap
       content: |
-        pip install pyrfc cryptography
-        python -c "import pyrfc; print(pyrfc.__version__)"
-      caption: "Install pyrfc and verify"
-    verify: "pyrfc imports successfully in Python."
+        @AccessControl.authorizationCheck: #CHECK
+        @Analytics.dataExtract: true
+        extend view I_SalesDocument with ZI_SalesDocument_Ext {
+          vbak.ZZ_REGION
+        }
+      caption: "Reference: CDS extension view to expose ZZ_REGION — adjust to your naming conventions"
+    verify: "Extension view ZI_SalesDocument_Ext is active in SE80. Activating it does not raise errors or modify I_SalesDocument itself."
 
   - id: step-04
-    title: "Create Python script for full load"
-    explanation: "Write a Python script using pyrfc to call RFC_READ_TABLE on I_SalesDocument CDS view. Request all rows (no WHERE clause). Save to Parquet in Snowflake via pyodbc and pandas."
-    codeBlock:
-      language: python
-      content: |
-        from pyrfc import Connection
-        import pandas as pd
-        from snowflake.connector.pandas_tools import write_pandas
-        
-        conn = Connection(ashost='<SAP_HOST>', sysnr='00', client='100', user='EXTRACT_VBAK', passwd='<pwd>')
-        
-        query_result = conn.call('RFC_READ_TABLE', QUERY_TABLE='I_SalesDocument', ROWCOUNT=500000)
-        df = pd.DataFrame(query_result['DATA'])
-        
-        sf_conn = snowflake.connector.connect(user='<sf_user>', password='<sf_pwd>', account='<account>')
-        write_pandas(sf_conn, df, 'VBAK_FULL_LOAD', auto_create_table=True)
-      caption: "Simplified full-load Python script"
-    verify: "Script runs and data lands in Snowflake table VBAK_FULL_LOAD."
-
-  - id: step-05
-    title: "Capture baseline delta sequence number"
-    explanation: "After full load completes, query ODQMON to capture the current ODP sequence number. You'll use this in the delta extract to only get new/changed rows."
+    title: "Monitor the ODP delta subscription in ODQMON"
+    explanation: 'After your extraction tool registers and runs its init-delta, check <a href="https://help.sap.com/">ODQMON</a>. Confirm the subscription exists and is in an active (not stuck) state. Note: the first delta after init returns 0 records — this is normal per <a href="https://support.sap.com/notes/2884410">SAP Note 2884410</a>.'
     sapTransaction:
       code: ODQMON
-      menuPath: "Subscriptions → I_SalesDocument → View Queue"
+      menuPath: "Subscriptions → Context: ABAP_CDS → I_SalesDocument (or ZI_SalesDocument_Ext)"
       helpUrl: "https://help.sap.com/"
-    verify: "You note the ODP sequence number (e.g., 12345) as the baseline."
+    verify: "Subscription is active. After init run, delta queue shows 0 pending records (expected). After subsequent changes in SAP, queue shows pending records matching number of changed documents."
 
-  - id: step-06
-    title: "Implement incremental load logic"
-    explanation: "Create a second Python script that calls ODP with the previous sequence number to fetch only changed rows. Store the updated sequence number for the next run."
-    codeBlock:
-      language: python
-      content: |
-        last_seq = 12345  # from baseline
-        delta_result = conn.call('RS_DATASOURCE_DELTA', ..., LAST_SEQ=str(last_seq))
-        new_seq = delta_result['NEXTSEQ']
-        
-        # Apply delta: insert new, update changed, delete removed
-        # Store new_seq for next run
-      caption: "Delta extraction pseudocode"
-    verify: "Delta extraction runs and updates Snowflake with only changed rows."
-
-  - id: step-07
-    title: "Schedule daily delta runs"
-    explanation: "Use AWS Lambda or a Snowflake task to run the delta extraction daily. Maintain state (last sequence number) in a Snowflake metadata table."
-    verify: "Lambda function or Snowflake task executes on schedule and logs show daily delta runs."
-
-  - id: step-08
-    title: "Validate Z-field data (ZZ_REGION)"
-    explanation: "Check that ZZ_REGION is present in the Snowflake table and contains expected values (e.g., 'EMEA', 'APAC', 'AMER')."
-    verify: "SELECT DISTINCT ZZ_REGION FROM VBAK_FULL_LOAD returns expected regional values."
+  - id: step-05
+    title: "Validate Z-field data in SE16N"
+    explanation: 'Before handing data to your analytics team, verify that ZZ_REGION values look correct. Use <a href="https://help.sap.com/">SE16N</a> to browse VBAK and check ZZ_REGION values for a sample of document numbers. Then confirm those same values appear in your target system for the same VBELN keys.'
+    sapTransaction:
+      code: SE16N
+      menuPath: "Execute → VBAK → Show ZZ_REGION for sample VBELN"
+      helpUrl: "https://help.sap.com/"
+    verify: "ZZ_REGION values in your target match ZZ_REGION values in SE16N for the same VBELN records."
 
 troubleshooting:
-  - problem: "pyrfc connection fails with SNC_PARTNER_NOT_REACHED"
-    solution: "SNC is enabled on the SAP system. Disable in the connection or configure SNC certificates on the Python machine."
-  
-  - problem: "Z-field ZZ_REGION is NULL in output"
-    solution: "The CDS view may not expose the Z-field directly. Create a CDS extension view in SE80 that appends the Z-field, or extract VBAK raw table separately and join."
+  - problem: "ZZ_REGION is NULL in extraction output"
+    solution: "The CDS extension view may not be active or may not be the source your tool is pointing at. Confirm the extension view is active in SE80 and that your tool's ODP source is configured to use ZI_SalesDocument_Ext (not the base I_SalesDocument). Also confirm the ABAP transport containing the extension view is in the production system."
+
+  - problem: "Delta subscriptions accumulate in ODQMON without being consumed"
+    solution: "Check whether your extraction scheduler is running. Stale subscriptions that accumulate more than a few days of delta entries can cause performance issues in ODQMON. If the subscriber is no longer active, delete it in ODQMON to prevent queue buildup."
+    sapNoteUrl: "https://support.sap.com/notes/2884410"
 
 nextSteps:
-  - label: "Try VBAK Expert — SLT push to Kafka"
+  - label: "Try VBAK Expert — SLT push replication for real-time scenarios"
     url: "/walkthrough/expert/vbak/"
   - label: "Glossary: Operational Data Provisioning delta"
-    url: "/glossary/delta/"
-
-seoTitle: "Extract VBAK with Delta & Z-Fields (Intermediate) — S/4HANA"
-seoDescription: "Intermediate walkthrough for VBAK extraction with delta processing and custom Z-field support. Python/pyrfc + Snowflake. ODP delta queues and incremental load patterns."
+    url: "/glossary/odp/"
+  - label: "License trap: Runtime vs Full Use"
+    url: "/articles/runtime-vs-full-use/"
 updatedAt: 2026-04-22
 ---
 
 ## Scenario
 
-Your analytics team now needs near-real-time sales data. Daily delta extracts are sufficient — you don't need sub-minute updates, but every morning's refresh should catch all yesterday's new and changed orders.
+Your analytics team now needs near-real-time sales data. Daily delta extracts are sufficient — you do not need sub-minute updates, but every morning's refresh should catch all yesterday's new and changed orders. Your company also added a custom Z-field ZZ_REGION to sales documents for regional analysis.
 
-Additionally, your company has added a custom Z-field ZZ_REGION to sales documents (EMEA, APAC, AMER) for regional analysis. You'll update the extraction to include this field and implement delta processing.
-
-Estimated time: 60 minutes.
+This walkthrough covers the SAP-side changes: confirming delta support, creating a CDS extension view for ZZ_REGION, and verifying that the delta queue in ODQMON is healthy. Your tool team configures the delta poll schedule.
 
 ---
 
-## What you've built
+## What you have confirmed
 
-You've built a full + delta extraction pattern using pyrfc and ODP delta queues. Your Snowflake table receives a daily update with only changed rows, keeping the data fresh and reducing extraction volume. The Z-field ZZ_REGION is now part of the data pipeline.
-
-This pattern scales: as Z-fields multiply or business rules change, you'll adjust the CDS extension view or raw-table extraction, but the delta mechanism remains the same.
+The SAP side supports delta extraction for VBAK, the Z-field is exposed through a CDS extension view, and the ODQMON subscription is healthy. Your tool team can now configure daily delta polls. When you need sub-minute real-time updates — for example, to feed a live sales dashboard — move to the Expert walkthrough and SLT.
