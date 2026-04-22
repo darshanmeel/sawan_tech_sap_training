@@ -247,6 +247,160 @@ function walkFiles(dir) {
   }
 }
 
+function generateIndexPages() {
+  const tables = [];
+  const glossary = [];
+  const articles = [];
+
+  // Collect tables
+  const tablesDir = path.join(CONTENT_DIR, 'tables');
+  if (fs.existsSync(tablesDir)) {
+    const files = fs.readdirSync(tablesDir);
+    for (const file of files) {
+      if (file.endsWith('.md') && file !== 'index.md') {
+        const content = fs.readFileSync(path.join(tablesDir, file), 'utf-8');
+        const { data } = matter(content);
+        tables.push({
+          slug: data.code ? data.code.toLowerCase() : path.parse(file).name,
+          code: data.code,
+          name: data.name,
+          module: data.module,
+          businessDescription: data.businessDescription
+        });
+      }
+    }
+  }
+
+  // Collect glossary terms
+  const glossaryDir = path.join(CONTENT_DIR, 'glossary');
+  if (fs.existsSync(glossaryDir)) {
+    const files = fs.readdirSync(glossaryDir);
+    for (const file of files) {
+      if (file.endsWith('.md') && file !== 'index.md') {
+        const content = fs.readFileSync(path.join(glossaryDir, file), 'utf-8');
+        const { data } = matter(content);
+        glossary.push({
+          slug: data.slug,
+          term: data.term,
+          fullName: data.fullName,
+          shortDefinition: data.shortDefinition
+        });
+      }
+    }
+  }
+
+  // Collect articles
+  const articlesDir = path.join(CONTENT_DIR, 'articles');
+  if (fs.existsSync(articlesDir)) {
+    const files = fs.readdirSync(articlesDir);
+    for (const file of files) {
+      if (file.endsWith('.md')) {
+        const content = fs.readFileSync(path.join(articlesDir, file), 'utf-8');
+        const { data } = matter(content);
+        articles.push({
+          slug: data.slug,
+          title: data.title,
+          summary: data.summary,
+          publishDate: data.publishDate,
+          readingTimeMinutes: data.readingTimeMinutes,
+          author: data.author
+        });
+      }
+    }
+  }
+
+  // Generate tables index page
+  if (tables.length > 0) {
+    const tablesPage = {
+      slug: '/tables/',
+      title: 'SAP Tables',
+      seoTitle: 'SAP Tables — Extract ACDOCA, BKPF, VBAK, MARA, LFA1',
+      seoDescription: 'Complete library of SAP tables for extraction. ACDOCA, BKPF, VBAK, MARA, LFA1. Each with beginner, intermediate, expert walkthroughs.',
+      items: tables.map(t => ({
+        title: `${t.code}: ${t.name}`,
+        subtitle: `Module: ${t.module}`,
+        description: t.businessDescription,
+        url: `/tables/${t.slug}/`,
+        label: 'View Table'
+      }))
+    };
+    buildIndexPage('tables', tablesPage);
+  }
+
+  // Generate glossary index page
+  if (glossary.length > 0) {
+    const glossaryPage = {
+      slug: '/glossary/',
+      title: 'SAP Glossary',
+      seoTitle: 'SAP Extraction Glossary — 32 Terms Explained',
+      seoDescription: 'Complete glossary of SAP extraction concepts: ODP, SLT, Delta, CDS, Z-fields, CUKY, partitioning, parallelism, licensing, and more.',
+      items: glossary.map(g => ({
+        title: g.term,
+        subtitle: g.fullName,
+        description: g.shortDefinition,
+        url: `/glossary/${g.slug}/`,
+        label: 'Read Definition'
+      }))
+    };
+    buildIndexPage('glossary', glossaryPage);
+  }
+
+  // Generate articles index page
+  if (articles.length > 0) {
+    const articlesPage = {
+      slug: '/articles/',
+      title: 'Articles',
+      seoTitle: 'SAP Extraction Articles — Deep Dives',
+      seoDescription: 'Expert articles on SAP extraction: why ACDOCA breaks systems, licensing traps, complete walkthrough strategies.',
+      items: articles.map(a => ({
+        title: a.title,
+        subtitle: `${a.readingTimeMinutes} min read · ${a.publishDate}`,
+        description: a.summary,
+        url: `/articles/${a.slug}/`,
+        label: 'Read Article'
+      }))
+    };
+    buildIndexPage('articles', articlesPage);
+  }
+}
+
+function buildIndexPage(category, data) {
+  const outputDir = path.join(OUTPUT_DIR, category);
+  const outputPath = path.join(outputDir, 'index.html');
+
+  const mergedData = {
+    title: data.title,
+    seoTitle: data.seoTitle,
+    seoDescription: data.seoDescription,
+    canonicalPath: data.slug,
+    items: data.items,
+    strings,
+    currentYear,
+    ogImage: 'default-og.png',
+    ogType: 'website'
+  };
+
+  const pageContent = Mustache.render(pageTemplates.list, mergedData);
+  const baseData = {
+    ...mergedData,
+    content: pageContent
+  };
+
+  const html = Mustache.render(baseTemplate, baseData);
+
+  fs.mkdirSync(outputDir, { recursive: true });
+  fs.writeFileSync(outputPath, html, 'utf-8');
+
+  sitemapEntries.push({
+    url: data.slug,
+    lastmod: new Date().toISOString().split('T')[0],
+    changefreq: 'weekly',
+    priority: 0.7
+  });
+
+  console.log(`✓ Built ${data.slug}`);
+}
+
 function generateSitemap() {
   const entries = [
     { url: '/', lastmod: new Date().toISOString().split('T')[0], changefreq: 'weekly', priority: 1.0 },
@@ -276,6 +430,7 @@ function build() {
 
   if (fs.existsSync(CONTENT_DIR)) {
     walkFiles(CONTENT_DIR);
+    generateIndexPages();
   } else {
     console.log('No content directory found. Skipping content build.');
   }
