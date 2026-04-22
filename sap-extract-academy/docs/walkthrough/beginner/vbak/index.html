@@ -6,7 +6,7 @@
 
   <title>Extract VBAK Sales Document Header (Beginner) — SAP-Side Guide — SAP Extract Academy</title>
   <meta name="description" content="SAP-side beginner guide for VBAK extraction. Confirm released CDS view I_SalesDocument, create RFC user, assign S_ODP_READ, verify with ODQMON and SE16N.">
-  <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;beginner&#x2F;vbak&#x2F;">
+  <link rel="canonical" href="https://academy.example.com/walkthrough/beginner/vbak/">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="Extract VBAK Sales Document Header (Beginner) — SAP-Side Guide">
@@ -40,28 +40,26 @@
 
   <header class="site-header">
     <div class="container">
-      <div class="header-top">
-        <a href="/" class="site-logo">SAP Extract Academy</a>
+      <div class="header-inner">
+        <a href="/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="/tables/">Tables</a></li>
+            <li><a href="/walkthrough/">Walkthroughs</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
       </div>
-      <nav class="site-nav">
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/tables/">Tables</a></li>
-          <li><a href="/walkthrough/">Walkthroughs</a></li>
-          <li><a href="/glossary/">Glossary</a></li>
-          <li><a href="/articles/">Articles</a></li>
-          <li><a href="/roadmap/">Roadmap</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="/decide/">Decide</a></li>
-        </ul>
-        <div data-source-picker>
-          <label for="source-version-select" class="sr-only">SAP Version</label>
-          <select id="source-version-select" aria-label="Choose SAP version">
-            <option value="s4hana">S/4HANA</option>
-            <option value="ecc">ECC</option>
-          </select>
-        </div>
-      </nav>
     </div>
   </header>
 
@@ -71,343 +69,354 @@
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
       <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
-    <!-- Walkthrough detail page -->
+    <!-- Walkthrough detail page — Bento card grid -->
 
-<div class="container">
-<div class="picker" aria-label="Extraction method, tool, and sink selector">
-  <fieldset class="picker-axis" id="picker-method">
-    <legend>Extraction method</legend>
-    <div class="picker-pills">
-      <label class="picker-pill">
-        <input type="radio" name="method" value="odp" class="picker-radio">
-        <span>ODP</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="method" value="slt" class="picker-radio">
-        <span>SLT</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="method" value="rfc" class="picker-radio">
-        <span>RFC direct</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="method" value="ref" class="picker-radio">
-        <span>Reference only</span>
-      </label>
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <!-- Picker (3-axis: method/tool/sink) — wrapped in card.section -->
+  <div class="card section" style="margin-bottom:var(--space-4);">
+    <div class="picker" aria-label="Extraction method, tool, and sink selector">
+      <fieldset class="picker-axis" id="picker-method">
+        <legend>Extraction method</legend>
+        <div class="picker-pills">
+          <label class="picker-pill">
+            <input type="radio" name="method" value="odp" class="picker-radio">
+            <span>ODP</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="method" value="slt" class="picker-radio">
+            <span>SLT</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="method" value="rfc" class="picker-radio">
+            <span>RFC direct</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="method" value="ref" class="picker-radio">
+            <span>Reference only</span>
+          </label>
+        </div>
+      </fieldset>
+    
+      <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
+        <legend>Tool</legend>
+        <div class="picker-pills">
+          <label class="picker-pill">
+            <input type="radio" name="tool" value="adf" class="picker-radio">
+            <span>ADF</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="tool" value="databricks" class="picker-radio">
+            <span>Databricks</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="tool" value="fivetran" class="picker-radio">
+            <span>Fivetran</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="tool" value="airbyte" class="picker-radio">
+            <span>Airbyte</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="tool" value="custom" class="picker-radio">
+            <span>Custom</span>
+          </label>
+        </div>
+      </fieldset>
+    
+      <fieldset class="picker-axis" id="picker-sink">
+        <legend>Sink</legend>
+        <div class="picker-pills">
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="adls" class="picker-radio">
+            <span>ADLS</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="s3" class="picker-radio">
+            <span>S3</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="gcs" class="picker-radio">
+            <span>GCS</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="snowflake" class="picker-radio">
+            <span>Snowflake</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="bigquery" class="picker-radio">
+            <span>BigQuery</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="fabric" class="picker-radio">
+            <span>Fabric</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="other" class="picker-radio">
+            <span>Other</span>
+          </label>
+        </div>
+      </fieldset>
     </div>
-  </fieldset>
+  </div>
 
-  <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
-    <legend>Tool</legend>
-    <div class="picker-pills">
-      <label class="picker-pill">
-        <input type="radio" name="tool" value="adf" class="picker-radio">
-        <span>ADF</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="tool" value="databricks" class="picker-radio">
-        <span>Databricks</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="tool" value="fivetran" class="picker-radio">
-        <span>Fivetran</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="tool" value="airbyte" class="picker-radio">
-        <span>Airbyte</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="tool" value="custom" class="picker-radio">
-        <span>Custom</span>
-      </label>
-    </div>
-  </fieldset>
-
-  <fieldset class="picker-axis" id="picker-sink">
-    <legend>Sink</legend>
-    <div class="picker-pills">
-      <label class="picker-pill">
-        <input type="radio" name="sink" value="adls" class="picker-radio">
-        <span>ADLS</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="sink" value="s3" class="picker-radio">
-        <span>S3</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="sink" value="gcs" class="picker-radio">
-        <span>GCS</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="sink" value="snowflake" class="picker-radio">
-        <span>Snowflake</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="sink" value="bigquery" class="picker-radio">
-        <span>BigQuery</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="sink" value="fabric" class="picker-radio">
-        <span>Fabric</span>
-      </label>
-      <label class="picker-pill">
-        <input type="radio" name="sink" value="other" class="picker-radio">
-        <span>Other</span>
-      </label>
-    </div>
-  </fieldset>
-</div>
-
-<nav class="breadcrumb" aria-label="Breadcrumb">
-  <ol>
-    <li><a href="/">Home</a></li>
-    <li><a href="/tables/">Tables</a></li>
-    <li><a href="/tables/vbak/">VBAK</a></li>
-    <li aria-current="page">beginner walkthrough</li>
-  </ol>
-</nav>
-
-<article class="walkthrough" data-walkthrough-id="beginner-vbak" data-page-slug="beginner-vbak">
-  <header class="walkthrough-header">
-    <div class="walkthrough-header-meta">
-      <span class="level-badge level-beginner">beginner</span>
-      <span class="table-code">VBAK</span>
-    </div>
-    <h1>Extract VBAK Sales Document Header (Beginner)</h1>
-    <p class="walkthrough-summary">SAP-side preparation for full-load extraction of the Sales Document Header. Covers the released CDS view I_SalesDocument, technical user setup with minimum authorizations, and post-extraction row-count reconciliation using SE16N.</p>
-
-    <dl class="walkthrough-meta-list">
-      <div>
-        <dt>Estimated time</dt>
-        <dd>45 minutes</dd>
-      </div>
-      <div>
-        <dt>Destinations</dt>
-        <dd>Generic</dd>
-      </div>
-      <div>
-        <dt>Extractors</dt>
-        <dd>ODP</dd>
-      </div>
-    </dl>
-  </header>
-
-  <section class="sap-preflight">
-    <h2>SAP-side preflight</h2>
-    <p>Before any tool touches your SAP system, you need four things confirmed
-    on the SAP side. Skipping these steps is the most common cause of extraction
-    failures, performance incidents, and licensing surprises.</p>
-  
-    <ol class="sap-preflight-checklist">
-      <li>
-        <strong>License — confirm your extraction method is covered.</strong>
-        <p>
-          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
-          first decision. ODP-based extraction (via
-          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
-          SLT replication requires a Full Use license. Verify with your SAP
-          licensing contact before you design anything — not the day before
-          go-live.
-        </p>
-        <p class="sap-preflight-note">
-          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
-          modules by third-party tools is no longer permitted. If your tool uses
-          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
-          contract terms. Compliant alternatives are ODP via OData or SLT
-          replication. Full note at
-          <a href="https://support.sap.com/notes/3255746" target="_blank"
-            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
-          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
-        </p>
-      </li>
-  
-      <li>
-        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
-        <p>
-          Every table covered in this Academy has a SAP-released
-          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
-          Open
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE80</a>
-          and search for the view name before you build anything. Confirm the
-          annotation <code>@Analytics.dataExtract: true</code> is present. If
-          the view is absent or the annotation is missing, stop — raw table
-          extraction is not the solution.
-        </p>
-      </li>
-  
-      <li>
-        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
-        <p>
-          Your extraction user needs three authorization objects.
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SU01</a>
-          to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">PFCG</a>
-          to assign a role containing:
-        </p>
-        <ul>
-          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
-          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
-            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
-          <li><code>S_TABU_DIS</code> — table display access for the relevant
-            authorization group</li>
-        </ul>
-        <p>
-          For SLT-based extraction, your Basis team will also need authorization
-          in
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTCO</a>
-          and
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTRS</a>.
-          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
-        </p>
-      </li>
-  
-      <li>
-        <strong>Row-count context — understand data volumes before you run.</strong>
-        <p>
-          Use
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SE16N</a>
-          to count rows in the target table with your intended filter (company
-          code, fiscal year, material type, etc.) before you start the
-          extraction. This gives you:
-        </p>
-        <ul>
-          <li>A baseline to reconcile against after the extract.</li>
-          <li>A sense of whether your partition is safe to extract
-            (&lt;&nbsp;100M rows is generally safe for ODP;
-            larger partitions may need further splitting or SLT).</li>
-          <li>Early warning if a filter is misconfigured
-            (count returns billions — rethink the partition).</li>
-        </ul>
-      </li>
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href="/tables/">Tables</a></li>
+      <li><a href="/tables/vbak/">VBAK</a></li>
+      <li aria-current="page">beginner walkthrough</li>
     </ol>
-  
-    <p class="sap-preflight-footer">
-      These four checks take 15–30 minutes on a first walkthrough, and under
-      5 minutes once you know your system. They are the difference between a
-      smooth extraction and a multi-day incident.
-    </p>
-  </section>
+  </nav>
 
-  <section class="callout callout-warning license-check">
-    <h2>License check</h2>
-  
-    <p>Works under both Full Use and Runtime SAP licenses. ODP extraction through the OData API is permitted under all license types. License trap: Runtime vs Full Use →</p>
-  
-  
-    <div class="license-check-detail" id="license-check-detail">
-      <!--
-        JS-controlled variants — picker.js shows/hides the relevant block
-        based on ?method= in the URL. All four variants are rendered; only
-        the active one is visible at runtime.
-      -->
-      <div class="license-variant" data-method="odp">
-        <p>
-          <strong>ODP (Operational Data Provisioning)</strong> is permitted
-          under both Runtime and Full Use SAP licenses when you access data
-          through published CDS views via the OData API.
-        </p>
-        <p class="license-check-warning">
-          <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
-          call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
-          etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
-          Verify with your licensing contact.
-          <a href="https://support.sap.com/notes/3255746" target="_blank"
-            rel="noopener noreferrer">Full note (SAP login required)</a>.
-          [NEEDS_SAP_CITATION — confirm current note state]
-        </p>
-      </div>
-  
-      <div class="license-variant" data-method="slt" hidden>
-        <p>
-          <strong>SLT (SAP Landscape Transformation)</strong> requires a
-          <strong>Full Use SAP license</strong>. It is not permitted under
-          Runtime licenses. Verify in
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">SLICENSE</a>
-          that "SLT Landscape Transformation" is listed as Active, Type = Full
-          Use before you configure anything in
-          <a href="https://help.sap.com/"
-            target="_blank" rel="noopener noreferrer">LTCO</a>.
-        </p>
-        <p>
-          License trap: Runtime vs Full Use
-          <a href="/articles/runtime-vs-full-use/">→</a>
-        </p>
-      </div>
-  
-      <div class="license-variant" data-method="rfc" hidden>
-        <p>
-          <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
-          generally permitted for read-only access under Runtime and Full Use
-          licenses, but is not recommended for production use — it bypasses
-          authorization checks that released CDS views enforce and is subject
-          to SAP Note 3255746 restrictions when wrapped by third-party ODP
-          connectors. [NEEDS_SAP_CITATION — verify Runtime license scope for
-          direct RFC read]
-        </p>
-        <p>
-          License trap: Runtime vs Full Use
-          <a href="/articles/runtime-vs-full-use/">→</a>
-        </p>
-      </div>
-  
-      <div class="license-variant" data-method="ref" hidden>
-        <p>
-          <strong>Reference mode:</strong> you are reviewing this walkthrough
-          for SAP-side context only. No tool-specific pipeline steps are shown.
-          Check your license before selecting a tool.
-        </p>
-        <p>
-          License trap: Runtime vs Full Use
-          <a href="/articles/runtime-vs-full-use/">→</a>
-        </p>
-      </div>
-    </div>
-  </section>
-  
-  <script>
-  // Inline snippet: switch visible license-variant on picker change.
-  // Runs immediately so no flash-of-wrong-content.
-  (function () {
-    function showMethod(method) {
-      var variants = document.querySelectorAll('.license-variant');
-      variants.forEach(function (el) {
-        if (el.getAttribute('data-method') === method) {
-          el.removeAttribute('hidden');
-        } else {
-          el.setAttribute('hidden', '');
-        }
-      });
-    }
-  
-    function readMethod() {
-      var params = new URLSearchParams(window.location.search);
-      return params.get('method') || 'odp';
-    }
-  
-    // Apply on load.
-    showMethod(readMethod());
-  
-    // Re-apply when picker radios change (picker.js fires change events).
-    document.addEventListener('change', function (e) {
-      if (e.target && e.target.name === 'method') {
-        showMethod(e.target.value);
-      }
-    });
-  })();
-  </script>
+  <article class="walkthrough" data-walkthrough-id="beginner-vbak" data-page-slug="beginner-vbak">
+    <div class="grid">
 
-  <section class="walkthrough-intro">
-    <h2>Overview</h2>
-    <div class="prose">
-      <p>Your finance analytics project needs sales order data in the data lake. Specifically, the header record for every sales order — orders, quotations, contracts. This walkthrough covers the SAP-side work from confirming the released CDS view to verifying the extraction succeeded.</p>
+      <!-- Hero card: walkthrough title -->
+      <div class="card hero">
+        <div>
+          <p class="eyebrow"><span class="dot"></span>VBAK · beginner</p>
+          <h1>Extract VBAK Sales Document Header (Beginner)<em>.</em></h1>
+        </div>
+        <p>SAP-side preparation for full-load extraction of the Sales Document Header. Covers the released CDS view I_SalesDocument, technical user setup with minimum authorizations, and post-extraction row-count reconciliation using SE16N.</p>
+      </div>
+
+      <!-- Side card: est. time / method / level -->
+      <div class="card side">
+        <h3>At a glance</h3>
+        <p class="big">45 <em style="font-style:italic;color:var(--color-accent-2)">min</em></p>
+        <p>beginner level. Generic destinations supported.</p>
+      </div>
+
+      <!-- Meta cards -->
+      <div class="card meta"><dl><dt>Estimated time</dt><dd>45 min</dd></dl></div>
+      <div class="card meta"><dl><dt>Destinations</dt><dd>Generic</dd></dl></div>
+      <div class="card meta"><dl><dt>Extractors</dt><dd>ODP</dd></dl></div>
+      <div class="card meta"><dl><dt>Steps</dt><dd>7</dd></dl></div>
+
+      <!-- License check — wrapped as card.section -->
+      <div class="card section">
+        <section class="callout callout-warning license-check">
+          <h2>License check</h2>
+        
+          <p>Works under both Full Use and Runtime SAP licenses. ODP extraction through the OData API is permitted under all license types. License trap: Runtime vs Full Use →</p>
+        
+        
+          <div class="license-check-detail" id="license-check-detail">
+            <!--
+              JS-controlled variants — picker.js shows/hides the relevant block
+              based on ?method= in the URL. All four variants are rendered; only
+              the active one is visible at runtime.
+            -->
+            <div class="license-variant" data-method="odp">
+              <p>
+                <strong>ODP (Operational Data Provisioning)</strong> is permitted
+                under both Runtime and Full Use SAP licenses when you access data
+                through published CDS views via the OData API.
+              </p>
+              <p class="license-check-warning">
+                <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
+                call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
+                etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
+                Verify with your licensing contact.
+                <a href="https://support.sap.com/notes/3255746" target="_blank"
+                  rel="noopener noreferrer">Full note (SAP login required)</a>.
+                [NEEDS_SAP_CITATION — confirm current note state]
+              </p>
+            </div>
+        
+            <div class="license-variant" data-method="slt" hidden>
+              <p>
+                <strong>SLT (SAP Landscape Transformation)</strong> requires a
+                <strong>Full Use SAP license</strong>. It is not permitted under
+                Runtime licenses. Verify in
+                <a href="https://help.sap.com/"
+                  target="_blank" rel="noopener noreferrer">SLICENSE</a>
+                that "SLT Landscape Transformation" is listed as Active, Type = Full
+                Use before you configure anything in
+                <a href="https://help.sap.com/"
+                  target="_blank" rel="noopener noreferrer">LTCO</a>.
+              </p>
+              <p>
+                License trap: Runtime vs Full Use
+                <a href="/articles/runtime-vs-full-use/">→</a>
+              </p>
+            </div>
+        
+            <div class="license-variant" data-method="rfc" hidden>
+              <p>
+                <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
+                generally permitted for read-only access under Runtime and Full Use
+                licenses, but is not recommended for production use — it bypasses
+                authorization checks that released CDS views enforce and is subject
+                to SAP Note 3255746 restrictions when wrapped by third-party ODP
+                connectors. [NEEDS_SAP_CITATION — verify Runtime license scope for
+                direct RFC read]
+              </p>
+              <p>
+                License trap: Runtime vs Full Use
+                <a href="/articles/runtime-vs-full-use/">→</a>
+              </p>
+            </div>
+        
+            <div class="license-variant" data-method="ref" hidden>
+              <p>
+                <strong>Reference mode:</strong> you are reviewing this walkthrough
+                for SAP-side context only. No tool-specific pipeline steps are shown.
+                Check your license before selecting a tool.
+              </p>
+              <p>
+                License trap: Runtime vs Full Use
+                <a href="/articles/runtime-vs-full-use/">→</a>
+              </p>
+            </div>
+          </div>
+        </section>
+        
+        <script>
+        // Inline snippet: switch visible license-variant on picker change.
+        // Runs immediately so no flash-of-wrong-content.
+        (function () {
+          function showMethod(method) {
+            var variants = document.querySelectorAll('.license-variant');
+            variants.forEach(function (el) {
+              if (el.getAttribute('data-method') === method) {
+                el.removeAttribute('hidden');
+              } else {
+                el.setAttribute('hidden', '');
+              }
+            });
+          }
+        
+          function readMethod() {
+            var params = new URLSearchParams(window.location.search);
+            return params.get('method') || 'odp';
+          }
+        
+          // Apply on load.
+          showMethod(readMethod());
+        
+          // Re-apply when picker radios change (picker.js fires change events).
+          document.addEventListener('change', function (e) {
+            if (e.target && e.target.name === 'method') {
+              showMethod(e.target.value);
+            }
+          });
+        })();
+        </script>
+      </div>
+
+      <!-- SAP preflight — wrapped as card.section -->
+      <div class="card section">
+        <section class="sap-preflight">
+          <h2>SAP-side preflight</h2>
+          <p>Before any tool touches your SAP system, you need four things confirmed
+          on the SAP side. Skipping these steps is the most common cause of extraction
+          failures, performance incidents, and licensing surprises.</p>
+        
+          <ol class="sap-preflight-checklist">
+            <li>
+              <strong>License — confirm your extraction method is covered.</strong>
+              <p>
+                <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
+                first decision. ODP-based extraction (via
+                <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
+                SLT replication requires a Full Use license. Verify with your SAP
+                licensing contact before you design anything — not the day before
+                go-live.
+              </p>
+              <p class="sap-preflight-note">
+                <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
+                modules by third-party tools is no longer permitted. If your tool uses
+                ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
+                contract terms. Compliant alternatives are ODP via OData or SLT
+                replication. Full note at
+                <a href="https://support.sap.com/notes/3255746" target="_blank"
+                  rel="noopener noreferrer">support.sap.com/notes/3255746</a>
+                (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
+              </p>
+            </li>
+        
+            <li>
+              <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
+              <p>
+                Every table covered in this Academy has a SAP-released
+                <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
+                Open
+                <a href="https://help.sap.com/"
+                  target="_blank" rel="noopener noreferrer">SE80</a>
+                and search for the view name before you build anything. Confirm the
+                annotation <code>@Analytics.dataExtract: true</code> is present. If
+                the view is absent or the annotation is missing, stop — raw table
+                extraction is not the solution.
+              </p>
+            </li>
+        
+            <li>
+              <strong>Authorizations — grant the extraction user minimum permissions.</strong>
+              <p>
+                Your extraction user needs three authorization objects.
+                Use
+                <a href="https://help.sap.com/"
+                  target="_blank" rel="noopener noreferrer">SU01</a>
+                to create a System-type (non-dialog) user, then use
+                <a href="https://help.sap.com/"
+                  target="_blank" rel="noopener noreferrer">PFCG</a>
+                to assign a role containing:
+              </p>
+              <ul>
+                <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
+                <li><code>S_ODP_READ</code> — allows reading from ODP contexts
+                  (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
+                <li><code>S_TABU_DIS</code> — table display access for the relevant
+                  authorization group</li>
+              </ul>
+              <p>
+                For SLT-based extraction, your Basis team will also need authorization
+                in
+                <a href="https://help.sap.com/"
+                  target="_blank" rel="noopener noreferrer">LTCO</a>
+                and
+                <a href="https://help.sap.com/"
+                  target="_blank" rel="noopener noreferrer">LTRS</a>.
+                [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
+              </p>
+            </li>
+        
+            <li>
+              <strong>Row-count context — understand data volumes before you run.</strong>
+              <p>
+                Use
+                <a href="https://help.sap.com/"
+                  target="_blank" rel="noopener noreferrer">SE16N</a>
+                to count rows in the target table with your intended filter (company
+                code, fiscal year, material type, etc.) before you start the
+                extraction. This gives you:
+              </p>
+              <ul>
+                <li>A baseline to reconcile against after the extract.</li>
+                <li>A sense of whether your partition is safe to extract
+                  (&lt;&nbsp;100M rows is generally safe for ODP;
+                  larger partitions may need further splitting or SLT).</li>
+                <li>Early warning if a filter is misconfigured
+                  (count returns billions — rethink the partition).</li>
+              </ul>
+            </li>
+          </ol>
+        
+          <p class="sap-preflight-footer">
+            These four checks take 15–30 minutes on a first walkthrough, and under
+            5 minutes once you know your system. They are the difference between a
+            smooth extraction and a multi-day incident.
+          </p>
+        </section>
+      </div>
+
+      <!-- Overview / intro -->
+      <div class="card section">
+        <h2>Over<em>view</em></h2>
+        <div class="prose">
+          <p>Your finance analytics project needs sales order data in the data lake. Specifically, the header record for every sales order — orders, quotations, contracts. This walkthrough covers the SAP-side work from confirming the released CDS view to verifying the extraction succeeded.</p>
 <p>Your tool team handles pipeline configuration (linked services, copy activities, Parquet sinks). This walkthrough is about the SAP side: what to check, which transactions to open, what authorizations to set, and how to know the extraction is correct.</p>
 <p>If you complete this in one sitting, budget about 45 minutes. If this is your first time navigating SAP transactions, add 30 minutes.</p>
 <hr>
@@ -415,365 +424,381 @@
 <p>You have confirmed that the SAP side is correctly configured for VBAK extraction: the released CDS view is present, a minimal-permission extraction user is in place, ODP is registering subscriptions, and you have a row-count baseline for reconciliation.</p>
 <p>The patterns you have learned — released CDS views, System-type RFC users, S_ODP_READ authorization, ODQMON monitoring, SE16N reconciliation — are the foundation for every S/4HANA extraction. When you move to the intermediate walkthrough, you will add delta processing and a Z-field.</p>
 
-    </div>
-  </section>
-
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul class="prerequisites-list">
-      <li>Access to an S&#x2F;4HANA on-premise system with SE80 and SE16N authorization</li>
-      <li>Ability to create or request a technical user via SU01</li>
-      <li>Awareness of your SAP license type</li>
-    </ul>
-  </section>
-
-  <aside class="walkthrough-progress" aria-label="Walkthrough progress">
-    <div role="status" aria-live="polite" class="progress-indicator">
-      <span id="progress-count">0</span> of 7 steps complete
-    </div>
-    <div class="progress-bar" aria-hidden="true">
-      <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
-    </div>
-  </aside>
-
-  <ol class="steps-list">
-    <li>
-      <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
-        <header class="step-header">
-          <div class="step-number">Step 1</div>
-          <h2 class="step-title">Confirm the released CDS view I_SalesDocument</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-01"
-              aria-label="Mark Confirm the released CDS view I_SalesDocument as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">SAP ships released CDS views for standard tables. For VBAK, the view is <a href="https://help.sap.com/">I_SalesDocument</a>. It carries authorization, delta support, and the <code>@Analytics.dataExtract: true</code> annotation that signals ODP readiness. Using this view is the SAP-recommended approach — extracting raw VBAK bypasses authorization and has no delta support.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE80
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Repository Browser → Search → I_SalesDocument</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">I_SalesDocument opens in SE80 and the annotation @Analytics.dataExtract: true is visible in the header.</div>
-          </div>
-
-          <details class="step-why">
-            <summary>Why this matters</summary>
-            <p>Extracting from a released CDS view respects authorization and provides built-in delta support. Reading VBAK directly skips both. Released views are also more stable across upgrades than raw table layouts.</p>
-          </details>
         </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
-        <header class="step-header">
-          <div class="step-number">Step 2</div>
-          <h2 class="step-title">Check row count in SE16N (establish a reconciliation baseline)</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-02"
-              aria-label="Mark Check row count in SE16N (establish a reconciliation baseline) as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Use <a href="https://help.sap.com/">SE16N</a> to count rows in VBAK without filters (or with the filter that matches your intended extraction scope). Write down the number. This is your target: after the extraction, the row count in your landing zone must match this number.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE16N
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Execute → VBAK → Count</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">You have a row count for VBAK. Typical range is 1M–50M rows depending on system size and history retained.</div>
-          </div>
-
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
-        <header class="step-header">
-          <div class="step-number">Step 3</div>
-          <h2 class="step-title">Create a technical RFC user with minimum permissions</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-03"
-              aria-label="Mark Create a technical RFC user with minimum permissions as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Create a System-type (non-dialog) user via <a href="https://help.sap.com/">SU01</a>. System users cannot log on interactively and do not consume a dialog work process. Never reuse a named user account for automated extraction — it creates audit, security, and performance problems.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SU01
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>User → Create → User type: System</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">User EXTRACT_VBAK exists in SU01 with User Type &#x3D; System. The user is locked for interactive logon.</div>
-          </div>
-
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
-        <header class="step-header">
-          <div class="step-number">Step 4</div>
-          <h2 class="step-title">Assign authorizations via PFCG</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-04"
-              aria-label="Mark Assign authorizations via PFCG as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">In <a href="https://help.sap.com/">PFCG</a>, create a single custom role. Add three authorization objects: S_RFC (RFC_TYPE=FUNC), S_ODP_READ (ODPSOURCE=ABAP_CDS), and S_TABU_DIS (authorization group SD). Generate the profile and assign the role to EXTRACT_VBAK.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                PFCG
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Role → Create → Authorizations → Add Object</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">In SU01, EXTRACT_VBAK shows one role assigned. In PFCG, the role authorization data contains S_ODP_READ with ODPSOURCE&#x3D;ABAP_CDS.</div>
-          </div>
-
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
-        <header class="step-header">
-          <div class="step-number">Step 5</div>
-          <h2 class="step-title">Verify the RFC destination is reachable (SM59)</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-05"
-              aria-label="Mark Verify the RFC destination is reachable (SM59) as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Your extraction tool connects to SAP over an RFC destination. Ask your Basis team to check <a href="https://help.sap.com/">SM59</a> for the destination your tool will use. The test connection must pass before any extraction attempt.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SM59
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>RFC Connections → ABAP Connections or TCP&#x2F;IP → Test Connection</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Test Connection returns green for the RFC destination your tool uses.</div>
-          </div>
-
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
-        <header class="step-header">
-          <div class="step-number">Step 6</div>
-          <h2 class="step-title">Check ODQMON after the tool&#39;s first run</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-06"
-              aria-label="Mark Check ODQMON after the tool&#39;s first run as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">After your extraction tool makes its first connection, open <a href="https://help.sap.com/">ODQMON</a>. A subscription for I_SalesDocument should appear under context ABAP_CDS. No subscription means the tool did not register with ODP — this usually means it is using an unsupported path or the authorization is incorrect.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                ODQMON
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Subscriptions → Context: ABAP_CDS → I_SalesDocument</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">ODQMON shows an active subscription for I_SalesDocument. No error status.</div>
-          </div>
-
-          <details class="step-why">
-            <summary>Why this matters</summary>
-            <p>ODQMON is your diagnostic console. If the extraction looks successful in your tool but the data count is wrong, ODQMON will show you why.</p>
-          </details>
-        </div>
-      </article>
-    </li>
-    <li>
-      <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
-        <header class="step-header">
-          <div class="step-number">Step 7</div>
-          <h2 class="step-title">Reconcile row counts after extraction</h2>
-          <label class="step-check">
-            <input
-              type="checkbox"
-              class="step-checkbox"
-              data-step-id="step-07"
-              aria-label="Mark Reconcile row counts after extraction as complete"
-            >
-            <span class="step-check-label">Mark complete</span>
-          </label>
-        </header>
-
-        <div class="step-body">
-          <p class="step-intro">Return to SE16N and count VBAK rows with the same filters you used in step 02. Compare to the row count your landing zone reports. The counts should match or differ only by in-flight postings that arrived during the extraction window.</p>
-
-          <div class="step-action step-action--sap">
-            <div class="step-action-label">Do this in SAP</div>
-            <div class="step-action-body">
-              Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-                SE16N
-                <span class="sr-only">(opens in new tab)</span>
-              </a>
-              and navigate to <em>Execute → VBAK → Count</em>.
-            </div>
-          </div>
-
-
-          <div class="step-action step-action--verify">
-            <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Row count in landing zone matches SE16N count within a tolerable margin.</div>
-          </div>
-
-          <details class="step-why">
-            <summary>Why this matters</summary>
-            <p>Row-count reconciliation is the single most important verification in any extraction. Never hand data to the analytics team without it.</p>
-          </details>
-        </div>
-      </article>
-    </li>
-  </ol>
-
-  <section class="troubleshooting">
-    <h2>Troubleshooting</h2>
-    <dl class="troubleshooting-list">
-      <div class="troubleshooting-item">
-        <dt>Test Connection in SM59 fails</dt>
-        <dd>
-          <p>Check that network rules allow the tool&#39;s server to reach SAP&#39;s message server port (usually 3600+systemNumber) and application server host. Engage your Basis team — this is a network or SAP host configuration issue, not an extraction configuration issue.</p>
-        </dd>
       </div>
-      <div class="troubleshooting-item">
-        <dt>SAP_ODP_AUTHORIZATION_MISSING error</dt>
-        <dd>
-          <p>The EXTRACT_VBAK user lacks S_ODP_READ for context ABAP_CDS. Return to PFCG and add this authorization with ODPSOURCE&#x3D;ABAP_CDS. Regenerate the profile and test again.</p>
-        </dd>
+
+      <!-- Prerequisites -->
+      <div class="card section">
+        <h2>Before you start</h2>
+        <ul class="prerequisites-list">
+          <li>Access to an S&#x2F;4HANA on-premise system with SE80 and SE16N authorization</li>
+          <li>Ability to create or request a technical user via SU01</li>
+          <li>Awareness of your SAP license type</li>
+        </ul>
       </div>
-      <div class="troubleshooting-item">
-        <dt>ODQMON shows no subscription after tool runs</dt>
-        <dd>
-          <p>The tool may be calling ODP via RFC rather than OData. RFC-based ODP is restricted per SAP Note 3255746. Check the tool&#39;s connector configuration and switch to OData mode.</p>
-        </dd>
+
+      <!-- Steps section — full width, steps-container keeps per-method swap working -->
+      <div class="card section">
+        <h2>Step-by-<em>step</em></h2>
+
+        <aside class="walkthrough-progress" aria-label="Walkthrough progress">
+          <div role="status" aria-live="polite" class="progress-indicator">
+            <span id="progress-count">0</span> of 7 steps complete
+          </div>
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+          </div>
+        </aside>
+
+        <div class="steps-container" data-default-method="">
+          <ol class="steps-list" data-method="odp">
+<li>
+  <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+    <header class="step-header">
+      <div class="step-number">Step 1</div>
+      <h2 class="step-title">Confirm the released CDS view I_SalesDocument</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-01"
+          aria-label="Mark Confirm the released CDS view I_SalesDocument as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">SAP ships released CDS views for standard tables. For VBAK, the view is <a href="https://help.sap.com/">I_SalesDocument</a>. It carries authorization, delta support, and the <code>@Analytics.dataExtract: true</code> annotation that signals ODP readiness. Using this view is the SAP-recommended approach — extracting raw VBAK bypasses authorization and has no delta support.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE80
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Repository Browser → Search → I_SalesDocument</em>.
+        </div>
       </div>
-    </dl>
-  </section>
 
-  <section class="walkthrough-summary-section">
-    <h2>You've built:</h2>
-    <p>Congratulations! You've completed the beginner walkthrough for VBAK. You now have 7 steps of experience extracting this table, and you understand the key considerations for the VBAK use case.</p>
-  </section>
 
-  <section class="next-steps">
-    <h2>What&#39;s next</h2>
-    <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;vbak&#x2F;">Try the VBAK Intermediate walkthrough — adds delta and Z-field</a></li>
-      <li><a href="&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;">License trap: Runtime vs Full Use</a></li>
-      <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning (ODP)</a></li>
-    </ul>
-  </section>
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">I_SalesDocument opens in SE80 and the annotation @Analytics.dataExtract: true is visible in the header.</div>
+      </div>
 
-  <footer class="walkthrough-footer">
-    <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
-    <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
-  </footer>
-</article>
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>Extracting from a released CDS view respects authorization and provides built-in delta support. Reading VBAK directly skips both. Released views are also more stable across upgrades than raw table layouts.</p>
+      </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+    <header class="step-header">
+      <div class="step-number">Step 2</div>
+      <h2 class="step-title">Check row count in SE16N (establish a reconciliation baseline)</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-02"
+          aria-label="Mark Check row count in SE16N (establish a reconciliation baseline) as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Use <a href="https://help.sap.com/">SE16N</a> to count rows in VBAK without filters (or with the filter that matches your intended extraction scope). Write down the number. This is your target: after the extraction, the row count in your landing zone must match this number.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → VBAK → Count</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">You have a row count for VBAK. Typical range is 1M–50M rows depending on system size and history retained.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+    <header class="step-header">
+      <div class="step-number">Step 3</div>
+      <h2 class="step-title">Create a technical RFC user with minimum permissions</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-03"
+          aria-label="Mark Create a technical RFC user with minimum permissions as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Create a System-type (non-dialog) user via <a href="https://help.sap.com/">SU01</a>. System users cannot log on interactively and do not consume a dialog work process. Never reuse a named user account for automated extraction — it creates audit, security, and performance problems.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SU01
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>User → Create → User type: System</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">User EXTRACT_VBAK exists in SU01 with User Type &#x3D; System. The user is locked for interactive logon.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+    <header class="step-header">
+      <div class="step-number">Step 4</div>
+      <h2 class="step-title">Assign authorizations via PFCG</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-04"
+          aria-label="Mark Assign authorizations via PFCG as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">In <a href="https://help.sap.com/">PFCG</a>, create a single custom role. Add three authorization objects: S_RFC (RFC_TYPE=FUNC), S_ODP_READ (ODPSOURCE=ABAP_CDS), and S_TABU_DIS (authorization group SD). Generate the profile and assign the role to EXTRACT_VBAK.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            PFCG
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Role → Create → Authorizations → Add Object</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">In SU01, EXTRACT_VBAK shows one role assigned. In PFCG, the role authorization data contains S_ODP_READ with ODPSOURCE&#x3D;ABAP_CDS.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+    <header class="step-header">
+      <div class="step-number">Step 5</div>
+      <h2 class="step-title">Verify the RFC destination is reachable (SM59)</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-05"
+          aria-label="Mark Verify the RFC destination is reachable (SM59) as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Your extraction tool connects to SAP over an RFC destination. Ask your Basis team to check <a href="https://help.sap.com/">SM59</a> for the destination your tool will use. The test connection must pass before any extraction attempt.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SM59
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>RFC Connections → ABAP Connections or TCP&#x2F;IP → Test Connection</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Test Connection returns green for the RFC destination your tool uses.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-06" data-step-id="step-06">
+    <header class="step-header">
+      <div class="step-number">Step 6</div>
+      <h2 class="step-title">Check ODQMON after the tool&#39;s first run</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-06"
+          aria-label="Mark Check ODQMON after the tool&#39;s first run as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">After your extraction tool makes its first connection, open <a href="https://help.sap.com/">ODQMON</a>. A subscription for I_SalesDocument should appear under context ABAP_CDS. No subscription means the tool did not register with ODP — this usually means it is using an unsupported path or the authorization is incorrect.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            ODQMON
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Subscriptions → Context: ABAP_CDS → I_SalesDocument</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">ODQMON shows an active subscription for I_SalesDocument. No error status.</div>
+      </div>
+
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>ODQMON is your diagnostic console. If the extraction looks successful in your tool but the data count is wrong, ODQMON will show you why.</p>
+      </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-07" data-step-id="step-07">
+    <header class="step-header">
+      <div class="step-number">Step 7</div>
+      <h2 class="step-title">Reconcile row counts after extraction</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-07"
+          aria-label="Mark Reconcile row counts after extraction as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Return to SE16N and count VBAK rows with the same filters you used in step 02. Compare to the row count your landing zone reports. The counts should match or differ only by in-flight postings that arrived during the extraction window.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → VBAK → Count</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Row count in landing zone matches SE16N count within a tolerable margin.</div>
+      </div>
+
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>Row-count reconciliation is the single most important verification in any extraction. Never hand data to the analytics team without it.</p>
+      </details>
+    </div>
+  </article>
+</li>
+          </ol>
+
+
+
+        </div>
+      </div>
+
+      <!-- Troubleshooting -->
+      <div class="card section">
+        <h2>Troubleshooting</h2>
+        <dl class="troubleshooting-list">
+          <div class="troubleshooting-item">
+            <dt>Test Connection in SM59 fails</dt>
+            <dd>
+              <p>Check that network rules allow the tool&#39;s server to reach SAP&#39;s message server port (usually 3600+systemNumber) and application server host. Engage your Basis team — this is a network or SAP host configuration issue, not an extraction configuration issue.</p>
+            </dd>
+          </div>
+          <div class="troubleshooting-item">
+            <dt>SAP_ODP_AUTHORIZATION_MISSING error</dt>
+            <dd>
+              <p>The EXTRACT_VBAK user lacks S_ODP_READ for context ABAP_CDS. Return to PFCG and add this authorization with ODPSOURCE&#x3D;ABAP_CDS. Regenerate the profile and test again.</p>
+            </dd>
+          </div>
+          <div class="troubleshooting-item">
+            <dt>ODQMON shows no subscription after tool runs</dt>
+            <dd>
+              <p>The tool may be calling ODP via RFC rather than OData. RFC-based ODP is restricted per SAP Note 3255746. Check the tool&#39;s connector configuration and switch to OData mode.</p>
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- You've built / summary -->
+      <div class="card accent">
+        <span class="chip">Complete</span>
+        <p>You've finished the beginner walkthrough for VBAK. 7 steps done — you understand the key extraction considerations for this table.</p>
+      </div>
+
+      <!-- Next steps -->
+      <div class="card section">
+        <h2>What&#39;s next</h2>
+        <ul style="list-style:disc;padding-left:var(--space-6);">
+          <li style="margin-bottom:var(--space-2);"><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;vbak&#x2F;">Try the VBAK Intermediate walkthrough — adds delta and Z-field</a></li>
+          <li style="margin-bottom:var(--space-2);"><a href="&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;">License trap: Runtime vs Full Use</a></li>
+          <li style="margin-bottom:var(--space-2);"><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning (ODP)</a></li>
+        </ul>
+      </div>
+
+    </div><!-- /.grid -->
+
+    <footer class="walkthrough-footer">
+      <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
+      <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+    </footer>
+  </article>
 
 </div>
 

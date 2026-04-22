@@ -6,7 +6,7 @@
 
   <title>NUMC: Numeric Character Type in SAP — Plain Explanation — SAP Extract Academy</title>
   <meta name="description" content="NUMC is a numeric character field that preserves leading zeros (00001234). Used for codes and IDs that need to display leading zeros.">
-  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;numc&#x2F;">
+  <link rel="canonical" href="https://academy.example.com/glossary/numc/">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="NUMC: Numeric Character Type in SAP — Plain Explanation">
@@ -40,28 +40,26 @@
 
   <header class="site-header">
     <div class="container">
-      <div class="header-top">
-        <a href="/" class="site-logo">SAP Extract Academy</a>
+      <div class="header-inner">
+        <a href="/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="/tables/">Tables</a></li>
+            <li><a href="/walkthrough/">Walkthroughs</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
       </div>
-      <nav class="site-nav">
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/tables/">Tables</a></li>
-          <li><a href="/walkthrough/">Walkthroughs</a></li>
-          <li><a href="/glossary/">Glossary</a></li>
-          <li><a href="/articles/">Articles</a></li>
-          <li><a href="/roadmap/">Roadmap</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="/decide/">Decide</a></li>
-        </ul>
-        <div data-source-picker>
-          <label for="source-version-select" class="sr-only">SAP Version</label>
-          <select id="source-version-select" aria-label="Choose SAP version">
-            <option value="s4hana">S/4HANA</option>
-            <option value="ecc">ECC</option>
-          </select>
-        </div>
-      </nav>
     </div>
   </header>
 
@@ -71,112 +69,87 @@
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
       <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
-    <!-- Glossary term detail page -->
+    <!-- Glossary term detail page — Bento card grid -->
 
-<nav class="breadcrumb" aria-label="Breadcrumb">
-  <ol>
-    <li><a href="/">Home</a></li>
-    <li><a href="/glossary/">Glossary</a></li>
-    <li aria-current="page">NUMC</li>
-  </ol>
-</nav>
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
 
-<article class="glossary-term">
-  <header class="glossary-header">
-    <h1>NUMC: Numeric Character String in SAP</h1>
-  </header>
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href="/glossary/">Glossary</a></li>
+      <li aria-current="page">NUMC</li>
+    </ol>
+  </nav>
 
-  <section class="glossary-definition">
-    <h2>Definition</h2>
-    <p class="short-definition">NUMC is a SAP data type for numeric strings with leading zeros preserved (e.g., &#39;00001234&#39;). Common for codes and IDs that must display leading zeros but are treated as numbers in SAP.</p>
-  </section>
+  <div class="grid">
 
-  <section class="glossary-body prose">
-    <p>NUMC is a SAP data type for numeric strings with leading zeros preserved. Examples: document numbers (stored as NUMC(10) to preserve leading zeros), cost center codes, purchase group codes. Unlike pure integer types, NUMC fields retain leading zeros: a cost center &#39;00001234&#39; stays &#39;00001234&#39;, not 1234. This is critical for display and matching in the warehouse.</p>
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · Numeric Character String</p>
+        <h1>NUMC<em>.</em></h1>
+      </div>
+      <p>NUMC is a SAP data type for numeric strings with leading zeros preserved (e.g., &#39;00001234&#39;). Common for codes and IDs that must display leading zeros but are treated as numbers in SAP.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/CHAR/">CHAR</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/SE11/">SE11</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Field Type/">Field Type</a></li>
+      </ul>
+    </div>
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/CHAR/">CHAR</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/SE11/">SE11</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Field Type/">Field Type</a></li>
+      </ul>
+    </div>
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/CHAR/">CHAR</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/SE11/">SE11</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Field Type/">Field Type</a></li>
+      </ul>
+    </div>
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/CHAR/">CHAR</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/SE11/">SE11</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Field Type/">Field Type</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+      <p class="subhead">NUMC is a SAP data type for numeric strings with leading zeros preserved (e.g., &#39;00001234&#39;). Common for codes and IDs that must display leading zeros but are treated as numbers in SAP.</p>
+      <div class="prose" style="max-width:780px;">
+        <p>NUMC is a SAP data type for numeric strings with leading zeros preserved. Examples: document numbers (stored as NUMC(10) to preserve leading zeros), cost center codes, purchase group codes. Unlike pure integer types, NUMC fields retain leading zeros: a cost center &#39;00001234&#39; stays &#39;00001234&#39;, not 1234. This is critical for display and matching in the warehouse.</p>
 <p>For extraction, NUMC fields must be handled carefully. If you extract a NUMC field and treat it as an integer, you lose leading zeros. In Snowflake or Postgres, if you store 00001234 as an integer, it becomes 1234, and joins on cost center fail. Most modern extractors (Fivetran, ODP) correctly recognize NUMC and load as string/varchar to preserve leading zeros. Hand-rolled Python scripts often fail here by converting NUMC to int, losing the zeros.</p>
 <p>SE11 (Data Dictionary) shows each field&#39;s type (CHAR, NUMC, INT, CURR, DATS, etc.). When planning extraction, scan for NUMC fields and ensure your target system preserves them as strings. This is a common source of subtle data quality bugs: the extraction succeeds, but cost center or vendor ID matching fails in the warehouse because leading zeros are lost.</p>
 
-  </section>
+      </div>
+      <p style="margin-top:var(--space-5);">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
 
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/CHAR/">CHAR</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-      <li>
-        <a href="/glossary/SE11/">SE11</a>
-      </li>
-      <li>
-        <a href="/glossary/Field Type/">Field Type</a>
-      </li>
-    </ul>
-  </section>
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/CHAR/">CHAR</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-      <li>
-        <a href="/glossary/SE11/">SE11</a>
-      </li>
-      <li>
-        <a href="/glossary/Field Type/">Field Type</a>
-      </li>
-    </ul>
-  </section>
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/CHAR/">CHAR</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-      <li>
-        <a href="/glossary/SE11/">SE11</a>
-      </li>
-      <li>
-        <a href="/glossary/Field Type/">Field Type</a>
-      </li>
-    </ul>
-  </section>
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/CHAR/">CHAR</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-      <li>
-        <a href="/glossary/SE11/">SE11</a>
-      </li>
-      <li>
-        <a href="/glossary/Field Type/">Field Type</a>
-      </li>
-    </ul>
-  </section>
-
-  <section class="sap-documentation">
-    <h2>SAP documentation</h2>
-    <p>
-      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-        Read more on SAP Help Portal
-        <span class="sr-only">(opens in new tab)</span>
-      </a>
-    </p>
-  </section>
-</article>
+  </div>
+</div>
 
   </main>
 

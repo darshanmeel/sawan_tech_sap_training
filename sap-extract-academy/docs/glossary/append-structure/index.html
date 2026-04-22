@@ -6,7 +6,7 @@
 
   <title>Append Structure: Extending SAP Tables — Plain Explanation — SAP Extract Academy</title>
   <meta name="description" content="Append structures are SAP&#39;s mechanism for adding custom Z-fields to standard tables without direct modification. Multiple structures can stack on one table.">
-  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;append-structure&#x2F;">
+  <link rel="canonical" href="https://academy.example.com/glossary/append-structure/">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="Append Structure: Extending SAP Tables — Plain Explanation">
@@ -40,28 +40,26 @@
 
   <header class="site-header">
     <div class="container">
-      <div class="header-top">
-        <a href="/" class="site-logo">SAP Extract Academy</a>
+      <div class="header-inner">
+        <a href="/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="/tables/">Tables</a></li>
+            <li><a href="/walkthrough/">Walkthroughs</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
       </div>
-      <nav class="site-nav">
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/tables/">Tables</a></li>
-          <li><a href="/walkthrough/">Walkthroughs</a></li>
-          <li><a href="/glossary/">Glossary</a></li>
-          <li><a href="/articles/">Articles</a></li>
-          <li><a href="/roadmap/">Roadmap</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="/decide/">Decide</a></li>
-        </ul>
-        <div data-source-picker>
-          <label for="source-version-select" class="sr-only">SAP Version</label>
-          <select id="source-version-select" aria-label="Choose SAP version">
-            <option value="s4hana">S/4HANA</option>
-            <option value="ecc">ECC</option>
-          </select>
-        </div>
-      </nav>
     </div>
   </header>
 
@@ -71,112 +69,87 @@
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
       <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
-    <!-- Glossary term detail page -->
+    <!-- Glossary term detail page — Bento card grid -->
 
-<nav class="breadcrumb" aria-label="Breadcrumb">
-  <ol>
-    <li><a href="/">Home</a></li>
-    <li><a href="/glossary/">Glossary</a></li>
-    <li aria-current="page">Append Structure</li>
-  </ol>
-</nav>
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
 
-<article class="glossary-term">
-  <header class="glossary-header">
-    <h1>Append Structure: Append Structure in SAP</h1>
-  </header>
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href="/glossary/">Glossary</a></li>
+      <li aria-current="page">Append Structure</li>
+    </ol>
+  </nav>
 
-  <section class="glossary-definition">
-    <h2>Definition</h2>
-    <p class="short-definition">An append structure is a SAP table extension mechanism that allows customers to add custom fields (Z-fields) to a standard SAP table without modifying the table directly. Multiple append structures can be stacked on one table.</p>
-  </section>
+  <div class="grid">
 
-  <section class="glossary-body prose">
-    <p>An append structure is how SAP allows customers to add custom fields to standard tables. Instead of modifying the table directly (which breaks support and updates), you define an append structure in SE11 (Data Dictionary) that &quot;appends&quot; your Z-fields to the table. The fields then appear at the end of the table record, and when you query the table, they&#39;re automatically included.</p>
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · Append Structure</p>
+        <h1>Append Structure<em>.</em></h1>
+      </div>
+      <p>An append structure is a SAP table extension mechanism that allows customers to add custom fields (Z-fields) to a standard SAP table without modifying the table directly. Multiple append structures can be stacked on one table.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Z-field/">Z-field</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/SE11/">SE11</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/MARA/">MARA</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+      </ul>
+    </div>
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Z-field/">Z-field</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/SE11/">SE11</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/MARA/">MARA</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+      </ul>
+    </div>
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Z-field/">Z-field</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/SE11/">SE11</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/MARA/">MARA</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+      </ul>
+    </div>
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Z-field/">Z-field</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/SE11/">SE11</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/MARA/">MARA</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+      <p class="subhead">An append structure is a SAP table extension mechanism that allows customers to add custom fields (Z-fields) to a standard SAP table without modifying the table directly. Multiple append structures can be stacked on one table.</p>
+      <div class="prose" style="max-width:780px;">
+        <p>An append structure is how SAP allows customers to add custom fields to standard tables. Instead of modifying the table directly (which breaks support and updates), you define an append structure in SE11 (Data Dictionary) that &quot;appends&quot; your Z-fields to the table. The fields then appear at the end of the table record, and when you query the table, they&#39;re automatically included.</p>
 <p>Append structures are critical for extraction because many enterprises have added custom fields to MARA, VBAK, BKPF, and other key tables. If you extract a table that has append structures, you must extract those Z-fields too, or your data warehouse will be missing domain-specific logic (e.g., a custom cost center, warehouse region, or customer segment field). The challenge: identifying which append structures exist, understanding their field types (CHAR, NUMC, DATS, etc.), and ensuring the extraction tool discovers them automatically (Fivetran does; some hand-rolled extractors don&#39;t).</p>
 <p>In SE11, you navigate to the table, go to &quot;Append Structures&quot; section, and see all appended Z-fields. When you count MARA columns or BKPF cardinality in the field planning phase, don&#39;t forget to count append structure fields—they can outnumber standard fields in heavily customized systems.</p>
 
-  </section>
+      </div>
+      <p style="margin-top:var(--space-5);">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
 
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/Z-field/">Z-field</a>
-      </li>
-      <li>
-        <a href="/glossary/SE11/">SE11</a>
-      </li>
-      <li>
-        <a href="/glossary/MARA/">MARA</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-    </ul>
-  </section>
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/Z-field/">Z-field</a>
-      </li>
-      <li>
-        <a href="/glossary/SE11/">SE11</a>
-      </li>
-      <li>
-        <a href="/glossary/MARA/">MARA</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-    </ul>
-  </section>
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/Z-field/">Z-field</a>
-      </li>
-      <li>
-        <a href="/glossary/SE11/">SE11</a>
-      </li>
-      <li>
-        <a href="/glossary/MARA/">MARA</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-    </ul>
-  </section>
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/Z-field/">Z-field</a>
-      </li>
-      <li>
-        <a href="/glossary/SE11/">SE11</a>
-      </li>
-      <li>
-        <a href="/glossary/MARA/">MARA</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-    </ul>
-  </section>
-
-  <section class="sap-documentation">
-    <h2>SAP documentation</h2>
-    <p>
-      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-        Read more on SAP Help Portal
-        <span class="sr-only">(opens in new tab)</span>
-      </a>
-    </p>
-  </section>
-</article>
+  </div>
+</div>
 
   </main>
 

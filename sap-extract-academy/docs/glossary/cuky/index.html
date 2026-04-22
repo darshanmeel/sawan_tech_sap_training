@@ -6,7 +6,7 @@
 
   <title>CUKY: Currency Key in SAP — Plain Explanation — SAP Extract Academy</title>
   <meta name="description" content="CUKY is a currency key field (USD, EUR, JPY, etc.) in SAP. Always paired with amount fields; extract both CUKY and amount to interpret values correctly.">
-  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;cuky&#x2F;">
+  <link rel="canonical" href="https://academy.example.com/glossary/cuky/">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="CUKY: Currency Key in SAP — Plain Explanation">
@@ -40,28 +40,26 @@
 
   <header class="site-header">
     <div class="container">
-      <div class="header-top">
-        <a href="/" class="site-logo">SAP Extract Academy</a>
+      <div class="header-inner">
+        <a href="/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="/tables/">Tables</a></li>
+            <li><a href="/walkthrough/">Walkthroughs</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
       </div>
-      <nav class="site-nav">
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/tables/">Tables</a></li>
-          <li><a href="/walkthrough/">Walkthroughs</a></li>
-          <li><a href="/glossary/">Glossary</a></li>
-          <li><a href="/articles/">Articles</a></li>
-          <li><a href="/roadmap/">Roadmap</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="/decide/">Decide</a></li>
-        </ul>
-        <div data-source-picker>
-          <label for="source-version-select" class="sr-only">SAP Version</label>
-          <select id="source-version-select" aria-label="Choose SAP version">
-            <option value="s4hana">S/4HANA</option>
-            <option value="ecc">ECC</option>
-          </select>
-        </div>
-      </nav>
     </div>
   </header>
 
@@ -71,182 +69,117 @@
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
       <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
-    <!-- Glossary term detail page -->
+    <!-- Glossary term detail page — Bento card grid -->
 
-<nav class="breadcrumb" aria-label="Breadcrumb">
-  <ol>
-    <li><a href="/">Home</a></li>
-    <li><a href="/glossary/">Glossary</a></li>
-    <li aria-current="page">CUKY</li>
-  </ol>
-</nav>
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
 
-<article class="glossary-term">
-  <header class="glossary-header">
-    <h1>CUKY: Currency Key in SAP</h1>
-  </header>
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href="/glossary/">Glossary</a></li>
+      <li aria-current="page">CUKY</li>
+    </ol>
+  </nav>
 
-  <section class="glossary-definition">
-    <h2>Definition</h2>
-    <p class="short-definition">CUKY is a SAP data type field that stores a currency code (e.g., USD, EUR, JPY). Often paired with amount fields; you must extract both CUKY and its corresponding amount to properly interpret the value.</p>
-  </section>
+  <div class="grid">
 
-  <section class="glossary-body prose">
-    <p>CUKY (Currency Key) is a SAP data element that stores a 3-character currency code: USD, EUR, JPY, CHF, etc. CUKY fields are ubiquitous in finance tables (BKPF, ACDOCA) and purchasing (EKPO). The critical rule: <strong>amounts must be paired with CUKY</strong>. If you extract AMOUNT_LOCAL without WAERS (the WAERS field often references CUKY semantics), you have a meaningless number—$1M means nothing without knowing whether it&#39;s USD, EUR, or CNY.</p>
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · Currency Key</p>
+        <h1>CUKY<em>.</em></h1>
+      </div>
+      <p>CUKY is a SAP data type field that stores a currency code (e.g., USD, EUR, JPY). Often paired with amount fields; you must extract both CUKY and its corresponding amount to properly interpret the value.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/CURR/">CURR</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/QUAN/">QUAN</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/MEINS/">MEINS</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Z-field/">Z-field</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/ACDOCA/">ACDOCA</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+      </ul>
+    </div>
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/CURR/">CURR</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/QUAN/">QUAN</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/MEINS/">MEINS</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Z-field/">Z-field</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/ACDOCA/">ACDOCA</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+      </ul>
+    </div>
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/CURR/">CURR</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/QUAN/">QUAN</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/MEINS/">MEINS</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Z-field/">Z-field</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/ACDOCA/">ACDOCA</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+      </ul>
+    </div>
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/CURR/">CURR</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/QUAN/">QUAN</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/MEINS/">MEINS</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Z-field/">Z-field</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/ACDOCA/">ACDOCA</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+      </ul>
+    </div>
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/CURR/">CURR</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/QUAN/">QUAN</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/MEINS/">MEINS</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Z-field/">Z-field</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/ACDOCA/">ACDOCA</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+      </ul>
+    </div>
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/CURR/">CURR</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/QUAN/">QUAN</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/MEINS/">MEINS</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Z-field/">Z-field</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/ACDOCA/">ACDOCA</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="/glossary/Data Dictionary/">Data Dictionary</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+      <p class="subhead">CUKY is a SAP data type field that stores a currency code (e.g., USD, EUR, JPY). Often paired with amount fields; you must extract both CUKY and its corresponding amount to properly interpret the value.</p>
+      <div class="prose" style="max-width:780px;">
+        <p>CUKY (Currency Key) is a SAP data element that stores a 3-character currency code: USD, EUR, JPY, CHF, etc. CUKY fields are ubiquitous in finance tables (BKPF, ACDOCA) and purchasing (EKPO). The critical rule: <strong>amounts must be paired with CUKY</strong>. If you extract AMOUNT_LOCAL without WAERS (the WAERS field often references CUKY semantics), you have a meaningless number—$1M means nothing without knowing whether it&#39;s USD, EUR, or CNY.</p>
 <p>In ACDOCA (the Universal Journal), the challenge is that amounts exist in multiple currencies: transaction currency (AMOUNT_TRANS paired with TCURR), local currency (AMOUNT_LOCAL paired with LCURR), and group currency (AMOUNT_GROUP paired with GCURR). Each currency field is paired with a CUKY-like field. If you extract ACDOCA but miss the CUKY fields, your data warehouse GL will be unusable because accountants won&#39;t know what currency a posted amount is in.</p>
 <p>When extracting, always use SE11 (Data Dictionary) to find which amount fields are paired with which CUKY fields. Many extraction tools (Fivetran, ODP via CDS) handle this automatically, but hand-rolled extractors and legacy Python scripts often miss CUKY pairing, resulting in orphaned amount fields that have no meaning in the warehouse.</p>
 
-  </section>
+      </div>
+      <p style="margin-top:var(--space-5);">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
 
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/CURR/">CURR</a>
-      </li>
-      <li>
-        <a href="/glossary/QUAN/">QUAN</a>
-      </li>
-      <li>
-        <a href="/glossary/MEINS/">MEINS</a>
-      </li>
-      <li>
-        <a href="/glossary/Z-field/">Z-field</a>
-      </li>
-      <li>
-        <a href="/glossary/ACDOCA/">ACDOCA</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-    </ul>
-  </section>
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/CURR/">CURR</a>
-      </li>
-      <li>
-        <a href="/glossary/QUAN/">QUAN</a>
-      </li>
-      <li>
-        <a href="/glossary/MEINS/">MEINS</a>
-      </li>
-      <li>
-        <a href="/glossary/Z-field/">Z-field</a>
-      </li>
-      <li>
-        <a href="/glossary/ACDOCA/">ACDOCA</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-    </ul>
-  </section>
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/CURR/">CURR</a>
-      </li>
-      <li>
-        <a href="/glossary/QUAN/">QUAN</a>
-      </li>
-      <li>
-        <a href="/glossary/MEINS/">MEINS</a>
-      </li>
-      <li>
-        <a href="/glossary/Z-field/">Z-field</a>
-      </li>
-      <li>
-        <a href="/glossary/ACDOCA/">ACDOCA</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-    </ul>
-  </section>
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/CURR/">CURR</a>
-      </li>
-      <li>
-        <a href="/glossary/QUAN/">QUAN</a>
-      </li>
-      <li>
-        <a href="/glossary/MEINS/">MEINS</a>
-      </li>
-      <li>
-        <a href="/glossary/Z-field/">Z-field</a>
-      </li>
-      <li>
-        <a href="/glossary/ACDOCA/">ACDOCA</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-    </ul>
-  </section>
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/CURR/">CURR</a>
-      </li>
-      <li>
-        <a href="/glossary/QUAN/">QUAN</a>
-      </li>
-      <li>
-        <a href="/glossary/MEINS/">MEINS</a>
-      </li>
-      <li>
-        <a href="/glossary/Z-field/">Z-field</a>
-      </li>
-      <li>
-        <a href="/glossary/ACDOCA/">ACDOCA</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-    </ul>
-  </section>
-  <section class="related-terms">
-    <h2>Also see</h2>
-    <ul>
-      <li>
-        <a href="/glossary/CURR/">CURR</a>
-      </li>
-      <li>
-        <a href="/glossary/QUAN/">QUAN</a>
-      </li>
-      <li>
-        <a href="/glossary/MEINS/">MEINS</a>
-      </li>
-      <li>
-        <a href="/glossary/Z-field/">Z-field</a>
-      </li>
-      <li>
-        <a href="/glossary/ACDOCA/">ACDOCA</a>
-      </li>
-      <li>
-        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
-      </li>
-    </ul>
-  </section>
-
-  <section class="sap-documentation">
-    <h2>SAP documentation</h2>
-    <p>
-      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
-        Read more on SAP Help Portal
-        <span class="sr-only">(opens in new tab)</span>
-      </a>
-    </p>
-  </section>
-</article>
+  </div>
+</div>
 
   </main>
 

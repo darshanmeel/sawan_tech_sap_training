@@ -6,7 +6,7 @@
 
   <title>Help Me Decide — SAP Extraction Method Picker — SAP Extract Academy</title>
   <meta name="description" content="Not sure whether to use ODP, SLT, or RFC for your SAP extraction? Answer five quick questions and get a personalised walkthrough link.">
-  <link rel="canonical" href="https://academy.example.com&#x2F;decide&#x2F;">
+  <link rel="canonical" href="https://academy.example.com/decide/">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="Help Me Decide — SAP Extraction Method Picker">
@@ -40,28 +40,26 @@
 
   <header class="site-header">
     <div class="container">
-      <div class="header-top">
-        <a href="/" class="site-logo">SAP Extract Academy</a>
+      <div class="header-inner">
+        <a href="/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="/tables/">Tables</a></li>
+            <li><a href="/walkthrough/">Walkthroughs</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
       </div>
-      <nav class="site-nav">
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/tables/">Tables</a></li>
-          <li><a href="/walkthrough/">Walkthroughs</a></li>
-          <li><a href="/glossary/">Glossary</a></li>
-          <li><a href="/articles/">Articles</a></li>
-          <li><a href="/roadmap/">Roadmap</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="/decide/">Decide</a></li>
-        </ul>
-        <div data-source-picker>
-          <label for="source-version-select" class="sr-only">SAP Version</label>
-          <select id="source-version-select" aria-label="Choose SAP version">
-            <option value="s4hana">S/4HANA</option>
-            <option value="ecc">ECC</option>
-          </select>
-        </div>
-      </nav>
     </div>
   </header>
 
@@ -71,10 +69,23 @@
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
       <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
-    <main id="main" class="prose">
-  <div class="container">
-    <h1>Help me decide</h1>
-    <p class="decide-intro">
+    <!-- Generic page (about, decide) — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+  <div class="grid">
+
+    <!-- Hero card with page title -->
+    <div class="card hero" style="grid-column:span 12;">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>SAP Extract Academy</p>
+        <h1>Help me decide<em>.</em></h1>
+      </div>
+    </div>
+
+    <!-- Section card with prose body -->
+    <div class="card section">
+      <div class="prose" style="max-width:780px;">
+        <p class="decide-intro">
   Answer a few questions about your data and environment. The tool will recommend an extraction method, then build a direct link to the right walkthrough — pre-loaded with your choices.
 </p><div id="decide-mount">
   <div aria-live="polite" aria-atomic="false" id="decide-live" class="sr-only"></div>
@@ -94,8 +105,11 @@
   </ul>
 </noscript>
 
+      </div>
+    </div>
+
   </div>
-</main>
+</div>
 
   </main>
 
