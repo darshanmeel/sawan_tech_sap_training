@@ -27,6 +27,8 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -46,11 +48,22 @@
           <li><a href="/roadmap/">{{strings.nav.roadmap}}</a></li>
           <li><a href="/about/">{{strings.nav.about}}</a></li>
         </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
       </nav>
     </div>
   </header>
 
   <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
     {{{content}}}
   </main>
 
