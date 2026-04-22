@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Why Reading ACDOCA Directly Breaks SAP Systems — Extraction Guide — SAP Extract Academy</title>
+  <meta name="description" content="ACDOCA raw reads crash SAP systems. Learn the architecture, why SELECT * fails, and the safe extraction patterns for GL data at scale.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;articles&#x2F;why-acdoca-breaks-sap&#x2F;">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Why Reading ACDOCA Directly Breaks SAP Systems — Extraction Guide">
+  <meta property="og:description" content="ACDOCA raw reads crash SAP systems. Learn the architecture, why SELECT * fails, and the safe extraction patterns for GL data at scale.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;articles&#x2F;why-acdoca-breaks-sap&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Why Reading ACDOCA Directly Breaks SAP Systems — Extraction Guide">
+  <meta name="twitter:description" content="ACDOCA raw reads crash SAP systems. Learn the architecture, why SELECT * fails, and the safe extraction patterns for GL data at scale.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Why Reading ACDOCA Directly Breaks Your SAP System","description":"ACDOCA raw reads crash SAP systems. Learn the architecture, why SELECT * fails, and the safe extraction patterns for GL data at scale.","author":{"@type":"Organization","name":"SAP Extract Academy"},"publisher":{"@type":"Organization","name":"SAP Extract Academy"},"datePublished":"2026-04-22T00:00:00.000Z","dateModified":"2026-04-22T00:00:00.000Z","mainEntityOfPage":"https://academy.example.com/articles/why-acdoca-breaks-sap/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://academy.example.com/articles/"},{"@type":"ListItem","position":3,"name":"Why Reading ACDOCA Directly Breaks Your SAP System"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Article detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/articles/">Articles</a></li>
+    <li aria-current="page">Why Reading ACDOCA Directly Breaks Your SAP System</li>
+  </ol>
+</nav>
+
+<article class="article">
+  <header class="article-header">
+
+    <h1>Why Reading ACDOCA Directly Breaks Your SAP System</h1>
+
+    <dl class="article-meta">
+      <div>
+        <dt>Published</dt>
+        <dd>Wed Apr 22 2026 02:00:00 GMT+0200 (Central European Summer Time)</dd>
+      </div>
+      <div>
+        <dt>Reading time</dt>
+        <dd>8 minutes</dd>
+      </div>
+      <div>
+        <dt>Author</dt>
+        <dd>SAP Extract Academy</dd>
+      </div>
+    </dl>
+  </header>
+
+  <div class="article-body prose">
+    <p>ACDOCA—the universal journal—is the ultimate accounting table. Every accounting entry, every GL posting, every consolidation adjustment in S/4HANA lives there. For a large enterprise, ACDOCA contains billions of rows: 5 billion, 10 billion, sometimes more. It&#39;s also the most dangerous table to extract from. A single mistake—a naive SELECT * or a missing WHERE clause—can bring your SAP system down for hours.</p>
+<p>This article explains why ACDOCA is so dangerous, what happens when you read it wrong, and the safe patterns to extract GL data at scale.</p>
+<h2>The Table Structure Problem</h2>
+<p>ACDOCA is organized by fiscal period (POPER) and fiscal year (RYEAR), with entries for each company code (BUKRS). But the table doesn&#39;t just store raw GL postings. It contains multiple types of entries:</p>
+<ul>
+<li><strong>Line items</strong> from all modules: FI (General Ledger), CO (Controlling), MM (Materials Management), SD (Sales &amp; Distribution), HR (Human Resources)</li>
+<li><strong>Consolidation entries</strong>: entries created by consolidation runs, not actual transactions</li>
+<li><strong>Ledger variants</strong>: ACDOCA stores data for multiple accounting ledgers (Leading Ledger, Extension Ledgers), multiplying cardinality</li>
+<li><strong>Multiple fiscal versions</strong>: corrections, reversals, and amendments create additional rows</li>
+</ul>
+<p>A transaction in VBAK (sales order) becomes 5-10 GL postings in ACDOCA. A cost allocation in CO spawns 100+ postings. A consolidation journal entry can generate thousands of ledger lines. The math compounds: 100M sales orders → 500M GL postings. 1000 cost allocations → 100k GL lines. One consolidation run → 1M adjustment entries.</p>
+<p>For a mid-sized enterprise with 5 years of history, ACDOCA contains 2-5 billion rows. For a large multinational, 10-20 billion. Reading all rows—without filtering—means allocating enough memory to hold billions of records on the SAP application server. It can&#39;t.</p>
+<h2>What Happens When You SELECT *</h2>
+<p>When a naive extraction attempts SELECT * FROM ACDOCA without filters, SAP&#39;s application server tries to fetch all rows into memory. The process works like this:</p>
+<ol>
+<li><strong>Memory Allocation</strong>: SAP allocates a work area large enough to hold the first batch of rows (typically 10k-100k rows, depending on row size).</li>
+<li><strong>First Batch Success</strong>: The first 1M rows stream through the network to your extraction tool. The system is fine.</li>
+<li><strong>Second Batch</strong>: The second 1M rows are fetched. Memory usage doubles.</li>
+<li><strong>Cascade</strong>: As the process continues, memory consumption spirals. SAP has allocated 100GB of work memory for this one extraction. The dialog user trying to post a GL entry needs work memory too. The system slows.</li>
+<li><strong>Collapse</strong>: When work memory hits the limit (~4-8GB per work process on typical systems), SAP throws <strong>TSV_TNEW_PAGE_ALLOC_FAILED</strong>—&quot;Cannot allocate memory.&quot; The extraction dies.</li>
+</ol>
+<p>Meanwhile, the SAP database cursor holding the table scan locks millions of rows. Other GL posting transactions queue waiting for locks. Finance users can&#39;t close the period. The whole accounting close process stops.</p>
+<h2>Why Partitioning Is Mandatory</h2>
+<p>This is why the expert ACDOCA walkthrough mandates partitioning by BUKRS (company code) and GJAHR (fiscal year). Partitioning isn&#39;t optional; it&#39;s the difference between a 2-hour extraction and a system crash.</p>
+<p>By extracting one company code and fiscal year at a time—RBUKRS=&#39;1000&#39; AND RYEAR=2024—you reduce the row set from 5 billion to 100M. A 100M-row extraction fits in work memory. You extract partition 1, then partition 2, looping through all partitions in sequence (or in parallel with SLT&#39;s LTRS readers). The total extraction time is the same, but each individual extraction is bounded and safe.</p>
+<p>Without partitioning, even the ODP extractor (which is optimized for large tables) will timeout or exhaust memory if you try to extract 5 billion rows at once.</p>
+<h2>The CDS View Solution</h2>
+<p>SAP published the released CDS view <strong>I_JournalEntryItem</strong> as the safe way to extract ACDOCA data. This view:</p>
+<ul>
+<li><strong>Enforces authorization</strong>: You see only GL entries your user role is allowed to see</li>
+<li><strong>Applies currency conversion</strong>: Currency fields are pre-converted to your local/group currency</li>
+<li><strong>Hides complexity</strong>: The view shields you from ACDOCA&#39;s internal structure (consolidation entries, ledger variants, etc.)</li>
+<li><strong>Includes optimizations</strong>: The view includes database hints and field selections that prevent memory exhaustion</li>
+</ul>
+<p>When you extract via I_JournalEntryItem with ODP, you&#39;re not touching raw ACDOCA. You&#39;re querying a materialized, optimized view that SAP maintains. It&#39;s safe.</p>
+<p>But even I_JournalEntryItem is dangerous at scale. A single query requesting 5 billion journal entries still causes memory exhaustion. This is why the intermediate walkthrough limits extraction to one company + one fiscal year, and why the expert walkthrough uses SLT (which parallelizes across partitions).</p>
+<h2>The SLT Escape Hatch</h2>
+<p>SLT (SAP Landscape Transformation) solves the memory problem by partitioning at the SAP level. When you configure SLT to replicate ACDOCA with BUKRS+GJAHR partitioning and 4-8 parallel readers, each reader handles one partition independently:</p>
+<ul>
+<li>Reader 1 extracts RBUKRS=&#39;1000&#39; AND RYEAR=2024</li>
+<li>Reader 2 extracts RBUKRS=&#39;1001&#39; AND RYEAR=2024</li>
+<li>Reader 3 extracts RBUKRS=&#39;2000&#39; AND RYEAR=2024</li>
+<li>And so on</li>
+</ul>
+<p>Each reader consumes 100M rows of memory, not 5B. The total extraction time remains 24-72 hours (depending on data volume), but the system never crashes because no single reader exceeds memory limits. The parallel readers also distribute lock contention across multiple database cursors, reducing blocking on GL posting transactions.</p>
+<p>This is the reason SLT is licensed separately and required for enterprise GL extraction: it&#39;s not just an extraction tool, it&#39;s a safety mechanism that keeps your finance system operational during multi-day bulk loads.</p>
+<h2>The Hidden Cost of Not Filtering</h2>
+<p>Many extraction failures stem from subtle filtering mistakes. Consider this scenario:</p>
+<p>You extract ACDOCA successfully for company 1000, fiscal year 2024 (100M rows). Then a user asks: &quot;Can you give me the last 5 years of data?&quot; You modify the WHERE clause to remove GJAHR=2024, hoping to get all years at once.</p>
+<p>Your query now tries to read 500M rows (100M × 5 years). It still fails—memory exhaustion—but this time because you removed a critical partition key.</p>
+<p>The rule: <strong>always partition on BUKRS+GJAHR (or RYEAR+POPER if you prefer fiscal period granularity).</strong> Never extract more than one fiscal year of one company at a time. If you need 5 years of 10 companies, extract 50 partitions, looping or parallelizing. The extraction takes the same calendar time, but each partition stays under memory limits.</p>
+<h2>Real-World Incident: The Consolidation Run That Broke GL</h2>
+<p>A real example: A multinational runs consolidation at month-end, posting 2M adjustment entries to ACDOCA. A junior data engineer, testing a new extraction, forgets the RYEAR filter and runs:</p>
+<pre><code class="language-sql">SELECT * FROM ACDOCA WHERE BUKRS = &#39;1000&#39;
+</code></pre>
+<p>The system tries to fetch 10 years × 12 months × 1000 companies of GL data—billions of rows. Within 5 minutes, SAP hits memory limits. The extraction process hangs and locks the ACDOCA table. Finance staff trying to post GL documents get &quot;table is locked&quot; errors. The accounting close stalls.</p>
+<p>The DBA has to kill the extraction process (20 minutes), clear locks (10 minutes), and restart the system (15 minutes). 45 minutes of finance downtime. Auditors later ask: &quot;Why was the GL unavailable during month-end close?&quot; Root cause: missing partition filter.</p>
+<p>This exact scenario has shut down finance operations at hundreds of enterprises. It&#39;s why this lesson is emphasized so heavily in the academy: partitioning is not optional; it&#39;s the difference between a smooth extraction and a financial crisis.</p>
+<h2>The Right Way Forward</h2>
+<p>To extract ACDOCA safely:</p>
+<ol>
+<li><strong>Use a released CDS view</strong> (I_JournalEntryItem), not raw ACDOCA</li>
+<li><strong>Partition by BUKRS + GJAHR</strong> (always, every time)</li>
+<li><strong>Use ODP delta</strong> for ongoing extraction (incremental changes, not full replication)</li>
+<li><strong>Use SLT with LTRS parallelism</strong> if you need enterprise-scale, real-time streaming</li>
+<li><strong>Monitor ACDOCA growth</strong> (track partition sizes; if one partition exceeds 500M rows, sub-partition further by cost center or posting period)</li>
+</ol>
+<p>These patterns apply to every large SAP table. BKPF (document header), EKPO (purchase order lines), VBRK (billing), LIPS (delivery items)—all are dangerous at scale. The extraction patterns you learn on ACDOCA transfer to any enterprise table.</p>
+<p>Master ACDOCA extraction, and you&#39;ve mastered the hardest problem in SAP data engineering.</p>
+
+  </div>
+
+  <section class="related-walkthroughs">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-walkthroughs">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+    </ul>
+  </section>
+
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

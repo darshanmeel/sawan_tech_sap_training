@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract LFA1 with Hourly Delta (Intermediate) — SAP Extract Academy</title>
+  <meta name="description" content="Intermediate LFA1 extraction with full weekly + hourly delta loads. Near-real-time vendor master via ODP delta queues and Python.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;lfa1&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract LFA1 with Hourly Delta (Intermediate)">
+  <meta property="og:description" content="Intermediate LFA1 extraction with full weekly + hourly delta loads. Near-real-time vendor master via ODP delta queues and Python.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;lfa1&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract LFA1 with Hourly Delta (Intermediate)">
+  <meta name="twitter:description" content="Intermediate LFA1 extraction with full weekly + hourly delta loads. Near-real-time vendor master via ODP delta queues and Python.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract LFA1 with Hourly Delta (Intermediate)","description":"Full load plus hourly delta extraction. Introduces multiple load patterns: nightly full reconciliation with hourly incremental updates. Python/ODP integration.","totalTime":"PT55M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Plan full + delta strategy","text":"Weekly full load (Sunday) + hourly delta (Mon-Sat). This balances freshness with extraction overhead.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Create ODP subscription for I_Supplier","text":"Use pyrfc to create a persistent ODP subscription for delta tracking.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Implement full load (nightly)","text":"Python script with pyrfc for full load. Store to Snowflake STAGING_LFA1.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Implement delta extraction (hourly)","text":"Separate script that calls ODP delta API, stores sequence number in metadata table, applies changes to production LFA1 table via MERGE.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Monitor delta reconciliation","text":"Weekly, compare row count: full load count should match production count. Investigate deltas if they diverge.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"LFA1","item":"https://academy.example.com/tables/lfa1/"},{"@type":"ListItem","position":4,"name":"Extract LFA1 with Hourly Delta (Intermediate)"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Walkthrough detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li><a href="/tables/lfa1/">LFA1</a></li>
+    <li aria-current="page">intermediate walkthrough</li>
+  </ol>
+</nav>
+
+<article class="walkthrough" data-walkthrough-id="intermediate-lfa1" data-page-slug="intermediate-lfa1">
+  <header class="walkthrough-header">
+    <div class="walkthrough-header-meta">
+      <span class="level-badge level-intermediate">intermediate</span>
+      <span class="table-code">LFA1</span>
+    </div>
+    <h1>Extract LFA1 with Hourly Delta (Intermediate)</h1>
+    <p class="walkthrough-summary">Full load plus hourly delta extraction. Introduces multiple load patterns: nightly full reconciliation with hourly incremental updates. Python&#x2F;ODP integration.</p>
+
+    <dl class="walkthrough-meta-list">
+      <div>
+        <dt></dt>
+        <dd>55 minutes</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>Snowflake</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>Python</dd>
+      </div>
+    </dl>
+  </header>
+
+  <section class="callout callout-warning">
+    <h2>License check</h2>
+    <p>All licenses. ODP is application-layer.</p>
+  </section>
+
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed LFA1 Beginner</li>
+      <li>Python and pyrfc knowledge</li>
+    </ul>
+  </section>
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed LFA1 Beginner</li>
+      <li>Python and pyrfc knowledge</li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-intro">
+    <h2>Getting started</h2>
+    <div class="prose">
+      <h2>Scenario</h2>
+<p>Your procurement dashboard needs hourly vendor updates. Weekly full load with daily/hourly deltas is the pattern.</p>
+<hr>
+<h2>What you&#39;ve built</h2>
+<p>You have a tiered extraction: weekly full reconciliation + hourly incremental updates. Vendor master is now near-real-time.</p>
+
+    </div>
+  </section>
+
+  <section class="walkthrough-progress">
+    <div role="status" aria-live="polite" class="progress-indicator">
+      <span id="progress-count">0</span> of 5 steps complete
+    </div>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden></button>
+  </section>
+
+  <ol class="steps-list">
+    <li class="step" id="step-step-01">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-01</span>
+          <h2 class="step-title">Plan full + delta strategy</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-01"
+            aria-label="Mark Plan full + delta strategy as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Weekly full load (Sunday) + hourly delta (Mon-Sat). This balances freshness with extraction overhead.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Document: Full load every Sunday 22:00 UTC, delta every hour 00-23:00 UTC.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-02">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-02</span>
+          <h2 class="step-title">Create ODP subscription for I_Supplier</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-02"
+            aria-label="Mark Create ODP subscription for I_Supplier as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Use pyrfc to create a persistent ODP subscription for delta tracking.</p>
+
+
+        <figure class="code-block">
+          <figcaption>ODP subscription creation</figcaption>
+          <pre><code class="language-python">odata_request_param &#x3D; {
+    &#39;DATASOURCE&#39;: &#39;I_Supplier&#39;,
+    &#39;SUBSCRIPTIONNAME&#39;: &#39;PYTHON_LFA1_HOURLY&#39;,
+    &#39;MAXDELTAREQUESTS&#39;: 100
+}
+</code></pre>
+        </figure>
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Subscription appears in ODQMON.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-03">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-03</span>
+          <h2 class="step-title">Implement full load (nightly)</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-03"
+            aria-label="Mark Implement full load (nightly) as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Python script with pyrfc for full load. Store to Snowflake STAGING_LFA1.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Full load completes and STAGING_LFA1 is populated.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-04">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-04</span>
+          <h2 class="step-title">Implement delta extraction (hourly)</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-04"
+            aria-label="Mark Implement delta extraction (hourly) as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Separate script that calls ODP delta API, stores sequence number in metadata table, applies changes to production LFA1 table via MERGE.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Hourly delta runs and updates production table.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-05">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-05</span>
+          <h2 class="step-title">Monitor delta reconciliation</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-05"
+            aria-label="Mark Monitor delta reconciliation as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Weekly, compare row count: full load count should match production count. Investigate deltas if they diverge.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Count(STAGING) ≈ Count(LFA1_PROD)</p>
+        </aside>
+
+      </div>
+    </li>
+  </ol>
+
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>Delta misses some updates</dt>
+        <dd>
+          <p>ODP queue may have dropped entries if extraction was delayed &gt;2 days. Re-run full load to catch missing data.</p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="walkthrough-summary">
+    <h2>You've built:</h2>
+    <p>Congratulations! You've completed the intermediate walkthrough for LFA1. You now have 5 steps of experience extracting this table, and you understand the key considerations for the LFA1 use case.</p>
+  </section>
+
+  <section class="next-steps">
+    <h2></h2>
+    <ul>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;lfa1&#x2F;">Try LFA1 Expert</a></li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-actions">
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden></button>
+  </section>
+</article>
+
+<script type="module" src="/assets/js/checklist.js?v=1" defer></script>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

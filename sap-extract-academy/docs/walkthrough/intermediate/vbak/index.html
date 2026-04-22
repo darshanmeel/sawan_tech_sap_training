@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract VBAK with Delta &amp; Z-Fields (Intermediate) — S&#x2F;4HANA — SAP Extract Academy</title>
+  <meta name="description" content="Intermediate walkthrough for VBAK extraction with delta processing and custom Z-field support. Python&#x2F;pyrfc + Snowflake. ODP delta queues and incremental load patterns.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;vbak&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract VBAK with Delta &amp; Z-Fields (Intermediate) — S&#x2F;4HANA">
+  <meta property="og:description" content="Intermediate walkthrough for VBAK extraction with delta processing and custom Z-field support. Python&#x2F;pyrfc + Snowflake. ODP delta queues and incremental load patterns.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;vbak&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract VBAK with Delta &amp; Z-Fields (Intermediate) — S&#x2F;4HANA">
+  <meta name="twitter:description" content="Intermediate walkthrough for VBAK extraction with delta processing and custom Z-field support. Python&#x2F;pyrfc + Snowflake. ODP delta queues and incremental load patterns.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract VBAK with Delta and Z-Field (Intermediate)","description":"Full + delta extraction of VBAK with a custom Z-field (ZZ_REGION). Introduces delta queues in ODP, CDS extension views for Z-fields, and incremental load patterns.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Verify the I_SalesDocument CDS extension view supports ZZ_REGION","text":"Your S/4HANA system has a custom Z-field ZZ_REGION on VBAK. Confirm the released CDS view I_SalesDocument includes this via an extension view or direct annotation.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Understand ODP delta queues","text":"<a href='/glossary/odp/'>ODP</a> maintains delta queues for each context (CDS view). The queue tracks insert, update, delete operations. You'll request a delta using a timestamp or sequence number.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Set up Python environment with pyrfc","text":"Install pyrfc library for direct SAP RFC calls. This gives you finer control over delta requests than ADF's SAP CDC connector.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Create Python script for full load","text":"Write a Python script using pyrfc to call RFC_READ_TABLE on I_SalesDocument CDS view. Request all rows (no WHERE clause). Save to Parquet in Snowflake via pyodbc and pandas.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Capture baseline delta sequence number","text":"After full load completes, query ODQMON to capture the current ODP sequence number. You'll use this in the delta extract to only get new/changed rows.","url":"https://academy.example.com/walkthrough/intermediate/vbak/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"VBAK","item":"https://academy.example.com/tables/vbak/"},{"@type":"ListItem","position":4,"name":"Extract VBAK with Delta and Z-Field (Intermediate)"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Walkthrough detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li><a href="/tables/vbak/">VBAK</a></li>
+    <li aria-current="page">intermediate walkthrough</li>
+  </ol>
+</nav>
+
+<article class="walkthrough" data-walkthrough-id="intermediate-vbak" data-page-slug="intermediate-vbak">
+  <header class="walkthrough-header">
+    <div class="walkthrough-header-meta">
+      <span class="level-badge level-intermediate">intermediate</span>
+      <span class="table-code">VBAK</span>
+    </div>
+    <h1>Extract VBAK with Delta and Z-Field (Intermediate)</h1>
+    <p class="walkthrough-summary">Full + delta extraction of VBAK with a custom Z-field (ZZ_REGION). Introduces delta queues in ODP, CDS extension views for Z-fields, and incremental load patterns.</p>
+
+    <dl class="walkthrough-meta-list">
+      <div>
+        <dt></dt>
+        <dd>60 minutes</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>Snowflake</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>Python</dd>
+      </div>
+    </dl>
+  </header>
+
+
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed VBAK Beginner</li>
+      <li>Understanding of ODP delta concepts from glossary</li>
+    </ul>
+  </section>
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed VBAK Beginner</li>
+      <li>Understanding of ODP delta concepts from glossary</li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-intro">
+    <h2>Getting started</h2>
+    <div class="prose">
+      <h2>Scenario</h2>
+<p>Your analytics team now needs near-real-time sales data. Daily delta extracts are sufficient — you don&#39;t need sub-minute updates, but every morning&#39;s refresh should catch all yesterday&#39;s new and changed orders.</p>
+<p>Additionally, your company has added a custom Z-field ZZ_REGION to sales documents (EMEA, APAC, AMER) for regional analysis. You&#39;ll update the extraction to include this field and implement delta processing.</p>
+<p>Estimated time: 60 minutes.</p>
+<hr>
+<h2>What you&#39;ve built</h2>
+<p>You&#39;ve built a full + delta extraction pattern using pyrfc and ODP delta queues. Your Snowflake table receives a daily update with only changed rows, keeping the data fresh and reducing extraction volume. The Z-field ZZ_REGION is now part of the data pipeline.</p>
+<p>This pattern scales: as Z-fields multiply or business rules change, you&#39;ll adjust the CDS extension view or raw-table extraction, but the delta mechanism remains the same.</p>
+
+    </div>
+  </section>
+
+  <section class="walkthrough-progress">
+    <div role="status" aria-live="polite" class="progress-indicator">
+      <span id="progress-count">0</span> of 8 steps complete
+    </div>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden></button>
+  </section>
+
+  <ol class="steps-list">
+    <li class="step" id="step-step-01">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-01</span>
+          <h2 class="step-title">Verify the I_SalesDocument CDS extension view supports ZZ_REGION</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-01"
+            aria-label="Mark Verify the I_SalesDocument CDS extension view supports ZZ_REGION as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Your S/4HANA system has a custom Z-field ZZ_REGION on VBAK. Confirm the released CDS view I_SalesDocument includes this via an extension view or direct annotation.</p>
+
+        <aside class="callout callout-sap">
+          <h3></h3>
+          <p>
+            Open transaction
+            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+              SE80
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+            and navigate to <em>Repository Browser → I_SalesDocument</em>.
+          </p>
+        </aside>
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>I_SalesDocument or an associated extension view exposes ZZ_REGION as a field.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-02">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-02</span>
+          <h2 class="step-title">Understand ODP delta queues</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-02"
+            aria-label="Mark Understand ODP delta queues as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation"><a href='/glossary/odp/'>ODP</a> maintains delta queues for each context (CDS view). The queue tracks insert, update, delete operations. You'll request a delta using a timestamp or sequence number.</p>
+
+        <aside class="callout callout-sap">
+          <h3></h3>
+          <p>
+            Open transaction
+            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;ODQMON.html" target="_blank" rel="noopener noreferrer">
+              ODQMON
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+            and navigate to <em>Subscriptions → Search I_SalesDocument</em>.
+          </p>
+        </aside>
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>ODQMON shows an ODP subscription for I_SalesDocument with a delta queue active.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-03">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-03</span>
+          <h2 class="step-title">Set up Python environment with pyrfc</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-03"
+            aria-label="Mark Set up Python environment with pyrfc as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Install pyrfc library for direct SAP RFC calls. This gives you finer control over delta requests than ADF's SAP CDC connector.</p>
+
+
+        <figure class="code-block">
+          <figcaption>Install pyrfc and verify</figcaption>
+          <pre><code class="language-bash">pip install pyrfc cryptography
+python -c &quot;import pyrfc; print(pyrfc.__version__)&quot;
+</code></pre>
+        </figure>
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>pyrfc imports successfully in Python.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-04">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-04</span>
+          <h2 class="step-title">Create Python script for full load</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-04"
+            aria-label="Mark Create Python script for full load as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Write a Python script using pyrfc to call RFC_READ_TABLE on I_SalesDocument CDS view. Request all rows (no WHERE clause). Save to Parquet in Snowflake via pyodbc and pandas.</p>
+
+
+        <figure class="code-block">
+          <figcaption>Simplified full-load Python script</figcaption>
+          <pre><code class="language-python">from pyrfc import Connection
+import pandas as pd
+from snowflake.connector.pandas_tools import write_pandas
+
+conn &#x3D; Connection(ashost&#x3D;&#39;&lt;SAP_HOST&gt;&#39;, sysnr&#x3D;&#39;00&#39;, client&#x3D;&#39;100&#39;, user&#x3D;&#39;EXTRACT_VBAK&#39;, passwd&#x3D;&#39;&lt;pwd&gt;&#39;)
+
+query_result &#x3D; conn.call(&#39;RFC_READ_TABLE&#39;, QUERY_TABLE&#x3D;&#39;I_SalesDocument&#39;, ROWCOUNT&#x3D;500000)
+df &#x3D; pd.DataFrame(query_result[&#39;DATA&#39;])
+
+sf_conn &#x3D; snowflake.connector.connect(user&#x3D;&#39;&lt;sf_user&gt;&#39;, password&#x3D;&#39;&lt;sf_pwd&gt;&#39;, account&#x3D;&#39;&lt;account&gt;&#39;)
+write_pandas(sf_conn, df, &#39;VBAK_FULL_LOAD&#39;, auto_create_table&#x3D;True)
+</code></pre>
+        </figure>
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Script runs and data lands in Snowflake table VBAK_FULL_LOAD.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-05">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-05</span>
+          <h2 class="step-title">Capture baseline delta sequence number</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-05"
+            aria-label="Mark Capture baseline delta sequence number as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">After full load completes, query ODQMON to capture the current ODP sequence number. You'll use this in the delta extract to only get new/changed rows.</p>
+
+        <aside class="callout callout-sap">
+          <h3></h3>
+          <p>
+            Open transaction
+            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;ODQMON.html" target="_blank" rel="noopener noreferrer">
+              ODQMON
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+            and navigate to <em>Subscriptions → I_SalesDocument → View Queue</em>.
+          </p>
+        </aside>
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>You note the ODP sequence number (e.g., 12345) as the baseline.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-06">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-06</span>
+          <h2 class="step-title">Implement incremental load logic</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-06"
+            aria-label="Mark Implement incremental load logic as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Create a second Python script that calls ODP with the previous sequence number to fetch only changed rows. Store the updated sequence number for the next run.</p>
+
+
+        <figure class="code-block">
+          <figcaption>Delta extraction pseudocode</figcaption>
+          <pre><code class="language-python">last_seq &#x3D; 12345  # from baseline
+delta_result &#x3D; conn.call(&#39;RS_DATASOURCE_DELTA&#39;, ..., LAST_SEQ&#x3D;str(last_seq))
+new_seq &#x3D; delta_result[&#39;NEXTSEQ&#39;]
+
+# Apply delta: insert new, update changed, delete removed
+# Store new_seq for next run
+</code></pre>
+        </figure>
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Delta extraction runs and updates Snowflake with only changed rows.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-07">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-07</span>
+          <h2 class="step-title">Schedule daily delta runs</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-07"
+            aria-label="Mark Schedule daily delta runs as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Use AWS Lambda or a Snowflake task to run the delta extraction daily. Maintain state (last sequence number) in a Snowflake metadata table.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Lambda function or Snowflake task executes on schedule and logs show daily delta runs.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-08">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-08</span>
+          <h2 class="step-title">Validate Z-field data (ZZ_REGION)</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-08"
+            aria-label="Mark Validate Z-field data (ZZ_REGION) as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Check that ZZ_REGION is present in the Snowflake table and contains expected values (e.g., 'EMEA', 'APAC', 'AMER').</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>SELECT DISTINCT ZZ_REGION FROM VBAK_FULL_LOAD returns expected regional values.</p>
+        </aside>
+
+      </div>
+    </li>
+  </ol>
+
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>pyrfc connection fails with SNC_PARTNER_NOT_REACHED</dt>
+        <dd>
+          <p>SNC is enabled on the SAP system. Disable in the connection or configure SNC certificates on the Python machine.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>Z-field ZZ_REGION is NULL in output</dt>
+        <dd>
+          <p>The CDS view may not expose the Z-field directly. Create a CDS extension view in SE80 that appends the Z-field, or extract VBAK raw table separately and join.</p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>pyrfc connection fails with SNC_PARTNER_NOT_REACHED</dt>
+        <dd>
+          <p>SNC is enabled on the SAP system. Disable in the connection or configure SNC certificates on the Python machine.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>Z-field ZZ_REGION is NULL in output</dt>
+        <dd>
+          <p>The CDS view may not expose the Z-field directly. Create a CDS extension view in SE80 that appends the Z-field, or extract VBAK raw table separately and join.</p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="walkthrough-summary">
+    <h2>You've built:</h2>
+    <p>Congratulations! You've completed the intermediate walkthrough for VBAK. You now have 8 steps of experience extracting this table, and you understand the key considerations for the VBAK use case.</p>
+  </section>
+
+  <section class="next-steps">
+    <h2></h2>
+    <ul>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;vbak&#x2F;">Try VBAK Expert — SLT push to Kafka</a></li>
+      <li><a href="&#x2F;glossary&#x2F;delta&#x2F;">Glossary: Operational Data Provisioning delta</a></li>
+    </ul>
+  </section>
+  <section class="next-steps">
+    <h2></h2>
+    <ul>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;vbak&#x2F;">Try VBAK Expert — SLT push to Kafka</a></li>
+      <li><a href="&#x2F;glossary&#x2F;delta&#x2F;">Glossary: Operational Data Provisioning delta</a></li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-actions">
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden></button>
+  </section>
+</article>
+
+<script type="module" src="/assets/js/checklist.js?v=1" defer></script>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

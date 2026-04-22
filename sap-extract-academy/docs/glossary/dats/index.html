@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>DATS: SAP 8-Digit Date Format — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="DATS is SAP&#39;s date type, stored as YYYYMMDD (8 digits, e.g., 20260422). Extractors must preserve format or dates become unreadable.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;dats&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DATS: SAP 8-Digit Date Format — Plain Explanation">
+  <meta property="og:description" content="DATS is SAP&#39;s date type, stored as YYYYMMDD (8 digits, e.g., 20260422). Extractors must preserve format or dates become unreadable.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;dats&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DATS: SAP 8-Digit Date Format — Plain Explanation">
+  <meta name="twitter:description" content="DATS is SAP&#39;s date type, stored as YYYYMMDD (8 digits, e.g., 20260422). Extractors must preserve format or dates become unreadable.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Date (8-digit format)","alternateName":"DATS","description":"DATS is SAP's date data type stored as YYYYMMDD (8 digits). Example: 20260422 for April 22, 2026. SAP handles DATS-to-local-date conversion automatically, but extractors must preserve the format.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Glossary term detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/glossary/">Glossary</a></li>
+    <li aria-current="page">DATS</li>
+  </ol>
+</nav>
+
+<article class="glossary-term">
+  <header class="glossary-header">
+    <h1>DATS: Date (8-digit format) in SAP</h1>
+  </header>
+
+  <section class="glossary-definition">
+    <h2>Definition</h2>
+    <p class="short-definition">DATS is SAP&#39;s date data type stored as YYYYMMDD (8 digits). Example: 20260422 for April 22, 2026. SAP handles DATS-to-local-date conversion automatically, but extractors must preserve the format.</p>
+  </section>
+
+  <section class="glossary-body prose">
+    <p>DATS (Date) is SAP&#39;s internal date format: an 8-digit number representing YYYYMMDD. April 22, 2026 is stored as 20260422. Fiscal year dates, document dates, and validity dates all use DATS. When you query SE16N and see a date like &quot;2026-04-22&quot;, SAP GUI is automatically converting DATS 20260422 to your local date format; the database stores only the 8 digits.</p>
+<p>For extraction, DATS fields are straightforward if handled correctly. Most extractors (Fivetran, ODP, Python/pyrfc with proper RFC metadata) automatically recognize DATS and convert to ISO 8601 (2026-04-22) or timestamp format for the target system (Snowflake, BigQuery, etc.). However, hand-rolled extractors that treat DATS as raw integers will fail: a date field becomes 20260422 in your warehouse instead of 2026-04-22, and date arithmetic breaks.</p>
+<p>When extracting date-heavy tables (ACDOCA has POPER for fiscal period, BKPF has BUDAT for posting date), ensure your extraction tool understands DATS. Snowflake and Postgres expect ISO 8601; if you load 20260422 as a string, date functions fail. ODP and Fivetran handle this conversion implicitly; custom Python scripts need to parse DATS and convert explicitly.</p>
+
+  </section>
+
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/TIMS/">TIMS</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
+      </li>
+      <li>
+        <a href="/glossary/SE11/">SE11</a>
+      </li>
+      <li>
+        <a href="/glossary/Date Conversion/">Date Conversion</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/TIMS/">TIMS</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
+      </li>
+      <li>
+        <a href="/glossary/SE11/">SE11</a>
+      </li>
+      <li>
+        <a href="/glossary/Date Conversion/">Date Conversion</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/TIMS/">TIMS</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
+      </li>
+      <li>
+        <a href="/glossary/SE11/">SE11</a>
+      </li>
+      <li>
+        <a href="/glossary/Date Conversion/">Date Conversion</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/TIMS/">TIMS</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
+      </li>
+      <li>
+        <a href="/glossary/SE11/">SE11</a>
+      </li>
+      <li>
+        <a href="/glossary/Date Conversion/">Date Conversion</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sap-documentation">
+    <h2></h2>
+    <p>
+      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;data-element-dats.html" target="_blank" rel="noopener noreferrer">
+        Read more on SAP Help Portal
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </p>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

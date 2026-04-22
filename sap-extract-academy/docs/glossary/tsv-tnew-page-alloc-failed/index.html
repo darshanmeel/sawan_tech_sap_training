@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>TSV_TNEW_PAGE_ALLOC_FAILED: SAP Memory Exhaustion — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="TSV_TNEW_PAGE_ALLOC_FAILED indicates SAP memory exhaustion during extraction. Use CDS views, filters, or SLT parallelism to avoid it.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;tsv-tnew-page-alloc-failed&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="TSV_TNEW_PAGE_ALLOC_FAILED: SAP Memory Exhaustion — Plain Explanation">
+  <meta property="og:description" content="TSV_TNEW_PAGE_ALLOC_FAILED indicates SAP memory exhaustion during extraction. Use CDS views, filters, or SLT parallelism to avoid it.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;tsv-tnew-page-alloc-failed&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="TSV_TNEW_PAGE_ALLOC_FAILED: SAP Memory Exhaustion — Plain Explanation">
+  <meta name="twitter:description" content="TSV_TNEW_PAGE_ALLOC_FAILED indicates SAP memory exhaustion during extraction. Use CDS views, filters, or SLT parallelism to avoid it.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"SAP Memory Allocation Error","alternateName":"TSV_TNEW_PAGE_ALLOC_FAILED","description":"TSV_TNEW_PAGE_ALLOC_FAILED is an SAP error indicating memory exhaustion during extraction. Common when SELECT *-ing large tables (ACDOCA, BKPF) without filters. Solution: use CDS views, apply filters, or use SLT for parallelism.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Glossary term detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/glossary/">Glossary</a></li>
+    <li aria-current="page">TSV_TNEW_PAGE_ALLOC_FAILED</li>
+  </ol>
+</nav>
+
+<article class="glossary-term">
+  <header class="glossary-header">
+    <h1>TSV_TNEW_PAGE_ALLOC_FAILED: SAP Memory Allocation Error in SAP</h1>
+  </header>
+
+  <section class="glossary-definition">
+    <h2>Definition</h2>
+    <p class="short-definition">TSV_TNEW_PAGE_ALLOC_FAILED is an SAP error indicating memory exhaustion during extraction. Common when SELECT *-ing large tables (ACDOCA, BKPF) without filters. Solution: use CDS views, apply filters, or use SLT for parallelism.</p>
+  </section>
+
+  <section class="glossary-body prose">
+    <p>TSV_TNEW_PAGE_ALLOC_FAILED is an SAP runtime error that occurs when memory allocation fails—typically during extraction of huge tables without proper filtering or partitioning. If you try SELECT * FROM ACDOCA on a system with 5 billion rows, SAP attempts to allocate enough memory for all rows, runs out, and throws this error. It&#39;s a classic sign of extraction gone wrong.</p>
+<p>The fix depends on your extraction method: <strong>(1) ODP extraction</strong>: apply RBUKRS and RYEAR filters to select one company/year at a time, then loop, <strong>(2) use released CDS views</strong> like I_JournalEntryItem which include optimizations to avoid memory exhaustion, <strong>(3) upgrade to SLT</strong> which uses parallel readers and partition-based extraction to avoid loading the full table into memory. Never SELECT * from large tables; always partition and filter.</p>
+<p>This error is why the intermediate ACDOCA walkthrough emphasizes using I_JournalEntryItem (the CDS view) instead of raw ACDOCA, and why the expert walkthrough uses SLT with partitioning. If you encounter TSV_TNEW_PAGE_ALLOC_FAILED, it&#39;s a signal to rethink your extraction strategy: too broad a scope, not enough partitioning, or the wrong extraction tool.</p>
+
+  </section>
+
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/SLT/">SLT</a>
+      </li>
+      <li>
+        <a href="/glossary/Memory/">Memory</a>
+      </li>
+      <li>
+        <a href="/glossary/Large Tables/">Large Tables</a>
+      </li>
+      <li>
+        <a href="/glossary/ACDOCA/">ACDOCA</a>
+      </li>
+      <li>
+        <a href="/glossary/Error Handling/">Error Handling</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/SLT/">SLT</a>
+      </li>
+      <li>
+        <a href="/glossary/Memory/">Memory</a>
+      </li>
+      <li>
+        <a href="/glossary/Large Tables/">Large Tables</a>
+      </li>
+      <li>
+        <a href="/glossary/ACDOCA/">ACDOCA</a>
+      </li>
+      <li>
+        <a href="/glossary/Error Handling/">Error Handling</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/SLT/">SLT</a>
+      </li>
+      <li>
+        <a href="/glossary/Memory/">Memory</a>
+      </li>
+      <li>
+        <a href="/glossary/Large Tables/">Large Tables</a>
+      </li>
+      <li>
+        <a href="/glossary/ACDOCA/">ACDOCA</a>
+      </li>
+      <li>
+        <a href="/glossary/Error Handling/">Error Handling</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/SLT/">SLT</a>
+      </li>
+      <li>
+        <a href="/glossary/Memory/">Memory</a>
+      </li>
+      <li>
+        <a href="/glossary/Large Tables/">Large Tables</a>
+      </li>
+      <li>
+        <a href="/glossary/ACDOCA/">ACDOCA</a>
+      </li>
+      <li>
+        <a href="/glossary/Error Handling/">Error Handling</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/SLT/">SLT</a>
+      </li>
+      <li>
+        <a href="/glossary/Memory/">Memory</a>
+      </li>
+      <li>
+        <a href="/glossary/Large Tables/">Large Tables</a>
+      </li>
+      <li>
+        <a href="/glossary/ACDOCA/">ACDOCA</a>
+      </li>
+      <li>
+        <a href="/glossary/Error Handling/">Error Handling</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/SLT/">SLT</a>
+      </li>
+      <li>
+        <a href="/glossary/Memory/">Memory</a>
+      </li>
+      <li>
+        <a href="/glossary/Large Tables/">Large Tables</a>
+      </li>
+      <li>
+        <a href="/glossary/ACDOCA/">ACDOCA</a>
+      </li>
+      <li>
+        <a href="/glossary/Error Handling/">Error Handling</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sap-documentation">
+    <h2></h2>
+    <p>
+      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;memory-error.html" target="_blank" rel="noopener noreferrer">
+        Read more on SAP Help Portal
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </p>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

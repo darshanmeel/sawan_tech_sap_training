@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract BKPF + BSEG at Scale (Expert) — SLT &amp; Kafka — SAP Extract Academy</title>
+  <meta name="description" content="Expert-level accounting extraction: BKPF headers + BSEG line items via SLT with LTRS parallelism. Kafka streaming and Snowflake joins at enterprise scale.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;expert&#x2F;bkpf&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract BKPF + BSEG at Scale (Expert) — SLT &amp; Kafka">
+  <meta property="og:description" content="Expert-level accounting extraction: BKPF headers + BSEG line items via SLT with LTRS parallelism. Kafka streaming and Snowflake joins at enterprise scale.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;expert&#x2F;bkpf&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract BKPF + BSEG at Scale (Expert) — SLT &amp; Kafka">
+  <meta name="twitter:description" content="Expert-level accounting extraction: BKPF headers + BSEG line items via SLT with LTRS parallelism. Kafka streaming and Snowflake joins at enterprise scale.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract BKPF + BSEG at Scale (Expert)","description":"Enterprise accounting extraction: BKPF (header) + BSEG (line items) joined. SLT with LTRS parallel reads by company code and fiscal year. Handles billions of rows.","totalTime":"PT120M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Understand BKPF + BSEG cardinality","text":"BKPF (header, 1 row per document) joins to BSEG (line items, N rows per document). BSEG is typically 5-20x larger than BKPF.","url":"https://academy.example.com/walkthrough/expert/bkpf/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Configure SLT for parallel BKPF + BSEG replication","text":"In LTCO, create separate replication objects for BKPF and BSEG. For BSEG, partition by BUKRS + GJAHR at the SLT level to avoid hot partitions in Kafka.","url":"https://academy.example.com/walkthrough/expert/bkpf/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Use LTRS for parallel reads","text":"SLT's LTRS (Landscape Transformation Replication Server) can parallelize BSEG extraction by BUKRS + GJAHR. Configure 4-8 parallel readers.","url":"https://academy.example.com/walkthrough/expert/bkpf/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Create Kafka topics with correct partitioning","text":"bkpf-topic: 10 partitions, partition key BUKRS+GJAHR. bseg-topic: 50 partitions, partition key BUKRS+GJAHR+BUZEI (line item number).","url":"https://academy.example.com/walkthrough/expert/bkpf/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Perform full load and enable real-time delta","text":"SLT bulk-loads all data to Kafka, then switches to streaming delta.","url":"https://academy.example.com/walkthrough/expert/bkpf/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"BKPF","item":"https://academy.example.com/tables/bkpf/"},{"@type":"ListItem","position":4,"name":"Extract BKPF + BSEG at Scale (Expert)"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Walkthrough detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li><a href="/tables/bkpf/">BKPF</a></li>
+    <li aria-current="page">expert walkthrough</li>
+  </ol>
+</nav>
+
+<article class="walkthrough" data-walkthrough-id="expert-bkpf" data-page-slug="expert-bkpf">
+  <header class="walkthrough-header">
+    <div class="walkthrough-header-meta">
+      <span class="level-badge level-expert">expert</span>
+      <span class="table-code">BKPF</span>
+    </div>
+    <h1>Extract BKPF + BSEG at Scale (Expert)</h1>
+    <p class="walkthrough-summary">Enterprise accounting extraction: BKPF (header) + BSEG (line items) joined. SLT with LTRS parallel reads by company code and fiscal year. Handles billions of rows.</p>
+
+    <dl class="walkthrough-meta-list">
+      <div>
+        <dt></dt>
+        <dd>120 minutes</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>Kafka</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>SLT</dd>
+      </div>
+    </dl>
+  </header>
+
+  <section class="callout callout-warning">
+    <h2>License check</h2>
+    <p>SLT requires Full Use License.</p>
+  </section>
+
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed BKPF Intermediate</li>
+      <li>Understanding of BSEG (accounting line items)</li>
+      <li>Full Use SAP License</li>
+    </ul>
+  </section>
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed BKPF Intermediate</li>
+      <li>Understanding of BSEG (accounting line items)</li>
+      <li>Full Use SAP License</li>
+    </ul>
+  </section>
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed BKPF Intermediate</li>
+      <li>Understanding of BSEG (accounting line items)</li>
+      <li>Full Use SAP License</li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-intro">
+    <h2>Getting started</h2>
+    <div class="prose">
+      <h2>Scenario</h2>
+<p>Your finance warehouse needs real-time GL entries (BKPF + BSEG combined). You&#39;ll use SLT&#39;s parallel readers and Kafka to stream billions of line items with sub-minute latency.</p>
+<hr>
+<h2>What you&#39;ve built</h2>
+<p>You&#39;ve built an enterprise-scale GL fact table fed by real-time SLT replication. Finance can now run sub-minute financial close processes on current data.</p>
+
+    </div>
+  </section>
+
+  <section class="walkthrough-progress">
+    <div role="status" aria-live="polite" class="progress-indicator">
+      <span id="progress-count">0</span> of 7 steps complete
+    </div>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden></button>
+  </section>
+
+  <ol class="steps-list">
+    <li class="step" id="step-step-01">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-01</span>
+          <h2 class="step-title">Understand BKPF + BSEG cardinality</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-01"
+            aria-label="Mark Understand BKPF + BSEG cardinality as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">BKPF (header, 1 row per document) joins to BSEG (line items, N rows per document). BSEG is typically 5-20x larger than BKPF.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>In SE16N, count BKPF vs BSEG for a fiscal year. BSEG&#x2F;BKPF ratio is typically 8-15.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-02">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-02</span>
+          <h2 class="step-title">Configure SLT for parallel BKPF + BSEG replication</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-02"
+            aria-label="Mark Configure SLT for parallel BKPF + BSEG replication as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">In LTCO, create separate replication objects for BKPF and BSEG. For BSEG, partition by BUKRS + GJAHR at the SLT level to avoid hot partitions in Kafka.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>LTCO shows 2 active replication objects: BKPF_SLT and BSEG_SLT.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-03">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-03</span>
+          <h2 class="step-title">Use LTRS for parallel reads</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-03"
+            aria-label="Mark Use LTRS for parallel reads as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">SLT's LTRS (Landscape Transformation Replication Server) can parallelize BSEG extraction by BUKRS + GJAHR. Configure 4-8 parallel readers.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>LTRS monitor shows multiple reader processes running.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-04">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-04</span>
+          <h2 class="step-title">Create Kafka topics with correct partitioning</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-04"
+            aria-label="Mark Create Kafka topics with correct partitioning as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">bkpf-topic: 10 partitions, partition key BUKRS+GJAHR. bseg-topic: 50 partitions, partition key BUKRS+GJAHR+BUZEI (line item number).</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Topics exist with correct partition counts.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-05">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-05</span>
+          <h2 class="step-title">Perform full load and enable real-time delta</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-05"
+            aria-label="Mark Perform full load and enable real-time delta as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">SLT bulk-loads all data to Kafka, then switches to streaming delta.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Kafka topics are populated and show active producers.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-06">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-06</span>
+          <h2 class="step-title">Consume and join in Snowflake</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-06"
+            aria-label="Mark Consume and join in Snowflake as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Kafka consumer (Snowflake Connector or Python) reads both topics, joins BKPF to BSEG on MANDT+BUKRS+GJAHR+BELNR, upserts into SNOWFLAKE.ACCOUNTING.GL_ENTRIES.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>GL_ENTRIES table has rows with headers joined to line items.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-07">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-07</span>
+          <h2 class="step-title">Monitor join lag and cardinality</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-07"
+            aria-label="Mark Monitor join lag and cardinality as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Confirm no orphan line items (BSEG rows without BKPF headers). Lag should be < 5 minutes.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>SELECT COUNT(*) FROM BSEG b WHERE NOT EXISTS (SELECT 1 FROM BKPF k WHERE k.BELNR &#x3D; b.BELNR) returns 0.</p>
+        </aside>
+
+      </div>
+    </li>
+  </ol>
+
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>LTRS parallel readers cause lock contention in SAP</dt>
+        <dd>
+          <p>Reduce parallel reader count from 8 to 4. Add delay between reader launches.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>Kafka BSEG topic has much higher lag than BKPF</dt>
+        <dd>
+          <p>BSEG is 10x larger. Increase partition count or add consumer instances.</p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>LTRS parallel readers cause lock contention in SAP</dt>
+        <dd>
+          <p>Reduce parallel reader count from 8 to 4. Add delay between reader launches.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>Kafka BSEG topic has much higher lag than BKPF</dt>
+        <dd>
+          <p>BSEG is 10x larger. Increase partition count or add consumer instances.</p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="walkthrough-summary">
+    <h2>You've built:</h2>
+    <p>Congratulations! You've completed the expert walkthrough for BKPF. You now have 7 steps of experience extracting this table, and you understand the key considerations for the BKPF use case.</p>
+  </section>
+
+  <section class="next-steps">
+    <h2></h2>
+    <ul>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;acdoca&#x2F;">Study ACDOCA Expert for ultra-scale patterns</a></li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-actions">
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden></button>
+  </section>
+</article>
+
+<script type="module" src="/assets/js/checklist.js?v=1" defer></script>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

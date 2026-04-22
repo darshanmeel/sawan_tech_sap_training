@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract VBAK to ADLS Parquet (Beginner) — S&#x2F;4HANA Walkthrough — SAP Extract Academy</title>
+  <meta name="description" content="Step-by-step beginner walkthrough for extracting VBAK (sales document header) from SAP S&#x2F;4HANA to Azure Data Lake Storage Gen2 using ADF and the released CDS view.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;beginner&#x2F;vbak&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract VBAK to ADLS Parquet (Beginner) — S&#x2F;4HANA Walkthrough">
+  <meta property="og:description" content="Step-by-step beginner walkthrough for extracting VBAK (sales document header) from SAP S&#x2F;4HANA to Azure Data Lake Storage Gen2 using ADF and the released CDS view.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;beginner&#x2F;vbak&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract VBAK to ADLS Parquet (Beginner) — S&#x2F;4HANA Walkthrough">
+  <meta name="twitter:description" content="Step-by-step beginner walkthrough for extracting VBAK (sales document header) from SAP S&#x2F;4HANA to Azure Data Lake Storage Gen2 using ADF and the released CDS view.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract VBAK to ADLS (Beginner)","description":"Full-load extraction of the Sales Document Header from S/4HANA to ADLS Gen2 as Parquet files. Uses Azure Data Factory's SAP CDC connector with the released CDS view I_SalesDocument. No Z-fields, no delta — the simplest production-like scenario.","totalTime":"PT45M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Confirm the released CDS view for VBAK","text":"SAP ships released CDS views for many standard tables. These views come with business logic, authorization, and delta support built in — they are always the preferred extraction source over raw tables. For VBAK, the view is <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/4e4b4b4b.html\">I_SalesDocument</a>.","url":"https://academy.example.com/walkthrough/beginner/vbak/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Create a technical RFC user in SAP","text":"The extraction process needs a dedicated SAP user with minimal permissions. Never use a dialog user. Create a Communication or System type user via <a href=\"https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html\">SU01</a>.","url":"https://academy.example.com/walkthrough/beginner/vbak/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Assign authorizations to the RFC user","text":"The user needs three authorization objects: <a href=\"https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/c9e46fe83e8a4cf1ba7f686e28c05236.html\">S_RFC</a> (RFC call), S_TABU_DIS (table display), and S_ODP_READ (ODP read access).","url":"https://academy.example.com/walkthrough/beginner/vbak/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Install the Self-Hosted Integration Runtime","text":"Azure Data Factory connects to SAP through a Self-Hosted Integration Runtime (SHIR) that runs on a Windows VM with network access to the SAP system. The SHIR also requires the SAP .NET Connector (NCo) 3.0 installed separately.","url":"https://academy.example.com/walkthrough/beginner/vbak/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Create an ADF linked service for SAP CDC","text":"In the Azure Data Factory studio, create a new linked service of type SAP CDC. Point it at your SAP system's application server hostname and system number. Use the EXTRACT_VBAK user credentials.","url":"https://academy.example.com/walkthrough/beginner/vbak/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"VBAK","item":"https://academy.example.com/tables/vbak/"},{"@type":"ListItem","position":4,"name":"Extract VBAK to ADLS (Beginner)"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Walkthrough detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li><a href="/tables/vbak/">VBAK</a></li>
+    <li aria-current="page">beginner walkthrough</li>
+  </ol>
+</nav>
+
+<article class="walkthrough" data-walkthrough-id="beginner-vbak" data-page-slug="beginner-vbak">
+  <header class="walkthrough-header">
+    <div class="walkthrough-header-meta">
+      <span class="level-badge level-beginner">beginner</span>
+      <span class="table-code">VBAK</span>
+    </div>
+    <h1>Extract VBAK to ADLS (Beginner)</h1>
+    <p class="walkthrough-summary">Full-load extraction of the Sales Document Header from S&#x2F;4HANA to ADLS Gen2 as Parquet files. Uses Azure Data Factory&#39;s SAP CDC connector with the released CDS view I_SalesDocument. No Z-fields, no delta — the simplest production-like scenario.</p>
+
+    <dl class="walkthrough-meta-list">
+      <div>
+        <dt></dt>
+        <dd>45 minutes</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>ADLS</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>ADF</dd>
+      </div>
+    </dl>
+  </header>
+
+  <section class="callout callout-warning">
+    <h2>License check</h2>
+    <p>Works under both Full Use and Runtime SAP licenses. The ODP-based path used by ADF&#39;s SAP CDC connector is application-layer extraction, which is permitted under all license types.</p>
+  </section>
+
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Access to an S&#x2F;4HANA on-premise system with SE80 and authorization to create a technical user</li>
+      <li>An Azure subscription with rights to create Data Factory and Storage Account resources</li>
+      <li>A Windows VM or workstation for the Self-Hosted Integration Runtime (6 GB RAM minimum)</li>
+    </ul>
+  </section>
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Access to an S&#x2F;4HANA on-premise system with SE80 and authorization to create a technical user</li>
+      <li>An Azure subscription with rights to create Data Factory and Storage Account resources</li>
+      <li>A Windows VM or workstation for the Self-Hosted Integration Runtime (6 GB RAM minimum)</li>
+    </ul>
+  </section>
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Access to an S&#x2F;4HANA on-premise system with SE80 and authorization to create a technical user</li>
+      <li>An Azure subscription with rights to create Data Factory and Storage Account resources</li>
+      <li>A Windows VM or workstation for the Self-Hosted Integration Runtime (6 GB RAM minimum)</li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-intro">
+    <h2>Getting started</h2>
+    <div class="prose">
+      <h2>Scenario</h2>
+<p>Your team&#39;s finance analytics project needs sales order data in the data lake. Specifically, they want the header record for every sales order — orders, quotations, contracts — loaded into ADLS Gen2 as Parquet. This is the classic first SAP extraction task.</p>
+<p>You&#39;ve been handed access to an S/4HANA on-premise system and an Azure subscription. No Z-fields, no delta, no tight SLA — just get the data out correctly and hand it to the analytics team. This walkthrough covers every step from SAP authorization to a successful row-count reconciliation.</p>
+<p>If you complete this in one sitting, budget about 45 minutes. If this is your first time touching SAP, add an hour for navigating the screens.</p>
+<hr>
+<h2>What you&#39;ve built</h2>
+<p>You now have a working extraction pipeline from S/4HANA&#39;s sales document header to an Azure Data Lake. Every row of VBAK, accessed through the released CDS view I_SalesDocument, lands in Parquet files under a predictable folder structure. Row count reconciliation confirms nothing was dropped.</p>
+<p>The patterns you&#39;ve learned — released CDS views, technical RFC users with minimum authorizations, ADF SAP CDC connector, ADLS Parquet with date-partitioned folders — are the foundation for every S/4HANA extraction you&#39;ll build next. When you&#39;re ready, the intermediate walkthrough for VBAK adds delta processing and introduces CDS extension views for Z-fields.</p>
+
+    </div>
+  </section>
+
+  <section class="walkthrough-progress">
+    <div role="status" aria-live="polite" class="progress-indicator">
+      <span id="progress-count">0</span> of 10 steps complete
+    </div>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden></button>
+  </section>
+
+  <ol class="steps-list">
+    <li class="step" id="step-step-01">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-01</span>
+          <h2 class="step-title">Confirm the released CDS view for VBAK</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-01"
+            aria-label="Mark Confirm the released CDS view for VBAK as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">SAP ships released CDS views for many standard tables. These views come with business logic, authorization, and delta support built in — they are always the preferred extraction source over raw tables. For VBAK, the view is <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/4e4b4b4b.html">I_SalesDocument</a>.</p>
+
+        <aside class="callout callout-sap">
+          <h3></h3>
+          <p>
+            Open transaction
+            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+              SE80
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+            and navigate to <em>Repository Browser → Search → I_SalesDocument</em>.
+          </p>
+        </aside>
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>You can open I_SalesDocument in SE80 and confirm it has the annotation @Analytics.dataExtract: true in its header.</p>
+        </aside>
+
+        <details class="why-it-matters">
+          <summary></summary>
+          <p>Extracting from a released CDS view is the SAP-recommended approach. It respects authorization, applies business logic (currency translation, unit conversion), and exposes data through <a href="/glossary/odp/">ODP</a> cleanly. Reading VBAK directly skips all of this.</p>
+        </details>
+      </div>
+    </li>
+    <li class="step" id="step-step-02">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-02</span>
+          <h2 class="step-title">Create a technical RFC user in SAP</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-02"
+            aria-label="Mark Create a technical RFC user in SAP as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">The extraction process needs a dedicated SAP user with minimal permissions. Never use a dialog user. Create a Communication or System type user via <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html">SU01</a>.</p>
+
+        <aside class="callout callout-sap">
+          <h3></h3>
+          <p>
+            Open transaction
+            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;ae58e3c3a8c54e6f9573f3b0ee75ea94.html" target="_blank" rel="noopener noreferrer">
+              SU01
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+            and navigate to <em>User → Create</em>.
+          </p>
+        </aside>
+
+        <figure class="code-block">
+          <figcaption>Recommended user settings</figcaption>
+          <pre><code class="language-plaintext">User name: EXTRACT_VBAK
+User type: System
+First name: Extract
+Last name: VBAK Service User
+</code></pre>
+        </figure>
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>The user EXTRACT_VBAK appears in SU01&#39;s user list and is locked for interactive login.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-03">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-03</span>
+          <h2 class="step-title">Assign authorizations to the RFC user</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-03"
+            aria-label="Mark Assign authorizations to the RFC user as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">The user needs three authorization objects: <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/c9e46fe83e8a4cf1ba7f686e28c05236.html">S_RFC</a> (RFC call), S_TABU_DIS (table display), and S_ODP_READ (ODP read access).</p>
+
+        <aside class="callout callout-sap">
+          <h3></h3>
+          <p>
+            Open transaction
+            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;e5e83c2825c34a7896bdb97c0da65fb5.html" target="_blank" rel="noopener noreferrer">
+              PFCG
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+            and navigate to <em>Role → Create → Authorizations</em>.
+          </p>
+        </aside>
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>In SU01, the EXTRACT_VBAK user has a single custom role assigned that grants S_RFC for RFC_TYPE&#x3D;FUNC, S_TABU_DIS for authorization group SD, and S_ODP_READ for context ABAP_CDS.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-04">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-04</span>
+          <h2 class="step-title">Install the Self-Hosted Integration Runtime</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-04"
+            aria-label="Mark Install the Self-Hosted Integration Runtime as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Azure Data Factory connects to SAP through a Self-Hosted Integration Runtime (SHIR) that runs on a Windows VM with network access to the SAP system. The SHIR also requires the SAP .NET Connector (NCo) 3.0 installed separately.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>In the ADF portal, the new SHIR shows Status: Running and the NCo 3.0 library is installed on the VM.</p>
+        </aside>
+
+        <details class="why-it-matters">
+          <summary></summary>
+          <p>SHIR is the bridge between Azure and your SAP system. Without it, ADF cannot reach SAP. Most extraction errors at this stage trace back to SHIR network rules or a missing NCo library.</p>
+        </details>
+      </div>
+    </li>
+    <li class="step" id="step-step-05">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-05</span>
+          <h2 class="step-title">Create an ADF linked service for SAP CDC</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-05"
+            aria-label="Mark Create an ADF linked service for SAP CDC as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">In the Azure Data Factory studio, create a new linked service of type SAP CDC. Point it at your SAP system's application server hostname and system number. Use the EXTRACT_VBAK user credentials.</p>
+
+
+        <figure class="code-block">
+          <figcaption>Linked service JSON (replace placeholders)</figcaption>
+          <pre><code class="language-json">{
+  &quot;name&quot;: &quot;SAP_S4HANA_Source&quot;,
+  &quot;type&quot;: &quot;SapOdpLinkedService&quot;,
+  &quot;typeProperties&quot;: {
+    &quot;server&quot;: &quot;&lt;YOUR_SAP_HOST&gt;&quot;,
+    &quot;systemNumber&quot;: &quot;00&quot;,
+    &quot;clientId&quot;: &quot;100&quot;,
+    &quot;language&quot;: &quot;EN&quot;,
+    &quot;userName&quot;: &quot;EXTRACT_VBAK&quot;,
+    &quot;password&quot;: { &quot;type&quot;: &quot;SecureString&quot;, &quot;value&quot;: &quot;&lt;SECURE&gt;&quot; },
+    &quot;connectVia&quot;: { &quot;referenceName&quot;: &quot;SHIR-name&quot;, &quot;type&quot;: &quot;IntegrationRuntimeReference&quot; }
+  }
+}
+</code></pre>
+        </figure>
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>The Test Connection button returns green in the ADF linked service editor.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-06">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-06</span>
+          <h2 class="step-title">Create the ADF source dataset</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-06"
+            aria-label="Mark Create the ADF source dataset as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Create a dataset on the linked service that targets the CDS view I_SalesDocument through ODP. ADF's SAP CDC connector handles the ODP subscription transparently.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>The dataset preview loads a sample of rows from I_SalesDocument with the expected VBAK columns (VBELN, AUART, VKORG, ERDAT, NETWR).</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-07">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-07</span>
+          <h2 class="step-title">Create the ADLS Gen2 storage and container</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-07"
+            aria-label="Mark Create the ADLS Gen2 storage and container as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">In the Azure portal, create a Storage Account with hierarchical namespace enabled (ADLS Gen2). Create a container named sap-raw. Within it, create a folder path vbak/full-load/.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>The container sap-raw exists and you can browse to sap-raw&#x2F;vbak&#x2F;full-load&#x2F; in Azure Storage Explorer.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-08">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-08</span>
+          <h2 class="step-title">Create the ADF sink dataset</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-08"
+            aria-label="Mark Create the ADF sink dataset as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Create a second dataset pointing at the ADLS container, format Parquet, compression Snappy. Set the file path to sap-raw/vbak/full-load/ and use a date-based file naming pattern.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>The sink dataset&#39;s Test Connection returns green and the file path is correct.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-09">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-09</span>
+          <h2 class="step-title">Build the ADF pipeline with a Copy activity</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-09"
+            aria-label="Mark Build the ADF pipeline with a Copy activity as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Create a new pipeline. Add a Copy activity. Source = the SAP CDC dataset, Sink = the ADLS Parquet dataset. Configure Run mode = Full on Every Run for this first scenario. Save and publish the pipeline.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>The pipeline exists in Published state in ADF and has no validation errors.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-10">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-10</span>
+          <h2 class="step-title">Run the pipeline and verify data in ADLS</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-10"
+            aria-label="Mark Run the pipeline and verify data in ADLS as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Trigger the pipeline with Trigger Now. Monitor progress in the Monitor tab. When complete, browse to the ADLS container and confirm one or more Parquet files exist containing VBAK data.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>At least one Parquet file exists under sap-raw&#x2F;vbak&#x2F;full-load&#x2F;. Opening it with a tool like Azure Data Studio or a pandas notebook shows rows with VBAK columns and a row count that roughly matches the table count from SE16N.</p>
+        </aside>
+
+        <details class="why-it-matters">
+          <summary></summary>
+          <p>Row count reconciliation between SAP (via SE16N) and the target (via Parquet file count) is the most important verification in any extraction. Always reconcile after the initial load.</p>
+        </details>
+      </div>
+    </li>
+  </ol>
+
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>Linked service Test Connection fails with SAP SNC error</dt>
+        <dd>
+          <p>SNC (Secure Network Communication) is a TLS layer for SAP RFC. Either disable SNC in the linked service if your SAP system allows plaintext on the RFC port, or configure SNC with a certificate. For beginner scenarios, plaintext within a secure network is acceptable.</p>
+          <p>
+            <a href="https:&#x2F;&#x2F;launchpad.support.sap.com&#x2F;#&#x2F;notes&#x2F;2362078" target="_blank" rel="noopener noreferrer">
+              Related SAP Note
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>Pipeline fails with SAP_ODP_AUTHORIZATION_MISSING</dt>
+        <dd>
+          <p>The EXTRACT_VBAK user lacks S_ODP_READ for context ABAP_CDS. Return to PFCG and add this authorization with parameter ODPSOURCE &#x3D; ABAP_CDS.</p>
+          <p>
+            <a href="https:&#x2F;&#x2F;launchpad.support.sap.com&#x2F;#&#x2F;notes&#x2F;2362078" target="_blank" rel="noopener noreferrer">
+              Related SAP Note
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>Parquet files are empty (0 rows written)</dt>
+        <dd>
+          <p>The CDS view filter likely excluded all rows. Check the ADF dataset&#39;s filter settings. For a full load, there should be no WHERE clause.</p>
+          <p>
+            <a href="https:&#x2F;&#x2F;launchpad.support.sap.com&#x2F;#&#x2F;notes&#x2F;2362078" target="_blank" rel="noopener noreferrer">
+              Related SAP Note
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>Linked service Test Connection fails with SAP SNC error</dt>
+        <dd>
+          <p>SNC (Secure Network Communication) is a TLS layer for SAP RFC. Either disable SNC in the linked service if your SAP system allows plaintext on the RFC port, or configure SNC with a certificate. For beginner scenarios, plaintext within a secure network is acceptable.</p>
+          <p>
+            <a href="https:&#x2F;&#x2F;launchpad.support.sap.com&#x2F;#&#x2F;notes&#x2F;2362078" target="_blank" rel="noopener noreferrer">
+              Related SAP Note
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>Pipeline fails with SAP_ODP_AUTHORIZATION_MISSING</dt>
+        <dd>
+          <p>The EXTRACT_VBAK user lacks S_ODP_READ for context ABAP_CDS. Return to PFCG and add this authorization with parameter ODPSOURCE &#x3D; ABAP_CDS.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>Parquet files are empty (0 rows written)</dt>
+        <dd>
+          <p>The CDS view filter likely excluded all rows. Check the ADF dataset&#39;s filter settings. For a full load, there should be no WHERE clause.</p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>Linked service Test Connection fails with SAP SNC error</dt>
+        <dd>
+          <p>SNC (Secure Network Communication) is a TLS layer for SAP RFC. Either disable SNC in the linked service if your SAP system allows plaintext on the RFC port, or configure SNC with a certificate. For beginner scenarios, plaintext within a secure network is acceptable.</p>
+          <p>
+            <a href="https:&#x2F;&#x2F;launchpad.support.sap.com&#x2F;#&#x2F;notes&#x2F;2362078" target="_blank" rel="noopener noreferrer">
+              Related SAP Note
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>Pipeline fails with SAP_ODP_AUTHORIZATION_MISSING</dt>
+        <dd>
+          <p>The EXTRACT_VBAK user lacks S_ODP_READ for context ABAP_CDS. Return to PFCG and add this authorization with parameter ODPSOURCE &#x3D; ABAP_CDS.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>Parquet files are empty (0 rows written)</dt>
+        <dd>
+          <p>The CDS view filter likely excluded all rows. Check the ADF dataset&#39;s filter settings. For a full load, there should be no WHERE clause.</p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="walkthrough-summary">
+    <h2>You've built:</h2>
+    <p>Congratulations! You've completed the beginner walkthrough for VBAK. You now have 10 steps of experience extracting this table, and you understand the key considerations for the VBAK use case.</p>
+  </section>
+
+  <section class="next-steps">
+    <h2></h2>
+    <ul>
+      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;vbak&#x2F;">Try the VBAK Intermediate walkthrough — adds delta and one Z-field</a></li>
+      <li><a href="&#x2F;articles&#x2F;why-acdoca-breaks-sap&#x2F;">Read: Why Reading ACDOCA Directly Breaks Your SAP System</a></li>
+      <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning (ODP)</a></li>
+    </ul>
+  </section>
+  <section class="next-steps">
+    <h2></h2>
+    <ul>
+      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;vbak&#x2F;">Try the VBAK Intermediate walkthrough — adds delta and one Z-field</a></li>
+      <li><a href="&#x2F;articles&#x2F;why-acdoca-breaks-sap&#x2F;">Read: Why Reading ACDOCA Directly Breaks Your SAP System</a></li>
+      <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning (ODP)</a></li>
+    </ul>
+  </section>
+  <section class="next-steps">
+    <h2></h2>
+    <ul>
+      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;vbak&#x2F;">Try the VBAK Intermediate walkthrough — adds delta and one Z-field</a></li>
+      <li><a href="&#x2F;articles&#x2F;why-acdoca-breaks-sap&#x2F;">Read: Why Reading ACDOCA Directly Breaks Your SAP System</a></li>
+      <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning (ODP)</a></li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-actions">
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden></button>
+  </section>
+</article>
+
+<script type="module" src="/assets/js/checklist.js?v=1" defer></script>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

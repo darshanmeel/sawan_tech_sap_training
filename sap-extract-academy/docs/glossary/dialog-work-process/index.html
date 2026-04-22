@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dialog Work Process: SAP Server Process — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="Dialog work processes handle interactive user sessions. Extraction should use batch processes to avoid blocking users. Monitor in SM50.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;dialog-work-process&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Dialog Work Process: SAP Server Process — Plain Explanation">
+  <meta property="og:description" content="Dialog work processes handle interactive user sessions. Extraction should use batch processes to avoid blocking users. Monitor in SM50.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;dialog-work-process&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Dialog Work Process: SAP Server Process — Plain Explanation">
+  <meta name="twitter:description" content="Dialog work processes handle interactive user sessions. Extraction should use batch processes to avoid blocking users. Monitor in SM50.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Dialog Work Process","alternateName":"Dialog Work Process","description":"A dialog work process is an SAP application server process that handles interactive user sessions (SE16N, MM01, FBL3N). When you slow down extraction, you risk blocking dialog users; use non-dialog processes (batch) for heavy extraction work.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Glossary term detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/glossary/">Glossary</a></li>
+    <li aria-current="page">Dialog Work Process</li>
+  </ol>
+</nav>
+
+<article class="glossary-term">
+  <header class="glossary-header">
+    <h1>Dialog Work Process: Dialog Work Process in SAP</h1>
+  </header>
+
+  <section class="glossary-definition">
+    <h2>Definition</h2>
+    <p class="short-definition">A dialog work process is an SAP application server process that handles interactive user sessions (SE16N, MM01, FBL3N). When you slow down extraction, you risk blocking dialog users; use non-dialog processes (batch) for heavy extraction work.</p>
+  </section>
+
+  <section class="glossary-body prose">
+    <p>A dialog work process is an SAP application server process dedicated to handling interactive user sessions. When a user opens SE16N to query ACDOCA or opens MM01 to edit a material master, they&#39;re assigned a dialog work process. If extraction consumes all dialog processes, users are locked out—they can&#39;t log in or execute transactions.</p>
+<p>This is why every extraction walkthrough emphasizes: <strong>(1) use batch processes, not dialog, (2) monitor SM50 to ensure dialog processes remain free, (3) if SLT extraction is blocking users, reduce parallel reader count.</strong> Large table extractions (ACDOCA, BKPF) can consume enormous resources. If you misconfigure parallelism or time extraction poorly, accounting staff trying to post documents find all dialog processes busy and can&#39;t access the system.</p>
+<p>Best practice: run major extractions during low-activity windows (weekends, nights) and always monitor SM50 during extraction to watch dialog process utilization. If dialog utilization exceeds 80%, scale back extraction parallelism or pause and retry. Your extraction is important, but a production system outage is worse.</p>
+
+  </section>
+
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/SM50/">SM50</a>
+      </li>
+      <li>
+        <a href="/glossary/SM59/">SM59</a>
+      </li>
+      <li>
+        <a href="/glossary/Background Job/">Background Job</a>
+      </li>
+      <li>
+        <a href="/glossary/SAP Application Server/">SAP Application Server</a>
+      </li>
+      <li>
+        <a href="/glossary/Lock Contention/">Lock Contention</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/SM50/">SM50</a>
+      </li>
+      <li>
+        <a href="/glossary/SM59/">SM59</a>
+      </li>
+      <li>
+        <a href="/glossary/Background Job/">Background Job</a>
+      </li>
+      <li>
+        <a href="/glossary/SAP Application Server/">SAP Application Server</a>
+      </li>
+      <li>
+        <a href="/glossary/Lock Contention/">Lock Contention</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/SM50/">SM50</a>
+      </li>
+      <li>
+        <a href="/glossary/SM59/">SM59</a>
+      </li>
+      <li>
+        <a href="/glossary/Background Job/">Background Job</a>
+      </li>
+      <li>
+        <a href="/glossary/SAP Application Server/">SAP Application Server</a>
+      </li>
+      <li>
+        <a href="/glossary/Lock Contention/">Lock Contention</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/SM50/">SM50</a>
+      </li>
+      <li>
+        <a href="/glossary/SM59/">SM59</a>
+      </li>
+      <li>
+        <a href="/glossary/Background Job/">Background Job</a>
+      </li>
+      <li>
+        <a href="/glossary/SAP Application Server/">SAP Application Server</a>
+      </li>
+      <li>
+        <a href="/glossary/Lock Contention/">Lock Contention</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/SM50/">SM50</a>
+      </li>
+      <li>
+        <a href="/glossary/SM59/">SM59</a>
+      </li>
+      <li>
+        <a href="/glossary/Background Job/">Background Job</a>
+      </li>
+      <li>
+        <a href="/glossary/SAP Application Server/">SAP Application Server</a>
+      </li>
+      <li>
+        <a href="/glossary/Lock Contention/">Lock Contention</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sap-documentation">
+    <h2></h2>
+    <p>
+      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;sm50.html" target="_blank" rel="noopener noreferrer">
+        Read more on SAP Help Portal
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </p>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract Vendor Master + Related Tables (Expert) — Snowflake — SAP Extract Academy</title>
+  <meta name="description" content="Advanced expert walkthrough: extract LFA1, LFB1, LFBK in parallel with referential integrity checks and conformed dimension creation.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;expert&#x2F;lfa1&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract Vendor Master + Related Tables (Expert) — Snowflake">
+  <meta property="og:description" content="Advanced expert walkthrough: extract LFA1, LFB1, LFBK in parallel with referential integrity checks and conformed dimension creation.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;expert&#x2F;lfa1&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract Vendor Master + Related Tables (Expert) — Snowflake">
+  <meta name="twitter:description" content="Advanced expert walkthrough: extract LFA1, LFB1, LFBK in parallel with referential integrity checks and conformed dimension creation.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract LFA1 + LFB1 + LFBK (Multi-Table Expert)","description":"Advanced extraction of three vendor tables (general, company code, bank details) with complex joins and reconciliation. Enterprise-scale vendor master.","totalTime":"PT100M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Understand vendor table structure","text":"LFA1 (general) links to LFB1 (company code) via LIFNR; LFB1 links to LFBK (bank details). One vendor may have multiple company codes and multiple bank details.","url":"https://academy.example.com/walkthrough/expert/lfa1/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Extract all three tables in parallel","text":"Launch three simultaneous ODP extractions for I_Supplier (LFA1), I_SupplierCompanyCode (LFB1), I_SupplierBankDetail (LFBK). This avoids cascading delays.","url":"https://academy.example.com/walkthrough/expert/lfa1/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Reconcile extracted data","text":"Validate referential integrity: every LFB1.LIFNR exists in LFA1, every LFBK.LIFNR+BANKL exists in LFB1.","url":"https://academy.example.com/walkthrough/expert/lfa1/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Create conformed dimension in Snowflake","text":"Join the three tables into a single VENDOR dimension with denormalized company code and bank details. Store in a Snowflake view.","url":"https://academy.example.com/walkthrough/expert/lfa1/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Monitor multi-table delta coherence","text":"When a vendor changes in LFA1 and adds a bank detail in LFBK, ensure both changes land in the same load window to avoid stale data in DIM_VENDOR_COMPLETE.","url":"https://academy.example.com/walkthrough/expert/lfa1/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"LFA1","item":"https://academy.example.com/tables/lfa1/"},{"@type":"ListItem","position":4,"name":"Extract LFA1 + LFB1 + LFBK (Multi-Table Expert)"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Walkthrough detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li><a href="/tables/lfa1/">LFA1</a></li>
+    <li aria-current="page">expert walkthrough</li>
+  </ol>
+</nav>
+
+<article class="walkthrough" data-walkthrough-id="expert-lfa1" data-page-slug="expert-lfa1">
+  <header class="walkthrough-header">
+    <div class="walkthrough-header-meta">
+      <span class="level-badge level-expert">expert</span>
+      <span class="table-code">LFA1</span>
+    </div>
+    <h1>Extract LFA1 + LFB1 + LFBK (Multi-Table Expert)</h1>
+    <p class="walkthrough-summary">Advanced extraction of three vendor tables (general, company code, bank details) with complex joins and reconciliation. Enterprise-scale vendor master.</p>
+
+    <dl class="walkthrough-meta-list">
+      <div>
+        <dt></dt>
+        <dd>100 minutes</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>Snowflake</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>Python</dd>
+      </div>
+    </dl>
+  </header>
+
+  <section class="callout callout-warning">
+    <h2>License check</h2>
+    <p>All licenses.</p>
+  </section>
+
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed LFA1 Intermediate</li>
+      <li>Understanding of vendor master table relationships</li>
+    </ul>
+  </section>
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed LFA1 Intermediate</li>
+      <li>Understanding of vendor master table relationships</li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-intro">
+    <h2>Getting started</h2>
+    <div class="prose">
+      <h2>Scenario</h2>
+<p>Your data warehouse needs a complete vendor dimension: general data (LFA1) + company code details (LFB1) + bank info (LFBK). You&#39;ll extract all three tables in parallel and validate referential integrity.</p>
+<hr>
+<h2>What you&#39;ve built</h2>
+<p>You now have a robust, multi-table vendor extraction with referential integrity checks. The DIM_VENDOR_COMPLETE view serves downstream fact tables.</p>
+
+    </div>
+  </section>
+
+  <section class="walkthrough-progress">
+    <div role="status" aria-live="polite" class="progress-indicator">
+      <span id="progress-count">0</span> of 5 steps complete
+    </div>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden></button>
+  </section>
+
+  <ol class="steps-list">
+    <li class="step" id="step-step-01">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-01</span>
+          <h2 class="step-title">Understand vendor table structure</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-01"
+            aria-label="Mark Understand vendor table structure as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">LFA1 (general) links to LFB1 (company code) via LIFNR; LFB1 links to LFBK (bank details). One vendor may have multiple company codes and multiple bank details.</p>
+
+        <aside class="callout callout-sap">
+          <h3></h3>
+          <p>
+            Open transaction
+            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;vendor-tables.html" target="_blank" rel="noopener noreferrer">
+              SE80
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+            and navigate to <em>Search → LFA1, LFB1, LFBK relationships</em>.
+          </p>
+        </aside>
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>You understand 1:N relationships.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-02">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-02</span>
+          <h2 class="step-title">Extract all three tables in parallel</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-02"
+            aria-label="Mark Extract all three tables in parallel as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Launch three simultaneous ODP extractions for I_Supplier (LFA1), I_SupplierCompanyCode (LFB1), I_SupplierBankDetail (LFBK). This avoids cascading delays.</p>
+
+
+        <figure class="code-block">
+          <figcaption>Parallel extraction</figcaption>
+          <pre><code class="language-python">import asyncio
+tasks &#x3D; [
+  asyncio.create_task(extract_supplier()),
+  asyncio.create_task(extract_supplier_cc()),
+  asyncio.create_task(extract_supplier_bank())
+]
+await asyncio.gather(*tasks)
+</code></pre>
+        </figure>
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>All three tables load into Snowflake simultaneously.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-03">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-03</span>
+          <h2 class="step-title">Reconcile extracted data</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-03"
+            aria-label="Mark Reconcile extracted data as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Validate referential integrity: every LFB1.LIFNR exists in LFA1, every LFBK.LIFNR+BANKL exists in LFB1.</p>
+
+
+        <figure class="code-block">
+          <figcaption>Orphan check</figcaption>
+          <pre><code class="language-sql">SELECT COUNT(*) AS orphan_lfb1 FROM SUPPLIER_CC cc
+WHERE NOT EXISTS (SELECT 1 FROM SUPPLIER s WHERE s.LIFNR &#x3D; cc.LIFNR);
+</code></pre>
+        </figure>
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Query returns 0 rows.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-04">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-04</span>
+          <h2 class="step-title">Create conformed dimension in Snowflake</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-04"
+            aria-label="Mark Create conformed dimension in Snowflake as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Join the three tables into a single VENDOR dimension with denormalized company code and bank details. Store in a Snowflake view.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>View DIM_VENDOR_COMPLETE exists and queries return expected vendor records with company code and bank details.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-05">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-05</span>
+          <h2 class="step-title">Monitor multi-table delta coherence</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-05"
+            aria-label="Mark Monitor multi-table delta coherence as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">When a vendor changes in LFA1 and adds a bank detail in LFBK, ensure both changes land in the same load window to avoid stale data in DIM_VENDOR_COMPLETE.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Test by manually changing a vendor in SAP, verifying both LFA1 and LFBK updates reach Snowflake in the same load.</p>
+        </aside>
+
+      </div>
+    </li>
+  </ol>
+
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>LFB1 or LFBK loads fail, LFA1 succeeds</dt>
+        <dd>
+          <p>Retry failed extractions independently. Create separate alert rules for each table to avoid cascading failures.</p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="walkthrough-summary">
+    <h2>You've built:</h2>
+    <p>Congratulations! You've completed the expert walkthrough for LFA1. You now have 5 steps of experience extracting this table, and you understand the key considerations for the LFA1 use case.</p>
+  </section>
+
+  <section class="next-steps">
+    <h2></h2>
+    <ul>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;acdoca&#x2F;">Compare with ACDOCA Expert for ultra-large-scale patterns</a></li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-actions">
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden></button>
+  </section>
+</article>
+
+<script type="module" src="/assets/js/checklist.js?v=1" defer></script>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

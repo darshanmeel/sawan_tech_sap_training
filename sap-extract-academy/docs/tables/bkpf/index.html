@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract BKPF from SAP S&#x2F;4HANA — Complete Guide — SAP Extract Academy</title>
+  <meta name="description" content="BKPF is the accounting document header table in S&#x2F;4HANA. Learn to extract G&#x2F;L documents with company code, fiscal year, and reversal handling.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;tables&#x2F;bkpf&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract BKPF from SAP S&#x2F;4HANA — Complete Guide">
+  <meta property="og:description" content="BKPF is the accounting document header table in S&#x2F;4HANA. Learn to extract G&#x2F;L documents with company code, fiscal year, and reversal handling.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;tables&#x2F;bkpf&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract BKPF from SAP S&#x2F;4HANA — Complete Guide">
+  <meta name="twitter:description" content="BKPF is the accounting document header table in S&#x2F;4HANA. Learn to extract G&#x2F;L documents with company code, fiscal year, and reversal handling.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Accounting Document Header","description":"BKPF is the accounting document header table in S/4HANA. Learn to extract G/L documents with company code, fiscal year, and reversal handling.","url":"https://academy.example.com/tables/bkpf/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Tables","item":"https://academy.example.com/tables/"},{"@type":"ListItem","position":3,"name":"BKPF"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Table detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li aria-current="page">BKPF</li>
+  </ol>
+</nav>
+
+<article class="table-detail">
+  <header class="table-header">
+    <div class="table-header-top">
+      <span class="module-badge">FI</span>
+    </div>
+    <h1>BKPF</h1>
+    <h2 class="table-name">Accounting Document Header</h2>
+    <p class="table-description">Accounting document header (all G&#x2F;L, A&#x2F;P, A&#x2F;R documents). One row per accounting document, with posting date, document type, company code, fiscal year.</p>
+  </header>
+
+  <section class="table-overview">
+    <h2>What this table is</h2>
+    <div class="prose">
+      <p>BKPF is the accounting document header table in the Financial Accounting (FI) module, storing metadata for all posted and parked accounting entries: posting dates, document types, company codes, fiscal years, amounts, and approval status. Each accounting document has one BKPF record (identified by BUKRS, GJAHR, BELNR — company code, fiscal year, document number).</p>
+<p>Extracting BKPF is central to financial analytics and audit trails. The table is large (tens to hundreds of millions of documents annually in large enterprises) and requires careful partitioning by fiscal year and company code to avoid extraction timeouts.</p>
+<p><a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/accounting-doc-overview.html">SAP S/4HANA Accounting Document overview</a> documents the structure. Note that BKPF is header-only (no monetary amounts broken down by account). For account-level details, join to BSEG (line items). Most data warehouse fact tables combine BKPF header context with BSEG line detail.</p>
+
+    </div>
+  </section>
+
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BUKRS</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>GJAHR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BELNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BUKRS</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>GJAHR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BELNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BUKRS</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>GJAHR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BELNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BUKRS</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>GJAHR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BELNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="table-volume">
+    <h2>Volume characteristics</h2>
+    <dl>
+      <div>
+        <dt>Typical row count</dt>
+        <dd>50M-500M</dd>
+      </div>
+      <div>
+        <dt>Volume class</dt>
+        <dd><span class="badge badge-medium">medium</span></dd>
+      </div>
+      <div>
+        <dt>Released CDS view</dt>
+        <dd><code>I_AccountingDocument</code></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="extraction-gotchas">
+    <h2>Extraction gotchas</h2>
+    <ul>
+      <li>
+        <strong>BKPF includes posted and parked documents. Filter BUKRS (company code) and GJAHR (fiscal year) early to reduce volume. Most extractions partition by fiscal year.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;bkpf-partitioning.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Line items live in BSEG, not BKPF. BKPF is header only (amounts, posting date, approver). Join to BSEG for account-level details.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;bseg.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Accounting documents can be reversed. Check AUGBL (reversal reference) and STORNOMON (reversal flag) to understand reversals vs. new postings.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;reversals.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+  <section class="extraction-gotchas">
+    <h2>Extraction gotchas</h2>
+    <ul>
+      <li>
+        <strong>BKPF includes posted and parked documents. Filter BUKRS (company code) and GJAHR (fiscal year) early to reduce volume. Most extractions partition by fiscal year.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;bkpf-partitioning.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Line items live in BSEG, not BKPF. BKPF is header only (amounts, posting date, approver). Join to BSEG for account-level details.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;bseg.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Accounting documents can be reversed. Check AUGBL (reversal reference) and STORNOMON (reversal flag) to understand reversals vs. new postings.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;reversals.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+  <section class="extraction-gotchas">
+    <h2>Extraction gotchas</h2>
+    <ul>
+      <li>
+        <strong>BKPF includes posted and parked documents. Filter BUKRS (company code) and GJAHR (fiscal year) early to reduce volume. Most extractions partition by fiscal year.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;bkpf-partitioning.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Line items live in BSEG, not BKPF. BKPF is header only (amounts, posting date, approver). Join to BSEG for account-level details.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;bseg.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Accounting documents can be reversed. Check AUGBL (reversal reference) and STORNOMON (reversal flag) to understand reversals vs. new postings.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;reversals.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="walkthroughs-available">
+    <h2>Walkthroughs available</h2>
+    <p>Pick your skill level and start learning how to extract BKPF.</p>
+    <div class="grid grid-cols-3">
+      <a href="/walkthrough/beginner//" class="card walkthrough-card">
+        <h3></h3>
+        <p class="walkthrough-meta">Step-by-step guide</p>
+      </a>
+      <a href="/walkthrough/intermediate//" class="card walkthrough-card">
+        <h3></h3>
+        <p class="walkthrough-meta">Step-by-step guide</p>
+      </a>
+      <a href="/walkthrough/expert//" class="card walkthrough-card">
+        <h3></h3>
+        <p class="walkthrough-meta">Step-by-step guide</p>
+      </a>
+    </div>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

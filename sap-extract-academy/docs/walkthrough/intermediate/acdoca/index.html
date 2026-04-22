@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract ACDOCA One Company&#x2F;Year via ODP — S&#x2F;4HANA Intermediate — SAP Extract Academy</title>
+  <meta name="description" content="Intermediate ACDOCA extraction: one company, one fiscal year via ODP and I_JournalEntryItem CDS view. Avoids raw table memory exhaustion.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;acdoca&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract ACDOCA One Company&#x2F;Year via ODP — S&#x2F;4HANA Intermediate">
+  <meta property="og:description" content="Intermediate ACDOCA extraction: one company, one fiscal year via ODP and I_JournalEntryItem CDS view. Avoids raw table memory exhaustion.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;acdoca&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract ACDOCA One Company&#x2F;Year via ODP — S&#x2F;4HANA Intermediate">
+  <meta name="twitter:description" content="Intermediate ACDOCA extraction: one company, one fiscal year via ODP and I_JournalEntryItem CDS view. Avoids raw table memory exhaustion.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract ACDOCA One Company/Year via ODP (Intermediate)","description":"Partial ACDOCA extraction (one company code, current fiscal year) via ODP and the released CDS view I_JournalEntryItem. Avoids raw table pitfalls. Python/Snowflake.","totalTime":"PT90M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Confirm ACDOCA is massive","text":"Use <a href='/glossary/acdoca/'>ACDOCA</a> SE16N to count rows in one company code for one fiscal year. Budget 2-4 hours for extraction if rows exceed 100M.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Use I_JournalEntryItem CDS view (NOT raw ACDOCA)","text":"Raw SELECT * on ACDOCA crashes SAP. Always use <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html'>I_JournalEntryItem</a>, which enforces authorization and applies currency conversion.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Extract with fiscal year + company code filters","text":"Python/pyrfc with ODP. Filter: RBUKRS='1000' AND RYEAR=2024. Set timeouts high (60 min) because ACDOCA is slow even with filters.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Stream to Snowflake to avoid memory issues","text":"Don't load all rows into Python memory. Stream in batches of 100K rows, upsert to Snowflake in micro-batches.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Reconcile with BKPF totals","text":"Sum amounts in ACDOCA (by company, year) and compare to BKPF aggregates. They should match (within rounding).","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"ACDOCA","item":"https://academy.example.com/tables/acdoca/"},{"@type":"ListItem","position":4,"name":"Extract ACDOCA One Company/Year via ODP (Intermediate)"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Walkthrough detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li><a href="/tables/acdoca/">ACDOCA</a></li>
+    <li aria-current="page">intermediate walkthrough</li>
+  </ol>
+</nav>
+
+<article class="walkthrough" data-walkthrough-id="intermediate-acdoca" data-page-slug="intermediate-acdoca">
+  <header class="walkthrough-header">
+    <div class="walkthrough-header-meta">
+      <span class="level-badge level-intermediate">intermediate</span>
+      <span class="table-code">ACDOCA</span>
+    </div>
+    <h1>Extract ACDOCA One Company&#x2F;Year via ODP (Intermediate)</h1>
+    <p class="walkthrough-summary">Partial ACDOCA extraction (one company code, current fiscal year) via ODP and the released CDS view I_JournalEntryItem. Avoids raw table pitfalls. Python&#x2F;Snowflake.</p>
+
+    <dl class="walkthrough-meta-list">
+      <div>
+        <dt></dt>
+        <dd>90 minutes</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>Snowflake</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>Python</dd>
+      </div>
+    </dl>
+  </header>
+
+  <section class="callout callout-warning">
+    <h2>License check</h2>
+    <p>All licenses. ODP is application-layer, works under Runtime License.</p>
+  </section>
+
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed any Intermediate walkthrough</li>
+      <li>Understanding of ACDOCA size&#x2F;complexity from table overview</li>
+    </ul>
+  </section>
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed any Intermediate walkthrough</li>
+      <li>Understanding of ACDOCA size&#x2F;complexity from table overview</li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-intro">
+    <h2>Getting started</h2>
+    <div class="prose">
+      <h2>Scenario</h2>
+<p>Your finance team needs ACDOCA data for year-end close analytics. You&#39;ll extract one company, one fiscal year — enough for meaningful analysis without hitting system limits. This walkthrough teaches the safe approach; the Expert walkthrough scales to multi-year, multi-company via SLT.</p>
+<p>Estimated time: 90 minutes (depends on partition size).</p>
+<hr>
+<h2>What you&#39;ve built</h2>
+<p>You&#39;ve successfully extracted ACDOCA without crashing SAP. You used the released CDS view (which every SAP professional should), streamed data to avoid memory exhaustion, and reconciled totals. This is the correct, professional approach to ACDOCA extraction.</p>
+<p>When you need more years or companies, the Expert walkthrough scales these patterns via SLT and Kafka.</p>
+
+    </div>
+  </section>
+
+  <section class="walkthrough-progress">
+    <div role="status" aria-live="polite" class="progress-indicator">
+      <span id="progress-count">0</span> of 5 steps complete
+    </div>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden></button>
+  </section>
+
+  <ol class="steps-list">
+    <li class="step" id="step-step-01">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-01</span>
+          <h2 class="step-title">Confirm ACDOCA is massive</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-01"
+            aria-label="Mark Confirm ACDOCA is massive as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Use <a href='/glossary/acdoca/'>ACDOCA</a> SE16N to count rows in one company code for one fiscal year. Budget 2-4 hours for extraction if rows exceed 100M.</p>
+
+        <aside class="callout callout-sap">
+          <h3></h3>
+          <p>
+            Open transaction
+            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+              SE16N
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+            and navigate to <em>Execute → ACDOCA, filter RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024</em>.
+          </p>
+        </aside>
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>You know the row count for your partition. If &gt; 500M, move to Expert walkthrough.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-02">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-02</span>
+          <h2 class="step-title">Use I_JournalEntryItem CDS view (NOT raw ACDOCA)</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-02"
+            aria-label="Mark Use I_JournalEntryItem CDS view (NOT raw ACDOCA) as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Raw SELECT * on ACDOCA crashes SAP. Always use <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html'>I_JournalEntryItem</a>, which enforces authorization and applies currency conversion.</p>
+
+        <aside class="callout callout-sap">
+          <h3></h3>
+          <p>
+            Open transaction
+            <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+              SE80
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+            and navigate to <em>Search → I_JournalEntryItem</em>.
+          </p>
+        </aside>
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>CDS view exists with @Analytics.dataExtract: true.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-03">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-03</span>
+          <h2 class="step-title">Extract with fiscal year + company code filters</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-03"
+            aria-label="Mark Extract with fiscal year + company code filters as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Python/pyrfc with ODP. Filter: RBUKRS='1000' AND RYEAR=2024. Set timeouts high (60 min) because ACDOCA is slow even with filters.</p>
+
+
+        <figure class="code-block">
+          <figcaption>Filtered ODP extraction</figcaption>
+          <pre><code class="language-python">filter_str &#x3D; &quot;(RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024)&quot;
+result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROWCOUNT&#x3D;1000000)
+</code></pre>
+        </figure>
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Extraction completes. Logs show &#39;Fetched X million rows&#39;.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-04">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-04</span>
+          <h2 class="step-title">Stream to Snowflake to avoid memory issues</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-04"
+            aria-label="Mark Stream to Snowflake to avoid memory issues as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Don't load all rows into Python memory. Stream in batches of 100K rows, upsert to Snowflake in micro-batches.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Snowflake table fills incrementally. Monitor via Snowflake query history.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-05">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-05</span>
+          <h2 class="step-title">Reconcile with BKPF totals</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-05"
+            aria-label="Mark Reconcile with BKPF totals as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Sum amounts in ACDOCA (by company, year) and compare to BKPF aggregates. They should match (within rounding).</p>
+
+
+        <figure class="code-block">
+          <figcaption>Reconciliation query</figcaption>
+          <pre><code class="language-sql">SELECT SUM(AMOUNT_DEBIT) FROM ACDOCA WHERE RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024
+-- should match manual BKPF total for same company&#x2F;year
+</code></pre>
+        </figure>
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Totals match within 0.01%.</p>
+        </aside>
+
+      </div>
+    </li>
+  </ol>
+
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>ODP extraction times out after 2 hours</dt>
+        <dd>
+          <p>ACDOCA partition is &gt; 500M rows. Use the Expert walkthrough with SLT instead.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>I_JournalEntryItem CDS view is slow (&gt; 200M rows)</dt>
+        <dd>
+          <p>Add posting period filter: AND POPER &gt;&#x3D; &#39;001&#39; AND POPER &lt;&#x3D; &#39;012&#39; to further narrow range.</p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>ODP extraction times out after 2 hours</dt>
+        <dd>
+          <p>ACDOCA partition is &gt; 500M rows. Use the Expert walkthrough with SLT instead.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>I_JournalEntryItem CDS view is slow (&gt; 200M rows)</dt>
+        <dd>
+          <p>Add posting period filter: AND POPER &gt;&#x3D; &#39;001&#39; AND POPER &lt;&#x3D; &#39;012&#39; to further narrow range.</p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="walkthrough-summary">
+    <h2>You've built:</h2>
+    <p>Congratulations! You've completed the intermediate walkthrough for ACDOCA. You now have 5 steps of experience extracting this table, and you understand the key considerations for the ACDOCA use case.</p>
+  </section>
+
+  <section class="next-steps">
+    <h2></h2>
+    <ul>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;acdoca&#x2F;">Try ACDOCA Expert for ultra-large extractions</a></li>
+      <li><a href="&#x2F;tables&#x2F;acdoca&#x2F;">Table overview: ACDOCA Universal Journal</a></li>
+    </ul>
+  </section>
+  <section class="next-steps">
+    <h2></h2>
+    <ul>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;acdoca&#x2F;">Try ACDOCA Expert for ultra-large extractions</a></li>
+      <li><a href="&#x2F;tables&#x2F;acdoca&#x2F;">Table overview: ACDOCA Universal Journal</a></li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-actions">
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden></button>
+  </section>
+</article>
+
+<script type="module" src="/assets/js/checklist.js?v=1" defer></script>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

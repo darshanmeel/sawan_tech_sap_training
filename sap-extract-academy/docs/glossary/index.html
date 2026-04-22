@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SAP Extraction Glossary — 32 Terms Explained — SAP Extract Academy</title>
+  <meta name="description" content="Complete glossary of SAP extraction concepts: ODP, SLT, Delta, CDS, Z-fields, CUKY, partitioning, parallelism, licensing, and more.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SAP Extraction Glossary — 32 Terms Explained">
+  <meta property="og:description" content="Complete glossary of SAP extraction concepts: ODP, SLT, Delta, CDS, Z-fields, CUKY, partitioning, parallelism, licensing, and more.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SAP Extraction Glossary — 32 Terms Explained">
+  <meta name="twitter:description" content="Complete glossary of SAP extraction concepts: ODP, SLT, Delta, CDS, Z-fields, CUKY, partitioning, parallelism, licensing, and more.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json"></script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Generic list/index page template -->
+
+<header class="page-header">
+  <h1></h1>
+</header>
+
+
+<section class="items-grid">
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;abap&#x2F;">ABAP</a>
+    </h2>
+    <p class="item-subtitle">Advanced Business Application Programming</p>
+    <p class="item-description">ABAP is SAP&#39;s proprietary programming language used to develop custom applications, reports, interfaces, and enhancements within the SAP ecosystem. It runs on the SAP application server and accesses SAP databases directly.</p>
+    <a href="&#x2F;glossary&#x2F;abap&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;adt&#x2F;">ADT</a>
+    </h2>
+    <p class="item-subtitle">ABAP Development Tools</p>
+    <p class="item-description">ADT is the modern IDE for ABAP development, built on Eclipse. It replaces the classic SAP GUI-based development tools (SE38, SE11) with a native IDE offering syntax highlighting, refactoring, debugging, and Git integration.</p>
+    <a href="&#x2F;glossary&#x2F;adt&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;append-structure&#x2F;">Append Structure</a>
+    </h2>
+    <p class="item-subtitle">Append Structure</p>
+    <p class="item-description">An append structure is a SAP table extension mechanism that allows customers to add custom fields (Z-fields) to a standard SAP table without modifying the table directly. Multiple append structures can be stacked on one table.</p>
+    <a href="&#x2F;glossary&#x2F;append-structure&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;badi&#x2F;">BAdI</a>
+    </h2>
+    <p class="item-subtitle">Business Add-In</p>
+    <p class="item-description">A BAdI is SAP&#39;s plug-in architecture that allows custom code to hook into standard business logic without modifying source code. Used for post-processing, filtering, or extending transactions and batch jobs.</p>
+    <a href="&#x2F;glossary&#x2F;badi&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;bw&#x2F;">BW</a>
+    </h2>
+    <p class="item-subtitle">SAP Business Warehouse</p>
+    <p class="item-description">SAP BW is SAP&#39;s legacy business intelligence and data warehousing solution. Now superseded by S&#x2F;4HANA Embedded Analytics and cloud solutions (SAP Analytics Cloud), but still used for enterprise reporting in many organizations.</p>
+    <a href="&#x2F;glossary&#x2F;bw&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;cds&#x2F;">CDS</a>
+    </h2>
+    <p class="item-subtitle">Core Data Services</p>
+    <p class="item-description">CDS is SAP&#39;s declarative language for defining data models and views. CDS views are the modern, supported way to expose SAP data; they enforce authorization, apply currency conversion, and avoid raw table queries.</p>
+    <a href="&#x2F;glossary&#x2F;cds&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;cuky&#x2F;">CUKY</a>
+    </h2>
+    <p class="item-subtitle">Currency Key</p>
+    <p class="item-description">CUKY is a SAP data type field that stores a currency code (e.g., USD, EUR, JPY). Often paired with amount fields; you must extract both CUKY and its corresponding amount to properly interpret the value.</p>
+    <a href="&#x2F;glossary&#x2F;cuky&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;curr&#x2F;">CURR</a>
+    </h2>
+    <p class="item-subtitle">Currency Amount</p>
+    <p class="item-description">CURR is a SAP data type for numeric fields representing monetary amounts. A CURR field must be paired with a CUKY (currency key) field to be interpretable; extracting one without the other creates orphaned data.</p>
+    <a href="&#x2F;glossary&#x2F;curr&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;dats&#x2F;">DATS</a>
+    </h2>
+    <p class="item-subtitle">Date (8-digit format)</p>
+    <p class="item-description">DATS is SAP&#39;s date data type stored as YYYYMMDD (8 digits). Example: 20260422 for April 22, 2026. SAP handles DATS-to-local-date conversion automatically, but extractors must preserve the format.</p>
+    <a href="&#x2F;glossary&#x2F;dats&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;delta&#x2F;">Delta</a>
+    </h2>
+    <p class="item-subtitle">Delta (Change Data Capture)</p>
+    <p class="item-description">Delta represents only the rows that have changed since the last extraction. Real-time delta captures inserts&#x2F;updates&#x2F;deletes immediately; queue-based delta periodically batches changes. Enables streaming architectures without full table replication.</p>
+    <a href="&#x2F;glossary&#x2F;delta&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;dialog-work-process&#x2F;">Dialog Work Process</a>
+    </h2>
+    <p class="item-subtitle">Dialog Work Process</p>
+    <p class="item-description">A dialog work process is an SAP application server process that handles interactive user sessions (SE16N, MM01, FBL3N). When you slow down extraction, you risk blocking dialog users; use non-dialog processes (batch) for heavy extraction work.</p>
+    <a href="&#x2F;glossary&#x2F;dialog-work-process&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;extractor&#x2F;">Extractor</a>
+    </h2>
+    <p class="item-subtitle">Data Extractor</p>
+    <p class="item-description">An extractor is a reusable SAP component that exposes table data for extraction via ODP or custom querying. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.</p>
+    <a href="&#x2F;glossary&#x2F;extractor&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;ltrc&#x2F;">LTRC</a>
+    </h2>
+    <p class="item-subtitle">SLT Landscape Transformation Replication Client</p>
+    <p class="item-description">LTRC is the SAP GUI transaction for SLT configuration on the source SAP system. You define replication objects, partitioning, filters, and field selections in LTRC; it&#39;s the control interface for SLT replication.</p>
+    <a href="&#x2F;glossary&#x2F;ltrc&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;ltrs&#x2F;">LTRS</a>
+    </h2>
+    <p class="item-subtitle">SLT Landscape Transformation Replication Server</p>
+    <p class="item-description">LTRS is the SAP component that runs parallel reader processes for SLT replication. You configure LTRS to run 4-8 parallel readers, each handling a partition (e.g., one company code + fiscal year), dramatically accelerating full-load times.</p>
+    <a href="&#x2F;glossary&#x2F;ltrs&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;mandt&#x2F;">MANDT</a>
+    </h2>
+    <p class="item-subtitle">Client &#x2F; Mandant</p>
+    <p class="item-description">MANDT is a 3-digit field present in every SAP table that identifies which client (tenant) the row belongs to. Multi-client systems use MANDT to isolate data. Always filter MANDT in extraction to ensure correct client data.</p>
+    <a href="&#x2F;glossary&#x2F;mandt&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;meins&#x2F;">MEINS</a>
+    </h2>
+    <p class="item-subtitle">Material Unit of Measure</p>
+    <p class="item-description">MEINS is a field in MARA (material master) that specifies the base unit of measure for a material: EA (each), KG (kilogram), LT (liter), CM (centimeter), etc. Must be paired with quantity fields when extracting.</p>
+    <a href="&#x2F;glossary&#x2F;meins&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;numc&#x2F;">NUMC</a>
+    </h2>
+    <p class="item-subtitle">Numeric Character String</p>
+    <p class="item-description">NUMC is a SAP data type for numeric strings with leading zeros preserved (e.g., &#39;00001234&#39;). Common for codes and IDs that must display leading zeros but are treated as numbers in SAP.</p>
+    <a href="&#x2F;glossary&#x2F;numc&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;odp&#x2F;">ODP</a>
+    </h2>
+    <p class="item-subtitle">Operational Data Provisioning</p>
+    <p class="item-description">ODP is SAP&#39;s extraction framework for exposing table and view data for real-time extraction. ODP handles authorization, supports full-load and delta, and integrates with CDS views. The modern alternative to legacy BW extractors.</p>
+    <a href="&#x2F;glossary&#x2F;odp&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;odqmon&#x2F;">ODQMON</a>
+    </h2>
+    <p class="item-subtitle">ODP Queue Monitor</p>
+    <p class="item-description">ODQMON is the SAP transaction for monitoring ODP delta queues. Shows extraction status, delta lag, queue depth, and any errors. Essential for troubleshooting slow delta extractions or queue buildup.</p>
+    <a href="&#x2F;glossary&#x2F;odqmon&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;openhub&#x2F;">OpenHub</a>
+    </h2>
+    <p class="item-subtitle">SAP BW OpenHub</p>
+    <p class="item-description">OpenHub is SAP&#39;s legacy data distribution mechanism for exporting BW cube data to external systems. Now largely replaced by ODP and modern cloud APIs, but still used in older BW implementations.</p>
+    <a href="&#x2F;glossary&#x2F;openhub&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;quan&#x2F;">QUAN</a>
+    </h2>
+    <p class="item-subtitle">Quantity</p>
+    <p class="item-description">QUAN is a SAP data type for numeric quantity fields (order quantities, inventory balances, weights). Like CURR, QUAN fields must be paired with unit fields (MEINS or UOOM) to be interpretable.</p>
+    <a href="&#x2F;glossary&#x2F;quan&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;rfc&#x2F;">RFC</a>
+    </h2>
+    <p class="item-subtitle">Remote Function Call</p>
+    <p class="item-description">RFC is SAP&#39;s protocol for remote procedure calls between systems. Python&#x2F;pyrfc libraries use RFC to call extraction functions (RFC_ODP_READ, RFC_READ_TABLE) without logging into SAP GUI directly.</p>
+    <a href="&#x2F;glossary&#x2F;rfc&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;s4hana&#x2F;">S&#x2F;4HANA</a>
+    </h2>
+    <p class="item-subtitle">SAP S&#x2F;4HANA (SAP Suite 4 High-Performance Analytics)</p>
+    <p class="item-description">S&#x2F;4HANA is SAP&#39;s latest ERP platform, released in 2015. It replaces older ERP versions (R&#x2F;3, ECC) with modern architecture: in-memory database (HANA), cloud-first design, simplified data models, and embedded analytics.</p>
+    <a href="&#x2F;glossary&#x2F;s4hana&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;sap-help-portal&#x2F;">SAP Help Portal</a>
+    </h2>
+    <p class="item-subtitle">SAP Help Portal</p>
+    <p class="item-description">The SAP Help Portal (help.sap.com) is the official SAP documentation site. Contains technical guides, API references, transaction documentation, and troubleshooting for all SAP products. Essential resource for extraction work.</p>
+    <a href="&#x2F;glossary&#x2F;sap-help-portal&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;se11&#x2F;">SE11</a>
+    </h2>
+    <p class="item-subtitle">Data Dictionary &#x2F; ABAP Dictionary</p>
+    <p class="item-description">SE11 is the SAP transaction for the Data Dictionary. You use SE11 to view table definitions (fields, types, keys, append structures), understand field relationships (CUKY&#x2F;CURR, MEINS&#x2F;QUAN), and identify Z-fields before extraction.</p>
+    <a href="&#x2F;glossary&#x2F;se11&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;se16n&#x2F;">SE16N</a>
+    </h2>
+    <p class="item-subtitle">Table Data Browser (Generic)</p>
+    <p class="item-description">SE16N is the SAP transaction for browsing table data with filtering and sorting, replacing legacy SE16. You use SE16N to count rows, verify data quality, and manually test filter conditions before automating extraction.</p>
+    <a href="&#x2F;glossary&#x2F;se16n&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;sicf&#x2F;">SICF</a>
+    </h2>
+    <p class="item-subtitle">HTTP&#x2F;HTTPS Configuration</p>
+    <p class="item-description">SICF is the SAP transaction for configuring HTTP handlers, services, and web communication. Used to enable REST APIs, iGate services, or custom web handlers that extraction tools might call.</p>
+    <a href="&#x2F;glossary&#x2F;sicf&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;slt&#x2F;">SLT</a>
+    </h2>
+    <p class="item-subtitle">SAP Landscape Transformation</p>
+    <p class="item-description">SLT is SAP&#39;s licensed tool for high-performance data replication from SAP to external systems (Kafka, databases, data lakes). Enables billions-of-rows extractions with real-time delta, partitioning, and parallel reads.</p>
+    <a href="&#x2F;glossary&#x2F;slt&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;sm59&#x2F;">SM59</a>
+    </h2>
+    <p class="item-subtitle">RFC Destination Configuration</p>
+    <p class="item-description">SM59 is the SAP transaction for configuring RFC destinations (connections to external systems or remote SAP systems). You configure SM59 to enable RFC calls from Python, ADF, or other tools to extract data.</p>
+    <a href="&#x2F;glossary&#x2F;sm59&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;transport-request&#x2F;">Transport Request</a>
+    </h2>
+    <p class="item-subtitle">Transport Request &#x2F; Change Request</p>
+    <p class="item-description">A transport request is SAP&#39;s mechanism for moving code, configuration, and customizations across environments (dev → test → prod). Every custom ABAP object or CDS view exists in a transport request to track changes.</p>
+    <a href="&#x2F;glossary&#x2F;transport-request&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;tsv-tnew-page-alloc-failed&#x2F;">TSV_TNEW_PAGE_ALLOC_FAILED</a>
+    </h2>
+    <p class="item-subtitle">SAP Memory Allocation Error</p>
+    <p class="item-description">TSV_TNEW_PAGE_ALLOC_FAILED is an SAP error indicating memory exhaustion during extraction. Common when SELECT *-ing large tables (ACDOCA, BKPF) without filters. Solution: use CDS views, apply filters, or use SLT for parallelism.</p>
+    <a href="&#x2F;glossary&#x2F;tsv-tnew-page-alloc-failed&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;vbeln&#x2F;">VBELN</a>
+    </h2>
+    <p class="item-subtitle">Sales and Distribution Document Number</p>
+    <p class="item-description">VBELN is the primary key field for sales documents (VBAK table). It&#39;s a 10-digit document number that uniquely identifies a sales order, delivery, invoice, or return. Common extraction partition key.</p>
+    <a href="&#x2F;glossary&#x2F;vbeln&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;glossary&#x2F;z-field&#x2F;">Z-field</a>
+    </h2>
+    <p class="item-subtitle">Custom Field (Z-prefix)</p>
+    <p class="item-description">Z-fields are custom fields added by customers to SAP tables via append structures. Named Z* or Y* by convention, they represent enterprise-specific logic not provided by standard SAP. Must be explicitly extracted or data warehouse is incomplete.</p>
+    <a href="&#x2F;glossary&#x2F;z-field&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+</section>
+
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

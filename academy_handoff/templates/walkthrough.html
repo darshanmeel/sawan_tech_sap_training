@@ -1,0 +1,139 @@
+<!-- This template extends base.html. The build script injects this HTML into {{{content}}} of base.html. -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li><a href="/tables/{{slug}}/">{{table}}</a></li>
+    <li aria-current="page">{{title}}</li>
+  </ol>
+</nav>
+
+<article class="walkthrough" data-walkthrough-id="{{level}}-{{slug}}">
+  <header class="walkthrough-header">
+    <p class="eyebrow">{{table}} · {{level}}</p>
+    <h1>{{title}}</h1>
+    <p class="summary">{{summary}}</p>
+
+    <dl class="walkthrough-meta">
+      <div>
+        <dt>Estimated time</dt>
+        <dd>{{estimatedMinutes}} minutes</dd>
+      </div>
+      <div>
+        <dt>Destinations</dt>
+        <dd>{{destinations}}</dd>
+      </div>
+      <div>
+        <dt>Extractors</dt>
+        <dd>{{extractors}}</dd>
+      </div>
+    </dl>
+  </header>
+
+  <section class="callout callout-license">
+    <h2>License check</h2>
+    <p>{{licenseRelevance}}</p>
+  </section>
+
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      {{#prerequisites}}
+      <li>{{.}}</li>
+      {{/prerequisites}}
+    </ul>
+  </section>
+
+  <div class="walkthrough-body">
+    {{{body}}}
+  </div>
+
+  <section class="walkthrough-progress">
+    <div role="status" aria-live="polite" id="progress-indicator">
+      <span id="progress-count">0</span> of {{stepCount}} complete
+    </div>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>Reset progress</button>
+  </section>
+
+  <ol class="steps">
+    {{#steps}}
+    <li class="step" id="step-{{id}}">
+      <header class="step-header">
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="{{id}}"
+          >
+          <span class="step-number">Step</span>
+        </label>
+        <h2 class="step-title">{{title}}</h2>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">{{{explanation}}}</p>
+
+        {{#sapTransaction}}
+        <aside class="callout callout-sap">
+          <h3>Do this in SAP</h3>
+          <p>
+            Open transaction <a href="{{helpUrl}}" target="_blank" rel="noopener noreferrer">{{code}}</a>
+            {{#menuPath}}and navigate to <em>{{menuPath}}</em>{{/menuPath}}.
+          </p>
+        </aside>
+        {{/sapTransaction}}
+
+        {{#codeBlock}}
+        <figure class="code-block">
+          <pre><code class="language-{{language}}">{{content}}</code></pre>
+          {{#caption}}<figcaption>{{caption}}</figcaption>{{/caption}}
+        </figure>
+        {{/codeBlock}}
+
+        <aside class="callout callout-verify">
+          <h3>Verify</h3>
+          <p>{{verify}}</p>
+        </aside>
+
+        {{#whyItMatters}}
+        <details class="why-it-matters">
+          <summary>Why this matters</summary>
+          <p>{{{.}}}</p>
+        </details>
+        {{/whyItMatters}}
+      </div>
+    </li>
+    {{/steps}}
+  </ol>
+
+  <section class="troubleshooting">
+    <h2>Troubleshooting</h2>
+    <dl>
+      {{#troubleshooting}}
+      <div class="troubleshooting-item">
+        <dt>{{problem}}</dt>
+        <dd>
+          <p>{{solution}}</p>
+          {{#sapNoteUrl}}
+          <p><a href="{{.}}" target="_blank" rel="noopener noreferrer">Related SAP Note</a></p>
+          {{/sapNoteUrl}}
+        </dd>
+      </div>
+      {{/troubleshooting}}
+    </dl>
+  </section>
+
+  <section class="next-steps">
+    <h2>What's next</h2>
+    <ul>
+      {{#nextSteps}}
+      <li><a href="{{url}}">{{label}}</a></li>
+      {{/nextSteps}}
+    </ul>
+  </section>
+
+  <section class="walkthrough-actions">
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF of completed steps</button>
+  </section>
+</article>

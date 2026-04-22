@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ODQMON: ODP Queue Monitor in SAP — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="ODQMON monitors ODP delta queues, showing extraction lag, status, and errors. Essential for troubleshooting slow or stuck delta extractions.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;odqmon&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ODQMON: ODP Queue Monitor in SAP — Plain Explanation">
+  <meta property="og:description" content="ODQMON monitors ODP delta queues, showing extraction lag, status, and errors. Essential for troubleshooting slow or stuck delta extractions.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;odqmon&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ODQMON: ODP Queue Monitor in SAP — Plain Explanation">
+  <meta name="twitter:description" content="ODQMON monitors ODP delta queues, showing extraction lag, status, and errors. Essential for troubleshooting slow or stuck delta extractions.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"ODP Queue Monitor","alternateName":"ODQMON","description":"ODQMON is the SAP transaction for monitoring ODP delta queues. Shows extraction status, delta lag, queue depth, and any errors. Essential for troubleshooting slow delta extractions or queue buildup.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Glossary term detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/glossary/">Glossary</a></li>
+    <li aria-current="page">ODQMON</li>
+  </ol>
+</nav>
+
+<article class="glossary-term">
+  <header class="glossary-header">
+    <h1>ODQMON: ODP Queue Monitor in SAP</h1>
+  </header>
+
+  <section class="glossary-definition">
+    <h2>Definition</h2>
+    <p class="short-definition">ODQMON is the SAP transaction for monitoring ODP delta queues. Shows extraction status, delta lag, queue depth, and any errors. Essential for troubleshooting slow delta extractions or queue buildup.</p>
+  </section>
+
+  <section class="glossary-body prose">
+    <p>ODQMON (ODP Queue Monitor) is the SAP transaction where you monitor the health of ODP delta queues. When you set up delta extraction for ACDOCA or BKPF, ODP maintains an internal queue of changes. ODQMON shows: which extractors have queues, how many unread changes are waiting, how long the queue is, the last extraction timestamp, and any errors (queue corrupt, consumer lag, etc.).</p>
+<p>ODQMON is your diagnostic tool for slow delta extractions. If Python extraction is lagging (extracting only 100 rows/second when SAP is posting 10k/second), ODQMON shows the queue depth growing. If the queue is maxed at 100k unread changes and stuck, ODQMON tells you. You can manually reset queues, trigger re-extractions, or pause consumers from ODQMON.</p>
+<p>In the expert ACDOCA walkthrough, after setting up SLT replication to Kafka, you&#39;ll monitor ODQMON to ensure delta queue depth is near zero (meaning SLT is keeping up with postings). If lag grows unbounded, you&#39;ve hit a bottleneck: either SAP is posting faster than SLT can replicate, or Kafka/Snowflake is slower than expected. ODQMON is the first place to check.</p>
+
+  </section>
+
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Delta/">Delta</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Extractor/">Extractor</a>
+      </li>
+      <li>
+        <a href="/glossary/SM50/">SM50</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Delta/">Delta</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Extractor/">Extractor</a>
+      </li>
+      <li>
+        <a href="/glossary/SM50/">SM50</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Delta/">Delta</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Extractor/">Extractor</a>
+      </li>
+      <li>
+        <a href="/glossary/SM50/">SM50</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Delta/">Delta</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Extractor/">Extractor</a>
+      </li>
+      <li>
+        <a href="/glossary/SM50/">SM50</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Delta/">Delta</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Extractor/">Extractor</a>
+      </li>
+      <li>
+        <a href="/glossary/SM50/">SM50</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sap-documentation">
+    <h2></h2>
+    <p>
+      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;ODQMON.html" target="_blank" rel="noopener noreferrer">
+        Read more on SAP Help Portal
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </p>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

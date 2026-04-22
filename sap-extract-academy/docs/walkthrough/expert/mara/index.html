@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract Extended MARA (20+ Z-Fields) — Fivetran — SAP Extract Academy</title>
+  <meta name="description" content="Expert-level material master extraction with 20+ Z-fields, MARC, MVKE joins via Fivetran Application Layer.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;expert&#x2F;mara&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract Extended MARA (20+ Z-Fields) — Fivetran">
+  <meta property="og:description" content="Expert-level material master extraction with 20+ Z-fields, MARC, MVKE joins via Fivetran Application Layer.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;expert&#x2F;mara&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract Extended MARA (20+ Z-Fields) — Fivetran">
+  <meta name="twitter:description" content="Expert-level material master extraction with 20+ Z-fields, MARC, MVKE joins via Fivetran Application Layer.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract Massive MARA (20+ Z-Fields, Multi-Table)","description":"Enterprise material master with 20+ Z-fields, joined with MARC (plant) and MVKE (sales org). Fivetran Application Layer extraction.","totalTime":"PT90M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Profile the extended MARA structure","text":"Your MARA has 20+ Z-fields across multiple append structures. Fivetran's Application Layer can extract all at once.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Set up Fivetran Connector for SAP","text":"In Fivetran, create connector for SAP Application Layer. Authenticate with EXTRACT user.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Enable MARA, MARC, MVKE tables in Fivetran","text":"Select all three tables. Fivetran auto-discovers joins and Z-fields.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Configure Snowflake destination","text":"Map to Snowflake schemas: raw.MARA, raw.MARC, raw.MVKE.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Create Snowflake views with joins","text":"Create DIM_MATERIAL_COMPLETE joining MARA + MARC + MVKE + all Z-fields.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract Massive MARA (20+ Z-Fields, Multi-Table)"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Walkthrough detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li><a href="/tables/mara/">MARA</a></li>
+    <li aria-current="page">expert walkthrough</li>
+  </ol>
+</nav>
+
+<article class="walkthrough" data-walkthrough-id="expert-mara" data-page-slug="expert-mara">
+  <header class="walkthrough-header">
+    <div class="walkthrough-header-meta">
+      <span class="level-badge level-expert">expert</span>
+      <span class="table-code">MARA</span>
+    </div>
+    <h1>Extract Massive MARA (20+ Z-Fields, Multi-Table)</h1>
+    <p class="walkthrough-summary">Enterprise material master with 20+ Z-fields, joined with MARC (plant) and MVKE (sales org). Fivetran Application Layer extraction.</p>
+
+    <dl class="walkthrough-meta-list">
+      <div>
+        <dt></dt>
+        <dd>90 minutes</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>Snowflake</dd>
+      </div>
+      <div>
+        <dt></dt>
+        <dd>Fivetran</dd>
+      </div>
+    </dl>
+  </header>
+
+  <section class="callout callout-warning">
+    <h2>License check</h2>
+    <p>All licenses.</p>
+  </section>
+
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed MARA Intermediate</li>
+      <li>Understanding of MARC and MVKE tables</li>
+    </ul>
+  </section>
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      <li>Completed MARA Intermediate</li>
+      <li>Understanding of MARC and MVKE tables</li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-intro">
+    <h2>Getting started</h2>
+    <div class="prose">
+      <h2>Scenario</h2>
+<p>Your company&#39;s MARA is heavily extended with custom fields. Manually managing 20+ Z-field extractions is error-prone. Fivetran&#39;s Application Layer connector discovers and extracts everything automatically.</p>
+<hr>
+<h2>What you&#39;ve built</h2>
+<p>You have a complete material dimension in Snowflake, including all Z-fields and related plant/sales org data.</p>
+
+    </div>
+  </section>
+
+  <section class="walkthrough-progress">
+    <div role="status" aria-live="polite" class="progress-indicator">
+      <span id="progress-count">0</span> of 5 steps complete
+    </div>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden></button>
+  </section>
+
+  <ol class="steps-list">
+    <li class="step" id="step-step-01">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-01</span>
+          <h2 class="step-title">Profile the extended MARA structure</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-01"
+            aria-label="Mark Profile the extended MARA structure as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Your MARA has 20+ Z-fields across multiple append structures. Fivetran's Application Layer can extract all at once.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Count Z-fields in SE11 MARA → Append Structures.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-02">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-02</span>
+          <h2 class="step-title">Set up Fivetran Connector for SAP</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-02"
+            aria-label="Mark Set up Fivetran Connector for SAP as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">In Fivetran, create connector for SAP Application Layer. Authenticate with EXTRACT user.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Fivetran dashboard shows SAP connection status: Connected.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-03">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-03</span>
+          <h2 class="step-title">Enable MARA, MARC, MVKE tables in Fivetran</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-03"
+            aria-label="Mark Enable MARA, MARC, MVKE tables in Fivetran as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Select all three tables. Fivetran auto-discovers joins and Z-fields.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Fivetran shows 3 tables with all Z-fields listed.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-04">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-04</span>
+          <h2 class="step-title">Configure Snowflake destination</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-04"
+            aria-label="Mark Configure Snowflake destination as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Map to Snowflake schemas: raw.MARA, raw.MARC, raw.MVKE.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>Initial load completes.</p>
+        </aside>
+
+      </div>
+    </li>
+    <li class="step" id="step-step-05">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step step-05</span>
+          <h2 class="step-title">Create Snowflake views with joins</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="step-05"
+            aria-label="Mark Create Snowflake views with joins as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">Create DIM_MATERIAL_COMPLETE joining MARA + MARC + MVKE + all Z-fields.</p>
+
+
+
+        <aside class="callout callout-verify">
+          <h3></h3>
+          <p>View query works and returns denormalized material records.</p>
+        </aside>
+
+      </div>
+    </li>
+  </ol>
+
+  <section class="troubleshooting">
+    <h2></h2>
+    <dl class="troubleshooting-list">
+      <div class="troubleshooting-item">
+        <dt>Fivetran transformation fails due to Z-field type mismatch</dt>
+        <dd>
+          <p>In Fivetran, adjust column mapping to handle string&#x2F;numeric conversions.</p>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="walkthrough-summary">
+    <h2>You've built:</h2>
+    <p>Congratulations! You've completed the expert walkthrough for MARA. You now have 5 steps of experience extracting this table, and you understand the key considerations for the MARA use case.</p>
+  </section>
+
+  <section class="next-steps">
+    <h2></h2>
+    <ul>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;acdoca&#x2F;">Compare with ACDOCA Expert</a></li>
+    </ul>
+  </section>
+
+  <section class="walkthrough-actions">
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden></button>
+  </section>
+</article>
+
+<script type="module" src="/assets/js/checklist.js?v=1" defer></script>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

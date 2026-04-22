@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>OpenHub: SAP BW Data Distribution — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="OpenHub is SAP&#39;s legacy data export tool for BW cubes. Largely replaced by ODP, but still used in older business warehouse systems.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;openhub&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="OpenHub: SAP BW Data Distribution — Plain Explanation">
+  <meta property="og:description" content="OpenHub is SAP&#39;s legacy data export tool for BW cubes. Largely replaced by ODP, but still used in older business warehouse systems.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;openhub&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="OpenHub: SAP BW Data Distribution — Plain Explanation">
+  <meta name="twitter:description" content="OpenHub is SAP&#39;s legacy data export tool for BW cubes. Largely replaced by ODP, but still used in older business warehouse systems.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"SAP BW OpenHub","alternateName":"OpenHub","description":"OpenHub is SAP's legacy data distribution mechanism for exporting BW cube data to external systems. Now largely replaced by ODP and modern cloud APIs, but still used in older BW implementations.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Glossary term detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/glossary/">Glossary</a></li>
+    <li aria-current="page">OpenHub</li>
+  </ol>
+</nav>
+
+<article class="glossary-term">
+  <header class="glossary-header">
+    <h1>OpenHub: SAP BW OpenHub in SAP</h1>
+  </header>
+
+  <section class="glossary-definition">
+    <h2>Definition</h2>
+    <p class="short-definition">OpenHub is SAP&#39;s legacy data distribution mechanism for exporting BW cube data to external systems. Now largely replaced by ODP and modern cloud APIs, but still used in older BW implementations.</p>
+  </section>
+
+  <section class="glossary-body prose">
+    <p>OpenHub (SAP BW OpenHub Services) is a legacy mechanism for exporting BW (Business Warehouse) cube data to external systems. Before ODP existed, if you wanted to export a BW InfoCube to an external data warehouse, you&#39;d use OpenHub to push data to files, databases, or web services. OpenHub is protocol-agnostic: you define a destination (HTTP endpoint, database table, file location) and OpenHub sends batches of data there.</p>
+<p>OpenHub is gradually being phased out in favor of ODP and modern cloud APIs. However, many mature BW systems still use OpenHub for legacy reasons: migrating from OpenHub to ODP can take months. If you&#39;re working with a large enterprise that has significant BW investment, you may encounter OpenHub extractions in production pipelines.</p>
+<p>For data architecture purposes, understand that OpenHub is a <em>push</em> mechanism: SAP pushes data to your system. This contrasts with ODP and SLT, which are typically pull-based: your extraction tool asks SAP for data. OpenHub scheduling, monitoring, and troubleshooting differ from ODP. If you&#39;re migrating a legacy OpenHub pipeline to modern Snowflake, you&#39;ll typically replace it with ODP delta extraction for real-time streaming.</p>
+
+  </section>
+
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/BW/">BW</a>
+      </li>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Business Warehouse/">Business Warehouse</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Extraction/">Data Extraction</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/BW/">BW</a>
+      </li>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Business Warehouse/">Business Warehouse</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Extraction/">Data Extraction</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/BW/">BW</a>
+      </li>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Business Warehouse/">Business Warehouse</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Extraction/">Data Extraction</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/BW/">BW</a>
+      </li>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Business Warehouse/">Business Warehouse</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Extraction/">Data Extraction</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sap-documentation">
+    <h2></h2>
+    <p>
+      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;openhub.html" target="_blank" rel="noopener noreferrer">
+        Read more on SAP Help Portal
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </p>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

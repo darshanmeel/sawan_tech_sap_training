@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extractor: SAP Data Extractor Component — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="Extractors expose SAP table data for extraction. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;extractor&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extractor: SAP Data Extractor Component — Plain Explanation">
+  <meta property="og:description" content="Extractors expose SAP table data for extraction. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;extractor&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extractor: SAP Data Extractor Component — Plain Explanation">
+  <meta name="twitter:description" content="Extractors expose SAP table data for extraction. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Data Extractor","alternateName":"Extractor","description":"An extractor is a reusable SAP component that exposes table data for extraction via ODP or custom querying. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Glossary term detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/glossary/">Glossary</a></li>
+    <li aria-current="page">Extractor</li>
+  </ol>
+</nav>
+
+<article class="glossary-term">
+  <header class="glossary-header">
+    <h1>Extractor: Data Extractor in SAP</h1>
+  </header>
+
+  <section class="glossary-definition">
+    <h2>Definition</h2>
+    <p class="short-definition">An extractor is a reusable SAP component that exposes table data for extraction via ODP or custom querying. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.</p>
+  </section>
+
+  <section class="glossary-body prose">
+    <p>An extractor is a reusable SAP component that provides structured access to a table for extraction. Every table in SAP has a generic extractor that you can query via ODP. Extractors handle the complex work: authorization enforcement, field selection, filtering, delta queue management, and concurrency. You don&#39;t extract directly from tables; you extract via the extractor.</p>
+<p>SAP provides two types of extractors: <strong>(1) generic extractors</strong> (available for all tables, basic functionality) and <strong>(2) specialized extractors</strong> (published by SAP for key tables like ACDOCA via I_JournalEntryItem, offering advanced features like currency conversion and ledger selection). When you use ODP to extract VBAK, you&#39;re using the VBAK extractor. When you use a released CDS view like I_SalesDocument, you&#39;re using an SAP-published extractor.</p>
+<p>For data extraction work, understanding that extractors handle authorization and filtering is key. If you have data access problems (seeing fewer rows than expected), the extractor&#39;s authorization logic may be filtering based on your user role. If your delta is slower than expected, the extractor may be rebuilding its queue. ODQMON and ODP monitoring tools let you see which extractors are active, how much data they&#39;ve moved, and why they might be stuck.</p>
+
+  </section>
+
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Generic Extractor/">Generic Extractor</a>
+      </li>
+      <li>
+        <a href="/glossary/ABAP/">ABAP</a>
+      </li>
+      <li>
+        <a href="/glossary/CDS/">CDS</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Generic Extractor/">Generic Extractor</a>
+      </li>
+      <li>
+        <a href="/glossary/ABAP/">ABAP</a>
+      </li>
+      <li>
+        <a href="/glossary/CDS/">CDS</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Generic Extractor/">Generic Extractor</a>
+      </li>
+      <li>
+        <a href="/glossary/ABAP/">ABAP</a>
+      </li>
+      <li>
+        <a href="/glossary/CDS/">CDS</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Generic Extractor/">Generic Extractor</a>
+      </li>
+      <li>
+        <a href="/glossary/ABAP/">ABAP</a>
+      </li>
+      <li>
+        <a href="/glossary/CDS/">CDS</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Generic Extractor/">Generic Extractor</a>
+      </li>
+      <li>
+        <a href="/glossary/ABAP/">ABAP</a>
+      </li>
+      <li>
+        <a href="/glossary/CDS/">CDS</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sap-documentation">
+    <h2></h2>
+    <p>
+      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;operational-data-provisioning.html" target="_blank" rel="noopener noreferrer">
+        Read more on SAP Help Portal
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </p>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

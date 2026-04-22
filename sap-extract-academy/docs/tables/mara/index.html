@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract MARA Material Master from SAP S&#x2F;4HANA — Guide — SAP Extract Academy</title>
+  <meta name="description" content="MARA is the material master general data table in S&#x2F;4HANA. Learn to extract product masters, material types, units of measure, and custom fields.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;tables&#x2F;mara&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract MARA Material Master from SAP S&#x2F;4HANA — Guide">
+  <meta property="og:description" content="MARA is the material master general data table in S&#x2F;4HANA. Learn to extract product masters, material types, units of measure, and custom fields.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;tables&#x2F;mara&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract MARA Material Master from SAP S&#x2F;4HANA — Guide">
+  <meta name="twitter:description" content="MARA is the material master general data table in S&#x2F;4HANA. Learn to extract product masters, material types, units of measure, and custom fields.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Material Master (General)","description":"MARA is the material master general data table in S/4HANA. Learn to extract product masters, material types, units of measure, and custom fields.","url":"https://academy.example.com/tables/mara/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Tables","item":"https://academy.example.com/tables/"},{"@type":"ListItem","position":3,"name":"MARA"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Table detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li aria-current="page">MARA</li>
+  </ol>
+</nav>
+
+<article class="table-detail">
+  <header class="table-header">
+    <div class="table-header-top">
+      <span class="module-badge">MD</span>
+    </div>
+    <h1>MARA</h1>
+    <h2 class="table-name">Material Master (General)</h2>
+    <p class="table-description">Material master data (general section). One row per material, containing material type, category, unit of measure, and core logistics attributes.</p>
+  </header>
+
+  <section class="table-overview">
+    <h2>What this table is</h2>
+    <div class="prose">
+      <p>MARA is the material master table in the Materials Management (MM) module, storing company-wide product/material information: names, material types, categories, units of measure, and classification attributes. Each material has one MARA record (identified by MATNR, the material number) containing general data applicable across all plants and sales organizations.</p>
+<p>Material master extraction is essential for product dimension tables in data warehouses. The table is moderately sized (typically 100K to 10M materials depending on enterprise size) and often extended with custom fields (Z-fields) for industry-specific attributes like colors, sizes, or regulatory flags.</p>
+<p><a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/material-master-overview.html">SAP S/4HANA Material Master overview</a> documents the complete schema. Like vendor master, material data is distributed: MARA (general), MARC (plant level), and MVKE (sales organization level). Your extraction strategy depends on the analytics use case — product hierarchy questions often start with MARA; supply chain questions require MARC.</p>
+
+    </div>
+  </section>
+
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>MATNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>MATNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="table-volume">
+    <h2>Volume characteristics</h2>
+    <dl>
+      <div>
+        <dt>Typical row count</dt>
+        <dd>100K-10M</dd>
+      </div>
+      <div>
+        <dt>Volume class</dt>
+        <dd><span class="badge badge-medium">medium</span></dd>
+      </div>
+      <div>
+        <dt>Released CDS view</dt>
+        <dd><code>I_Product</code></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="extraction-gotchas">
+    <h2>Extraction gotchas</h2>
+    <ul>
+      <li>
+        <strong>MARA stores general data only. Plant-specific data lives in MARC, sales organization data in MVKE. For complete material context, join all three tables.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;material-tables.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Z-fields (custom fields) are common in MARA because companies extend material master with industry-specific attributes (e.g., color, size, hazmat flags). Check your system&#39;s APPEND structures.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;zfields.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+  <section class="extraction-gotchas">
+    <h2>Extraction gotchas</h2>
+    <ul>
+      <li>
+        <strong>MARA stores general data only. Plant-specific data lives in MARC, sales organization data in MVKE. For complete material context, join all three tables.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;material-tables.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Z-fields (custom fields) are common in MARA because companies extend material master with industry-specific attributes (e.g., color, size, hazmat flags). Check your system&#39;s APPEND structures.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;zfields.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="walkthroughs-available">
+    <h2>Walkthroughs available</h2>
+    <p>Pick your skill level and start learning how to extract MARA.</p>
+    <div class="grid grid-cols-3">
+      <a href="/walkthrough/beginner//" class="card walkthrough-card">
+        <h3></h3>
+        <p class="walkthrough-meta">Step-by-step guide</p>
+      </a>
+      <a href="/walkthrough/intermediate//" class="card walkthrough-card">
+        <h3></h3>
+        <p class="walkthrough-meta">Step-by-step guide</p>
+      </a>
+      <a href="/walkthrough/expert//" class="card walkthrough-card">
+        <h3></h3>
+        <p class="walkthrough-meta">Step-by-step guide</p>
+      </a>
+    </div>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

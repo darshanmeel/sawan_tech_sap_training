@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Delta: Change Data Capture in SAP — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="Delta captures only changed rows since last extraction. Real-time delta streams immediately; queue-based delta batches changes. Enables efficient incremental loading.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;delta&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Delta: Change Data Capture in SAP — Plain Explanation">
+  <meta property="og:description" content="Delta captures only changed rows since last extraction. Real-time delta streams immediately; queue-based delta batches changes. Enables efficient incremental loading.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;delta&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Delta: Change Data Capture in SAP — Plain Explanation">
+  <meta name="twitter:description" content="Delta captures only changed rows since last extraction. Real-time delta streams immediately; queue-based delta batches changes. Enables efficient incremental loading.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Delta (Change Data Capture)","alternateName":"Delta","description":"Delta represents only the rows that have changed since the last extraction. Real-time delta captures inserts/updates/deletes immediately; queue-based delta periodically batches changes. Enables streaming architectures without full table replication.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Glossary term detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/glossary/">Glossary</a></li>
+    <li aria-current="page">Delta</li>
+  </ol>
+</nav>
+
+<article class="glossary-term">
+  <header class="glossary-header">
+    <h1>Delta: Delta (Change Data Capture) in SAP</h1>
+  </header>
+
+  <section class="glossary-definition">
+    <h2>Definition</h2>
+    <p class="short-definition">Delta represents only the rows that have changed since the last extraction. Real-time delta captures inserts&#x2F;updates&#x2F;deletes immediately; queue-based delta periodically batches changes. Enables streaming architectures without full table replication.</p>
+  </section>
+
+  <section class="glossary-body prose">
+    <p>Delta (Change Data Capture, or CDC) represents only the rows that have changed since the last extraction. If you extracted ACDOCA yesterday and today 100 new postings arrive, delta extraction brings only those 100 rows, not the billion+ existing rows. Delta is what makes real-time extraction feasible: instead of full-loading 500GB nightly, you stream 100MB of changes every minute.</p>
+<p>SAP offers two delta mechanisms: <strong>(1) Real-time delta</strong> via ODP and SLT, which captures changes immediately as they occur, pushing to Kafka or ODP queues; <strong>(2) queue-based delta</strong> using the ODP queue (ODQMON), which batches changes and exposes them for polling. Real-time is faster; queue-based is simpler to monitor and retry.</p>
+<p>For enterprise extraction, delta is essential. ACDOCA full-load takes days; delta runs in minutes. The trade-off: you must track state (what was the last delta timestamp?), handle deletes (mark-as-deleted or prune?), and reconcile periodically (does the warehouse match SAP?) to catch corruption. Every walkthrough in this academy progresses from full-load (beginner) to delta streaming (expert).</p>
+
+  </section>
+
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/SLT/">SLT</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/ODQMON/">ODQMON</a>
+      </li>
+      <li>
+        <a href="/glossary/Full Load/">Full Load</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/SLT/">SLT</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/ODQMON/">ODQMON</a>
+      </li>
+      <li>
+        <a href="/glossary/Full Load/">Full Load</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/SLT/">SLT</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/ODQMON/">ODQMON</a>
+      </li>
+      <li>
+        <a href="/glossary/Full Load/">Full Load</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/SLT/">SLT</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/ODQMON/">ODQMON</a>
+      </li>
+      <li>
+        <a href="/glossary/Full Load/">Full Load</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/SLT/">SLT</a>
+      </li>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/ODQMON/">ODQMON</a>
+      </li>
+      <li>
+        <a href="/glossary/Full Load/">Full Load</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sap-documentation">
+    <h2></h2>
+    <p>
+      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;operational-data-provisioning.html" target="_blank" rel="noopener noreferrer">
+        Read more on SAP Help Portal
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </p>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

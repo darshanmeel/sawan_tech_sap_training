@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ODP: Operational Data Provisioning in SAP — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="ODP is SAP&#39;s extraction framework for real-time table data. Supports full-load, delta, authorization, and CDS integration. The modern extraction standard.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;odp&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ODP: Operational Data Provisioning in SAP — Plain Explanation">
+  <meta property="og:description" content="ODP is SAP&#39;s extraction framework for real-time table data. Supports full-load, delta, authorization, and CDS integration. The modern extraction standard.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;odp&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ODP: Operational Data Provisioning in SAP — Plain Explanation">
+  <meta name="twitter:description" content="ODP is SAP&#39;s extraction framework for real-time table data. Supports full-load, delta, authorization, and CDS integration. The modern extraction standard.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Operational Data Provisioning","alternateName":"ODP","description":"ODP is SAP's extraction framework for exposing table and view data for real-time extraction. ODP handles authorization, supports full-load and delta, and integrates with CDS views. The modern alternative to legacy BW extractors.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Glossary term detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/glossary/">Glossary</a></li>
+    <li aria-current="page">ODP</li>
+  </ol>
+</nav>
+
+<article class="glossary-term">
+  <header class="glossary-header">
+    <h1>ODP: Operational Data Provisioning in SAP</h1>
+  </header>
+
+  <section class="glossary-definition">
+    <h2>Definition</h2>
+    <p class="short-definition">ODP is SAP&#39;s extraction framework for exposing table and view data for real-time extraction. ODP handles authorization, supports full-load and delta, and integrates with CDS views. The modern alternative to legacy BW extractors.</p>
+  </section>
+
+  <section class="glossary-body prose">
+    <p>Operational Data Provisioning (ODP) is SAP&#39;s modern extraction framework, replacing legacy BW extractors. ODP exposes every SAP table and published CDS view for extraction. You can extract via ODP using Python/pyrfc, Azure Data Factory, Informatica, or any tool that speaks RFC. ODP handles the complex work: authorization enforcement (you see only rows your user is allowed to see), field selection, filtering, and delta queue management.</p>
+<p>ODP has two sides: <strong>(1) the ODP provider</strong> (what SAP exposes from the table) and <strong>(2) the ODP consumer</strong> (your extraction tool). When you use Python/pyrfc to extract VBAK, you&#39;re a consumer querying the VBAK ODP provider. ODP supports both full-load (extract all rows) and delta (extract only changes since last run). Delta uses an internal queue (visible in ODQMON) to track what changed, enabling real-time extraction without triggering full table scans.</p>
+<p>For beginner extraction, you use ODP with Python or ADF to pull full data to Snowflake. For intermediate extraction, you use ODP delta to capture incremental changes. For expert extraction, you graduate to SLT (which is ODP&#39;s big brother, optimized for scale). The walkthrough progression fundamentally teaches you mastery of ODP: how to filter, parallelize, handle delta, and reconcile.</p>
+
+  </section>
+
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Delta/">Delta</a>
+      </li>
+      <li>
+        <a href="/glossary/Released CDS View/">Released CDS View</a>
+      </li>
+      <li>
+        <a href="/glossary/ODQMON/">ODQMON</a>
+      </li>
+      <li>
+        <a href="/glossary/Extractor/">Extractor</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Delta/">Delta</a>
+      </li>
+      <li>
+        <a href="/glossary/Released CDS View/">Released CDS View</a>
+      </li>
+      <li>
+        <a href="/glossary/ODQMON/">ODQMON</a>
+      </li>
+      <li>
+        <a href="/glossary/Extractor/">Extractor</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Delta/">Delta</a>
+      </li>
+      <li>
+        <a href="/glossary/Released CDS View/">Released CDS View</a>
+      </li>
+      <li>
+        <a href="/glossary/ODQMON/">ODQMON</a>
+      </li>
+      <li>
+        <a href="/glossary/Extractor/">Extractor</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Delta/">Delta</a>
+      </li>
+      <li>
+        <a href="/glossary/Released CDS View/">Released CDS View</a>
+      </li>
+      <li>
+        <a href="/glossary/ODQMON/">ODQMON</a>
+      </li>
+      <li>
+        <a href="/glossary/Extractor/">Extractor</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/Operational Data Provisioning/">Operational Data Provisioning</a>
+      </li>
+      <li>
+        <a href="/glossary/Delta/">Delta</a>
+      </li>
+      <li>
+        <a href="/glossary/Released CDS View/">Released CDS View</a>
+      </li>
+      <li>
+        <a href="/glossary/ODQMON/">ODQMON</a>
+      </li>
+      <li>
+        <a href="/glossary/Extractor/">Extractor</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sap-documentation">
+    <h2></h2>
+    <p>
+      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;operational-data-provisioning.html" target="_blank" rel="noopener noreferrer">
+        Read more on SAP Help Portal
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </p>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

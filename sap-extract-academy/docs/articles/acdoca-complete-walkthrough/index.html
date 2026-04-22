@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ACDOCA Extraction: Complete Guide Beginner to Enterprise — SAP Extract Academy</title>
+  <meta name="description" content="Learn ACDOCA extraction at three levels: simple ODP, parallel extraction, enterprise SLT streaming. Choose your pattern based on data volume and latency.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;articles&#x2F;acdoca-complete-walkthrough&#x2F;">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="ACDOCA Extraction: Complete Guide Beginner to Enterprise">
+  <meta property="og:description" content="Learn ACDOCA extraction at three levels: simple ODP, parallel extraction, enterprise SLT streaming. Choose your pattern based on data volume and latency.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;articles&#x2F;acdoca-complete-walkthrough&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ACDOCA Extraction: Complete Guide Beginner to Enterprise">
+  <meta name="twitter:description" content="Learn ACDOCA extraction at three levels: simple ODP, parallel extraction, enterprise SLT streaming. Choose your pattern based on data volume and latency.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"ACDOCA Extraction: The Complete Walkthrough from Beginner to Enterprise","description":"Learn ACDOCA extraction at three levels: simple ODP, parallel extraction, enterprise SLT streaming. Choose your pattern based on data volume and latency.","author":{"@type":"Organization","name":"SAP Extract Academy"},"publisher":{"@type":"Organization","name":"SAP Extract Academy"},"datePublished":"2026-04-22T00:00:00.000Z","dateModified":"2026-04-22T00:00:00.000Z","mainEntityOfPage":"https://academy.example.com/articles/acdoca-complete-walkthrough/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://academy.example.com/articles/"},{"@type":"ListItem","position":3,"name":"ACDOCA Extraction: The Complete Walkthrough from Beginner to Enterprise"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Article detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/articles/">Articles</a></li>
+    <li aria-current="page">ACDOCA Extraction: The Complete Walkthrough from Beginner to Enterprise</li>
+  </ol>
+</nav>
+
+<article class="article">
+  <header class="article-header">
+
+    <h1>ACDOCA Extraction: The Complete Walkthrough from Beginner to Enterprise</h1>
+
+    <dl class="article-meta">
+      <div>
+        <dt>Published</dt>
+        <dd>Wed Apr 22 2026 02:00:00 GMT+0200 (Central European Summer Time)</dd>
+      </div>
+      <div>
+        <dt>Reading time</dt>
+        <dd>12 minutes</dd>
+      </div>
+      <div>
+        <dt>Author</dt>
+        <dd>SAP Extract Academy</dd>
+      </div>
+    </dl>
+  </header>
+
+  <div class="article-body prose">
+    <p>ACDOCA (Accounting Entries, Contract Accounting, Investment) is the universal journal of S/4HANA. It&#39;s where every GL posting lives—every accounting entry from FI (Finance), CO (Controlling), MM (Materials), SD (Sales), HR (Payroll). For analytics, ACDOCA is the single source of truth. For data extraction, it&#39;s the most challenging table in SAP.</p>
+<p>This article guides you through three extraction patterns, from beginner (simple, one company/year) to expert (billions of rows, real-time streaming). You&#39;ll understand the trade-offs and choose the pattern that fits your business.</p>
+<h2>Pattern 1: Beginner – One Company, One Year via ODP</h2>
+<p><strong>When to use this pattern</strong>: You need GL data for a single company and fiscal year (e.g., year-end close for one operating company), volumes are under 500M rows, and you can tolerate a one-time 2-4 hour extraction window.</p>
+<p><strong>Architecture</strong>:</p>
+<pre><code>SAP S/4HANA (ACDOCA)
+        ↓
+   ODP Provider
+        ↓
+  Python/pyrfc
+        ↓
+  Snowflake
+</code></pre>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li><strong>Connect via Python/pyrfc</strong> to your SAP system</li>
+<li><strong>Call RFC_ODP_READ</strong> with filter: <code>RBUKRS=&#39;1000&#39; AND RYEAR=2024</code></li>
+<li><strong>Stream in batches</strong> of 100k rows to avoid memory exhaustion in Python</li>
+<li><strong>Upsert to Snowflake</strong> as data arrives</li>
+<li><strong>Reconcile</strong> GL totals (sum of GL_ACDOCA_RAW in Snowflake = sum in SAP)</li>
+</ol>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Simple, 50 lines of Python</li>
+<li>No licensing issues (ODP is permitted on Runtime License)</li>
+<li>Fast initial setup (&lt; 1 day)</li>
+<li>Built on standard tools (pyrfc, Snowflake)</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Non-real-time (extraction is one-time, manually triggered)</li>
+<li>Doesn&#39;t scale to billions of rows without code change</li>
+<li>No parallelism (single extraction thread)</li>
+</ul>
+<p><strong>Example Code</strong>:</p>
+<pre><code class="language-python">import pyrfc
+import snowflake.connector
+
+conn = pyrfc.Client(...)  # RFC connection to SAP
+
+# Fetch ACDOCA for company 1000, year 2024, in batches
+filter_str = &quot;(RBUKRS=&#39;1000&#39; AND RYEAR=2024)&quot;
+result = conn.call(&#39;RFC_ODP_READ&#39;, 
+                   PROVIDER=&#39;I_JournalEntryItem&#39;,
+                   FILTER=filter_str, 
+                   ROWCOUNT=100000)
+
+# Connect to Snowflake
+snow_conn = snowflake.connector.connect(...)
+cursor = snow_conn.cursor()
+
+# Stream and upsert
+for row_batch in result:
+    cursor.executemany(
+        &quot;INSERT INTO GL_ACDOCA_RAW (...) VALUES (...)&quot;,
+        row_batch
+    )
+    snow_conn.commit()
+</code></pre>
+<p><strong>When it breaks</strong>: If RBUKRS=&#39;1000&#39; AND RYEAR=2024 contains 500M+ rows, you hit memory exhaustion. Move to Pattern 2.</p>
+<h2>Pattern 2: Intermediate – Multi-Company Parallel via ODP</h2>
+<p><strong>When to use this pattern</strong>: You need 2-5 years of data across 5-20 company codes, volumes are 500M to 5B rows, you want reasonably fast extraction (4-12 hours), and you can use Python with ThreadPoolExecutor.</p>
+<p><strong>Architecture</strong>:</p>
+<pre><code>SAP S/4HANA (ACDOCA)
+        ↓
+   ODP Provider
+        ↓
+  Python ThreadPoolExecutor (4 parallel threads)
+        ↓
+  Snowflake (partitioned by GJAHR, BUKRS)
+</code></pre>
+<p><strong>Key insight</strong>: Extract each (BUKRS, GJAHR) partition independently in parallel. A 4-thread executor runs 4 partitions concurrently, cutting total time by 4x.</p>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li><p><strong>Define partitions</strong>: Generate a matrix of (BUKRS, GJAHR) pairs</p>
+<pre><code class="language-python">years = [2022, 2023, 2024]
+companies = [1000, 1001, 2000, 2100, 2200]
+partitions = [(bukrs, year) for year in years for bukrs in companies]
+# Result: 15 partitions
+</code></pre>
+</li>
+<li><p><strong>Launch parallel extractions</strong>: Use ThreadPoolExecutor to run 4 concurrent RFC connections</p>
+<pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor
+
+with ThreadPoolExecutor(max_workers=4) as executor:
+    futures = [executor.submit(extract_partition, bukrs, year) 
+               for bukrs, year in partitions]
+    for future in futures:
+        future.result()  # Wait for all to complete
+</code></pre>
+</li>
+<li><p><strong>Extract partition function</strong>:</p>
+<pre><code class="language-python">def extract_partition(bukrs, year):
+    conn = pyrfc.Client(...)  # New RFC connection per thread
+    filter_str = f&quot;(RBUKRS=&#39;{bukrs}&#39; AND RYEAR={year})&quot;
+    result = conn.call(&#39;RFC_ODP_READ&#39;,
+                       PROVIDER=&#39;I_JournalEntryItem&#39;,
+                       FILTER=filter_str,
+                       ROWCOUNT=100000)
+    
+    snow_conn = snowflake.connector.connect(...)
+    cursor = snow_conn.cursor()
+    
+    for row_batch in result:
+        cursor.executemany(&quot;INSERT INTO GL_ACDOCA_RAW (...) VALUES (...)&quot;,
+                          row_batch)
+    snow_conn.commit()
+</code></pre>
+</li>
+<li><p><strong>Reconcile by partition</strong>: For each (BUKRS, GJAHR), verify totals match SAP</p>
+</li>
+</ol>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>4-8x speedup via parallelism</li>
+<li>Handles up to 5B rows (15 partitions × 333M rows each)</li>
+<li>No licensing issues (ODP + Python is Runtime-safe)</li>
+<li>Fault-tolerant (if partition fails, others continue; retry failed partition)</li>
+<li>Moderately complex (150-200 lines of Python)</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Manual partition definition (if companies/years change, code updates required)</li>
+<li>Still non-real-time (one-time extraction, then manual delta polling)</li>
+<li>Limits to 4 parallel threads (more threads risk SAP connection pool exhaustion or dialog user blocking)</li>
+</ul>
+<p><strong>Data Model in Snowflake</strong>:</p>
+<pre><code class="language-sql">CREATE TABLE GL_ACDOCA_RAW (
+    MANDT CHAR(3),
+    RBUKRS CHAR(4),  -- partition column 1
+    RYEAR CHAR(4),   -- partition column 2
+    POPER CHAR(3),
+    BELNR CHAR(10),
+    ... GL fields ...
+)
+PARTITION BY (RYEAR, RBUKRS);
+</code></pre>
+<p><strong>When it breaks</strong>: If you need real-time GL updates (posting visible in Snowflake within minutes), or if volumes exceed 5B rows, move to Pattern 3.</p>
+<h2>Pattern 3: Expert – Enterprise SLT Real-Time Streaming</h2>
+<p><strong>When to use this pattern</strong>: You need real-time GL data (&lt; 5 min lag), volumes are 5B+ rows, you have a Full Use license and SLT installed, and you need sub-minute accounting close.</p>
+<p><strong>Architecture</strong>:</p>
+<pre><code>SAP S/4HANA (ACDOCA)
+           ↓
+      SLT + LTRS
+   (Parallel readers)
+           ↓
+  Kafka (30 partitions)
+  [Log compaction enabled]
+           ↓
+Snowflake Kafka Connector
+           ↓
+Snowflake GL_ACDOCA_RAW
+</code></pre>
+<p><strong>Key differences from Pattern 2</strong>:</p>
+<ul>
+<li><strong>Full-load via SLT</strong> (not ODP): SLT is built for billions of rows; ODP is not</li>
+<li><strong>Parallel readers (LTRS)</strong>: 4-8 parallel readers, each handling one partition, running simultaneously</li>
+<li><strong>Kafka as buffer</strong>: SLT pushes to Kafka; Kafka buffers with log compaction; Snowflake connector polls Kafka</li>
+<li><strong>Real-time delta</strong>: After full-load completes, SLT automatically switches to delta (only changes flow), with near-zero latency</li>
+</ul>
+<p><strong>Prerequisites</strong>:</p>
+<ul>
+<li>Full Use license (SLT requires this)</li>
+<li>Kafka cluster (10+ brokers, 500GB+ storage, log compaction enabled)</li>
+<li>SLT installed and configured</li>
+<li>SM59 RFC destinations for Kafka cluster</li>
+</ul>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li><p><strong>Check license</strong> (SLICENSE transaction)</p>
+<ul>
+<li>Verify &quot;SLT Landscape Transformation&quot; = Active, Type = Full Use</li>
+</ul>
+</li>
+<li><p><strong>Configure SLT replication object</strong> (LTRC transaction)</p>
+<pre><code>Replication Object Name: ACDOCA_KAFKA
+Source Table: ACDOCA
+Partitioning Strategy: BUKRS + GJAHR (critical!)
+Destination: Kafka topic acdoca-source
+Replication Mode: Full + Delta
+</code></pre>
+</li>
+<li><p><strong>Create Kafka topic</strong> with correct settings</p>
+<pre><code class="language-bash">kafka-topics --create --topic acdoca-source \
+  --partitions 30 \
+  --replication-factor 3 \
+  --config log.cleanup.policy=compact \
+  --config log.segment.bytes=1073741824
+</code></pre>
+</li>
+<li><p><strong>Configure LTRS parallel readers</strong> (LTRS transaction)</p>
+<pre><code>Number of Parallel Readers: 4-8
+Reader Timeout: 60 minutes
+Delay Between Reader Launches: 30 seconds
+</code></pre>
+</li>
+<li><p><strong>Trigger full replication</strong> (LTCO transaction)</p>
+<ul>
+<li>Click &quot;Full Replication&quot; button</li>
+<li>Monitor via LTCO status screen</li>
+<li>Full-load runs 24-72 hours depending on volume</li>
+</ul>
+</li>
+<li><p><strong>Create Snowflake Kafka Connector</strong> to consume from Kafka</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;snowflake-acdoca-sink&quot;,
+  &quot;config&quot;: {
+    &quot;connector.class&quot;: &quot;com.snowflake.kafka.connector.SnowflakeSinkConnector&quot;,
+    &quot;topics&quot;: &quot;acdoca-source&quot;,
+    &quot;snowflake.database.name&quot;: &quot;FINANCE&quot;,
+    &quot;snowflake.schema.name&quot;: &quot;GL&quot;,
+    &quot;snowflake.user.name&quot;: &quot;KAFKA_USER&quot;,
+    &quot;key.converter&quot;: &quot;org.apache.kafka.connect.storage.StringConverter&quot;,
+    &quot;value.converter&quot;: &quot;org.apache.kafka.connect.json.JsonConverter&quot;,
+    &quot;buffer.count.records&quot;: 10000,
+    &quot;buffer.flush.time&quot;: 30
+  }
+}
+</code></pre>
+</li>
+<li><p><strong>Monitor replication</strong></p>
+<ul>
+<li>LTCO: shows replication status (% complete, rows/sec)</li>
+<li>ODQMON: shows delta queue depth (should be near zero after full-load)</li>
+<li>Snowflake: watch GL_ACDOCA_RAW row count grow in real-time</li>
+</ul>
+</li>
+<li><p><strong>Reconcile post-load</strong></p>
+<pre><code class="language-sql">-- In Snowflake
+SELECT RBUKRS, RYEAR, SUM(AMOUNT_DEBIT), SUM(AMOUNT_CREDIT)
+FROM GL_ACDOCA_RAW
+GROUP BY RBUKRS, RYEAR
+-- Compare with SAP via FM_GET_GL_TOTAL RFC or manual SE16N verification
+</code></pre>
+</li>
+</ol>
+<p><strong>Pros</strong>:</p>
+<ul>
+<li>Real-time GL data (delta lag &lt; 5 min)</li>
+<li>Scales to 10B+ rows (SLT + LTRS + parallelism handle any volume)</li>
+<li>Sub-minute accounting close (no wait for batch extraction)</li>
+<li>Automatic delta after full-load (no manual polling required)</li>
+<li>Kafka as integration hub (other systems can subscribe to GL changes)</li>
+</ul>
+<p><strong>Cons</strong>:</p>
+<ul>
+<li>Most expensive: Full Use license ($500k-$2M/year) + SLT licensing + Kafka infrastructure</li>
+<li>Complex setup: 5+ SAP transactions, Kafka cluster management, Snowflake Kafka connector</li>
+<li>Requires SLT expertise (SLT configuration, partitioning strategy, LTRS tuning)</li>
+<li>Support complexity: if lag grows, is it SAP bottleneck, Kafka bottleneck, or Snowflake bottleneck?</li>
+</ul>
+<p><strong>Monitoring checklist</strong>:</p>
+<ul>
+<li>LTCO replication status (full-load % complete, delta status)</li>
+<li>ODQMON delta queue depth (target: &lt; 1000 unread entries)</li>
+<li>Kafka consumer lag (target: &lt; 30 sec)</li>
+<li>Snowflake query performance (GL analytics should complete in &lt; 30 sec)</li>
+<li>SM50 dialog process utilization (target: &lt; 80%, don&#39;t starve finance users)</li>
+</ul>
+<h2>Comparison: Which Pattern for You?</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Pattern 1</th>
+<th>Pattern 2</th>
+<th>Pattern 3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Data Volume</strong></td>
+<td>&lt; 500M rows</td>
+<td>500M–5B rows</td>
+<td>5B+ rows</td>
+</tr>
+<tr>
+<td><strong>Latency</strong></td>
+<td>One-time, manual</td>
+<td>One-time or 2hr polling</td>
+<td>Real-time (&lt; 5 min)</td>
+</tr>
+<tr>
+<td><strong>Extraction Time</strong></td>
+<td>2–4 hours</td>
+<td>4–12 hours</td>
+<td>24–72 hours (for initial), then &lt; 5 min deltas</td>
+</tr>
+<tr>
+<td><strong>Setup Complexity</strong></td>
+<td>Simple (50 LOC Python)</td>
+<td>Moderate (200 LOC Python)</td>
+<td>Complex (5 SAP transactions, Kafka cluster)</td>
+</tr>
+<tr>
+<td><strong>Licensing</strong></td>
+<td>Runtime OK</td>
+<td>Runtime OK</td>
+<td>Full Use required</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>Low (Python dev time)</td>
+<td>Low (Python dev time)</td>
+<td>High (licenses + Kafka + operations)</td>
+</tr>
+<tr>
+<td><strong>Parallelism</strong></td>
+<td>Single-threaded</td>
+<td>4 threads</td>
+<td>4–8 parallel readers</td>
+</tr>
+<tr>
+<td><strong>Recommended For</strong></td>
+<td>Single company/year, finance analysts</td>
+<td>Multi-year close, data warehouse staging</td>
+<td>Enterprise GL, real-time analytics, sub-minute close</td>
+</tr>
+</tbody></table>
+<h2>Real-World Progression</h2>
+<p>Most enterprises follow this path:</p>
+<ol>
+<li><strong>Year 1</strong>: Implement Pattern 1 (simple ODP). Finance gets month-end GL close in 4 hours via Snowflake.</li>
+<li><strong>Year 2</strong>: Users ask for 3 years of GL data for analytics. Pattern 1 times out. Upgrade to Pattern 2 (parallel ODP). Extract 3 years in 8 hours.</li>
+<li><strong>Year 3</strong>: CFO demands real-time GL for sub-minute close. Finance users want live GL during posting. Pattern 2 doesn&#39;t support real-time. Invest in Full Use license and SLT. Implement Pattern 3. GL is now real-time.</li>
+</ol>
+<p>Each upgrade requires investment (development time, licensing, infrastructure), but each solves a real business problem at that point in time.</p>
+<h2>Key Takeaways</h2>
+<ol>
+<li><strong>Partition always</strong> (BUKRS + GJAHR minimum). Never SELECT * from ACDOCA.</li>
+<li><strong>Use released CDS views</strong> (I_JournalEntryItem), not raw ACDOCA tables.</li>
+<li><strong>ODP scales to 5B rows</strong> with proper partitioning and parallelism. SLT scales beyond.</li>
+<li><strong>Real-time extraction requires SLT</strong> (and a Full Use license). ODP is batch/polling, not real-time.</li>
+<li><strong>Start simple</strong> (Pattern 1), then upgrade architecture as business needs grow.</li>
+</ol>
+<p>The three patterns are not rigid; they&#39;re a ladder. Climb at your pace, understanding the trade-offs at each rung. Master ACDOCA extraction, and you can extract any SAP table.</p>
+
+  </div>
+
+  <section class="related-walkthroughs">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-walkthroughs">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-walkthroughs">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+      <li>
+        <a href="/walkthrough/[object Object]/">Walkthrough: [object Object]</a>
+      </li>
+    </ul>
+  </section>
+
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

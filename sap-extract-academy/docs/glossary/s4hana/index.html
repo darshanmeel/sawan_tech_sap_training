@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>S&#x2F;4HANA: SAP&#39;s Modern ERP Platform — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="S&#x2F;4HANA is SAP&#39;s latest ERP system (released 2015). Replaces ECC with in-memory database, cloud design, simplified models, and embedded analytics.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;s4hana&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="S&#x2F;4HANA: SAP&#39;s Modern ERP Platform — Plain Explanation">
+  <meta property="og:description" content="S&#x2F;4HANA is SAP&#39;s latest ERP system (released 2015). Replaces ECC with in-memory database, cloud design, simplified models, and embedded analytics.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;s4hana&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="S&#x2F;4HANA: SAP&#39;s Modern ERP Platform — Plain Explanation">
+  <meta name="twitter:description" content="S&#x2F;4HANA is SAP&#39;s latest ERP system (released 2015). Replaces ECC with in-memory database, cloud design, simplified models, and embedded analytics.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"SAP S/4HANA (SAP Suite 4 High-Performance Analytics)","alternateName":"S/4HANA","description":"S/4HANA is SAP's latest ERP platform, released in 2015. It replaces older ERP versions (R/3, ECC) with modern architecture: in-memory database (HANA), cloud-first design, simplified data models, and embedded analytics.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Glossary term detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/glossary/">Glossary</a></li>
+    <li aria-current="page">S&#x2F;4HANA</li>
+  </ol>
+</nav>
+
+<article class="glossary-term">
+  <header class="glossary-header">
+    <h1>S&#x2F;4HANA: SAP S&#x2F;4HANA (SAP Suite 4 High-Performance Analytics) in SAP</h1>
+  </header>
+
+  <section class="glossary-definition">
+    <h2>Definition</h2>
+    <p class="short-definition">S&#x2F;4HANA is SAP&#39;s latest ERP platform, released in 2015. It replaces older ERP versions (R&#x2F;3, ECC) with modern architecture: in-memory database (HANA), cloud-first design, simplified data models, and embedded analytics.</p>
+  </section>
+
+  <section class="glossary-body prose">
+    <p>SAP S/4HANA (Suite 4 High-Performance Analytics) is SAP&#39;s modern, next-generation ERP platform, released in 2015. It replaces older SAP ERP versions (R/3, ECC) with a cloud-first architecture built on SAP HANA (in-memory database). S/4HANA simplifies the data model, embeds analytics, and modernizes user experience. Most new SAP implementations are S/4HANA; enterprises are migrating from ECC to S/4HANA.</p>
+<p>For data extraction, S/4HANA changes the game: <strong>(1) CDS views are first-class</strong>, replacing legacy BW extractors; <strong>(2) ODP is the standard extraction framework</strong>, whereas ECC had legacy extractors; <strong>(3) released CDS views</strong> (I_SalesDocument, I_JournalEntryItem) are published by SAP and supported, so you&#39;re not querying raw tables. This makes extraction safer and more maintainable.</p>
+<p>The extraction patterns in this academy assume S/4HANA or modern ECC with CDS and ODP installed. If you&#39;re working with legacy ECC, many concepts still apply (tables, filters, partitioning), but tools and metadata differ. S/4HANA&#39;s ODP and CDS ecosystem is the future; learning S/4HANA extraction patterns first positions you well for modern data architecture.</p>
+
+  </section>
+
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ECC/">ECC</a>
+      </li>
+      <li>
+        <a href="/glossary/ERP/">ERP</a>
+      </li>
+      <li>
+        <a href="/glossary/HANA Database/">HANA Database</a>
+      </li>
+      <li>
+        <a href="/glossary/CDS/">CDS</a>
+      </li>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/S&#x2F;4HANA Cloud/">S&#x2F;4HANA Cloud</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ECC/">ECC</a>
+      </li>
+      <li>
+        <a href="/glossary/ERP/">ERP</a>
+      </li>
+      <li>
+        <a href="/glossary/HANA Database/">HANA Database</a>
+      </li>
+      <li>
+        <a href="/glossary/CDS/">CDS</a>
+      </li>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/S&#x2F;4HANA Cloud/">S&#x2F;4HANA Cloud</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ECC/">ECC</a>
+      </li>
+      <li>
+        <a href="/glossary/ERP/">ERP</a>
+      </li>
+      <li>
+        <a href="/glossary/HANA Database/">HANA Database</a>
+      </li>
+      <li>
+        <a href="/glossary/CDS/">CDS</a>
+      </li>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/S&#x2F;4HANA Cloud/">S&#x2F;4HANA Cloud</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ECC/">ECC</a>
+      </li>
+      <li>
+        <a href="/glossary/ERP/">ERP</a>
+      </li>
+      <li>
+        <a href="/glossary/HANA Database/">HANA Database</a>
+      </li>
+      <li>
+        <a href="/glossary/CDS/">CDS</a>
+      </li>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/S&#x2F;4HANA Cloud/">S&#x2F;4HANA Cloud</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ECC/">ECC</a>
+      </li>
+      <li>
+        <a href="/glossary/ERP/">ERP</a>
+      </li>
+      <li>
+        <a href="/glossary/HANA Database/">HANA Database</a>
+      </li>
+      <li>
+        <a href="/glossary/CDS/">CDS</a>
+      </li>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/S&#x2F;4HANA Cloud/">S&#x2F;4HANA Cloud</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/ECC/">ECC</a>
+      </li>
+      <li>
+        <a href="/glossary/ERP/">ERP</a>
+      </li>
+      <li>
+        <a href="/glossary/HANA Database/">HANA Database</a>
+      </li>
+      <li>
+        <a href="/glossary/CDS/">CDS</a>
+      </li>
+      <li>
+        <a href="/glossary/ODP/">ODP</a>
+      </li>
+      <li>
+        <a href="/glossary/S&#x2F;4HANA Cloud/">S&#x2F;4HANA Cloud</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sap-documentation">
+    <h2></h2>
+    <p>
+      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;s4hana.html" target="_blank" rel="noopener noreferrer">
+        Read more on SAP Help Portal
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </p>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

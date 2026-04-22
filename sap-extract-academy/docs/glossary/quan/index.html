@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>QUAN: Quantity Data Type in SAP — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="QUAN is the data type for quantities in SAP (order qty, inventory, weights). Always pair with unit fields (MEINS, UOOM) to make quantities meaningful.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;quan&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="QUAN: Quantity Data Type in SAP — Plain Explanation">
+  <meta property="og:description" content="QUAN is the data type for quantities in SAP (order qty, inventory, weights). Always pair with unit fields (MEINS, UOOM) to make quantities meaningful.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;quan&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="QUAN: Quantity Data Type in SAP — Plain Explanation">
+  <meta name="twitter:description" content="QUAN is the data type for quantities in SAP (order qty, inventory, weights). Always pair with unit fields (MEINS, UOOM) to make quantities meaningful.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Quantity","alternateName":"QUAN","description":"QUAN is a SAP data type for numeric quantity fields (order quantities, inventory balances, weights). Like CURR, QUAN fields must be paired with unit fields (MEINS or UOOM) to be interpretable.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Glossary term detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/glossary/">Glossary</a></li>
+    <li aria-current="page">QUAN</li>
+  </ol>
+</nav>
+
+<article class="glossary-term">
+  <header class="glossary-header">
+    <h1>QUAN: Quantity in SAP</h1>
+  </header>
+
+  <section class="glossary-definition">
+    <h2>Definition</h2>
+    <p class="short-definition">QUAN is a SAP data type for numeric quantity fields (order quantities, inventory balances, weights). Like CURR, QUAN fields must be paired with unit fields (MEINS or UOOM) to be interpretable.</p>
+  </section>
+
+  <section class="glossary-body prose">
+    <p>QUAN (Quantity) is a SAP data type for numeric quantity fields: order quantities in EKPO, sales quantities in VBAK, inventory balances in MARD. A QUAN field stores a number, but that number is meaningless without its unit: 1000 QUAN is 1000 kilograms if the unit is KG, 1000 units if the unit is EA, 1000 liters if the unit is LT.</p>
+<p>Like CURR/CUKY pairing, QUAN fields must be paired with unit reference fields (MEINS in MARA/MARC, UOOM in EKPO). If you extract MARD-LABST (inventory quantity) without MARA-MEINS, you have a column of numbers with no context. Supply chain analytics breaks: demand planning can&#39;t work if it doesn&#39;t know whether quantities are in units or kilograms.</p>
+<p>When extracting purchase orders, sales orders, or inventory, always identify the QUAN fields and their unit references in SE11. Fivetran and ODP handle these relationships implicitly; custom extractors must select both QUAN and unit fields. This is a high-priority data quality check: incomplete QUAN extraction (missing units) will cause downstream reconciliation failures and angry business users asking &quot;why don&#39;t our order quantities match?&quot;</p>
+
+  </section>
+
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/MEINS/">MEINS</a>
+      </li>
+      <li>
+        <a href="/glossary/UOOM/">UOOM</a>
+      </li>
+      <li>
+        <a href="/glossary/CURR/">CURR</a>
+      </li>
+      <li>
+        <a href="/glossary/NUMC/">NUMC</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/MEINS/">MEINS</a>
+      </li>
+      <li>
+        <a href="/glossary/UOOM/">UOOM</a>
+      </li>
+      <li>
+        <a href="/glossary/CURR/">CURR</a>
+      </li>
+      <li>
+        <a href="/glossary/NUMC/">NUMC</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/MEINS/">MEINS</a>
+      </li>
+      <li>
+        <a href="/glossary/UOOM/">UOOM</a>
+      </li>
+      <li>
+        <a href="/glossary/CURR/">CURR</a>
+      </li>
+      <li>
+        <a href="/glossary/NUMC/">NUMC</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/MEINS/">MEINS</a>
+      </li>
+      <li>
+        <a href="/glossary/UOOM/">UOOM</a>
+      </li>
+      <li>
+        <a href="/glossary/CURR/">CURR</a>
+      </li>
+      <li>
+        <a href="/glossary/NUMC/">NUMC</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/MEINS/">MEINS</a>
+      </li>
+      <li>
+        <a href="/glossary/UOOM/">UOOM</a>
+      </li>
+      <li>
+        <a href="/glossary/CURR/">CURR</a>
+      </li>
+      <li>
+        <a href="/glossary/NUMC/">NUMC</a>
+      </li>
+      <li>
+        <a href="/glossary/Data Dictionary/">Data Dictionary</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sap-documentation">
+    <h2></h2>
+    <p>
+      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;data-element-quan.html" target="_blank" rel="noopener noreferrer">
+        Read more on SAP Help Portal
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </p>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract ACDOCA Universal Journal from SAP S&#x2F;4HANA — Expert Guide — SAP Extract Academy</title>
+  <meta name="description" content="ACDOCA is the largest table in S&#x2F;4HANA (Universal Journal). Learn extraction strategies for billions of rows: partitioning, licensing, CDS views, and performance tuning.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;tables&#x2F;acdoca&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract ACDOCA Universal Journal from SAP S&#x2F;4HANA — Expert Guide">
+  <meta property="og:description" content="ACDOCA is the largest table in S&#x2F;4HANA (Universal Journal). Learn extraction strategies for billions of rows: partitioning, licensing, CDS views, and performance tuning.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;tables&#x2F;acdoca&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract ACDOCA Universal Journal from SAP S&#x2F;4HANA — Expert Guide">
+  <meta name="twitter:description" content="ACDOCA is the largest table in S&#x2F;4HANA (Universal Journal). Learn extraction strategies for billions of rows: partitioning, licensing, CDS views, and performance tuning.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Universal Journal","description":"ACDOCA is the largest table in S/4HANA (Universal Journal). Learn extraction strategies for billions of rows: partitioning, licensing, CDS views, and performance tuning.","url":"https://academy.example.com/tables/acdoca/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Tables","item":"https://academy.example.com/tables/"},{"@type":"ListItem","position":3,"name":"ACDOCA"}]}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Table detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li aria-current="page">ACDOCA</li>
+  </ol>
+</nav>
+
+<article class="table-detail">
+  <header class="table-header">
+    <div class="table-header-top">
+      <span class="module-badge">FI</span>
+    </div>
+    <h1>ACDOCA</h1>
+    <h2 class="table-name">Universal Journal</h2>
+    <p class="table-description">Universal Journal (subledger, costing, and line-item accounting). Billions of rows; consolidated view of all postings across all document types.</p>
+  </header>
+
+  <section class="table-overview">
+    <h2>What this table is</h2>
+    <div class="prose">
+      <p>ACDOCA is the Universal Journal table in SAP S/4HANA, storing consolidated line-item accounting postings across all modules: G/L, A/P, A/R, costing, and profitability. The table is often the largest in S/4HANA installations, with billions of rows accumulated over years. It&#39;s the source of truth for financial analytics, audit trails, and balance sheet reconciliation.</p>
+<p>ACDOCA extraction is the centerpiece of data warehouse projects but requires disciplined engineering because naive &quot;SELECT *&quot; queries crash SAP systems. Successful extraction depends on partitioning strategy (by fiscal year and period), use of released CDS views, and careful load balancing across parallel jobs.</p>
+<p><a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/universal-journal-overview.html">SAP S/4HANA Universal Journal overview</a> documents the complete design. The <a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/acdoca-arch.html">ACDOCA architecture guide</a> is mandatory reading if you&#39;re extracting more than a few years of data. Always use <code>I_JournalEntryItem</code> (the released CDS view) rather than raw ACDOCA — it enforces authorization, applies currency conversion, and protects against accidental full-table scans.</p>
+
+    </div>
+  </section>
+
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RBUKRS</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RYEAR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>POPER</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BELNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>DOCLN</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RBUKRS</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RYEAR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>POPER</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BELNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>DOCLN</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RBUKRS</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RYEAR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>POPER</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BELNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>DOCLN</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RBUKRS</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RYEAR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>POPER</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BELNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>DOCLN</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RBUKRS</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RYEAR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>POPER</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BELNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>DOCLN</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>MANDT</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RBUKRS</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>RYEAR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>POPER</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>BELNR</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><code>DOCLN</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="table-volume">
+    <h2>Volume characteristics</h2>
+    <dl>
+      <div>
+        <dt>Typical row count</dt>
+        <dd>1B-100B</dd>
+      </div>
+      <div>
+        <dt>Volume class</dt>
+        <dd><span class="badge badge-heavyweight">heavyweight</span></dd>
+      </div>
+      <div>
+        <dt>Released CDS view</dt>
+        <dd><code>I_JournalEntryItem</code></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="extraction-gotchas">
+    <h2>Extraction gotchas</h2>
+    <ul>
+      <li>
+        <strong>ACDOCA is the largest table in S&#x2F;4HANA. Extracting the entire table will timeout. Always partition by RYEAR (reporting year) and POPER (period) at minimum.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-partitioning.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Raw SELECT * on ACDOCA crashes SAP dialog work processes due to memory exhaustion. Use the released CDS view I_JournalEntryItem instead, or apply row-level filtering with SLT&#x2F;ODP.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-perf.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>ACDOCA consolidates all accounting: G&#x2F;L, A&#x2F;P, A&#x2F;R, costing, profitability. Each posting appears once with multiple dimensions. Aggregation logic is business-rule dependent.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-design.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Full Use License required for SLT replication of ACDOCA. ODP extraction (recommended) works under Runtime License. Verify your licensing with SAP before committing to SLT.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;slt-licensing.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+  <section class="extraction-gotchas">
+    <h2>Extraction gotchas</h2>
+    <ul>
+      <li>
+        <strong>ACDOCA is the largest table in S&#x2F;4HANA. Extracting the entire table will timeout. Always partition by RYEAR (reporting year) and POPER (period) at minimum.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-partitioning.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Raw SELECT * on ACDOCA crashes SAP dialog work processes due to memory exhaustion. Use the released CDS view I_JournalEntryItem instead, or apply row-level filtering with SLT&#x2F;ODP.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-perf.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>ACDOCA consolidates all accounting: G&#x2F;L, A&#x2F;P, A&#x2F;R, costing, profitability. Each posting appears once with multiple dimensions. Aggregation logic is business-rule dependent.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-design.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Full Use License required for SLT replication of ACDOCA. ODP extraction (recommended) works under Runtime License. Verify your licensing with SAP before committing to SLT.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;slt-licensing.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+  <section class="extraction-gotchas">
+    <h2>Extraction gotchas</h2>
+    <ul>
+      <li>
+        <strong>ACDOCA is the largest table in S&#x2F;4HANA. Extracting the entire table will timeout. Always partition by RYEAR (reporting year) and POPER (period) at minimum.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-partitioning.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Raw SELECT * on ACDOCA crashes SAP dialog work processes due to memory exhaustion. Use the released CDS view I_JournalEntryItem instead, or apply row-level filtering with SLT&#x2F;ODP.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-perf.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>ACDOCA consolidates all accounting: G&#x2F;L, A&#x2F;P, A&#x2F;R, costing, profitability. Each posting appears once with multiple dimensions. Aggregation logic is business-rule dependent.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-design.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Full Use License required for SLT replication of ACDOCA. ODP extraction (recommended) works under Runtime License. Verify your licensing with SAP before committing to SLT.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;slt-licensing.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+  <section class="extraction-gotchas">
+    <h2>Extraction gotchas</h2>
+    <ul>
+      <li>
+        <strong>ACDOCA is the largest table in S&#x2F;4HANA. Extracting the entire table will timeout. Always partition by RYEAR (reporting year) and POPER (period) at minimum.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-partitioning.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Raw SELECT * on ACDOCA crashes SAP dialog work processes due to memory exhaustion. Use the released CDS view I_JournalEntryItem instead, or apply row-level filtering with SLT&#x2F;ODP.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-perf.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>ACDOCA consolidates all accounting: G&#x2F;L, A&#x2F;P, A&#x2F;R, costing, profitability. Each posting appears once with multiple dimensions. Aggregation logic is business-rule dependent.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-design.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li>
+        <strong>Full Use License required for SLT replication of ACDOCA. ODP extraction (recommended) works under Runtime License. Verify your licensing with SAP before committing to SLT.</strong>
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;slt-licensing.html" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="walkthroughs-available">
+    <h2>Walkthroughs available</h2>
+    <p>Pick your skill level and start learning how to extract ACDOCA.</p>
+    <div class="grid grid-cols-3">
+      <a href="/walkthrough/beginner//" class="card walkthrough-card">
+        <h3></h3>
+        <p class="walkthrough-meta">Step-by-step guide</p>
+      </a>
+      <a href="/walkthrough/intermediate//" class="card walkthrough-card">
+        <h3></h3>
+        <p class="walkthrough-meta">Step-by-step guide</p>
+      </a>
+      <a href="/walkthrough/expert//" class="card walkthrough-card">
+        <h3></h3>
+        <p class="walkthrough-meta">Step-by-step guide</p>
+      </a>
+    </div>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

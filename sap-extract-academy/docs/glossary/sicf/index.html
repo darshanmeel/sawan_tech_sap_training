@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SICF: HTTP Configuration in SAP — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="SICF configures HTTP&#x2F;REST services in SAP. Used for APIs and web handlers that extraction tools might call.">
+  <link rel="canonical" href="https://academy.example.com&#x2F;glossary&#x2F;sicf&#x2F;">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SICF: HTTP Configuration in SAP — Plain Explanation">
+  <meta property="og:description" content="SICF configures HTTP&#x2F;REST services in SAP. Used for APIs and web handlers that extraction tools might call.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;sicf&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SICF: HTTP Configuration in SAP — Plain Explanation">
+  <meta name="twitter:description" content="SICF configures HTTP&#x2F;REST services in SAP. Used for APIs and web handlers that extraction tools might call.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"HTTP/HTTPS Configuration","alternateName":"SICF","description":"SICF is the SAP transaction for configuring HTTP handlers, services, and web communication. Used to enable REST APIs, iGate services, or custom web handlers that extraction tools might call.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="/assets/js/source-picker.js" defer></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-top">
+        <a href="/" class="site-logo">SAP Extract Academy</a>
+      </div>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="/"></a></li>
+          <li><a href="/tables/"></a></li>
+          <li><a href="/walkthrough/"></a></li>
+          <li><a href="/glossary/"></a></li>
+          <li><a href="/articles/"></a></li>
+          <li><a href="/roadmap/"></a></li>
+          <li><a href="/about/"></a></li>
+        </ul>
+        <div data-source-picker>
+          <label for="source-version-select" class="sr-only">SAP Version</label>
+          <select id="source-version-select" aria-label="Choose SAP version">
+            <option value="s4hana">S/4HANA</option>
+            <option value="ecc">ECC</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <div data-source-indicator data-source-version="s4hana">
+      <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
+      <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+    </div>
+    <!-- Glossary term detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/glossary/">Glossary</a></li>
+    <li aria-current="page">SICF</li>
+  </ol>
+</nav>
+
+<article class="glossary-term">
+  <header class="glossary-header">
+    <h1>SICF: HTTP&#x2F;HTTPS Configuration in SAP</h1>
+  </header>
+
+  <section class="glossary-definition">
+    <h2>Definition</h2>
+    <p class="short-definition">SICF is the SAP transaction for configuring HTTP handlers, services, and web communication. Used to enable REST APIs, iGate services, or custom web handlers that extraction tools might call.</p>
+  </section>
+
+  <section class="glossary-body prose">
+    <p>SICF (HTTP Configuration Cockpit) is the transaction for managing HTTP handlers and REST services in SAP. If your extraction tool uses REST APIs to call SAP (instead of RFC), you configure the REST endpoint in SICF. SICF also controls which HTTP services are active, authentication, and SSL/TLS settings.</p>
+<p>For data extraction, SICF is less common than RFC (most tools use RFC), but emerging patterns use REST: <strong>(1) modern OData APIs</strong> (SAP exposes some data via OData REST endpoints), and <strong>(2) custom REST services</strong> (your organization publishes extraction functions via REST instead of RFCs). If extraction integration uses REST APIs, SICF is where the configuration lives.</p>
+<p>Most practitioners don&#39;t interact with SICF directly unless troubleshooting HTTP connectivity or setting up REST endpoints. RFC via SM59 remains the standard. But if you&#39;re building custom extraction APIs or integrating with modern REST-based tools, SICF is where you enable and configure them.</p>
+
+  </section>
+
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/RFC/">RFC</a>
+      </li>
+      <li>
+        <a href="/glossary/Integration/">Integration</a>
+      </li>
+      <li>
+        <a href="/glossary/REST API/">REST API</a>
+      </li>
+      <li>
+        <a href="/glossary/SM59/">SM59</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/RFC/">RFC</a>
+      </li>
+      <li>
+        <a href="/glossary/Integration/">Integration</a>
+      </li>
+      <li>
+        <a href="/glossary/REST API/">REST API</a>
+      </li>
+      <li>
+        <a href="/glossary/SM59/">SM59</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/RFC/">RFC</a>
+      </li>
+      <li>
+        <a href="/glossary/Integration/">Integration</a>
+      </li>
+      <li>
+        <a href="/glossary/REST API/">REST API</a>
+      </li>
+      <li>
+        <a href="/glossary/SM59/">SM59</a>
+      </li>
+    </ul>
+  </section>
+  <section class="related-terms">
+    <h2></h2>
+    <ul>
+      <li>
+        <a href="/glossary/RFC/">RFC</a>
+      </li>
+      <li>
+        <a href="/glossary/Integration/">Integration</a>
+      </li>
+      <li>
+        <a href="/glossary/REST API/">REST API</a>
+      </li>
+      <li>
+        <a href="/glossary/SM59/">SM59</a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="sap-documentation">
+    <h2></h2>
+    <p>
+      <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SICF.html" target="_blank" rel="noopener noreferrer">
+        Read more on SAP Help Portal
+        <span class="sr-only">(opens in new tab)</span>
+      </a>
+    </p>
+  </section>
+</article>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/roadmap/">Roadmap</a></li>
+            <li><a href="/glossary/">Glossary</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email"></label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder=""
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary"></button>
+          </div>
+          <p class="email-consent"></p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer"></p>
+        <p class="copyright"></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

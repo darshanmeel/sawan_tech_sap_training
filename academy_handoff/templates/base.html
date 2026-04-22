@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{{seoTitle}}</title>
+  <meta name="description" content="{{seoDescription}}">
+  <link rel="canonical" href="https://academy.example.com{{canonicalPath}}">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="{{ogType}}">
+  <meta property="og:title" content="{{seoTitle}}">
+  <meta property="og:description" content="{{seoDescription}}">
+  <meta property="og:url" content="https://academy.example.com{{canonicalPath}}">
+  <meta property="og:image" content="https://academy.example.com/assets/og/{{ogImage}}">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{seoTitle}}">
+  <meta name="twitter:description" content="{{seoDescription}}">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/{{ogImage}}">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">{{{jsonLd}}}</script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/main.css?v=1">
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+  <!-- Analytics (enable when Plausible is configured) -->
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container cluster">
+      <a href="/" class="site-logo">SAP Extract Academy</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <ul>
+          <li><a href="/tables/">{{strings.nav.tables}}</a></li>
+          <li><a href="/glossary/">{{strings.nav.glossary}}</a></li>
+          <li><a href="/articles/">{{strings.nav.articles}}</a></li>
+          <li><a href="/roadmap/">{{strings.nav.roadmap}}</a></li>
+          <li><a href="/about/">{{strings.nav.about}}</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    {{{content}}}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-links">
+          <h2>Academy</h2>
+          <ul>
+            <li><a href="/tables/">{{strings.nav.tables}}</a></li>
+            <li><a href="/glossary/">{{strings.nav.glossary}}</a></li>
+            <li><a href="/articles/">{{strings.nav.articles}}</a></li>
+            <li><a href="/roadmap/">{{strings.nav.roadmap}}</a></li>
+            <li><a href="/about/">{{strings.nav.about}}</a></li>
+          </ul>
+        </div>
+
+        <form
+          class="email-form"
+          action="https://buttondown.email/api/emails/embed-subscribe/{{buttondownUsername}}"
+          method="post"
+          target="popupwindow"
+        >
+          <label for="footer-email-input">{{strings.form.emailLabel}}</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="footer-email-input"
+              required
+              placeholder="{{strings.cta.emailPlaceholder}}"
+              autocomplete="email"
+            >
+            <button type="submit">{{strings.cta.subscribeEmail}}</button>
+          </div>
+          <p class="email-consent">{{strings.form.consentText}}</p>
+        </form>
+      </div>
+
+      <p class="disclaimer">{{strings.footer.disclaimer}}</p>
+      <p class="copyright">&copy; {{currentYear}} SAP Extract Academy</p>
+    </div>
+  </footer>
+
+  <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
+</body>
+</html>
