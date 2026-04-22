@@ -15,11 +15,13 @@ const strings = JSON.parse(fs.readFileSync(STRINGS_PATH, 'utf-8'));
 const baseTemplate = fs.readFileSync(path.join(TEMPLATES_DIR, 'base.html'), 'utf-8');
 
 const pageTemplates = {
+  landing: fs.readFileSync(path.join(TEMPLATES_DIR, 'landing.html'), 'utf-8'),
   table: fs.readFileSync(path.join(TEMPLATES_DIR, 'table-detail.html'), 'utf-8'),
   walkthrough: fs.readFileSync(path.join(TEMPLATES_DIR, 'walkthrough.html'), 'utf-8'),
   article: fs.readFileSync(path.join(TEMPLATES_DIR, 'article.html'), 'utf-8'),
   glossary: fs.readFileSync(path.join(TEMPLATES_DIR, 'glossary-term.html'), 'utf-8'),
-  roadmap: fs.readFileSync(path.join(TEMPLATES_DIR, 'list.html'), 'utf-8')
+  list: fs.readFileSync(path.join(TEMPLATES_DIR, 'list.html'), 'utf-8'),
+  page: fs.readFileSync(path.join(TEMPLATES_DIR, 'page.html'), 'utf-8')
 };
 
 const sitemapEntries = [];
@@ -27,11 +29,15 @@ const currentYear = new Date().getFullYear();
 
 function getPageType(filePath) {
   const normalized = filePath.replaceAll('\\', '/');
+  const baseName = path.basename(filePath);
+
+  if (baseName === 'index.md') return 'landing';
+  if (baseName === 'about.md') return 'page';
+  if (baseName === 'roadmap.md') return 'list';
   if (normalized.includes('/tables/')) return 'table';
   if (normalized.includes('/walkthroughs/')) return 'walkthrough';
   if (normalized.includes('/articles/')) return 'article';
   if (normalized.includes('/glossary/')) return 'glossary';
-  if (normalized.includes('/roadmap/')) return 'roadmap';
   throw new Error(`Unknown page type for ${filePath}`);
 }
 
