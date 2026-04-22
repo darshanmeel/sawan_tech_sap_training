@@ -1,27 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ===== Design Tokens ===== */
 
 :root {
-  --color-primary: #1a4f8a;
-  --color-primary-soft: #2d6bb5;
-  --color-ink: #0f172a;
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-soft: #3b82f6;
+  --color-ink: #0d1117;
   --color-paper: #ffffff;
-  --color-paper-2: #f0f4f8;
-  --color-rule: #cbd5e1;
-  --color-border: #cbd5e1;
-  --color-accent: #d4500a;
-  --color-accent-soft: #e46720;
-  --color-muted: #475569;
-  --color-success: #2d6a4f;
-  --color-warning: #a06000;
-  --color-danger: #b02a2a;
-  --color-link: #1a4f8a;
+  --color-paper-2: #fafbfc;
+  --color-rule: #e1e4e8;
+  --color-border: #e1e4e8;
+  --color-accent: #5b21b6;
+  --color-accent-soft: #7c3aed;
+  --color-muted: #57606a;
+  --color-success: #1a7f37;
+  --color-warning: #9a6700;
+  --color-danger: #cf222e;
+  --color-link: #2563eb;
+  --color-code-bg: #f6f8fa;
+  --color-code-border: #d0d7de;
 
-  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas,
-    monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-sans);
+  --font-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
 
   --size-spacing-xs: 0.5rem;
   --size-spacing-sm: 1rem;
@@ -85,10 +89,14 @@ h5,
 h6 {
   margin: 0;
   padding: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-sans);
   font-weight: 600;
   line-height: var(--size-line-tight);
+  color: var(--color-ink);
 }
+
+h1 { letter-spacing: -0.02em; }
+h2 { letter-spacing: -0.01em; }
 
 p {
   margin: 0;
@@ -290,10 +298,10 @@ blockquote {
 /* Site Header & Nav */
 
 .site-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--color-border);
   padding: var(--size-spacing-md) 0;
-  background-color: var(--color-ink);
-  color: #e2e8f0;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
 }
 
 .header-top {
@@ -304,20 +312,20 @@ blockquote {
 }
 
 .site-logo {
-  font-family: var(--font-display);
-  font-size: var(--size-font-2xl);
-  font-weight: 700;
+  font-family: var(--font-sans);
+  font-size: var(--size-font-xl);
+  font-weight: 600;
   text-decoration: none;
-  color: #ffffff;
+  color: var(--color-ink);
   letter-spacing: -0.02em;
 }
 
 .site-logo:hover {
-  color: var(--color-accent);
+  color: var(--color-primary);
 }
 
 .site-logo:focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -330,17 +338,26 @@ blockquote {
 
 .site-nav a {
   text-decoration: none;
-  color: #e2e8f0;
+  color: var(--color-muted);
   font-weight: 500;
-  transition: color 0.2s;
+  font-size: 0.9375rem;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
 }
 
 .site-nav a:hover {
-  color: var(--color-accent);
+  color: var(--color-ink);
+}
+
+.site-nav a[aria-current="page"],
+.site-nav a.is-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
 }
 
 .site-nav a:focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -633,23 +650,25 @@ legend {
 /* Table Detail Page */
 
 .table-header {
-  background-color: var(--color-primary);
-  color: #ffffff;
-  padding: var(--size-spacing-lg) var(--size-spacing-md);
-  border-radius: 6px;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  padding: var(--size-spacing-lg) 0;
+  border-bottom: 1px solid var(--color-border);
   margin-top: var(--size-spacing-md);
   margin-bottom: var(--size-spacing-lg);
 }
 
 .table-header h1 {
-  color: #ffffff;
+  color: var(--color-ink);
   margin-top: var(--size-spacing-sm);
   margin-bottom: 0;
+  font-size: var(--size-font-4xl);
+  letter-spacing: -0.02em;
 }
 
 .table-subtitle {
   font-size: var(--text-xl);
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-muted);
   font-weight: 400;
   margin-top: var(--size-spacing-xs);
   margin-bottom: var(--size-spacing-sm);
@@ -658,8 +677,9 @@ legend {
 }
 
 .table-header .table-description {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-muted);
   margin-bottom: 0;
+  line-height: 1.6;
 }
 
 .table-detail section > h2 {
@@ -718,26 +738,30 @@ legend {
 /* Landing Page */
 
 .hero {
-  padding: var(--size-spacing-2xl) var(--size-spacing-md);
-  text-align: center;
-  background-color: var(--color-primary);
-  color: #ffffff;
+  padding: var(--size-spacing-2xl) var(--size-spacing-md) var(--size-spacing-xl);
+  text-align: left;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .hero h1 {
   font-size: var(--size-font-4xl);
   margin-bottom: var(--size-spacing-md);
   line-height: var(--size-line-tight);
-  color: #ffffff;
+  color: var(--color-ink);
+  letter-spacing: -0.02em;
+  font-weight: 600;
 }
 
 .hero p {
   font-size: var(--size-font-lg);
-  color: rgba(255, 255, 255, 0.9);
-  max-width: var(--max-width-prose);
-  margin-left: auto;
-  margin-right: auto;
+  color: var(--color-muted);
+  max-width: 65ch;
+  margin-left: 0;
+  margin-right: 0;
   margin-bottom: var(--size-spacing-lg);
+  line-height: 1.6;
 }
 
 .hero-ctas {
@@ -757,20 +781,24 @@ legend {
 }
 
 .walkthrough-header {
-  background-color: var(--color-primary);
-  color: #ffffff;
-  padding: var(--size-spacing-lg);
-  border-radius: 6px;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  padding: var(--size-spacing-lg) 0;
+  border-bottom: 1px solid var(--color-border);
   margin-bottom: var(--size-spacing-lg);
 }
 
 .walkthrough-header h1 {
   margin-top: 0;
-  color: #ffffff;
+  color: var(--color-ink);
+  font-size: var(--size-font-4xl);
+  letter-spacing: -0.02em;
 }
 
 .walkthrough-header .walkthrough-summary {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-muted);
+  font-size: var(--size-font-lg);
+  line-height: 1.6;
 }
 
 .walkthrough-meta {
