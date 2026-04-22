@@ -159,7 +159,7 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">ACDOCA is SAP's Universal Journal — the single table that stores every financial posting in S/4HANA. It replaced BSEG (GL line items), COEP (CO postings), and several other FI/CO tables. Every GL entry, every cost center posting, every internal order settlement lands here. At a mid-size enterprise ACDOCA has 500M rows. At a large one it has 3B+ rows. You are not extracting a small table. This is manageable if you do it right. It is a problem if you do it wrong.</p>
+          <p class="step-intro">ACDOCA is SAP&#39;s Universal Journal — the single table that stores every financial posting in S/4HANA. It replaced BSEG (GL line items), COEP (CO postings), and several other FI/CO tables. Every GL entry, every cost center posting, every internal order settlement lands here. At a mid-size enterprise ACDOCA has 500M rows. At a large one it has 3B+ rows. You are not extracting a small table. This is manageable if you do it right. It is a problem if you do it wrong.</p>
 
 
 
@@ -192,7 +192,7 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Three reasons you cannot do a direct table read on ACDOCA. First: size. A 1B-row extract in one request will run for hours and put significant load on your SAP system's dialog work processes — your BASIS team will terminate it. [SME_KNOWLEDGE] Second: license. Direct table read of ACDOCA via RFC (e.g. RFC_READ_TABLE) requires Full Use license. If you're on Runtime Use license, you are blocked at the authorization level. Third: correctness. ACDOCA stores amounts in multiple currency fields (HSL, KSL, MSL, TSL, WSL) that only make sense with their paired currency code fields. The released CDS view handles these correctly via @Semantics annotations. A raw table read does not. The safe path: ODP via CDS view I_JournalEntryItem.</p>
+          <p class="step-intro">Three reasons you cannot do a direct table read on ACDOCA. First: size. A 1B-row extract in one request will run for hours and put significant load on your SAP system&#39;s dialog work processes — your BASIS team will terminate it. [SME_KNOWLEDGE] Second: license. Direct table read of ACDOCA via RFC (e.g. RFC_READ_TABLE) requires Full Use license. If you&#39;re on Runtime Use license, you are blocked at the authorization level. Third: correctness. ACDOCA stores amounts in multiple currency fields (HSL, KSL, MSL, TSL, WSL) that only make sense with their paired currency code fields. The released CDS view handles these correctly via @Semantics annotations. A raw table read does not. The safe path: ODP via CDS view I_JournalEntryItem.</p>
 
 
 
@@ -502,7 +502,7 @@ LICENSE COMPLIANCE — SAP Note 3255746 (Feb 2024):
 
           <details class="step-why">
             <summary>Why this matters</summary>
-            <p>ABAP_CDS is the exact string — not 'CDS', not 'ODP_CDS', not 'ABAP CDS'. Most tools present a dropdown. If you do not see ABAP_CDS as an option, your tool version may not support CDS-based ODP. Check vendor documentation. The delta type CDC distinction matters: using AIE on an ABAP_CDS source will produce incorrect delta behavior. [SME_KNOWLEDGE]</p>
+            <p>ABAP_CDS is the exact string — not &#39;CDS&#39;, not &#39;ODP_CDS&#39;, not &#39;ABAP CDS&#39;. Most tools present a dropdown. If you do not see ABAP_CDS as an option, your tool version may not support CDS-based ODP. Check vendor documentation. The delta type CDC distinction matters: using AIE on an ABAP_CDS source will produce incorrect delta behavior. [SME_KNOWLEDGE]</p>
           </details>
         </div>
       </article>
@@ -574,7 +574,7 @@ AND RBUKRS &#x3D; &#39;1000&#39;. They should match within ~1% (timing skew).
 
           <details class="step-why">
             <summary>Why this matters</summary>
-            <p>ODQMON is your primary debugging tool for all ODP extractions. If you do not know how to read it, the first stuck queue will cost hours. The 0-record first delta is the most common 'bug' that isn't a bug — knowing this upfront prevents a false alarm escalation. [SME_KNOWLEDGE]</p>
+            <p>ODQMON is your primary debugging tool for all ODP extractions. If you do not know how to read it, the first stuck queue will cost hours. The 0-record first delta is the most common &#39;bug&#39; that isn&#39;t a bug — knowing this upfront prevents a false alarm escalation. [SME_KNOWLEDGE]</p>
           </details>
         </div>
       </article>
@@ -638,7 +638,7 @@ KSL        DECIMAL(23, 2)    -- amount in global currency
 
           <details class="step-why">
             <summary>Why this matters</summary>
-            <p>GJAHR as INTEGER seems harmless but breaks fiscal year comparisons — SAP uses '0001' for fiscal year 1 in some configurations, leading zeros in document numbers (BELNR) are significant for matching back to SAP, and partition pruning fails in Snowflake and BigQuery when analysts filter WHERE GJAHR = '2024' on an INTEGER column. [SME_KNOWLEDGE]</p>
+            <p>GJAHR as INTEGER seems harmless but breaks fiscal year comparisons — SAP uses &#39;0001&#39; for fiscal year 1 in some configurations, leading zeros in document numbers (BELNR) are significant for matching back to SAP, and partition pruning fails in Snowflake and BigQuery when analysts filter WHERE GJAHR = &#39;2024&#39; on an INTEGER column. [SME_KNOWLEDGE]</p>
           </details>
         </div>
       </article>

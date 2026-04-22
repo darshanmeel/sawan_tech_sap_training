@@ -235,7 +235,7 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Python/pyrfc with ODP. Filter: RBUKRS='1000' AND RYEAR=2024. Set timeouts high (60 min) because ACDOCA is slow even with filters.</p>
+          <p class="step-intro">Python/pyrfc with ODP. Filter: RBUKRS=&#39;1000&#39; AND RYEAR=2024. Set timeouts high (60 min) because ACDOCA is slow even with filters.</p>
 
 
           <figure class="code-block">
@@ -270,7 +270,7 @@ result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROW
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Don't load all rows into Python memory. Stream in batches of 100K rows, upsert to Snowflake in micro-batches.</p>
+          <p class="step-intro">Don&#39;t load all rows into Python memory. Stream in batches of 100K rows, upsert to Snowflake in micro-batches.</p>
 
 
 
