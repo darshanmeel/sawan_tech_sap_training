@@ -26,11 +26,12 @@ const sitemapEntries = [];
 const currentYear = new Date().getFullYear();
 
 function getPageType(filePath) {
-  if (filePath.includes('/tables/')) return 'table';
-  if (filePath.includes('/walkthroughs/')) return 'walkthrough';
-  if (filePath.includes('/articles/')) return 'article';
-  if (filePath.includes('/glossary/')) return 'glossary';
-  if (filePath.includes('/roadmap/')) return 'roadmap';
+  const normalized = filePath.replaceAll('\\', '/');
+  if (normalized.includes('/tables/')) return 'table';
+  if (normalized.includes('/walkthroughs/')) return 'walkthrough';
+  if (normalized.includes('/articles/')) return 'article';
+  if (normalized.includes('/glossary/')) return 'glossary';
+  if (normalized.includes('/roadmap/')) return 'roadmap';
   throw new Error(`Unknown page type for ${filePath}`);
 }
 
