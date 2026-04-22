@@ -4,7 +4,7 @@ fullName: SAP Landscape Transformation
 slug: slt
 shortDefinition: "SLT is SAP's licensed tool for high-performance data replication from SAP to external systems (Kafka, databases, data lakes). Enables billions-of-rows extractions with real-time delta, partitioning, and parallel reads."
 relatedTerms: [LTRC, LTRS, Real-time Replication, Kafka, Full Use License, ODP]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/slt.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "SLT: SAP Landscape Transformation Replication — Plain Explanation"
 seoDescription: "SLT is SAP's licensed tool for high-performance replication to Kafka, databases, data lakes. Handles billions of rows with real-time delta."
 updatedAt: 2026-04-22

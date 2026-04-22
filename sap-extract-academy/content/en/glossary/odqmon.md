@@ -4,7 +4,7 @@ fullName: ODP Queue Monitor
 slug: odqmon
 shortDefinition: "ODQMON is the SAP transaction for monitoring ODP delta queues. Shows extraction status, delta lag, queue depth, and any errors. Essential for troubleshooting slow delta extractions or queue buildup."
 relatedTerms: [ODP, Delta, Operational Data Provisioning, Extractor, SM50]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "ODQMON: ODP Queue Monitor in SAP — Plain Explanation"
 seoDescription: "ODQMON monitors ODP delta queues, showing extraction lag, status, and errors. Essential for troubleshooting slow or stuck delta extractions."
 updatedAt: 2026-04-22

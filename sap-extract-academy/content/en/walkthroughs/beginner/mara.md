@@ -17,11 +17,11 @@ extractors:
 steps:
   - id: step-01
     title: "Locate the I_Product CDS view"
-    explanation: "Material master is exposed via <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/product-cds.html'>I_Product</a>. Verify in SE80."
+    explanation: "Material master is exposed via <a href='https://help.sap.com/"
     sapTransaction:
       code: SE80
       menuPath: "Repository Browser → Search → I_Product"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+      helpUrl: "https://help.sap.com/"
     verify: "I_Product appears with @Analytics.dataExtract: true."
   
   - id: step-02
@@ -30,7 +30,7 @@ steps:
     sapTransaction:
       code: SE16N
       menuPath: "Execute → MARA"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+      helpUrl: "https://help.sap.com/"
     verify: "You can see rows in SE16N with different MTART and MATKL values. Count is reasonable (100K-10M typical)."
 
   - id: step-03

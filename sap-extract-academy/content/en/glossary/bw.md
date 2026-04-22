@@ -4,7 +4,7 @@ fullName: SAP Business Warehouse
 slug: bw
 shortDefinition: "SAP BW is SAP's legacy business intelligence and data warehousing solution. Now superseded by S/4HANA Embedded Analytics and cloud solutions (SAP Analytics Cloud), but still used for enterprise reporting in many organizations."
 relatedTerms: [S/4HANA, ODP, Operational Data Provisioning, SAP Analytics Cloud]
-sapDocUrl: "https://help.sap.com/docs/SAP_BUSINESSWAREHOUSE/0f69a8fb28ac48d89de2381c2f02a1e9/bw.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "BW: SAP Business Warehouse in SAP — Plain Explanation"
 seoDescription: "SAP BW is the legacy business intelligence platform. Now superseded by S/4HANA Analytics and cloud solutions, but still widely used for enterprise reporting."
 updatedAt: 2026-04-22

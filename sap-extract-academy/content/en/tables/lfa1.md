@@ -15,11 +15,11 @@ keyFields:
   - name: LIFNR
     description: "Vendor Number (10-char, zero-padded vendor identifier)"
 releasedCdsView: "I_Supplier"
-cdsViewDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/supplier-cds.html"
-sapHelpUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/vendor-master.html"
+cdsViewDocUrl: "https://help.sap.com/"
+sapHelpUrl: "https://help.sap.com/"
 extractionGotchas:
   - summary: "LFA1 is the general section of vendor master. Purchasing (LFM1) and company code (LFB1) data are in separate tables. Join all three for complete vendor context."
-    sapNoteOrDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/vendor-tables.html"
+    sapNoteOrDocUrl: "https://help.sap.com/"
 availableLevels:
   - beginner
   - intermediate
@@ -33,4 +33,4 @@ LFA1 is the vendor master data table in the Materials Management (MM) module, st
 
 The table is straightforward for extraction because its volume is typically small (tens of thousands of vendors even in large enterprises) and deletion is rare. It's an ideal first data extraction for beginners learning SAP table structures and ODP mechanics.
 
-<a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/vendor-master-overview.html">SAP S/4HANA Vendor Master overview</a> documents the full schema. Note that vendor data is split across three logical sections: LFA1 (general), LFB1 (company code level), and LFM1 (purchasing organization level). For procurement analytics, you'll typically join all three.
+<a href="https://help.sap.com/">SAP S/4HANA Vendor Master overview</a> documents the full schema. Note that vendor data is split across three logical sections: LFA1 (general), LFB1 (company code level), and LFM1 (purchasing organization level). For procurement analytics, you'll typically join all three.

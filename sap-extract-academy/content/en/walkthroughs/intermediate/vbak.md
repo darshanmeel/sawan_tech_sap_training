@@ -20,7 +20,7 @@ steps:
     sapTransaction:
       code: SE80
       menuPath: "Repository Browser → I_SalesDocument"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+      helpUrl: "https://help.sap.com/"
     verify: "I_SalesDocument or an associated extension view exposes ZZ_REGION as a field."
 
   - id: step-02
@@ -29,7 +29,7 @@ steps:
     sapTransaction:
       code: ODQMON
       menuPath: "Subscriptions → Search I_SalesDocument"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html"
+      helpUrl: "https://help.sap.com/"
     verify: "ODQMON shows an ODP subscription for I_SalesDocument with a delta queue active."
 
   - id: step-03
@@ -69,7 +69,7 @@ steps:
     sapTransaction:
       code: ODQMON
       menuPath: "Subscriptions → I_SalesDocument → View Queue"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html"
+      helpUrl: "https://help.sap.com/"
     verify: "You note the ODP sequence number (e.g., 12345) as the baseline."
 
   - id: step-06

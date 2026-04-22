@@ -4,7 +4,7 @@ fullName: SLT Landscape Transformation Replication Client
 slug: ltrc
 shortDefinition: "LTRC is the SAP GUI transaction for SLT configuration on the source SAP system. You define replication objects, partitioning, filters, and field selections in LTRC; it's the control interface for SLT replication."
 relatedTerms: [SLT, LTCO, LTRS, Replication Server, LTTR]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRC.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "LTRC: SLT Configuration Transaction — Plain Explanation"
 seoDescription: "LTRC is the SAP GUI transaction for configuring SLT replication on source systems. Define objects, partitioning, and filters here."
 updatedAt: 2026-04-22

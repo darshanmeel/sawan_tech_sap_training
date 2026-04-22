@@ -17,11 +17,11 @@ extractors:
 steps:
   - id: step-01
     title: "Verify the I_Supplier CDS view exists"
-    explanation: "Vendor master is exposed via the <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/supplier-cds.html'>I_Supplier</a> CDS view. Confirm it's available in your system using SE80."
+    explanation: "Vendor master is exposed via the <a href='https://help.sap.com/"
     sapTransaction:
       code: SE80
       menuPath: "Repository Browser → Search → I_Supplier"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+      helpUrl: "https://help.sap.com/"
     verify: "I_Supplier appears in SE80 with @Analytics.dataExtract: true."
   
   - id: step-02

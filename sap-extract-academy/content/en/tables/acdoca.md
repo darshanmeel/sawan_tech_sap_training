@@ -27,17 +27,17 @@ keyFields:
   - name: DOCLN
     description: "Document Line Item Number (6-char, zero-padded)"
 releasedCdsView: "I_JournalEntryItem"
-cdsViewDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/journal-entry-item-cds.html"
-sapHelpUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/universal-journal.html"
+cdsViewDocUrl: "https://help.sap.com/"
+sapHelpUrl: "https://help.sap.com/"
 extractionGotchas:
   - summary: "ACDOCA is the largest table in S/4HANA. Extracting the entire table will timeout. Always partition by RYEAR (reporting year) and POPER (period) at minimum."
-    sapNoteOrDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/acdoca-partitioning.html"
+    sapNoteOrDocUrl: "https://help.sap.com/"
   - summary: "Raw SELECT * on ACDOCA crashes SAP dialog work processes due to memory exhaustion. Use the released CDS view I_JournalEntryItem instead, or apply row-level filtering with SLT/ODP."
-    sapNoteOrDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/acdoca-perf.html"
+    sapNoteOrDocUrl: "https://help.sap.com/"
   - summary: "ACDOCA consolidates all accounting: G/L, A/P, A/R, costing, profitability. Each posting appears once with multiple dimensions. Aggregation logic is business-rule dependent."
-    sapNoteOrDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/acdoca-design.html"
+    sapNoteOrDocUrl: "https://help.sap.com/"
   - summary: "Full Use License required for SLT replication of ACDOCA. ODP extraction (recommended) works under Runtime License. Verify your licensing with SAP before committing to SLT."
-    sapNoteOrDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/slt-licensing.html"
+    sapNoteOrDocUrl: "https://help.sap.com/"
 availableLevels:
   - beginner
   - intermediate
@@ -51,4 +51,4 @@ ACDOCA is the Universal Journal table in SAP S/4HANA, storing consolidated line-
 
 ACDOCA extraction is the centerpiece of data warehouse projects but requires disciplined engineering because naive "SELECT *" queries crash SAP systems. Successful extraction depends on partitioning strategy (by fiscal year and period), use of released CDS views, and careful load balancing across parallel jobs.
 
-<a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/universal-journal-overview.html">SAP S/4HANA Universal Journal overview</a> documents the complete design. The <a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/acdoca-arch.html">ACDOCA architecture guide</a> is mandatory reading if you're extracting more than a few years of data. Always use <code>I_JournalEntryItem</code> (the released CDS view) rather than raw ACDOCA — it enforces authorization, applies currency conversion, and protects against accidental full-table scans.
+<a href="https://help.sap.com/">SAP S/4HANA Universal Journal overview</a> documents the complete design. The <a href="https://help.sap.com/">ACDOCA architecture guide</a> is mandatory reading if you're extracting more than a few years of data. Always use <code>I_JournalEntryItem</code> (the released CDS view) rather than raw ACDOCA — it enforces authorization, applies currency conversion, and protects against accidental full-table scans.

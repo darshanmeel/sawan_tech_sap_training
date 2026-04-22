@@ -4,7 +4,7 @@ fullName: Data Extractor
 slug: extractor
 shortDefinition: "An extractor is a reusable SAP component that exposes table data for extraction via ODP or custom querying. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking."
 relatedTerms: [ODP, Operational Data Provisioning, Generic Extractor, ABAP, CDS]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/operational-data-provisioning.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "Extractor: SAP Data Extractor Component — Plain Explanation"
 seoDescription: "Extractors expose SAP table data for extraction. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking."
 updatedAt: 2026-04-22

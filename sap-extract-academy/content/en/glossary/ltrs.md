@@ -4,7 +4,7 @@ fullName: SLT Landscape Transformation Replication Server
 slug: ltrs
 shortDefinition: "LTRS is the SAP component that runs parallel reader processes for SLT replication. You configure LTRS to run 4-8 parallel readers, each handling a partition (e.g., one company code + fiscal year), dramatically accelerating full-load times."
 relatedTerms: [SLT, LTRC, Parallel Readers, Replication Server, Dialog Work Process]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "LTRS: SLT Parallel Replication Server — Plain Explanation"
 seoDescription: "LTRS enables parallel reader processes for SLT replication. Configure 4-8 parallel readers to dramatically accelerate full-load extraction of large tables."
 updatedAt: 2026-04-22

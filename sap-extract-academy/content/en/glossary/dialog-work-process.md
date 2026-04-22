@@ -4,7 +4,7 @@ fullName: Dialog Work Process
 slug: dialog-work-process
 shortDefinition: "A dialog work process is an SAP application server process that handles interactive user sessions (SE16N, MM01, FBL3N). When you slow down extraction, you risk blocking dialog users; use non-dialog processes (batch) for heavy extraction work."
 relatedTerms: [SM50, SM59, Background Job, SAP Application Server, Lock Contention]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/sm50.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "Dialog Work Process: SAP Server Process — Plain Explanation"
 seoDescription: "Dialog work processes handle interactive user sessions. Extraction should use batch processes to avoid blocking users. Monitor in SM50."
 updatedAt: 2026-04-22

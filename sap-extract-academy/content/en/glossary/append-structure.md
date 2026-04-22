@@ -4,7 +4,7 @@ fullName: Append Structure
 slug: append-structure
 shortDefinition: "An append structure is a SAP table extension mechanism that allows customers to add custom fields (Z-fields) to a standard SAP table without modifying the table directly. Multiple append structures can be stacked on one table."
 relatedTerms: [Z-field, SE11, MARA, Data Dictionary]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/append-structures.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "Append Structure: Extending SAP Tables — Plain Explanation"
 seoDescription: "Append structures are SAP's mechanism for adding custom Z-fields to standard tables without direct modification. Multiple structures can stack on one table."
 updatedAt: 2026-04-22

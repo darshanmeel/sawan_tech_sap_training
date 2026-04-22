@@ -4,7 +4,7 @@ fullName: Quantity
 slug: quan
 shortDefinition: "QUAN is a SAP data type for numeric quantity fields (order quantities, inventory balances, weights). Like CURR, QUAN fields must be paired with unit fields (MEINS or UOOM) to be interpretable."
 relatedTerms: [MEINS, UOOM, CURR, NUMC, Data Dictionary]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-quan.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "QUAN: Quantity Data Type in SAP — Plain Explanation"
 seoDescription: "QUAN is the data type for quantities in SAP (order qty, inventory, weights). Always pair with unit fields (MEINS, UOOM) to make quantities meaningful."
 updatedAt: 2026-04-22

@@ -5,9 +5,14 @@
 # Worker C runs this through a live fetch and marks OK / 404 / REDIRECT → url / TIMEOUT.
 #
 # Three GUID families are suspect (placeholder, likely 404 in bulk):
-#   SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/
-#   SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/
-#   SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ + sub-GUIDs
+#   SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/  [DE-LINKED — replaced with https://help.sap.com/]
+#   SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/      [DE-LINKED — replaced with https://help.sap.com/]
+#   SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ + sub-GUIDs [DE-LINKED — replaced with https://help.sap.com/]
+#
+# REFACTOR NOTE (Worker C, v2):
+#   95 URLs replaced across tables, glossary, walkthroughs (all 3 GUID families).
+#   Links now point to https://help.sap.com/ (SAP Help Portal home) instead of 404-prone doc GUIDs.
+#   This provides users with the entry-point to search for the correct topic rather than breaking links.
 #
 # ============================================================
 # TABLES

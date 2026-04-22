@@ -22,7 +22,7 @@ steps:
     sapTransaction:
       code: SLICENSE
       menuPath: "License → License Overview → Check SLT entry"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+      helpUrl: "https://help.sap.com/"
     verify: "License shows 'SLT Landscape Transformation' = Active, Type = Full Use"
     whyItMatters: "Proceeding without correct license will result in licensing violations and potential audit findings. SAP audits SLT usage rigorously."
   
@@ -46,7 +46,7 @@ steps:
     sapTransaction:
       code: LTCO
       menuPath: "Replication Objects → ACDOCA → Partitioning"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+      helpUrl: "https://help.sap.com/"
     verify: "LTCO shows ACDOCA_KAFKA replication object with partition key BUKRS+GJAHR."
   
   - id: step-04
@@ -55,7 +55,7 @@ steps:
     sapTransaction:
       code: LTRS
       menuPath: "Administration → Settings → Parallel Readers"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+      helpUrl: "https://help.sap.com/"
     verify: "LTRS shows 4 reader processes active and running."
   
   - id: step-05
@@ -64,7 +64,7 @@ steps:
     sapTransaction:
       code: SM50
       menuPath: "Monitor → Active Sessions"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SM50.html"
+      helpUrl: "https://help.sap.com/"
     verify: "SM50 shows SLT processes (wp_SLT*) running, CPU usage acceptable (< 80%)."
   
   - id: step-06
@@ -73,7 +73,7 @@ steps:
     sapTransaction:
       code: LTCO
       menuPath: "Replication Objects → ACDOCA_KAFKA → Full Replication"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+      helpUrl: "https://help.sap.com/"
     verify: "Replication status = 'RUNNING'. Monitor Kafka topic growth via kafka-log-dirs tool."
   
   - id: step-07

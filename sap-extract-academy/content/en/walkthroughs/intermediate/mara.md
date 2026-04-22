@@ -20,7 +20,7 @@ steps:
     sapTransaction:
       code: SE11
       menuPath: "Data Dictionary → Tables → MARA → Fields → Find Z*"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html"
+      helpUrl: "https://help.sap.com/"
     verify: "ZZ_BRAND and ZZ_SUSTAINABILITY appear in MARA."
   
   - id: step-02

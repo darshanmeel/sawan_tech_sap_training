@@ -4,7 +4,7 @@ fullName: SAP S/4HANA (SAP Suite 4 High-Performance Analytics)
 slug: s4hana
 shortDefinition: "S/4HANA is SAP's latest ERP platform, released in 2015. It replaces older ERP versions (R/3, ECC) with modern architecture: in-memory database (HANA), cloud-first design, simplified data models, and embedded analytics."
 relatedTerms: [ECC, ERP, HANA Database, CDS, ODP, S/4HANA Cloud]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/s4hana.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "S/4HANA: SAP's Modern ERP Platform — Plain Explanation"
 seoDescription: "S/4HANA is SAP's latest ERP system (released 2015). Replaces ECC with in-memory database, cloud design, simplified models, and embedded analytics."
 updatedAt: 2026-04-22

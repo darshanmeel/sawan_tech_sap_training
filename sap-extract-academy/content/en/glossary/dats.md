@@ -4,7 +4,7 @@ fullName: Date (8-digit format)
 slug: dats
 shortDefinition: "DATS is SAP's date data type stored as YYYYMMDD (8 digits). Example: 20260422 for April 22, 2026. SAP handles DATS-to-local-date conversion automatically, but extractors must preserve the format."
 relatedTerms: [TIMS, Data Dictionary, SE11, Date Conversion]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-dats.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "DATS: SAP 8-Digit Date Format — Plain Explanation"
 seoDescription: "DATS is SAP's date type, stored as YYYYMMDD (8 digits, e.g., 20260422). Extractors must preserve format or dates become unreadable."
 updatedAt: 2026-04-22

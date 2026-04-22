@@ -4,7 +4,7 @@ fullName: SAP Memory Allocation Error
 slug: tsv-tnew-page-alloc-failed
 shortDefinition: "TSV_TNEW_PAGE_ALLOC_FAILED is an SAP error indicating memory exhaustion during extraction. Common when SELECT *-ing large tables (ACDOCA, BKPF) without filters. Solution: use CDS views, apply filters, or use SLT for parallelism."
 relatedTerms: [ODP, SLT, Memory, Large Tables, ACDOCA, Error Handling]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/memory-error.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "TSV_TNEW_PAGE_ALLOC_FAILED: SAP Memory Exhaustion — Plain Explanation"
 seoDescription: "TSV_TNEW_PAGE_ALLOC_FAILED indicates SAP memory exhaustion during extraction. Use CDS views, filters, or SLT parallelism to avoid it."
 updatedAt: 2026-04-22

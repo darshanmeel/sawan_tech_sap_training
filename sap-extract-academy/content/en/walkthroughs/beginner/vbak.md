@@ -17,21 +17,21 @@ extractors:
 steps:
   - id: step-01
     title: "Confirm the released CDS view for VBAK"
-    explanation: 'SAP ships released CDS views for many standard tables. These views come with business logic, authorization, and delta support built in — they are always the preferred extraction source over raw tables. For VBAK, the view is <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/4e4b4b4b.html">I_SalesDocument</a>.'
+    explanation: 'SAP ships released CDS views for many standard tables. These views come with business logic, authorization, and delta support built in — they are always the preferred extraction source over raw tables. For VBAK, the view is <a href="https://help.sap.com/">I_SalesDocument</a>.'
     sapTransaction:
       code: SE80
       menuPath: "Repository Browser → Search → I_SalesDocument"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+      helpUrl: "https://help.sap.com/"
     verify: "You can open I_SalesDocument in SE80 and confirm it has the annotation @Analytics.dataExtract: true in its header."
     whyItMatters: 'Extracting from a released CDS view is the SAP-recommended approach. It respects authorization, applies business logic (currency translation, unit conversion), and exposes data through <a href="/glossary/odp/">ODP</a> cleanly. Reading VBAK directly skips all of this.'
   
   - id: step-02
     title: "Create a technical RFC user in SAP"
-    explanation: 'The extraction process needs a dedicated SAP user with minimal permissions. Never use a dialog user. Create a Communication or System type user via <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html">SU01</a>.'
+    explanation: 'The extraction process needs a dedicated SAP user with minimal permissions. Never use a dialog user. Create a Communication or System type user via <a href="https://help.sap.com/">SU01</a>.'
     sapTransaction:
       code: SU01
       menuPath: "User → Create"
-      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+      helpUrl: "https://help.sap.com/"
     codeBlock:
       language: plaintext
       content: |
@@ -44,11 +44,11 @@ steps:
 
   - id: step-03
     title: "Assign authorizations to the RFC user"
-    explanation: 'The user needs three authorization objects: <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/c9e46fe83e8a4cf1ba7f686e28c05236.html">S_RFC</a> (RFC call), S_TABU_DIS (table display), and S_ODP_READ (ODP read access).'
+    explanation: 'The user needs three authorization objects: <a href="https://help.sap.com/">S_RFC</a> (RFC call), S_TABU_DIS (table display), and S_ODP_READ (ODP read access).'
     sapTransaction:
       code: PFCG
       menuPath: "Role → Create → Authorizations"
-      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+      helpUrl: "https://help.sap.com/"
     verify: "In SU01, the EXTRACT_VBAK user has a single custom role assigned that grants S_RFC for RFC_TYPE=FUNC, S_TABU_DIS for authorization group SD, and S_ODP_READ for context ABAP_CDS."
 
   - id: step-04

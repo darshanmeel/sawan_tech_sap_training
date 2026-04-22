@@ -4,7 +4,7 @@ fullName: Remote Function Call
 slug: rfc
 shortDefinition: "RFC is SAP's protocol for remote procedure calls between systems. Python/pyrfc libraries use RFC to call extraction functions (RFC_ODP_READ, RFC_READ_TABLE) without logging into SAP GUI directly."
 relatedTerms: [pyrfc, Python, SM59, Connection, Integration]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/rfc.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "RFC: Remote Function Call in SAP — Plain Explanation"
 seoDescription: "RFC is SAP's RPC protocol for calling functions remotely. Used by Python/pyrfc and other tools to extract data without SAP GUI."
 updatedAt: 2026-04-22
