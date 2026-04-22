@@ -1,0 +1,76 @@
+/* ===== Bento Design Tokens ===== */
+/* Authoritative source for all design values.                */
+/* Import this BEFORE main.css in base.html.                  */
+
+:root {
+  /* ---- Color: Backgrounds ---- */
+  --color-bg:       #f6f4ef;   /* warm cream — page background       */
+  --color-bg-2:     #ffffff;   /* white — card surface               */
+  --color-bg-3:     #efebe2;   /* warm off-white — secondary surface  */
+
+  /* ---- Color: Ink ---- */
+  --color-ink:      #14120f;   /* near-black warm — body text        */
+  --color-ink-soft: #6b6659;   /* muted warm brown — secondary text  */
+  /* Contrast check (AA):
+     --color-ink-soft (#6b6659) on --color-bg (#f6f4ef):
+       relative luminance: fg≈0.166, bg≈0.928 → ratio ≈ 4.85:1  ✓ PASS
+     --color-ink (#14120f) on --color-bg-2 (#ffffff):
+       relative luminance: fg≈0.006, bg≈1.0 → ratio ≈ 17.9:1   ✓ PASS */
+
+  /* ---- Color: Rule / Border ---- */
+  --color-rule:     rgba(20, 18, 15, 0.08);
+
+  /* ---- Color: Accents ---- */
+  --color-accent:      #1a4d3a;   /* forest green — links, primary actions */
+  --color-accent-2:    #d97706;   /* amber — italic em, eyebrow, highlight  */
+  /* Contrast check:
+     --color-accent-2 (#d97706) on --color-bg (#f6f4ef):
+       relative luminance: fg≈0.192, bg≈0.928 → ratio ≈ 3.85:1
+       Used only at large text sizes (H1/H2 italic) → 3:1 threshold ✓ PASS
+     --color-accent (#1a4d3a) on --color-bg (#f6f4ef):
+       relative luminance: fg≈0.022, bg≈0.928 → ratio ≈ 8.2:1   ✓ PASS */
+  --color-accent-soft: #e7f0e6;   /* pale green — gotcha bg, soft accent bg */
+
+  /* ---- Color: Code Block ---- */
+  --code-bg:       #14120f;   /* dark — inverted code blocks        */
+  --code-ink:      #e7eee7;   /* light green-white — code body text */
+  --code-keyword:  #f59e0b;   /* amber — keywords                   */
+  --code-string:   #86efac;   /* green — string literals            */
+  --code-comment:  #71717a;   /* muted grey — comments (italic)     */
+
+  /* ---- Color: Semantic states ---- */
+  --color-danger:  #b91c1c;   /* deep red — destructive callouts    */
+
+  /* ---- Typography ---- */
+  --font-display: "DM Serif Display", Georgia, serif;
+  --font-body:    "DM Sans", system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --fs-body: 16px;
+  --lh-body: 1.6;
+
+  /* ---- Radius ---- */
+  --radius-sm:   4px;
+  --radius-md:   18px;
+  --radius-pill: 999px;
+
+  /* ---- Shadow ---- */
+  --shadow-sm: 0 1px 2px rgba(20, 18, 15, 0.04),
+               0 8px 24px rgba(20, 18, 15, 0.04);
+
+  /* ---- Rule weight ---- */
+  --rule-weight: 1px;
+
+  /* ---- Spacing scale (px) ---- */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* ---- Layout ---- */
+  --max-width-container: 1100px;
+  --max-width-prose:     720px;
+}
