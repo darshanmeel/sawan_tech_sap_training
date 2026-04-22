@@ -49,6 +49,7 @@
   --text-2xl: var(--size-font-2xl);
   --text-4xl: var(--size-font-4xl);
   --width-content: var(--max-width-container);
+  --space-4: var(--size-spacing-sm);
   --space-5: var(--size-spacing-md);
   --space-8: var(--size-spacing-lg);
 }
@@ -753,6 +754,39 @@ legend {
   font-size: var(--size-font-sm);
   color: var(--color-muted);
   margin-top: var(--size-spacing-md);
+}
+
+.walkthrough-meta-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5) var(--size-spacing-xl);
+  background-color: var(--color-paper-2);
+  border-radius: 3px;
+  padding: var(--space-4) var(--space-5);
+  margin: var(--size-spacing-md) 0 0 0;
+}
+
+.walkthrough-meta-list > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.walkthrough-meta-list dt {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  margin: 0;
+  font-family: var(--font-sans);
+}
+
+.walkthrough-meta-list dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-ink);
+  font-size: var(--size-font-base);
 }
 
 .walkthrough-progress {
