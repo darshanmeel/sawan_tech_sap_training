@@ -1,0 +1,51 @@
+<!-- Generic list/index page template -->
+
+<header class="page-header">
+  <h1>{{pageTitle}}</h1>
+  {{#pageIntro}}
+  <p class="page-intro">{{pageIntro}}</p>
+  {{/pageIntro}}
+</header>
+
+{{#breadcrumb}}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li aria-current="page">{{pageTitle}}</li>
+  </ol>
+</nav>
+{{/breadcrumb}}
+
+<section class="items-grid">
+  {{#items}}
+  <article class="item-card card">
+    <h2>
+      <a href="{{url}}">{{title}}</a>
+    </h2>
+    {{#subtitle}}
+    <p class="item-subtitle">{{subtitle}}</p>
+    {{/subtitle}}
+    {{#description}}
+    <p class="item-description">{{description}}</p>
+    {{/description}}
+    {{#meta}}
+    <div class="item-meta">
+      {{#meta}}
+      <span class="meta-item">{{.}}</span>
+      {{/meta}}
+    </div>
+    {{/meta}}
+    <a href="{{url}}" class="btn btn-secondary">View</a>
+  </article>
+  {{/items}}
+</section>
+
+{{#callToAction}}
+<section class="page-cta">
+  <div class="container prose">
+    <h2>{{callToAction.heading}}</h2>
+    <p>{{callToAction.description}}</p>
+    <a href="{{callToAction.url}}" class="btn btn-primary">{{callToAction.buttonText}}</a>
+  </div>
+</section>
+{{/callToAction}}

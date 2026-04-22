@@ -1,0 +1,103 @@
+<!-- Table detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li aria-current="page">{{code}}</li>
+  </ol>
+</nav>
+
+<article class="table-detail">
+  <header class="table-header">
+    <div class="table-header-top">
+      <span class="module-badge">{{module}}</span>
+    </div>
+    <h1>{{code}}</h1>
+    <h2 class="table-name">{{name}}</h2>
+    <p class="table-description">{{businessDescription}}</p>
+  </header>
+
+  <section class="table-overview">
+    <h2>What this table is</h2>
+    <div class="prose">
+      {{{body}}}
+    </div>
+  </section>
+
+  {{#primaryKey}}
+  <section class="table-fields">
+    <h2>Key fields</h2>
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>Field name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#primaryKey}}
+        <tr>
+          <td><code>{{.}}</code></td>
+          <td>Key</td>
+          <td></td>
+        </tr>
+        {{/primaryKey}}
+      </tbody>
+    </table>
+  </section>
+  {{/primaryKey}}
+
+  <section class="table-volume">
+    <h2>Volume characteristics</h2>
+    <dl>
+      <div>
+        <dt>Typical row count</dt>
+        <dd>{{typicalRowCount}}</dd>
+      </div>
+      <div>
+        <dt>Volume class</dt>
+        <dd><span class="badge badge-{{volumeClass}}">{{volumeClass}}</span></dd>
+      </div>
+      {{#releasedCdsView}}
+      <div>
+        <dt>Released CDS view</dt>
+        <dd><code>{{releasedCdsView}}</code></dd>
+      </div>
+      {{/releasedCdsView}}
+    </dl>
+  </section>
+
+  {{#extractionGotchas}}
+  <section class="extraction-gotchas">
+    <h2>Extraction gotchas</h2>
+    <ul>
+      {{#extractionGotchas}}
+      <li>
+        <strong>{{summary}}</strong>
+        {{#sapNoteOrDocUrl}}
+        <a href="{{sapNoteOrDocUrl}}" target="_blank" rel="noopener noreferrer">
+          SAP Note
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+        {{/sapNoteOrDocUrl}}
+      </li>
+      {{/extractionGotchas}}
+    </ul>
+  </section>
+  {{/extractionGotchas}}
+
+  <section class="walkthroughs-available">
+    <h2>Walkthroughs available</h2>
+    <p>Pick your skill level and start learning how to extract {{code}}.</p>
+    <div class="grid grid-cols-3">
+      {{#availableLevels}}
+      <a href="/walkthrough/{{.}}/{{../slug}}/" class="card walkthrough-card">
+        <h3>{{capitalize .}}</h3>
+        <p class="walkthrough-meta">Step-by-step guide</p>
+      </a>
+      {{/availableLevels}}
+    </div>
+  </section>
+</article>

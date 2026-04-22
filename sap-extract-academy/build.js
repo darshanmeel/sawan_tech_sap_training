@@ -14,6 +14,14 @@ const STRINGS_PATH = path.join(__dirname, 'strings/en.json');
 const strings = JSON.parse(fs.readFileSync(STRINGS_PATH, 'utf-8'));
 const baseTemplate = fs.readFileSync(path.join(TEMPLATES_DIR, 'base.html'), 'utf-8');
 
+const pageTemplates = {
+  table: fs.readFileSync(path.join(TEMPLATES_DIR, 'table-detail.html'), 'utf-8'),
+  walkthrough: fs.readFileSync(path.join(TEMPLATES_DIR, 'walkthrough.html'), 'utf-8'),
+  article: fs.readFileSync(path.join(TEMPLATES_DIR, 'article.html'), 'utf-8'),
+  glossary: fs.readFileSync(path.join(TEMPLATES_DIR, 'glossary-term.html'), 'utf-8'),
+  roadmap: fs.readFileSync(path.join(TEMPLATES_DIR, 'list.html'), 'utf-8')
+};
+
 const sitemapEntries = [];
 const currentYear = new Date().getFullYear();
 
@@ -178,12 +186,10 @@ function buildPage(filePath, content) {
   const jsonLd = buildJsonLd(pageType, data, canonicalPath, breadcrumbs);
 
   const stepCount = data.steps ? data.steps.length : 0;
-  const currentYear = new Date().getFullYear();
 
   const mergedData = {
     ...data,
     strings,
-    content: renderedBody,
     body: renderedBody,
     jsonLd,
     canonicalPath,
@@ -197,7 +203,15 @@ function buildPage(filePath, content) {
     prerequisites: Array.isArray(data.prerequisites) ? data.prerequisites : []
   };
 
-  const html = Mustache.render(baseTemplate, mergedData);
+  const pageTypeTemplate = pageTemplates[pageType];
+  const pageContent = Mustache.render(pageTypeTemplate, mergedData);
+
+  const baseData = {
+    ...mergedData,
+    content: pageContent
+  };
+
+  const html = Mustache.render(baseTemplate, baseData);
 
   fs.mkdirSync(outputDir, { recursive: true });
   fs.writeFileSync(outputPath, html, 'utf-8');

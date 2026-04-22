@@ -1,0 +1,67 @@
+<!-- Article detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/articles/">Articles</a></li>
+    <li aria-current="page">{{title}}</li>
+  </ol>
+</nav>
+
+<article class="article">
+  <header class="article-header">
+    {{#heroImage}}
+    <figure class="article-hero">
+      <img src="{{heroImage}}" alt="{{title}}" loading="eager" />
+    </figure>
+    {{/heroImage}}
+
+    <h1>{{title}}</h1>
+
+    <dl class="article-meta">
+      <div>
+        <dt>Published</dt>
+        <dd>{{publishDate}}</dd>
+      </div>
+      {{#readingTimeMinutes}}
+      <div>
+        <dt>Reading time</dt>
+        <dd>{{readingTimeMinutes}} minutes</dd>
+      </div>
+      {{/readingTimeMinutes}}
+      {{#author}}
+      <div>
+        <dt>Author</dt>
+        <dd>{{author}}</dd>
+      </div>
+      {{/author}}
+    </dl>
+  </header>
+
+  <div class="article-body prose">
+    {{{body}}}
+  </div>
+
+  {{#relatedWalkthroughs}}
+  <section class="related-walkthroughs">
+    <h2>{{strings.articles.relatedWalkthroughsLabel}}</h2>
+    <ul>
+      {{#relatedWalkthroughs}}
+      <li>
+        <a href="/walkthrough/{{.}}/">Walkthrough: {{.}}</a>
+      </li>
+      {{/relatedWalkthroughs}}
+    </ul>
+  </section>
+  {{/relatedWalkthroughs}}
+
+  {{#tags}}
+  <footer class="article-footer">
+    <div class="article-tags">
+      {{#tags}}
+      <span class="tag">{{.}}</span>
+      {{/tags}}
+    </div>
+  </footer>
+  {{/tags}}
+</article>

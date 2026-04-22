@@ -1,0 +1,89 @@
+<!-- Landing page / Homepage -->
+
+<section class="hero">
+  <div class="container prose">
+    <h1>{{headline}}</h1>
+    <p class="hero-subheading">{{subheadline}}</p>
+    <div class="hero-ctas">
+      <a href="/tables/" class="btn btn-primary">{{cta1Label}}</a>
+      <a href="{{cta2Url}}" class="btn btn-secondary">{{cta2Label}}</a>
+    </div>
+  </div>
+</section>
+
+<section class="value-props">
+  <div class="container">
+    <div class="grid grid-cols-3">
+      {{#valueProps}}
+      <div class="value-prop card">
+        <h3>{{title}}</h3>
+        <p>{{description}}</p>
+      </div>
+      {{/valueProps}}
+    </div>
+  </div>
+</section>
+
+<section class="featured-walkthrough">
+  <div class="container prose">
+    <h2>{{featuredWalkthroughTitle}}</h2>
+    <div class="card">
+      <h3>{{featuredWalkthroughName}}</h3>
+      <p>{{featuredWalkthroughDescription}}</p>
+      <a href="{{featuredWalkthroughUrl}}" class="btn btn-primary">{{strings.cta.startWalkthrough}}</a>
+    </div>
+  </div>
+</section>
+
+<section class="table-library">
+  <div class="container">
+    <h2>Learn from five key tables</h2>
+    <p class="section-intro">Start with any table. Each has three walkthroughs: beginner, intermediate, and expert.</p>
+    <div class="grid grid-cols-3">
+      {{#featuredTables}}
+      <article class="card">
+        <h3>{{code}}</h3>
+        <p><strong>{{name}}</strong></p>
+        <p>{{module}}</p>
+        <p class="table-volume">{{volumeClass}}</p>
+        <a href="/tables/{{slug}}/">View walkthroughs</a>
+      </article>
+      {{/featuredTables}}
+    </div>
+  </div>
+</section>
+
+<section class="roadmap-teaser">
+  <div class="container prose">
+    <h2>What's coming</h2>
+    <p>We're expanding beyond S/4HANA on-prem. See the roadmap for ECC 6.0, Cloud, BW, and Datasphere releases.</p>
+    <a href="/roadmap/" class="btn btn-secondary">View roadmap</a>
+  </div>
+</section>
+
+<section class="email-signup">
+  <div class="container prose">
+    <h2>Get updates</h2>
+    <p>Join the community. We'll notify you when new content ships.</p>
+    <form
+      action="https://buttondown.email/api/emails/embed-subscribe/{{buttondownUsername}}"
+      method="post"
+      target="popupwindow"
+      class="email-form"
+    >
+      <label for="homepage-email">{{strings.form.emailLabel}}</label>
+      <div class="email-form-row">
+        <input
+          type="email"
+          name="email"
+          id="homepage-email"
+          placeholder="{{strings.cta.emailPlaceholder}}"
+          required
+          autocomplete="email"
+        />
+        <button type="submit" class="btn btn-primary">{{strings.cta.subscribeEmail}}</button>
+      </div>
+      <p class="email-consent">{{strings.form.consentText}}</p>
+    </form>
+  </div>
+</section>

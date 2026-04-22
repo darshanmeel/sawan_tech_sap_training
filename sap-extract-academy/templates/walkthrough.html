@@ -1,0 +1,177 @@
+<!-- Walkthrough detail page -->
+
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li><a href="/tables/">Tables</a></li>
+    <li><a href="/tables/{{slug}}/">{{table}}</a></li>
+    <li aria-current="page">{{level}} walkthrough</li>
+  </ol>
+</nav>
+
+<article class="walkthrough" data-walkthrough-id="{{level}}-{{slug}}">
+  <header class="walkthrough-header">
+    <div class="walkthrough-header-meta">
+      <span class="level-badge level-{{level}}">{{level}}</span>
+      <span class="table-code">{{table}}</span>
+    </div>
+    <h1>{{title}}</h1>
+    <p class="walkthrough-summary">{{summary}}</p>
+
+    <dl class="walkthrough-meta-list">
+      <div>
+        <dt>{{strings.walkthrough.estimatedTime}}</dt>
+        <dd>{{estimatedMinutes}} minutes</dd>
+      </div>
+      {{#destinations}}
+      <div>
+        <dt>{{strings.walkthrough.destinations}}</dt>
+        <dd>{{destinations}}</dd>
+      </div>
+      {{/destinations}}
+      {{#extractors}}
+      <div>
+        <dt>{{strings.walkthrough.extractors}}</dt>
+        <dd>{{extractors}}</dd>
+      </div>
+      {{/extractors}}
+    </dl>
+  </header>
+
+  {{#licenseRelevance}}
+  <section class="callout callout-warning">
+    <h2>License check</h2>
+    <p>{{licenseRelevance}}</p>
+  </section>
+  {{/licenseRelevance}}
+
+  {{#prerequisites}}
+  <section class="prerequisites">
+    <h2>Before you start</h2>
+    <ul>
+      {{#prerequisites}}
+      <li>{{.}}</li>
+      {{/prerequisites}}
+    </ul>
+  </section>
+  {{/prerequisites}}
+
+  <section class="walkthrough-intro">
+    <h2>Getting started</h2>
+    <div class="prose">
+      {{{body}}}
+    </div>
+  </section>
+
+  <section class="walkthrough-progress">
+    <div role="status" aria-live="polite" class="progress-indicator">
+      <span id="progress-count">0</span> of {{stepCount}} steps complete
+    </div>
+    <button type="button" class="btn btn-secondary" id="reset-progress" hidden>{{strings.cta.resetProgress}}</button>
+  </section>
+
+  <ol class="steps-list">
+    {{#steps}}
+    <li class="step" id="step-{{id}}">
+      <header class="step-header">
+        <div class="step-number-and-title">
+          <span class="step-number">Step {{id}}</span>
+          <h2 class="step-title">{{title}}</h2>
+        </div>
+        <label class="step-checkbox-label">
+          <input
+            type="checkbox"
+            class="step-checkbox"
+            data-step-id="{{id}}"
+            aria-label="Mark {{title}} as complete"
+          >
+          <span class="sr-only">Complete</span>
+        </label>
+      </header>
+
+      <div class="step-body">
+        <p class="step-explanation">{{{explanation}}}</p>
+
+        {{#sapTransaction}}
+        <aside class="callout callout-sap">
+          <h3>{{strings.walkthrough.doThisInSapLabel}}</h3>
+          <p>
+            Open transaction
+            <a href="{{helpUrl}}" target="_blank" rel="noopener noreferrer">
+              {{code}}
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+            {{#menuPath}}and navigate to <em>{{menuPath}}</em>{{/menuPath}}.
+          </p>
+        </aside>
+        {{/sapTransaction}}
+
+        {{#codeBlock}}
+        <figure class="code-block">
+          <figcaption>{{caption}}</figcaption>
+          <pre><code class="language-{{language}}">{{content}}</code></pre>
+        </figure>
+        {{/codeBlock}}
+
+        <aside class="callout callout-verify">
+          <h3>{{strings.walkthrough.verifyLabel}}</h3>
+          <p>{{verify}}</p>
+        </aside>
+
+        {{#whyItMatters}}
+        <details class="why-it-matters">
+          <summary>{{strings.walkthrough.whyLabel}}</summary>
+          <p>{{{.}}}</p>
+        </details>
+        {{/whyItMatters}}
+      </div>
+    </li>
+    {{/steps}}
+  </ol>
+
+  {{#troubleshooting}}
+  <section class="troubleshooting">
+    <h2>{{strings.walkthrough.troubleshootingHeading}}</h2>
+    <dl class="troubleshooting-list">
+      {{#troubleshooting}}
+      <div class="troubleshooting-item">
+        <dt>{{problem}}</dt>
+        <dd>
+          <p>{{solution}}</p>
+          {{#sapNoteUrl}}
+          <p>
+            <a href="{{.}}" target="_blank" rel="noopener noreferrer">
+              Related SAP Note
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </p>
+          {{/sapNoteUrl}}
+        </dd>
+      </div>
+      {{/troubleshooting}}
+    </dl>
+  </section>
+  {{/troubleshooting}}
+
+  <section class="walkthrough-summary">
+    <h2>You've built:</h2>
+    <p>Congratulations! You've completed the {{level}} walkthrough for {{table}}. You now have {{stepCount}} steps of experience extracting this table, and you understand the key considerations for the {{table}} use case.</p>
+  </section>
+
+  {{#nextSteps}}
+  <section class="next-steps">
+    <h2>{{strings.walkthrough.nextStepsHeading}}</h2>
+    <ul>
+      {{#nextSteps}}
+      <li><a href="{{url}}">{{label}}</a></li>
+      {{/nextSteps}}
+    </ul>
+  </section>
+  {{/nextSteps}}
+
+  <section class="walkthrough-actions">
+    <button type="button" class="btn btn-primary" id="download-pdf" hidden>{{strings.cta.downloadPdf}}</button>
+  </section>
+</article>
+
+<script type="module" src="/assets/js/checklist.js?v=1" defer></script>
