@@ -1,49 +1,54 @@
-<!-- Glossary term detail page -->
+<!-- Glossary term detail page — Bento card grid -->
 
-<nav class="breadcrumb" aria-label="Breadcrumb">
-  <ol>
-    <li><a href="{{basePath}}/">Home</a></li>
-    <li><a href="{{basePath}}/glossary/">Glossary</a></li>
-    <li aria-current="page">{{term}}</li>
-  </ol>
-</nav>
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
 
-<article class="glossary-term">
-  <header class="glossary-header">
-    <h1>{{term}}: {{fullName}} in SAP</h1>
-  </header>
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="{{basePath}}/">Home</a></li>
+      <li><a href="{{basePath}}/glossary/">Glossary</a></li>
+      <li aria-current="page">{{term}}</li>
+    </ol>
+  </nav>
 
-  <section class="glossary-definition">
-    <h2>Definition</h2>
-    <p class="short-definition">{{shortDefinition}}</p>
-  </section>
+  <div class="grid">
 
-  <section class="glossary-body prose">
-    {{{body}}}
-  </section>
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · {{fullName}}</p>
+        <h1>{{term}}<em>.</em></h1>
+      </div>
+      <p>{{shortDefinition}}</p>
+    </div>
 
-  {{#relatedTerms}}
-  <section class="related-terms">
-    <h2>{{strings.glossary.relatedTermsLabel}}</h2>
-    <ul>
-      {{#relatedTerms}}
-      <li>
-        <a href="{{basePath}}/glossary/{{.}}/">{{.}}</a>
-      </li>
-      {{/relatedTerms}}
-    </ul>
-  </section>
-  {{/relatedTerms}}
+    <!-- Side card / meta: see also -->
+    {{#relatedTerms}}
+    <div class="card side">
+      <h3>{{strings.glossary.relatedTermsLabel}}</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        {{#relatedTerms}}
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="{{basePath}}/glossary/{{.}}/">{{.}}</a></li>
+        {{/relatedTerms}}
+      </ul>
+    </div>
+    {{/relatedTerms}}
 
-  {{#sapDocUrl}}
-  <section class="sap-documentation">
-    <h2>{{strings.glossary.sapDocLabel}}</h2>
-    <p>
-      <a href="{{sapDocUrl}}" target="_blank" rel="noopener noreferrer">
-        Read more on SAP Help Portal
-        <span class="sr-only">(opens in new tab)</span>
-      </a>
-    </p>
-  </section>
-  {{/sapDocUrl}}
-</article>
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+      <p class="subhead">{{shortDefinition}}</p>
+      <div class="prose" style="max-width:780px;">
+        {{{body}}}
+      </div>
+      {{#sapDocUrl}}
+      <p style="margin-top:var(--space-5);">
+        <a href="{{sapDocUrl}}" target="_blank" rel="noopener noreferrer">
+          {{strings.glossary.sapDocLabel}} <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+      {{/sapDocUrl}}
+    </div>
+
+  </div>
+</div>

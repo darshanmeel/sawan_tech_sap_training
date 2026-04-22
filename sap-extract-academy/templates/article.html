@@ -1,67 +1,66 @@
-<!-- Article detail page -->
+<!-- Article detail page — Bento card grid -->
 
-<nav class="breadcrumb" aria-label="Breadcrumb">
-  <ol>
-    <li><a href="{{basePath}}/">Home</a></li>
-    <li><a href="{{basePath}}/articles/">Articles</a></li>
-    <li aria-current="page">{{title}}</li>
-  </ol>
-</nav>
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
 
-<article class="article">
-  <header class="article-header">
-    {{#heroImage}}
-    <figure class="article-hero">
-      <img src="{{heroImage}}" alt="{{title}}" loading="eager" />
-    </figure>
-    {{/heroImage}}
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="{{basePath}}/">Home</a></li>
+      <li><a href="{{basePath}}/articles/">Articles</a></li>
+      <li aria-current="page">{{title}}</li>
+    </ol>
+  </nav>
 
-    <h1>{{title}}</h1>
+  <div class="grid">
 
-    <dl class="article-meta">
+    <!-- Hero card: article title + eyebrow with date and reading time -->
+    <div class="card hero">
       <div>
-        <dt>Published</dt>
-        <dd>{{publishDate}}</dd>
+        <p class="eyebrow"><span class="dot"></span>{{publishDate}}{{#readingTimeMinutes}} · {{readingTimeMinutes}} min read{{/readingTimeMinutes}}</p>
+        <h1>{{title}}<em>.</em></h1>
       </div>
-      {{#readingTimeMinutes}}
-      <div>
-        <dt>Reading time</dt>
-        <dd>{{readingTimeMinutes}} minutes</dd>
-      </div>
-      {{/readingTimeMinutes}}
+      {{#summary}}
+      <p>{{summary}}</p>
+      {{/summary}}
+    </div>
+
+    <!-- Side card: author + tags -->
+    <div class="card side">
       {{#author}}
-      <div>
-        <dt>Author</dt>
-        <dd>{{author}}</dd>
-      </div>
+      <h3>Author</h3>
+      <p class="big" style="font-size:22px;">{{author}}</p>
       {{/author}}
-    </dl>
-  </header>
-
-  <div class="article-body prose">
-    {{{body}}}
-  </div>
-
-  {{#hasRelatedWalkthroughs}}
-  <section class="related-walkthroughs">
-    <h2>{{strings.articles.relatedWalkthroughsLabel}}</h2>
-    <ul>
-      {{#relatedWalkthroughs}}
-      <li>
-        <a href="{{basePath}}/walkthrough/{{level}}/{{slug}}/">Walkthrough: {{level}} — {{slug}}</a>
-      </li>
-      {{/relatedWalkthroughs}}
-    </ul>
-  </section>
-  {{/hasRelatedWalkthroughs}}
-
-  {{#tags}}
-  <footer class="article-footer">
-    <div class="article-tags">
+      {{#readingTimeMinutes}}
+      <p>{{readingTimeMinutes}} minute read</p>
+      {{/readingTimeMinutes}}
       {{#tags}}
-      <span class="tag">{{.}}</span>
+      <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-4);">
+        {{#tags}}
+        <span class="tag tag--module">{{.}}</span>
+        {{/tags}}
+      </div>
       {{/tags}}
     </div>
-  </footer>
-  {{/tags}}
-</article>
+
+    <!-- Section card: article body prose (max-width 780px per reference) -->
+    <div class="card section">
+      <div class="prose" style="max-width:780px;">
+        {{{body}}}
+      </div>
+    </div>
+
+    <!-- Section card: related walkthroughs -->
+    {{#hasRelatedWalkthroughs}}
+    <div class="card section">
+      <h2>Related <em>walkthroughs</em></h2>
+      <ul style="list-style:disc;padding-left:var(--space-6);">
+        {{#relatedWalkthroughs}}
+        <li style="margin-bottom:var(--space-2);">
+          <a href="{{basePath}}/walkthrough/{{level}}/{{slug}}/">Walkthrough: {{level}} — {{slug}}</a>
+        </li>
+        {{/relatedWalkthroughs}}
+      </ul>
+    </div>
+    {{/hasRelatedWalkthroughs}}
+
+  </div>
+</div>

@@ -1,6 +1,22 @@
-<main id="main" class="prose">
-  <div class="container">
-    <h1>{{title}}</h1>
-    {{{body}}}
+<!-- Generic page (about, decide) — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+  <div class="grid">
+
+    <!-- Hero card with page title -->
+    <div class="card hero" style="grid-column:span 12;">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>SAP Extract Academy</p>
+        <h1>{{title}}<em>.</em></h1>
+      </div>
+    </div>
+
+    <!-- Section card with prose body -->
+    <div class="card section">
+      <div class="prose" style="max-width:780px;">
+        {{{body}}}
+      </div>
+    </div>
+
   </div>
-</main>
+</div>
