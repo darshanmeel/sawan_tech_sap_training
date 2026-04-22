@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ACDOCA — Four Aesthetics Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,700;1,400&family=Archivo:wght@400;500;700;900&family=Archivo+Black&family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   GLOBAL SCAFFOLD — not part of any aesthetic
+   ========================================================= */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:#0a0a0a;
+  color:#eee;
+  font-family:'Manrope',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.judge{
+  max-width:1100px;margin:0 auto;padding:64px 24px 120px;
+}
+.judge h1{
+  font-family:'Fraunces',serif;
+  font-size:clamp(32px,5vw,56px);
+  font-weight:900;letter-spacing:-.02em;margin:0 0 8px;
+}
+.judge .lede{
+  color:#888;font-size:16px;max-width:640px;line-height:1.6;margin:0 0 24px;
+}
+.judge .toc{
+  display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 0;padding:0;list-style:none;
+}
+.judge .toc a{
+  display:inline-block;padding:8px 14px;border:1px solid #333;border-radius:999px;
+  color:#ddd;font-size:13px;text-decoration:none;letter-spacing:.02em;
+  transition:border-color .15s,color .15s;
+}
+.judge .toc a:hover{border-color:#888;color:#fff}
+.frame-label{
+  position:sticky;top:0;z-index:50;
+  background:#0a0a0a;border-bottom:1px solid #222;
+  padding:14px 24px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:#888;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+}
+.frame-label strong{color:#fff;font-weight:500}
+.frame-label .tag{
+  padding:4px 10px;border:1px solid #333;border-radius:4px;color:#aaa;
+}
+.frame{
+  /* each aesthetic lives inside a frame so it can't leak styles */
+  isolation:isolate;
+  overflow:hidden;
+}
+
+
+/* =========================================================
+   AESTHETIC 4 — BENTO (warm modular docs)
+   Soft neutrals, rounded modular cards, clean serif + grotesk
+   ========================================================= */
+.bento{
+  --bg:#f6f4ef;
+  --card:#ffffff;
+  --card-2:#efebe2;
+  --ink:#14120f;
+  --ink-soft:#6b6659;
+  --rule:rgba(20,18,15,.08);
+  --accent:#1a4d3a;
+  --accent-2:#d97706;
+  --accent-3:#e7f0e6;
+  --radius:18px;
+  --shadow:0 1px 2px rgba(20,18,15,.04),0 8px 24px rgba(20,18,15,.04);
+
+  background:var(--bg);color:var(--ink);
+  font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;
+}
+.bento a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(26,77,58,.3)}
+.bento a:hover{border-bottom-color:var(--accent)}
+
+.bento .nav{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:22px 40px;
+}
+.bento .brand{
+  font-family:'DM Serif Display',serif;font-size:22px;letter-spacing:-.01em;
+}
+.bento .brand span{color:var(--accent-2);font-style:italic}
+.bento .nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+.bento .nav a{
+  border:none;padding:8px 14px;border-radius:999px;color:var(--ink-soft);font-size:14px;font-weight:500;
+}
+.bento .nav a:hover{background:var(--card);color:var(--ink)}
+
+.bento .container{padding:16px 40px 40px}
+.bento .grid{
+  display:grid;grid-template-columns:repeat(12,1fr);gap:16px;
+}
+.bento .card{
+  background:var(--card);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+}
+.bento .card.hero{grid-column:span 8;background:var(--ink);color:var(--bg);padding:56px 48px;min-height:340px;display:flex;flex-direction:column;justify-content:space-between}
+.bento .card.hero::after{
+  content:"";position:absolute;right:-40px;bottom:-40px;width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(217,119,6,.35),transparent 70%);
+}
+.bento .card.side{grid-column:span 4;background:var(--card-2)}
+.bento .eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent-2);margin:0 0 20px;
+}
+.bento .eyebrow .dot{width:6px;height:6px;background:var(--accent-2);border-radius:50%}
+.bento .card.hero h1{
+  font-family:'DM Serif Display',serif;font-size:clamp(48px,7vw,92px);line-height:1;letter-spacing:-.025em;
+  margin:0 0 20px;font-weight:400;
+}
+.bento .card.hero h1 em{font-style:italic;color:var(--accent-2)}
+.bento .card.hero p{font-size:17px;max-width:520px;line-height:1.55;color:rgba(246,244,239,.8);margin:0}
+
+.bento .card.side h3{
+  font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-soft);margin:0 0 14px;
+}
+.bento .card.side .big{
+  font-family:'DM Serif Display',serif;font-size:38px;line-height:1.05;margin:0 0 12px;letter-spacing:-.02em;
+}
+.bento .card.side p{margin:0;color:var(--ink-soft);font-size:14px;line-height:1.5}
+
+.bento .card.meta{grid-column:span 3}
+.bento .card.meta dt{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 6px}
+.bento .card.meta dd{margin:0;font-family:'DM Serif Display',serif;font-size:24px;letter-spacing:-.01em}
+
+.bento .card.accent{
+  grid-column:span 8;background:var(--accent);color:var(--bg);
+  display:flex;gap:20px;align-items:center;padding:22px 28px;
+}
+.bento .card.accent .chip{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  padding:6px 12px;border:1px solid rgba(246,244,239,.4);border-radius:999px;flex:0 0 auto;
+}
+.bento .card.accent p{margin:0;font-family:'DM Serif Display',serif;font-size:19px;line-height:1.4;font-style:italic}
+
+.bento .card.section{grid-column:span 12;padding:48px}
+.bento .card.section h2{
+  font-family:'DM Serif Display',serif;font-size:40px;letter-spacing:-.02em;margin:0 0 8px;font-weight:400;
+}
+.bento .card.section h2 em{font-style:italic;color:var(--accent-2)}
+.bento .card.section .subhead{color:var(--ink-soft);margin:0 0 28px;max-width:640px}
+.bento .card.section p{margin:0 0 16px;max-width:780px}
+
+.bento .fields{
+  width:100%;border-collapse:collapse;background:var(--card-2);border-radius:12px;overflow:hidden;
+  font-family:'IBM Plex Mono',monospace;font-size:13px;margin:8px 0;
+}
+.bento .fields th,.bento .fields td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--rule)}
+.bento .fields tr:last-child td{border-bottom:none}
+.bento .fields th{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.bento .fields td.k{color:var(--accent)}
+
+.bento .gotcha{
+  background:var(--accent-3);border-radius:12px;padding:18px 22px;margin:0 0 14px;
+  display:flex;gap:16px;align-items:flex-start;
+}
+.bento .gotcha .icon{
+  flex:0 0 32px;height:32px;border-radius:50%;background:var(--accent);color:var(--bg);
+  display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:18px;
+}
+.bento .gotcha p{margin:0;font-size:15px;line-height:1.5}
+
+.bento pre{
+  background:var(--ink);color:#e7eee7;border-radius:12px;
+  padding:20px 24px;margin:16px 0;
+  font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.65;overflow-x:auto;
+}
+.bento pre .k{color:#f59e0b}
+.bento pre .s{color:#86efac}
+.bento pre .c{color:#71717a;font-style:italic}
+
+@media (max-width:900px){
+  .paper .hero,.paper section.block,.refined section.block{grid-template-columns:1fr;gap:24px;padding-left:24px;padding-right:24px}
+  .paper .nav,.paper .meta-bar,.paper .accent-bar,.refined .nav,.refined .hero,.refined .meta-bar,.refined .accent-bar,.brutal .nav,.brutal .hero,.brutal section.block,.brutal .accent-bar{padding-left:24px;padding-right:24px}
+  .paper .meta-bar,.refined .meta-bar,.brutal .meta-bar{grid-template-columns:repeat(2,1fr)}
+  .bento .card.hero,.bento .card.side,.bento .card.meta,.bento .card.accent,.bento .card.section{grid-column:span 12}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= BENTO ================= -->
+<div class="frame-label" id="bento">
+  <span><strong>④ Bento</strong> — modular card grid, warm neutrals + forest green + amber, DM Serif Display + DM Sans</span>
+  <span class="tag">modular · warm · docs-native</span>
+</div>
+<div class="frame bento">
+  <nav class="nav">
+    <div class="brand">Extract<span>.</span>Academy</div>
+    <ul>
+      <li><a href="#">Tables</a></li>
+      <li><a href="#">Walkthroughs</a></li>
+      <li><a href="#">Glossary</a></li>
+      <li><a href="#">Articles</a></li>
+      <li><a href="#">Roadmap</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="grid">
+      <div class="card hero">
+        <div>
+          <p class="eyebrow"><span class="dot"></span>FI · Universal Journal</p>
+          <h1>ACDOCA<em>.</em></h1>
+        </div>
+        <p>One physical table, every posting across every module. The billion-row ledger that makes S/4HANA finance analytics possible — and breaks the projects that underestimate it.</p>
+      </div>
+
+      <div class="card side">
+        <h3>Typical volume</h3>
+        <p class="big">1B – 100B <em style="font-style:italic;color:var(--accent-2)">rows</em></p>
+        <p>Heavyweight. Largest single table in most S/4HANA installations. Plan your partitioning before you plan anything else.</p>
+      </div>
+
+      <div class="card meta"><dt>Released CDS</dt><dd>I_JournalEntryItem</dd></div>
+      <div class="card meta"><dt>Volume class</dt><dd>Heavyweight</dd></div>
+      <div class="card meta"><dt>Primary key</dt><dd>6 fields</dd></div>
+      <div class="card meta"><dt>License (SLT)</dt><dd>Full Use</dd></div>
+
+      <div class="card accent" style="grid-column:span 12">
+        <span class="chip">Scope lock</span>
+        <p>Partition by RYEAR and POPER from the first line of code. Every other rule is downstream of this one.</p>
+      </div>
+
+      <div class="card section">
+        <h2>What this <em>is</em></h2>
+        <p class="subhead">The universal journal — consolidated line-item accounting across G/L, A/P, A/R, costing, and profitability.</p>
+        <p>ACDOCA replaced the ECC-era patchwork of totals tables with a single physical table holding every subledger, costing, and line-item posting. Every module posts here, once, with every dimension attached.</p>
+        <p>For analytics it is the single source of truth. For extraction it is the most unforgiving table in SAP — because the same structure that makes it powerful for reporting makes it lethal for naïve reads.</p>
+      </div>
+
+      <div class="card section">
+        <h2>Key <em>fields</em></h2>
+        <table class="fields">
+          <thead><tr><th>Field</th><th>Role</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td class="k">MANDT</td><td>Key</td><td>Client identifier</td></tr>
+            <tr><td class="k">RBUKRS</td><td>Key</td><td>Company code — partition axis</td></tr>
+            <tr><td class="k">RYEAR</td><td>Key</td><td>Reporting year — partition axis</td></tr>
+            <tr><td class="k">POPER</td><td>Key</td><td>Posting period (001–016)</td></tr>
+            <tr><td class="k">BELNR</td><td>Key</td><td>Document number</td></tr>
+            <tr><td class="k">DOCLN</td><td>Key</td><td>Line item number</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card section">
+        <h2>Extraction <em>gotchas</em></h2>
+        <div class="gotcha"><span class="icon">!</span><p><strong>Partitioning.</strong> Largest table in S/4HANA. Full-table reads time out. Always partition by <code>RYEAR</code> and <code>POPER</code> at minimum.</p></div>
+        <div class="gotcha"><span class="icon">!</span><p><strong>No SELECT *.</strong> Exhausts dialog work process memory in seconds. Use the released CDS view <code>I_JournalEntryItem</code>, or filter via SLT/ODP.</p></div>
+        <div class="gotcha"><span class="icon">!</span><p><strong>Licensing.</strong> SLT replication of ACDOCA requires Full Use License. ODP works under Runtime. Verify before committing to an architecture.</p></div>
+
+<pre><span class="c">// ADF source — reference configuration</span>
+{
+  <span class="k">"name"</span>: <span class="s">"SAP_ACDOCA_Source"</span>,
+  <span class="k">"type"</span>: <span class="s">"SapOdpResource"</span>,
+  <span class="k">"filter"</span>: <span class="s">"RBUKRS eq '1000' and RYEAR eq '2024'"</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

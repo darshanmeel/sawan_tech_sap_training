@@ -15,13 +15,13 @@ keyFields:
   - name: VBELN
     description: "Sales Document Number (10-char, zero-padded identifier)"
 releasedCdsView: "I_SalesDocument"
-cdsViewDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/e4a58de831c54ea89e2d9f07a2a8e3c7.html"
-sapHelpUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/4e4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b.html"
+cdsViewDocUrl: "https://help.sap.com/"
+sapHelpUrl: "https://help.sap.com/"
 extractionGotchas:
   - summary: "Sales document type (AUART) drives business logic. Filtering by type during extraction improves performance and ensures correct subset."
-    sapNoteOrDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/sales-doc-types.html"
+    sapNoteOrDocUrl: "https://help.sap.com/"
   - summary: "Large enterprises partition VBAK by sales organization (VKORG) and document type to manage extraction windows. Consider this in your delta strategy."
-    sapNoteOrDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/partitioning.html"
+    sapNoteOrDocUrl: "https://help.sap.com/"
 availableLevels:
   - beginner
   - intermediate
@@ -35,4 +35,4 @@ VBAK is the sales document header table in SAP S/4HANA, storing the master data 
 
 The table is fundamental to order-to-cash (O2C) analytics. It links to VBAP (line items), VBKD (sales document schedule lines), and other SD tables. Most extraction use cases start with VBAK because it's the entry point for understanding sales volume, velocity, and customer patterns.
 
-<a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/sales-doc-overview.html">SAP S/4HANA Sales documents overview</a> provides the complete technical reference. For cloud customers, SAP strongly recommends the released CDS view <code>I_SalesDocument</code>, which enforces authorization and applies post-processing logic automatically. Raw VBAK extraction bypasses these safeguards and should only be used when business rules don't apply.
+<a href="https://help.sap.com/">SAP S/4HANA Sales documents overview</a> provides the complete technical reference. For cloud customers, SAP strongly recommends the released CDS view <code>I_SalesDocument</code>, which enforces authorization and applies post-processing logic automatically. Raw VBAK extraction bypasses these safeguards and should only be used when business rules don't apply.

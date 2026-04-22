@@ -21,11 +21,11 @@ extractors:
 steps:
   - id: step-01
     title: "Confirm the released CDS view I_JournalEntryItem"
-    explanation: 'Never extract raw ACDOCA directly. SAP ships <a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/journal-entry-item-cds.html">I_JournalEntryItem</a> as the released CDS view for the Universal Journal. It enforces authorization, applies currency conversion, and exposes the table through ODP without triggering a full table scan.'
+    explanation: 'Never extract raw ACDOCA directly. SAP ships <a href="https://help.sap.com/">I_JournalEntryItem</a> as the released CDS view for the Universal Journal. It enforces authorization, applies currency conversion, and exposes the table through ODP without triggering a full table scan.'
     sapTransaction:
       code: SE80
       menuPath: "Repository Browser → Search → I_JournalEntryItem"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+      helpUrl: "https://help.sap.com/"
     verify: "I_JournalEntryItem opens in SE80 and the header annotation @Analytics.dataExtract: true is present."
     whyItMatters: "A raw SELECT * on ACDOCA exhausts SAP dialog work process memory within seconds on any production system. I_JournalEntryItem is the only extraction-safe path."
 
@@ -35,7 +35,7 @@ steps:
     sapTransaction:
       code: SE16N
       menuPath: "Execute → ACDOCA → Filter RBUKRS='1000' AND RYEAR=2024"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+      helpUrl: "https://help.sap.com/"
     verify: "You see a row count for RBUKRS='1000' and RYEAR=2024. This is the expected output row count for your first partition. Typical values are 5M-50M rows per company code per year."
     whyItMatters: "ACDOCA without partitioning crashes SAP. Partitioning by RBUKRS+RYEAR is the minimum viable approach and is the pattern you will scale to parallel jobs in intermediate and expert walkthroughs."
 

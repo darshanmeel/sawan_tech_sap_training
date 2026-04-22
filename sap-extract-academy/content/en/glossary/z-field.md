@@ -4,7 +4,7 @@ fullName: Custom Field (Z-prefix)
 slug: z-field
 shortDefinition: "Z-fields are custom fields added by customers to SAP tables via append structures. Named Z* or Y* by convention, they represent enterprise-specific logic not provided by standard SAP. Must be explicitly extracted or data warehouse is incomplete."
 relatedTerms: [Append Structure, SE11, Custom Development, Data Dictionary, MARA]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/custom-fields.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "Z-field: Custom Field in SAP — Plain Explanation"
 seoDescription: "Z-fields are custom fields (Z* or Y* prefix) added by customers to SAP tables. Critical to extract or data warehouse misses domain logic."
 updatedAt: 2026-04-22

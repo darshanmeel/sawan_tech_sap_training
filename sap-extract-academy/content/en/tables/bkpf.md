@@ -21,15 +21,15 @@ keyFields:
   - name: BELNR
     description: "Accounting Document Number (10-char, unique within BUKRS+GJAHR)"
 releasedCdsView: "I_AccountingDocument"
-cdsViewDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/accounting-doc-cds.html"
-sapHelpUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/accounting-doc.html"
+cdsViewDocUrl: "https://help.sap.com/"
+sapHelpUrl: "https://help.sap.com/"
 extractionGotchas:
   - summary: "BKPF includes posted and parked documents. Filter BUKRS (company code) and GJAHR (fiscal year) early to reduce volume. Most extractions partition by fiscal year."
-    sapNoteOrDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/bkpf-partitioning.html"
+    sapNoteOrDocUrl: "https://help.sap.com/"
   - summary: "Line items live in BSEG, not BKPF. BKPF is header only (amounts, posting date, approver). Join to BSEG for account-level details."
-    sapNoteOrDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/bseg.html"
+    sapNoteOrDocUrl: "https://help.sap.com/"
   - summary: "Accounting documents can be reversed. Check AUGBL (reversal reference) and STORNOMON (reversal flag) to understand reversals vs. new postings."
-    sapNoteOrDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/reversals.html"
+    sapNoteOrDocUrl: "https://help.sap.com/"
 availableLevels:
   - beginner
   - intermediate
@@ -43,4 +43,4 @@ BKPF is the accounting document header table in the Financial Accounting (FI) mo
 
 Extracting BKPF is central to financial analytics and audit trails. The table is large (tens to hundreds of millions of documents annually in large enterprises) and requires careful partitioning by fiscal year and company code to avoid extraction timeouts.
 
-<a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/accounting-doc-overview.html">SAP S/4HANA Accounting Document overview</a> documents the structure. Note that BKPF is header-only (no monetary amounts broken down by account). For account-level details, join to BSEG (line items). Most data warehouse fact tables combine BKPF header context with BSEG line detail.
+<a href="https://help.sap.com/">SAP S/4HANA Accounting Document overview</a> documents the structure. Note that BKPF is header-only (no monetary amounts broken down by account). For account-level details, join to BSEG (line items). Most data warehouse fact tables combine BKPF header context with BSEG line detail.

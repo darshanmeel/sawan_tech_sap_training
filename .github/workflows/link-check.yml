@@ -1,0 +1,43 @@
+name: Link Check
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'sap-extract-academy/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: sap-extract-academy
+        run: npm ci
+
+      - name: Build site
+        working-directory: sap-extract-academy
+        run: npm run build
+
+      - name: Check links with lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --verbose --no-progress sap-extract-academy/docs/
+          fail: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          format: markdown
+        env:
+          # Accept 200, 301, 302, 429 (rate limit)
+          # 429 is acceptable as it indicates the server is working
+          LYCHEE_ACCEPT: 200,301,302,429
+          # Allow https://help.sap.com/ base URLs (no strict path checking)
+          LYCHEE_ALLOW_PRIVATE: false

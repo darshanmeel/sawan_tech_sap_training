@@ -4,7 +4,7 @@ fullName: Operational Data Provisioning
 slug: odp
 shortDefinition: "ODP is SAP's extraction framework for exposing table and view data for real-time extraction. ODP handles authorization, supports full-load and delta, and integrates with CDS views. The modern alternative to legacy BW extractors."
 relatedTerms: [Operational Data Provisioning, Delta, Released CDS View, ODQMON, Extractor]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/operational-data-provisioning.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "ODP: Operational Data Provisioning in SAP — Plain Explanation"
 seoDescription: "ODP is SAP's extraction framework for real-time table data. Supports full-load, delta, authorization, and CDS integration. The modern extraction standard."
 updatedAt: 2026-04-22

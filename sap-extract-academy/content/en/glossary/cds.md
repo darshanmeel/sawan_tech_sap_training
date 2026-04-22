@@ -4,7 +4,7 @@ fullName: Core Data Services
 slug: cds
 shortDefinition: "CDS is SAP's declarative language for defining data models and views. CDS views are the modern, supported way to expose SAP data; they enforce authorization, apply currency conversion, and avoid raw table queries."
 relatedTerms: [ODP, Released CDS View, I_SalesDocument, I_JournalEntryItem, ABAP]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/cds.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "CDS: Core Data Services in SAP — Plain Explanation"
 seoDescription: "CDS is SAP's language for defining data views. CDS views enforce authorization and apply transformations, making them the safe, supported way to extract SAP data."
 updatedAt: 2026-04-22

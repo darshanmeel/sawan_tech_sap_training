@@ -17,11 +17,11 @@ extractors:
 steps:
   - id: step-01
     title: "Identify the I_AccountingDocument CDS view"
-    explanation: "<a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/accounting-doc-cds.html'>I_AccountingDocument</a> is the released CDS view for BKPF."
+    explanation: "<a href='https://help.sap.com/"
     sapTransaction:
       code: SE80
       menuPath: "Repository Browser → I_AccountingDocument"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+      helpUrl: "https://help.sap.com/"
     verify: "View exists with @Analytics.dataExtract: true."
   
   - id: step-02
@@ -30,7 +30,7 @@ steps:
     sapTransaction:
       code: SE16N
       menuPath: "Execute → BKPF"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+      helpUrl: "https://help.sap.com/"
     verify: "You see rows with BUKRS='1000' and GJAHR='2024' (or latest year). Count them — this is your expected row count for one partition."
 
   - id: step-03

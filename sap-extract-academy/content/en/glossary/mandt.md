@@ -4,7 +4,7 @@ fullName: Client / Mandant
 slug: mandt
 shortDefinition: "MANDT is a 3-digit field present in every SAP table that identifies which client (tenant) the row belongs to. Multi-client systems use MANDT to isolate data. Always filter MANDT in extraction to ensure correct client data."
 relatedTerms: [Client, Tenant, Data Partitioning, SE16N, Database Keys]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/client.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "MANDT: SAP Client/Tenant Identifier — Plain Explanation"
 seoDescription: "MANDT is the client/tenant field in all SAP tables. Multi-client systems use MANDT to isolate data; always filter MANDT in extraction."
 updatedAt: 2026-04-22

@@ -4,7 +4,7 @@ fullName: Material Unit of Measure
 slug: meins
 shortDefinition: "MEINS is a field in MARA (material master) that specifies the base unit of measure for a material: EA (each), KG (kilogram), LT (liter), CM (centimeter), etc. Must be paired with quantity fields when extracting."
 relatedTerms: [QUAN, MARA, Material Master, Unit of Measure, Data Dictionary]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-meins.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "MEINS: Material Unit of Measure in SAP — Plain Explanation"
 seoDescription: "MEINS specifies the base unit of measure for materials in MARA (EA, KG, L, CM, etc.). Always pair with quantity fields in extraction."
 updatedAt: 2026-04-22

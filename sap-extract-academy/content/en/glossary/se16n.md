@@ -4,7 +4,7 @@ fullName: Table Data Browser (Generic)
 slug: se16n
 shortDefinition: "SE16N is the SAP transaction for browsing table data with filtering and sorting, replacing legacy SE16. You use SE16N to count rows, verify data quality, and manually test filter conditions before automating extraction."
 relatedTerms: [SE11, Data Dictionary, Query, Table Browser, SM50]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "SE16N: Table Data Browser in SAP — Plain Explanation"
 seoDescription: "SE16N is the data browser for querying SAP tables with filters and sorts. Test data quality and row counts before automating extraction."
 updatedAt: 2026-04-22

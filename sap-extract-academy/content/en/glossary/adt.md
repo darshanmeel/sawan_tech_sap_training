@@ -4,7 +4,7 @@ fullName: ABAP Development Tools
 slug: adt
 shortDefinition: "ADT is the modern IDE for ABAP development, built on Eclipse. It replaces the classic SAP GUI-based development tools (SE38, SE11) with a native IDE offering syntax highlighting, refactoring, debugging, and Git integration."
 relatedTerms: [ABAP, SE38, SE11, Transport Request]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/adt.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "ADT: ABAP Development Tools in SAP — Plain Explanation"
 seoDescription: "ADT is the modern Eclipse-based IDE for ABAP development, replacing classic SAP GUI tools with syntax highlighting, refactoring, and Git support."
 updatedAt: 2026-04-22

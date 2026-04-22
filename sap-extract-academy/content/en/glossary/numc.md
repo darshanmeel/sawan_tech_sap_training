@@ -4,7 +4,7 @@ fullName: Numeric Character String
 slug: numc
 shortDefinition: "NUMC is a SAP data type for numeric strings with leading zeros preserved (e.g., '00001234'). Common for codes and IDs that must display leading zeros but are treated as numbers in SAP."
 relatedTerms: [CHAR, Data Dictionary, SE11, Field Type]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-numc.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "NUMC: Numeric Character Type in SAP — Plain Explanation"
 seoDescription: "NUMC is a numeric character field that preserves leading zeros (00001234). Used for codes and IDs that need to display leading zeros."
 updatedAt: 2026-04-22

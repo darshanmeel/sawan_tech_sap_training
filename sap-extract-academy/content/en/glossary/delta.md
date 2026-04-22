@@ -4,7 +4,7 @@ fullName: Delta (Change Data Capture)
 slug: delta
 shortDefinition: "Delta represents only the rows that have changed since the last extraction. Real-time delta captures inserts/updates/deletes immediately; queue-based delta periodically batches changes. Enables streaming architectures without full table replication."
 relatedTerms: [ODP, SLT, Operational Data Provisioning, ODQMON, Full Load]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/operational-data-provisioning.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "Delta: Change Data Capture in SAP — Plain Explanation"
 seoDescription: "Delta captures only changed rows since last extraction. Real-time delta streams immediately; queue-based delta batches changes. Enables efficient incremental loading."
 updatedAt: 2026-04-22

@@ -18,11 +18,11 @@ extractors:
 steps:
   - id: step-01
     title: "Verify SLT is installed and licensed"
-    explanation: "<a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SLT.html'>SAP Landscape Transformation (SLT)</a> replicates tables at the database level, capturing every insert/update/delete. Confirm license with SAP."
+    explanation: "<a href='https://help.sap.com/"
     sapTransaction:
       code: LTCO
       menuPath: "Administration → System → License"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+      helpUrl: "https://help.sap.com/"
     verify: "Full Use License is visible and SLT is listed as an active module."
 
   - id: step-02
@@ -31,7 +31,7 @@ steps:
     sapTransaction:
       code: SM59
       menuPath: "RFC Connections → Create → TCP/IP"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SM59.html"
+      helpUrl: "https://help.sap.com/"
     verify: "Test connection returns green for the Kafka RFC destination."
 
   - id: step-03
@@ -54,7 +54,7 @@ steps:
     sapTransaction:
       code: LTCO
       menuPath: "Replication Objects → Create"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+      helpUrl: "https://help.sap.com/"
     verify: "Replication object VBAK_KAFKA is created with status ACTIVE."
 
   - id: step-05
@@ -75,7 +75,7 @@ steps:
     sapTransaction:
       code: LTCO
       menuPath: "Replication Objects → VBAK_KAFKA → Full Replication"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+      helpUrl: "https://help.sap.com/"
     verify: "Full load completes. Kafka topic vbak-source-topic has partitions filled with VBAK rows."
 
   - id: step-07
@@ -106,7 +106,7 @@ steps:
     sapTransaction:
       code: LTRS
       menuPath: "Monitor → Replication Status"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+      helpUrl: "https://help.sap.com/"
     verify: "LTRS shows green status, replication lag < SLA."
 
   - id: step-10

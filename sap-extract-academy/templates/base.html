@@ -29,6 +29,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="{{basePath}}/assets/js/source-picker.js" defer></script>
+  <script src="{{basePath}}/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -60,9 +61,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     {{{content}}}
   </main>
@@ -76,11 +78,12 @@
             <li><a href="{{basePath}}/roadmap/">Roadmap</a></li>
             <li><a href="{{basePath}}/glossary/">Glossary</a></li>
             <li><a href="{{basePath}}/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>
 
+      {{#buttondownUsername}}
       <form
         action="https://buttondown.email/api/emails/embed-subscribe/{{buttondownUsername}}"
         method="post"
@@ -104,6 +107,7 @@
           <p class="email-consent">{{strings.form.consentText}}</p>
         </div>
       </form>
+      {{/buttondownUsername}}
 
       <div class="footer-info">
         <p class="disclaimer">{{strings.footer.disclaimer}}</p>

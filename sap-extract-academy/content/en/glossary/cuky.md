@@ -4,7 +4,7 @@ fullName: Currency Key
 slug: cuky
 shortDefinition: "CUKY is a SAP data type field that stores a currency code (e.g., USD, EUR, JPY). Often paired with amount fields; you must extract both CUKY and its corresponding amount to properly interpret the value."
 relatedTerms: [CURR, QUAN, MEINS, Z-field, ACDOCA, Data Dictionary]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-cuky.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "CUKY: Currency Key in SAP — Plain Explanation"
 seoDescription: "CUKY is a currency key field (USD, EUR, JPY, etc.) in SAP. Always paired with amount fields; extract both CUKY and amount to interpret values correctly."
 updatedAt: 2026-04-22

@@ -4,7 +4,7 @@ fullName: Transport Request / Change Request
 slug: transport-request
 shortDefinition: "A transport request is SAP's mechanism for moving code, configuration, and customizations across environments (dev → test → prod). Every custom ABAP object or CDS view exists in a transport request to track changes."
 relatedTerms: [ABAP, CDS, ADT, Configuration, Transport Layer]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/transport-request.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "Transport Request: SAP Change Management — Plain Explanation"
 seoDescription: "Transport requests move code and configuration across SAP environments. Track customizations and ABAP objects from dev to production."
 updatedAt: 2026-04-22

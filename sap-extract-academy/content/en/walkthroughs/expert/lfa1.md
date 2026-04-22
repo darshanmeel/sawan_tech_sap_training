@@ -20,7 +20,7 @@ steps:
     sapTransaction:
       code: SE80
       menuPath: "Search → LFA1, LFB1, LFBK relationships"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/vendor-tables.html"
+      helpUrl: "https://help.sap.com/"
     verify: "You understand 1:N relationships."
   
   - id: step-02

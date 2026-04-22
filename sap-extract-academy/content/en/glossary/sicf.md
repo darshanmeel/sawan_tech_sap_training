@@ -4,7 +4,7 @@ fullName: HTTP/HTTPS Configuration
 slug: sicf
 shortDefinition: "SICF is the SAP transaction for configuring HTTP handlers, services, and web communication. Used to enable REST APIs, iGate services, or custom web handlers that extraction tools might call."
 relatedTerms: [RFC, Integration, REST API, SM59]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SICF.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "SICF: HTTP Configuration in SAP — Plain Explanation"
 seoDescription: "SICF configures HTTP/REST services in SAP. Used for APIs and web handlers that extraction tools might call."
 updatedAt: 2026-04-22

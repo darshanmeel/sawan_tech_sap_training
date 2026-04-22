@@ -4,7 +4,7 @@ fullName: Sales and Distribution Document Number
 slug: vbeln
 shortDefinition: "VBELN is the primary key field for sales documents (VBAK table). It's a 10-digit document number that uniquely identifies a sales order, delivery, invoice, or return. Common extraction partition key."
 relatedTerms: [VBAK, Sales Document, Primary Key, MANDT, BUKRS]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/vbak.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "VBELN: Sales Document Number in SAP — Plain Explanation"
 seoDescription: "VBELN is the sales document number field in VBAK. Uniquely identifies orders, deliveries, invoices. Key partitioning field for extraction."
 updatedAt: 2026-04-22

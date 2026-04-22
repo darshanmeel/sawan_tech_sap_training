@@ -20,16 +20,16 @@ steps:
     sapTransaction:
       code: SE16N
       menuPath: "Execute → ACDOCA, filter RBUKRS='1000' AND RYEAR=2024"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+      helpUrl: "https://help.sap.com/"
     verify: "You know the row count for your partition. If > 500M, move to Expert walkthrough."
   
   - id: step-02
     title: "Use I_JournalEntryItem CDS view (NOT raw ACDOCA)"
-    explanation: "Raw SELECT * on ACDOCA crashes SAP. Always use <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html'>I_JournalEntryItem</a>, which enforces authorization and applies currency conversion."
+    explanation: "Raw SELECT * on ACDOCA crashes SAP. Always use <a href='https://help.sap.com/"
     sapTransaction:
       code: SE80
       menuPath: "Search → I_JournalEntryItem"
-      helpUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+      helpUrl: "https://help.sap.com/"
     verify: "CDS view exists with @Analytics.dataExtract: true."
   
   - id: step-03

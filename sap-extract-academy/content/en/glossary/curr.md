@@ -4,7 +4,7 @@ fullName: Currency Amount
 slug: curr
 shortDefinition: "CURR is a SAP data type for numeric fields representing monetary amounts. A CURR field must be paired with a CUKY (currency key) field to be interpretable; extracting one without the other creates orphaned data."
 relatedTerms: [CUKY, QUAN, MEINS, NUMC, Data Dictionary]
-sapDocUrl: "https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/data-element-curr.html"
+sapDocUrl: "https://help.sap.com/"
 seoTitle: "CURR: Currency Amount in SAP — Plain Explanation"
 seoDescription: "CURR is the data type for monetary amounts in SAP. Always pair with CUKY (currency key); extract both or your data warehouse amounts are meaningless."
 updatedAt: 2026-04-22
