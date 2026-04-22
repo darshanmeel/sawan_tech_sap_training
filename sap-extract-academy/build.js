@@ -11,6 +11,8 @@ const TEMPLATES_DIR = path.join(__dirname, 'templates');
 const OUTPUT_DIR = path.join(__dirname, 'docs');
 const STRINGS_PATH = path.join(__dirname, 'strings/en.json');
 
+const BASE_PATH = process.env.BASE_PATH || '';
+
 const strings = JSON.parse(fs.readFileSync(STRINGS_PATH, 'utf-8'));
 const baseTemplate = fs.readFileSync(path.join(TEMPLATES_DIR, 'base.html'), 'utf-8');
 
@@ -206,6 +208,7 @@ function buildPage(filePath, content) {
     jsonLd,
     canonicalPath,
     currentYear,
+    basePath: BASE_PATH,
     buttondownUsername: 'example',
     ogImage: 'default-og.png',
     ogType: pageType === 'article' ? 'article' : 'website',
@@ -381,6 +384,7 @@ function buildIndexPage(category, data) {
     items: data.items,
     strings,
     currentYear,
+    basePath: BASE_PATH,
     ogImage: 'default-og.png',
     ogType: 'website'
   };

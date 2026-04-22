@@ -23,12 +23,12 @@
 
   <script type="application/ld+json">{{{jsonLd}}}</script>
 
-  <link rel="stylesheet" href="/assets/css/main.css">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="{{basePath}}/assets/css/main.css">
+  <link rel="icon" href="{{basePath}}/favicon.svg" type="image/svg+xml">
 
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
-  <script src="/assets/js/source-picker.js" defer></script>
+  <script src="{{basePath}}/assets/js/source-picker.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -36,17 +36,17 @@
   <header class="site-header">
     <div class="container">
       <div class="header-top">
-        <a href="/" class="site-logo">SAP Extract Academy</a>
+        <a href="{{basePath}}/" class="site-logo">SAP Extract Academy</a>
       </div>
       <nav class="site-nav">
         <ul>
-          <li><a href="/">{{strings.nav.home}}</a></li>
-          <li><a href="/tables/">{{strings.nav.tables}}</a></li>
-          <li><a href="/walkthrough/">{{strings.nav.walkthroughs}}</a></li>
-          <li><a href="/glossary/">{{strings.nav.glossary}}</a></li>
-          <li><a href="/articles/">{{strings.nav.articles}}</a></li>
-          <li><a href="/roadmap/">{{strings.nav.roadmap}}</a></li>
-          <li><a href="/about/">{{strings.nav.about}}</a></li>
+          <li><a href="{{basePath}}/">{{strings.nav.home}}</a></li>
+          <li><a href="{{basePath}}/tables/">{{strings.nav.tables}}</a></li>
+          <li><a href="{{basePath}}/walkthrough/">{{strings.nav.walkthroughs}}</a></li>
+          <li><a href="{{basePath}}/glossary/">{{strings.nav.glossary}}</a></li>
+          <li><a href="{{basePath}}/articles/">{{strings.nav.articles}}</a></li>
+          <li><a href="{{basePath}}/roadmap/">{{strings.nav.roadmap}}</a></li>
+          <li><a href="{{basePath}}/about/">{{strings.nav.about}}</a></li>
         </ul>
         <div data-source-picker>
           <label for="source-version-select" class="sr-only">SAP Version</label>
@@ -72,10 +72,10 @@
       <div class="footer-links">
         <nav>
           <ul>
-            <li><a href="/about/">About</a></li>
-            <li><a href="/roadmap/">Roadmap</a></li>
-            <li><a href="/glossary/">Glossary</a></li>
-            <li><a href="/articles/">Articles</a></li>
+            <li><a href="{{basePath}}/about/">About</a></li>
+            <li><a href="{{basePath}}/roadmap/">Roadmap</a></li>
+            <li><a href="{{basePath}}/glossary/">Glossary</a></li>
+            <li><a href="{{basePath}}/articles/">Articles</a></li>
             <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>

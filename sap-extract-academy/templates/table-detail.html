@@ -2,8 +2,8 @@
 
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
-    <li><a href="/">Home</a></li>
-    <li><a href="/tables/">Tables</a></li>
+    <li><a href="{{basePath}}/">Home</a></li>
+    <li><a href="{{basePath}}/tables/">Tables</a></li>
     <li aria-current="page">{{code}}</li>
   </ol>
 </nav>
@@ -93,7 +93,7 @@
     <p>Pick your skill level and start learning how to extract {{code}}.</p>
     <div class="grid grid-cols-3">
       {{#availableLevels}}
-      <a href="/walkthrough/{{.}}/{{../slug}}/" class="card walkthrough-card">
+      <a href="{{basePath}}/walkthrough/{{.}}/{{../slug}}/" class="card walkthrough-card">
         <h3>{{capitalize .}}</h3>
         <p class="walkthrough-meta">Step-by-step guide</p>
       </a>

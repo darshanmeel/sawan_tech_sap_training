@@ -2,9 +2,9 @@
 
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
-    <li><a href="/">Home</a></li>
-    <li><a href="/tables/">Tables</a></li>
-    <li><a href="/tables/{{slug}}/">{{table}}</a></li>
+    <li><a href="{{basePath}}/">Home</a></li>
+    <li><a href="{{basePath}}/tables/">Tables</a></li>
+    <li><a href="{{basePath}}/tables/{{slug}}/">{{table}}</a></li>
     <li aria-current="page">{{level}} walkthrough</li>
   </ol>
 </nav>
@@ -174,4 +174,4 @@
   </section>
 </article>
 
-<script type="module" src="/assets/js/checklist.js?v=1" defer></script>
+<script type="module" src="{{basePath}}/assets/js/checklist.js?v=1" defer></script>

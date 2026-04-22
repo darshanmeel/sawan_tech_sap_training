@@ -5,7 +5,7 @@
     <h1>{{headline}}</h1>
     <p class="hero-subheading">{{subheadline}}</p>
     <div class="hero-ctas">
-      <a href="/tables/" class="btn btn-primary">{{cta1Label}}</a>
+      <a href="{{basePath}}/tables/" class="btn btn-primary">{{cta1Label}}</a>
       <a href="{{cta2Url}}" class="btn btn-secondary">{{cta2Label}}</a>
     </div>
   </div>
@@ -46,7 +46,7 @@
         <p><strong>{{name}}</strong></p>
         <p>{{module}}</p>
         <p class="table-volume">{{volumeClass}}</p>
-        <a href="/tables/{{slug}}/">View walkthroughs</a>
+        <a href="{{basePath}}/tables/{{slug}}/">View walkthroughs</a>
       </article>
       {{/featuredTables}}
     </div>
@@ -57,7 +57,7 @@
   <div class="container prose">
     <h2>What's coming</h2>
     <p>We're expanding beyond S/4HANA on-prem. See the roadmap for ECC 6.0, Cloud, BW, and Datasphere releases.</p>
-    <a href="/roadmap/" class="btn btn-secondary">View roadmap</a>
+    <a href="{{basePath}}/roadmap/" class="btn btn-secondary">View roadmap</a>
   </div>
 </section>
 
