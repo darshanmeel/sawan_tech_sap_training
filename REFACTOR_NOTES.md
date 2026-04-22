@@ -239,5 +239,5 @@ sawan_tech_sap_training/              ← repo root
 - Redirect `academy.example.com` in `build.js` to the real deployed origin or read from env (`SITE_ORIGIN`).
 - Empty JSON-LD on index pages (X6).
 - Canonical-URL HTML-entity escaping (X3).
-- Hardcoded `buttondownUsername = 'example'` (X4).
+- Hardcoded `buttondownUsername = 'example'` (X4) — **v2 C3 note:** The subscribe form is now wrapped in `{{#buttondownUsername}}...{{/buttondownUsername}}` guard in `templates/base.html`. For the form to auto-hide in the built site, `build.js:251` must pass an empty string `''` (or falsy value) instead of `'example'` when no real Buttondown username is configured. As-is, `'example'` is truthy so the form still renders; this is intentional to allow the template guard to work. Worker A should update `build.js` to conditionally set this value based on env or config.
 - Add a pre-commit or test that validates every step's `explanation` is run through marked (defend against B6 regression for prose code blocks).
