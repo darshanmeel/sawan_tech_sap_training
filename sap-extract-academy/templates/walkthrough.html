@@ -1,6 +1,8 @@
 <!-- Walkthrough detail page -->
 
 <div class="container">
+{{> picker }}
+
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="{{basePath}}/">Home</a></li>
@@ -39,12 +41,9 @@
     </dl>
   </header>
 
-  {{#licenseRelevance}}
-  <section class="callout callout-warning">
-    <h2>License check</h2>
-    <p>{{licenseRelevance}}</p>
-  </section>
-  {{/licenseRelevance}}
+  {{> sap-preflight }}
+
+  {{> license-check }}
 
   <section class="walkthrough-intro">
     <h2>Overview</h2>
@@ -116,10 +115,20 @@
 
           {{^sapTransaction}}
           {{#codeBlock}}
-          <figure class="code-block">
-            <figcaption>{{caption}}</figcaption>
-            <pre><code class="language-{{language}}">{{content}}</code></pre>
-          </figure>
+          <details class="reference-starter" hidden>
+            <summary>Reference starter — this is a starting point, not a tutorial</summary>
+            <p class="reference-starter-disclaimer">
+              The snippet below is a minimal starting point to orient you
+              with the vendor-specific configuration. It is not a
+              production-ready implementation. Refer to your tool vendor's
+              documentation for full configuration guidance:
+              {{#isAdf}}<a href="https://learn.microsoft.com/azure/data-factory/" target="_blank" rel="noopener noreferrer">Azure Data Factory docs</a>{{/isAdf}}{{#isDatabricks}}<a href="https://docs.databricks.com/" target="_blank" rel="noopener noreferrer">Databricks docs</a>{{/isDatabricks}}{{#isFivetran}}<a href="https://fivetran.com/docs/applications/sap-erp" target="_blank" rel="noopener noreferrer">Fivetran SAP docs</a>{{/isFivetran}}{{#isAirbyte}}<a href="https://docs.airbyte.com/integrations/sources/sap-fieldglass" target="_blank" rel="noopener noreferrer">Airbyte docs</a>{{/isAirbyte}}.
+            </p>
+            <figure class="code-block">
+              <figcaption>{{caption}}</figcaption>
+              <pre><code class="language-{{language}}">{{content}}</code></pre>
+            </figure>
+          </details>
           {{/codeBlock}}
           {{/sapTransaction}}
 
@@ -190,4 +199,5 @@
 
 </div>
 
+<script src="{{basePath}}/assets/js/picker.js" defer></script>
 <script type="module" src="{{basePath}}/assets/js/checklist.js?v=1" defer></script>

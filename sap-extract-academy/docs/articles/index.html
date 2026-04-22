@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Generic list/index page template -->
 
@@ -79,11 +81,19 @@
 <section class="items-grid">
   <article class="item-card card">
     <h2>
-      <a href="&#x2F;articles&#x2F;acdoca-complete-walkthrough&#x2F;">ACDOCA Extraction: The Complete Walkthrough from Beginner to Enterprise</a>
+      <a href="&#x2F;articles&#x2F;acdoca-complete-walkthrough&#x2F;">ACDOCA Extraction: Three Patterns from Beginner to Enterprise</a>
     </h2>
-    <p class="item-subtitle">12 min read · 2026-04-22</p>
-    <p class="item-description">A complete guide to extracting ACDOCA (the universal journal) from beginner to enterprise scale. Three patterns: simple ODP, multi-company parallelism, and real-time SLT replication. Choose your path based on data volume and latency requirements.</p>
+    <p class="item-subtitle">8 min read · 2026-04-22</p>
+    <p class="item-description">A guide to extracting ACDOCA (the Universal Journal) at three levels of scale and complexity. The decision points are SAP-side: how big is your partition, do you need real-time delta, and does your license cover your chosen method.</p>
     <a href="&#x2F;articles&#x2F;acdoca-complete-walkthrough&#x2F;" class="btn btn-secondary">View</a>
+  </article>
+  <article class="item-card card">
+    <h2>
+      <a href="&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;">Runtime vs Full Use SAP License: The Extraction Architect&#39;s Guide</a>
+    </h2>
+    <p class="item-subtitle">10 min read · 2026-04-22</p>
+    <p class="item-description">SAP Runtime licenses forbid SLT replication. Many organizations discover this during or after implementation and face expensive license upgrades or architecture redesigns. Understand the license boundary, what it means for extraction design, and how to avoid the trap.</p>
+    <a href="&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;" class="btn btn-secondary">View</a>
   </article>
   <article class="item-card card">
     <h2>
@@ -115,34 +125,11 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>
 
-      <form
-        action="https://buttondown.email/api/emails/embed-subscribe/"
-        method="post"
-        target="popupwindow"
-        onsubmit="window.open('https://buttondown.email/', 'popupwindow')"
-        class="email-form"
-      >
-        <div class="email-form-content">
-          <label for="bd-email">Email address</label>
-          <div class="email-form-row">
-            <input
-              type="email"
-              name="email"
-              id="bd-email"
-              placeholder="you@example.com"
-              required
-              autocomplete="email"
-            />
-            <button type="submit" class="btn btn-primary">Subscribe</button>
-          </div>
-          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
-        </div>
-      </form>
 
       <div class="footer-info">
         <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>

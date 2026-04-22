@@ -4,24 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Extract ACDOCA One Company&#x2F;Year via ODP — S&#x2F;4HANA Intermediate — SAP Extract Academy</title>
-  <meta name="description" content="Intermediate ACDOCA extraction: one company, one fiscal year via ODP and I_JournalEntryItem CDS view. Avoids raw table memory exhaustion.">
+  <title>Extract ACDOCA One Company&#x2F;Year via ODP — SAP-Side Intermediate — SAP Extract Academy</title>
+  <meta name="description" content="SAP-side intermediate guide for ACDOCA extraction. ODQMON delta queue behavior, CDS view validation, ODP first-delta gotcha, SE16N reconciliation.">
   <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;acdoca&#x2F;">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Extract ACDOCA One Company&#x2F;Year via ODP — S&#x2F;4HANA Intermediate">
-  <meta property="og:description" content="Intermediate ACDOCA extraction: one company, one fiscal year via ODP and I_JournalEntryItem CDS view. Avoids raw table memory exhaustion.">
+  <meta property="og:title" content="Extract ACDOCA One Company&#x2F;Year via ODP — SAP-Side Intermediate">
+  <meta property="og:description" content="SAP-side intermediate guide for ACDOCA extraction. ODQMON delta queue behavior, CDS view validation, ODP first-delta gotcha, SE16N reconciliation.">
   <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;acdoca&#x2F;">
   <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
   <meta property="og:site_name" content="SAP Extract Academy">
   <meta property="og:locale" content="en_US">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Extract ACDOCA One Company&#x2F;Year via ODP — S&#x2F;4HANA Intermediate">
-  <meta name="twitter:description" content="Intermediate ACDOCA extraction: one company, one fiscal year via ODP and I_JournalEntryItem CDS view. Avoids raw table memory exhaustion.">
+  <meta name="twitter:title" content="Extract ACDOCA One Company&#x2F;Year via ODP — SAP-Side Intermediate">
+  <meta name="twitter:description" content="SAP-side intermediate guide for ACDOCA extraction. ODQMON delta queue behavior, CDS view validation, ODP first-delta gotcha, SE16N reconciliation.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract ACDOCA One Company/Year via ODP (Intermediate)","description":"Partial ACDOCA extraction (one company code, current fiscal year) via ODP and the released CDS view I_JournalEntryItem. Avoids raw table pitfalls. Python/Snowflake.","totalTime":"PT90M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Confirm ACDOCA is massive","text":"Use <a href='/glossary/acdoca/'>ACDOCA</a> SE16N to count rows in one company code for one fiscal year. Budget 2-4 hours for extraction if rows exceed 100M.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Use I_JournalEntryItem CDS view (NOT raw ACDOCA)","text":"Raw SELECT * on ACDOCA crashes SAP. Always use <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html'>I_JournalEntryItem</a>, which enforces authorization and applies currency conversion.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Extract with fiscal year + company code filters","text":"Python/pyrfc with ODP. Filter: RBUKRS='1000' AND RYEAR=2024. Set timeouts high (60 min) because ACDOCA is slow even with filters.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Stream to Snowflake to avoid memory issues","text":"Don't load all rows into Python memory. Stream in batches of 100K rows, upsert to Snowflake in micro-batches.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Reconcile with BKPF totals","text":"Sum amounts in ACDOCA (by company, year) and compare to BKPF aggregates. They should match (within rounding).","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"ACDOCA","item":"https://academy.example.com/tables/acdoca/"},{"@type":"ListItem","position":4,"name":"Extract ACDOCA One Company/Year via ODP (Intermediate)"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract ACDOCA One Company/Year via ODP (Intermediate)","description":"SAP-side intermediate guide for ACDOCA extraction. Focuses on confirming the I_JournalEntryItem CDS view, understanding ODP delta queue behavior, monitoring with ODQMON, and SE16N reconciliation for a single fiscal year partition.","totalTime":"PT90M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Confirm ACDOCA partition size in SE16N","text":"Before running any extraction, use <a href=\"https://help.sap.com/\">SE16N</a> to count rows for your intended partition. Filter on RBUKRS (company code) and RYEAR (fiscal year). If the count exceeds 500M rows for a single partition, move to the Expert walkthrough — that volume requires SLT or sub-partition strategies not covered here.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Confirm I_JournalEntryItem CDS view and delta annotation","text":"In <a href=\"https://help.sap.com/\">SE80</a>, open I_JournalEntryItem and inspect the annotations. For delta extraction you need <code>@Analytics.dataExtraction.delta.changeDataCapture.automatic: true</code>. If that annotation is absent, the view supports only full-load extraction — delta will not work.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Monitor the ODP subscription in ODQMON","text":"After your extraction tool registers, open <a href=\"https://help.sap.com/\">ODQMON</a> and navigate to the ABAP_CDS context. Find the subscription for I_JournalEntryItem. Note: after an init-delta run, the first delta request returns 0 records. This is correct ODP behavior — the delta mechanism captures changes from the init point forward, not from before it. <a href=\"https://support.sap.com/notes/2884410\">SAP Note 2884410</a> documents this.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Reconcile extracted row count against SE16N","text":"After the full-load extraction completes, return to <a href=\"https://help.sap.com/\">SE16N</a> and recount ACDOCA rows for the same RBUKRS and RYEAR partition. The count in your target system should match within a small window for in-flight postings.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Add posting period filter if the partition is still too large","text":"If SE16N shows your RBUKRS+RYEAR partition is too large (e.g., 200M+ rows) for a safe ODP extraction, add a posting period filter. In <a href=\"https://help.sap.com/\">SE16N</a>, filter on POPER (posting period, values 001–012 for months) to count rows per quarter. Then extract one quarter at a time.","url":"https://academy.example.com/walkthrough/intermediate/acdoca/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"ACDOCA","item":"https://academy.example.com/tables/acdoca/"},{"@type":"ListItem","position":4,"name":"Extract ACDOCA One Company/Year via ODP (Intermediate)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,13 +66,98 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Walkthrough detail page -->
 
 <div class="container">
+<div class="picker" aria-label="Extraction method, tool, and sink selector">
+  <fieldset class="picker-axis" id="picker-method">
+    <legend>Extraction method</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="method" value="odp" class="picker-radio">
+        <span>ODP</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="slt" class="picker-radio">
+        <span>SLT</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="rfc" class="picker-radio">
+        <span>RFC direct</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="ref" class="picker-radio">
+        <span>Reference only</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
+    <legend>Tool</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="adf" class="picker-radio">
+        <span>ADF</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="databricks" class="picker-radio">
+        <span>Databricks</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="fivetran" class="picker-radio">
+        <span>Fivetran</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="airbyte" class="picker-radio">
+        <span>Airbyte</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="custom" class="picker-radio">
+        <span>Custom</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis" id="picker-sink">
+    <legend>Sink</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="adls" class="picker-radio">
+        <span>ADLS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="s3" class="picker-radio">
+        <span>S3</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="gcs" class="picker-radio">
+        <span>GCS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="snowflake" class="picker-radio">
+        <span>Snowflake</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="bigquery" class="picker-radio">
+        <span>BigQuery</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="fabric" class="picker-radio">
+        <span>Fabric</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="other" class="picker-radio">
+        <span>Other</span>
+      </label>
+    </div>
+  </fieldset>
+</div>
+
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -88,7 +174,7 @@
       <span class="table-code">ACDOCA</span>
     </div>
     <h1>Extract ACDOCA One Company&#x2F;Year via ODP (Intermediate)</h1>
-    <p class="walkthrough-summary">Partial ACDOCA extraction (one company code, current fiscal year) via ODP and the released CDS view I_JournalEntryItem. Avoids raw table pitfalls. Python&#x2F;Snowflake.</p>
+    <p class="walkthrough-summary">SAP-side intermediate guide for ACDOCA extraction. Focuses on confirming the I_JournalEntryItem CDS view, understanding ODP delta queue behavior, monitoring with ODQMON, and SE16N reconciliation for a single fiscal year partition.</p>
 
     <dl class="walkthrough-meta-list">
       <div>
@@ -97,30 +183,236 @@
       </div>
       <div>
         <dt>Destinations</dt>
-        <dd>Snowflake</dd>
+        <dd>Generic</dd>
       </div>
       <div>
         <dt>Extractors</dt>
-        <dd>Python</dd>
+        <dd>ODP</dd>
       </div>
     </dl>
   </header>
 
-  <section class="callout callout-warning">
-    <h2>License check</h2>
-    <p>All licenses. ODP is application-layer, works under Runtime License.</p>
+  <section class="sap-preflight">
+    <h2>SAP-side preflight</h2>
+    <p>Before any tool touches your SAP system, you need four things confirmed
+    on the SAP side. Skipping these steps is the most common cause of extraction
+    failures, performance incidents, and licensing surprises.</p>
+  
+    <ol class="sap-preflight-checklist">
+      <li>
+        <strong>License — confirm your extraction method is covered.</strong>
+        <p>
+          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
+          first decision. ODP-based extraction (via
+          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
+          SLT replication requires a Full Use license. Verify with your SAP
+          licensing contact before you design anything — not the day before
+          go-live.
+        </p>
+        <p class="sap-preflight-note">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
+          modules by third-party tools is no longer permitted. If your tool uses
+          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
+          contract terms. Compliant alternatives are ODP via OData or SLT
+          replication. Full note at
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
+          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
+        <p>
+          Every table covered in this Academy has a SAP-released
+          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
+          Open
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SE80</a>
+          and search for the view name before you build anything. Confirm the
+          annotation <code>@Analytics.dataExtract: true</code> is present. If
+          the view is absent or the annotation is missing, stop — raw table
+          extraction is not the solution.
+        </p>
+      </li>
+  
+      <li>
+        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
+        <p>
+          Your extraction user needs three authorization objects.
+          Use
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SU01</a>
+          to create a System-type (non-dialog) user, then use
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">PFCG</a>
+          to assign a role containing:
+        </p>
+        <ul>
+          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
+          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
+            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
+          <li><code>S_TABU_DIS</code> — table display access for the relevant
+            authorization group</li>
+        </ul>
+        <p>
+          For SLT-based extraction, your Basis team will also need authorization
+          in
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">LTCO</a>
+          and
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">LTRS</a>.
+          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Row-count context — understand data volumes before you run.</strong>
+        <p>
+          Use
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SE16N</a>
+          to count rows in the target table with your intended filter (company
+          code, fiscal year, material type, etc.) before you start the
+          extraction. This gives you:
+        </p>
+        <ul>
+          <li>A baseline to reconcile against after the extract.</li>
+          <li>A sense of whether your partition is safe to extract
+            (&lt;&nbsp;100M rows is generally safe for ODP;
+            larger partitions may need further splitting or SLT).</li>
+          <li>Early warning if a filter is misconfigured
+            (count returns billions — rethink the partition).</li>
+        </ul>
+      </li>
+    </ol>
+  
+    <p class="sap-preflight-footer">
+      These four checks take 15–30 minutes on a first walkthrough, and under
+      5 minutes once you know your system. They are the difference between a
+      smooth extraction and a multi-day incident.
+    </p>
   </section>
+
+  <section class="callout callout-warning license-check">
+    <h2>License check</h2>
+  
+    <p>ODP extraction via OData is permitted under Runtime and Full Use licenses. License trap: Runtime vs Full Use →</p>
+  
+  
+    <div class="license-check-detail" id="license-check-detail">
+      <!--
+        JS-controlled variants — picker.js shows/hides the relevant block
+        based on ?method= in the URL. All four variants are rendered; only
+        the active one is visible at runtime.
+      -->
+      <div class="license-variant" data-method="odp">
+        <p>
+          <strong>ODP (Operational Data Provisioning)</strong> is permitted
+          under both Runtime and Full Use SAP licenses when you access data
+          through published CDS views via the OData API.
+        </p>
+        <p class="license-check-warning">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
+          call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
+          etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
+          Verify with your licensing contact.
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">Full note (SAP login required)</a>.
+          [NEEDS_SAP_CITATION — confirm current note state]
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="slt" hidden>
+        <p>
+          <strong>SLT (SAP Landscape Transformation)</strong> requires a
+          <strong>Full Use SAP license</strong>. It is not permitted under
+          Runtime licenses. Verify in
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SLICENSE</a>
+          that "SLT Landscape Transformation" is listed as Active, Type = Full
+          Use before you configure anything in
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">LTCO</a>.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="rfc" hidden>
+        <p>
+          <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
+          generally permitted for read-only access under Runtime and Full Use
+          licenses, but is not recommended for production use — it bypasses
+          authorization checks that released CDS views enforce and is subject
+          to SAP Note 3255746 restrictions when wrapped by third-party ODP
+          connectors. [NEEDS_SAP_CITATION — verify Runtime license scope for
+          direct RFC read]
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="ref" hidden>
+        <p>
+          <strong>Reference mode:</strong> you are reviewing this walkthrough
+          for SAP-side context only. No tool-specific pipeline steps are shown.
+          Check your license before selecting a tool.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+  // Inline snippet: switch visible license-variant on picker change.
+  // Runs immediately so no flash-of-wrong-content.
+  (function () {
+    function showMethod(method) {
+      var variants = document.querySelectorAll('.license-variant');
+      variants.forEach(function (el) {
+        if (el.getAttribute('data-method') === method) {
+          el.removeAttribute('hidden');
+        } else {
+          el.setAttribute('hidden', '');
+        }
+      });
+    }
+  
+    function readMethod() {
+      var params = new URLSearchParams(window.location.search);
+      return params.get('method') || 'odp';
+    }
+  
+    // Apply on load.
+    showMethod(readMethod());
+  
+    // Re-apply when picker radios change (picker.js fires change events).
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.name === 'method') {
+        showMethod(e.target.value);
+      }
+    });
+  })();
+  </script>
 
   <section class="walkthrough-intro">
     <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
-<p>Your finance team needs ACDOCA data for year-end close analytics. You&#39;ll extract one company, one fiscal year — enough for meaningful analysis without hitting system limits. This walkthrough teaches the safe approach; the Expert walkthrough scales to multi-year, multi-company via SLT.</p>
-<p>Estimated time: 90 minutes (depends on partition size).</p>
+<p>Your finance team needs ACDOCA data for year-end close analytics. You will extract one company code, one fiscal year — enough for meaningful analysis without hitting system limits. This walkthrough focuses on the SAP-side checks: confirming delta capability, monitoring ODP subscriptions, and understanding the first-delta behavior that surprises most teams on their first run.</p>
+<p>Estimated time: 90 minutes.</p>
 <hr>
-<h2>What you&#39;ve built</h2>
-<p>You&#39;ve successfully extracted ACDOCA without crashing SAP. You used the released CDS view (which every SAP professional should), streamed data to avoid memory exhaustion, and reconciled totals. This is the correct, professional approach to ACDOCA extraction.</p>
-<p>When you need more years or companies, the Expert walkthrough scales these patterns via SLT and Kafka.</p>
+<h2>What you have confirmed</h2>
+<p>You have verified that I_JournalEntryItem supports delta extraction on your system, understand that the first ODP delta returns 0 records (by design), and have a reconciliation baseline. When you need more years or company codes, the Expert walkthrough scales these patterns via SLT.</p>
 
     </div>
   </section>
@@ -128,8 +420,9 @@
   <section class="prerequisites">
     <h2>Before you start</h2>
     <ul class="prerequisites-list">
-      <li>Completed any Intermediate walkthrough</li>
-      <li>Understanding of ACDOCA size&#x2F;complexity from table overview</li>
+      <li>Completed any beginner walkthrough</li>
+      <li>Understanding of ACDOCA table structure from the ACDOCA beginner walkthrough or table overview</li>
+      <li>SE16N shows you know your partition row count</li>
     </ul>
   </section>
 
@@ -147,37 +440,37 @@
       <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
         <header class="step-header">
           <div class="step-number">Step 1</div>
-          <h2 class="step-title">Confirm ACDOCA is massive</h2>
+          <h2 class="step-title">Confirm ACDOCA partition size in SE16N</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-01"
-              aria-label="Mark Confirm ACDOCA is massive as complete"
+              aria-label="Mark Confirm ACDOCA partition size in SE16N as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Use <a href='/glossary/acdoca/'>ACDOCA</a> SE16N to count rows in one company code for one fiscal year. Budget 2-4 hours for extraction if rows exceed 100M.</p>
+          <p class="step-intro">Before running any extraction, use <a href="https://help.sap.com/">SE16N</a> to count rows for your intended partition. Filter on RBUKRS (company code) and RYEAR (fiscal year). If the count exceeds 500M rows for a single partition, move to the Expert walkthrough — that volume requires SLT or sub-partition strategies not covered here.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE16N
                 <span class="sr-only">(opens in new tab)</span>
               </a>
-              and navigate to <em>Execute → ACDOCA, filter RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024</em>.
+              and navigate to <em>Execute → ACDOCA → Filter RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024 → Count</em>.
             </div>
           </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">You know the row count for your partition. If &gt; 500M, move to Expert walkthrough.</div>
+            <div class="step-action-body">Row count is below 500M. Write it down for reconciliation.</div>
           </div>
 
         </div>
@@ -187,39 +480,43 @@
       <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
         <header class="step-header">
           <div class="step-number">Step 2</div>
-          <h2 class="step-title">Use I_JournalEntryItem CDS view (NOT raw ACDOCA)</h2>
+          <h2 class="step-title">Confirm I_JournalEntryItem CDS view and delta annotation</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-02"
-              aria-label="Mark Use I_JournalEntryItem CDS view (NOT raw ACDOCA) as complete"
+              aria-label="Mark Confirm I_JournalEntryItem CDS view and delta annotation as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Raw SELECT * on ACDOCA crashes SAP. Always use <a href='https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html'>I_JournalEntryItem</a>, which enforces authorization and applies currency conversion.</p>
+          <p class="step-intro">In <a href="https://help.sap.com/">SE80</a>, open I_JournalEntryItem and inspect the annotations. For delta extraction you need <code>@Analytics.dataExtraction.delta.changeDataCapture.automatic: true</code>. If that annotation is absent, the view supports only full-load extraction — delta will not work.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE80
                 <span class="sr-only">(opens in new tab)</span>
               </a>
-              and navigate to <em>Search → I_JournalEntryItem</em>.
+              and navigate to <em>Repository Browser → I_JournalEntryItem → Annotations</em>.
             </div>
           </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">CDS view exists with @Analytics.dataExtract: true.</div>
+            <div class="step-action-body">I_JournalEntryItem has @Analytics.dataExtract: true. Check for the delta changeDataCapture annotation. If absent, confirm with your Basis team whether a support package is needed to enable it.</div>
           </div>
 
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>If you run a delta extraction against a view that lacks the CDC annotation, ODP returns all rows on every run — the same behavior as a full load but without you realising it. This leads to duplicate data in your target.</p>
+          </details>
         </div>
       </article>
     </li>
@@ -227,32 +524,37 @@
       <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
         <header class="step-header">
           <div class="step-number">Step 3</div>
-          <h2 class="step-title">Extract with fiscal year + company code filters</h2>
+          <h2 class="step-title">Monitor the ODP subscription in ODQMON</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-03"
-              aria-label="Mark Extract with fiscal year + company code filters as complete"
+              aria-label="Mark Monitor the ODP subscription in ODQMON as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Python/pyrfc with ODP. Filter: RBUKRS=&#39;1000&#39; AND RYEAR=2024. Set timeouts high (60 min) because ACDOCA is slow even with filters.</p>
+          <p class="step-intro">After your extraction tool registers, open <a href="https://help.sap.com/">ODQMON</a> and navigate to the ABAP_CDS context. Find the subscription for I_JournalEntryItem. Note: after an init-delta run, the first delta request returns 0 records. This is correct ODP behavior — the delta mechanism captures changes from the init point forward, not from before it. <a href="https://support.sap.com/notes/2884410">SAP Note 2884410</a> documents this.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+                ODQMON
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Subscriptions → Context: ABAP_CDS → I_JournalEntryItem</em>.
+            </div>
+          </div>
 
-          <figure class="code-block">
-            <figcaption>Filtered ODP extraction</figcaption>
-            <pre><code class="language-python">filter_str &#x3D; &quot;(RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024)&quot;
-result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROWCOUNT&#x3D;1000000)
-</code></pre>
-          </figure>
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Extraction completes. Logs show &#39;Fetched X million rows&#39;.</div>
+            <div class="step-action-body">Subscription for I_JournalEntryItem appears. After init, delta queue shows 0 pending records — this is expected.</div>
           </div>
 
         </div>
@@ -262,26 +564,37 @@ result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROW
       <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
         <header class="step-header">
           <div class="step-number">Step 4</div>
-          <h2 class="step-title">Stream to Snowflake to avoid memory issues</h2>
+          <h2 class="step-title">Reconcile extracted row count against SE16N</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-04"
-              aria-label="Mark Stream to Snowflake to avoid memory issues as complete"
+              aria-label="Mark Reconcile extracted row count against SE16N as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Don&#39;t load all rows into Python memory. Stream in batches of 100K rows, upsert to Snowflake in micro-batches.</p>
+          <p class="step-intro">After the full-load extraction completes, return to <a href="https://help.sap.com/">SE16N</a> and recount ACDOCA rows for the same RBUKRS and RYEAR partition. The count in your target system should match within a small window for in-flight postings.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → ACDOCA → Filter RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024 → Count</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Snowflake table fills incrementally. Monitor via Snowflake query history.</div>
+            <div class="step-action-body">Target row count matches SE16N count within a tolerable margin for in-flight transactions.</div>
           </div>
 
         </div>
@@ -291,32 +604,37 @@ result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROW
       <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
         <header class="step-header">
           <div class="step-number">Step 5</div>
-          <h2 class="step-title">Reconcile with BKPF totals</h2>
+          <h2 class="step-title">Add posting period filter if the partition is still too large</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-05"
-              aria-label="Mark Reconcile with BKPF totals as complete"
+              aria-label="Mark Add posting period filter if the partition is still too large as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Sum amounts in ACDOCA (by company, year) and compare to BKPF aggregates. They should match (within rounding).</p>
+          <p class="step-intro">If SE16N shows your RBUKRS+RYEAR partition is too large (e.g., 200M+ rows) for a safe ODP extraction, add a posting period filter. In <a href="https://help.sap.com/">SE16N</a>, filter on POPER (posting period, values 001–012 for months) to count rows per quarter. Then extract one quarter at a time.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → ACDOCA → Filter RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024 AND POPER&#x3D;&#39;001&#39; → Count</em>.
+            </div>
+          </div>
 
-          <figure class="code-block">
-            <figcaption>Reconciliation query</figcaption>
-            <pre><code class="language-sql">SELECT SUM(AMOUNT_DEBIT) FROM ACDOCA WHERE RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;2024
--- should match manual BKPF total for same company&#x2F;year
-</code></pre>
-          </figure>
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Totals match within 0.01%.</div>
+            <div class="step-action-body">Each quarterly partition (e.g., POPER&#x3D;&#39;001&#39; through &#39;003&#39;) has a manageable row count. Adjust partition granularity accordingly.</div>
           </div>
 
         </div>
@@ -330,13 +648,25 @@ result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROW
       <div class="troubleshooting-item">
         <dt>ODP extraction times out after 2 hours</dt>
         <dd>
-          <p>ACDOCA partition is &gt; 500M rows. Use the Expert walkthrough with SLT instead.</p>
+          <p>The partition is more than 500M rows. Use the Expert walkthrough which covers SLT parallel readers for ACDOCA at that scale.</p>
         </dd>
       </div>
       <div class="troubleshooting-item">
-        <dt>I_JournalEntryItem CDS view is slow (&gt; 200M rows)</dt>
+        <dt>First delta run returns 0 records — is this a bug?</dt>
         <dd>
-          <p>Add posting period filter: AND POPER &gt;&#x3D; &#39;001&#39; AND POPER &lt;&#x3D; &#39;012&#39; to further narrow range.</p>
+          <p>No. This is documented ODP behavior per SAP Note 2884410. After an init-delta, the first delta request returns 0 records because no changes have occurred since the init point. Subsequent delta runs will return only changed records.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>ODQMON shows subscription stuck in &#39;FETCHING&#39; state</dt>
+        <dd>
+          <p>The extraction process is still running or has hung. Check SM50 for active ABAP processes owned by your extraction user. If the process is not active, the subscription may be corrupted. Reset it in ODQMON and restart the extraction.</p>
+          <p>
+            <a href="https:&#x2F;&#x2F;support.sap.com&#x2F;notes&#x2F;2884410" target="_blank" rel="noopener noreferrer">
+              Related SAP Note
+              <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </p>
         </dd>
       </div>
     </dl>
@@ -352,6 +682,7 @@ result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROW
     <ul>
       <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;acdoca&#x2F;">Try ACDOCA Expert for ultra-large extractions</a></li>
       <li><a href="&#x2F;tables&#x2F;acdoca&#x2F;">Table overview: ACDOCA Universal Journal</a></li>
+      <li><a href="&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;">License trap: Runtime vs Full Use</a></li>
     </ul>
   </section>
 
@@ -363,6 +694,7 @@ result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROW
 
 </div>
 
+<script src="/assets/js/picker.js" defer></script>
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 
   </main>
@@ -376,7 +708,7 @@ result &#x3D; conn.call(&#39;RFC_ODP_READ&#39;, ..., FILTER&#x3D;filter_str, ROW
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

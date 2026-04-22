@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Table detail page -->
 
@@ -96,7 +98,7 @@
     <div class="prose">
       <p>ACDOCA is the Universal Journal table in SAP S/4HANA, storing consolidated line-item accounting postings across all modules: G/L, A/P, A/R, costing, and profitability. The table is often the largest in S/4HANA installations, with billions of rows accumulated over years. It&#39;s the source of truth for financial analytics, audit trails, and balance sheet reconciliation.</p>
 <p>ACDOCA extraction is the centerpiece of data warehouse projects but requires disciplined engineering because naive &quot;SELECT *&quot; queries crash SAP systems. Successful extraction depends on partitioning strategy (by fiscal year and period), use of released CDS views, and careful load balancing across parallel jobs.</p>
-<p><a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/universal-journal-overview.html">SAP S/4HANA Universal Journal overview</a> documents the complete design. The <a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/acdoca-arch.html">ACDOCA architecture guide</a> is mandatory reading if you&#39;re extracting more than a few years of data. Always use <code>I_JournalEntryItem</code> (the released CDS view) rather than raw ACDOCA — it enforces authorization, applies currency conversion, and protects against accidental full-table scans.</p>
+<p><a href="https://help.sap.com/">SAP S/4HANA Universal Journal overview</a> documents the complete design. The <a href="https://help.sap.com/">ACDOCA architecture guide</a> is mandatory reading if you&#39;re extracting more than a few years of data. Always use <code>I_JournalEntryItem</code> (the released CDS view) rather than raw ACDOCA — it enforces authorization, applies currency conversion, and protects against accidental full-table scans.</p>
 
     </div>
   </section>
@@ -169,28 +171,28 @@
     <ul class="gotchas-list">
       <li class="gotcha-item">
         <p class="gotcha-text">ACDOCA is the largest table in S&#x2F;4HANA. Extracting the entire table will timeout. Always partition by RYEAR (reporting year) and POPER (period) at minimum.</p>
-        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-partitioning.html" target="_blank" rel="noopener noreferrer">
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
           SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
       </li>
       <li class="gotcha-item">
         <p class="gotcha-text">Raw SELECT * on ACDOCA crashes SAP dialog work processes due to memory exhaustion. Use the released CDS view I_JournalEntryItem instead, or apply row-level filtering with SLT&#x2F;ODP.</p>
-        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-perf.html" target="_blank" rel="noopener noreferrer">
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
           SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
       </li>
       <li class="gotcha-item">
         <p class="gotcha-text">ACDOCA consolidates all accounting: G&#x2F;L, A&#x2F;P, A&#x2F;R, costing, profitability. Each posting appears once with multiple dimensions. Aggregation logic is business-rule dependent.</p>
-        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;acdoca-design.html" target="_blank" rel="noopener noreferrer">
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
           SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
       </li>
       <li class="gotcha-item">
         <p class="gotcha-text">Full Use License required for SLT replication of ACDOCA. ODP extraction (recommended) works under Runtime License. Verify your licensing with SAP before committing to SLT.</p>
-        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;slt-licensing.html" target="_blank" rel="noopener noreferrer">
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
           SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
@@ -220,7 +222,7 @@
   <section class="external-refs">
     <h2>External references</h2>
     <ul class="refs-list">
-      <li><a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;universal-journal.html" target="_blank" rel="noopener noreferrer">SAP Help Portal — ACDOCA</a></li>
+      <li><a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">SAP Help Portal — ACDOCA</a></li>
       <li><a href="https://www.leanx.eu/en/sap/table/acdoca.html" target="_blank" rel="noopener noreferrer">leanx.eu — ACDOCA field list</a></li>
       <li><a href="https://www.saptables.net/table/acdoca" target="_blank" rel="noopener noreferrer">saptables.net — ACDOCA</a></li>
     </ul>
@@ -240,7 +242,7 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

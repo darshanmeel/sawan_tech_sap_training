@@ -1,6 +1,7 @@
 ---
 title: "The SAP Runtime License Trap: Why SLT Replication Costs More Than You Think"
 slug: sap-runtime-license-trap
+redirectTo: "/articles/runtime-vs-full-use/"
 publishDate: 2026-04-22
 readingTimeMinutes: 10
 author: "SAP Extract Academy"

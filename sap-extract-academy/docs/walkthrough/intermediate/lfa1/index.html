@@ -4,24 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Extract LFA1 with Hourly Delta (Intermediate) — SAP Extract Academy</title>
-  <meta name="description" content="Intermediate LFA1 extraction with full weekly + hourly delta loads. Near-real-time vendor master via ODP delta queues and Python.">
+  <title>Extract LFA1 with Hourly Delta (Intermediate) — SAP-Side Guide — SAP Extract Academy</title>
+  <meta name="description" content="SAP-side intermediate guide for LFA1 ODP delta extraction. Create and monitor ODQMON subscriptions, test delta with manual vendor changes, understand subscription lifecycle.">
   <link rel="canonical" href="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;lfa1&#x2F;">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Extract LFA1 with Hourly Delta (Intermediate)">
-  <meta property="og:description" content="Intermediate LFA1 extraction with full weekly + hourly delta loads. Near-real-time vendor master via ODP delta queues and Python.">
+  <meta property="og:title" content="Extract LFA1 with Hourly Delta (Intermediate) — SAP-Side Guide">
+  <meta property="og:description" content="SAP-side intermediate guide for LFA1 ODP delta extraction. Create and monitor ODQMON subscriptions, test delta with manual vendor changes, understand subscription lifecycle.">
   <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;intermediate&#x2F;lfa1&#x2F;">
   <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
   <meta property="og:site_name" content="SAP Extract Academy">
   <meta property="og:locale" content="en_US">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Extract LFA1 with Hourly Delta (Intermediate)">
-  <meta name="twitter:description" content="Intermediate LFA1 extraction with full weekly + hourly delta loads. Near-real-time vendor master via ODP delta queues and Python.">
+  <meta name="twitter:title" content="Extract LFA1 with Hourly Delta (Intermediate) — SAP-Side Guide">
+  <meta name="twitter:description" content="SAP-side intermediate guide for LFA1 ODP delta extraction. Create and monitor ODQMON subscriptions, test delta with manual vendor changes, understand subscription lifecycle.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract LFA1 with Hourly Delta (Intermediate)","description":"Full load plus hourly delta extraction. Introduces multiple load patterns: nightly full reconciliation with hourly incremental updates. Python/ODP integration.","totalTime":"PT55M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Plan full + delta strategy","text":"Weekly full load (Sunday) + hourly delta (Mon-Sat). This balances freshness with extraction overhead.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Create ODP subscription for I_Supplier","text":"Use pyrfc to create a persistent ODP subscription for delta tracking.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Implement full load (nightly)","text":"Python script with pyrfc for full load. Store to Snowflake STAGING_LFA1.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Implement delta extraction (hourly)","text":"Separate script that calls ODP delta API, stores sequence number in metadata table, applies changes to production LFA1 table via MERGE.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Monitor delta reconciliation","text":"Weekly, compare row count: full load count should match production count. Investigate deltas if they diverge.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"LFA1","item":"https://academy.example.com/tables/lfa1/"},{"@type":"ListItem","position":4,"name":"Extract LFA1 with Hourly Delta (Intermediate)"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract LFA1 with Hourly Delta (Intermediate)","description":"SAP-side intermediate guide for LFA1 extraction with ODP delta. Covers creating an ODP subscription in ODQMON, understanding subscription lifecycle, validating delta behavior with manual SAP edits, and monitoring queue health.","totalTime":"PT55M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Verify I_Supplier has delta annotation in SE80","text":"Open I_Supplier in <a href=\"https://help.sap.com/\">SE80</a> and confirm it carries the delta changeDataCapture annotation required for incremental extraction. If the annotation is absent on your release, you will need to run full-load extractions on every cycle — which is still viable for vendor master given its small size, but is less efficient.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Create an ODP subscription in ODQMON","text":"Your extraction tool creates subscriptions automatically when it first connects. But you can also inspect existing subscriptions manually via <a href=\"https://help.sap.com/\">ODQMON</a> to understand their state. After the tool runs its first extraction, navigate to the Subscriptions tab, filter by ABAP_CDS context, and find the subscription name your tool created.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Test delta behavior with a manual vendor change","text":"To confirm the delta mechanism is working, make a controlled change in SAP: update a vendor record in <a href=\"https://help.sap.com/\">SU01</a> or in the vendor master transaction (FK02). After the change, wait 5 minutes and check ODQMON. The subscription should show 1 pending record in the delta queue. Then run the delta extraction and confirm that 1 record is fetched and the queue returns to 0.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Understand ODP subscription lifecycle and queue limits","text":"ODP subscriptions have a finite queue depth. If the subscriber does not consume the queue within a defined window (typically 48 hours by default, configurable by Basis), the queue entries expire. A subscriber that falls behind more than this window will miss changes and may need a full-load re-init. Ask your Basis team what the queue retention is configured to on your system. [NEEDS_SAP_CITATION — confirm default queue retention settings]","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Set up weekly full-load reconciliation","text":"Even with hourly delta, run a weekly full-load count comparison. Use <a href=\"https://help.sap.com/\">SE16N</a> to count LFA1 rows in SAP. Compare to your target. If the counts diverge significantly, the delta mechanism may have missed changes. Trigger a full re-init if needed.","url":"https://academy.example.com/walkthrough/intermediate/lfa1/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"LFA1","item":"https://academy.example.com/tables/lfa1/"},{"@type":"ListItem","position":4,"name":"Extract LFA1 with Hourly Delta (Intermediate)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,13 +66,98 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Walkthrough detail page -->
 
 <div class="container">
+<div class="picker" aria-label="Extraction method, tool, and sink selector">
+  <fieldset class="picker-axis" id="picker-method">
+    <legend>Extraction method</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="method" value="odp" class="picker-radio">
+        <span>ODP</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="slt" class="picker-radio">
+        <span>SLT</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="rfc" class="picker-radio">
+        <span>RFC direct</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="ref" class="picker-radio">
+        <span>Reference only</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
+    <legend>Tool</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="adf" class="picker-radio">
+        <span>ADF</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="databricks" class="picker-radio">
+        <span>Databricks</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="fivetran" class="picker-radio">
+        <span>Fivetran</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="airbyte" class="picker-radio">
+        <span>Airbyte</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="custom" class="picker-radio">
+        <span>Custom</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis" id="picker-sink">
+    <legend>Sink</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="adls" class="picker-radio">
+        <span>ADLS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="s3" class="picker-radio">
+        <span>S3</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="gcs" class="picker-radio">
+        <span>GCS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="snowflake" class="picker-radio">
+        <span>Snowflake</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="bigquery" class="picker-radio">
+        <span>BigQuery</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="fabric" class="picker-radio">
+        <span>Fabric</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="other" class="picker-radio">
+        <span>Other</span>
+      </label>
+    </div>
+  </fieldset>
+</div>
+
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -88,7 +174,7 @@
       <span class="table-code">LFA1</span>
     </div>
     <h1>Extract LFA1 with Hourly Delta (Intermediate)</h1>
-    <p class="walkthrough-summary">Full load plus hourly delta extraction. Introduces multiple load patterns: nightly full reconciliation with hourly incremental updates. Python&#x2F;ODP integration.</p>
+    <p class="walkthrough-summary">SAP-side intermediate guide for LFA1 extraction with ODP delta. Covers creating an ODP subscription in ODQMON, understanding subscription lifecycle, validating delta behavior with manual SAP edits, and monitoring queue health.</p>
 
     <dl class="walkthrough-meta-list">
       <div>
@@ -97,28 +183,235 @@
       </div>
       <div>
         <dt>Destinations</dt>
-        <dd>Snowflake</dd>
+        <dd>Generic</dd>
       </div>
       <div>
         <dt>Extractors</dt>
-        <dd>Python</dd>
+        <dd>ODP</dd>
       </div>
     </dl>
   </header>
 
-  <section class="callout callout-warning">
-    <h2>License check</h2>
-    <p>All licenses. ODP is application-layer.</p>
+  <section class="sap-preflight">
+    <h2>SAP-side preflight</h2>
+    <p>Before any tool touches your SAP system, you need four things confirmed
+    on the SAP side. Skipping these steps is the most common cause of extraction
+    failures, performance incidents, and licensing surprises.</p>
+  
+    <ol class="sap-preflight-checklist">
+      <li>
+        <strong>License — confirm your extraction method is covered.</strong>
+        <p>
+          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
+          first decision. ODP-based extraction (via
+          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
+          SLT replication requires a Full Use license. Verify with your SAP
+          licensing contact before you design anything — not the day before
+          go-live.
+        </p>
+        <p class="sap-preflight-note">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
+          modules by third-party tools is no longer permitted. If your tool uses
+          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
+          contract terms. Compliant alternatives are ODP via OData or SLT
+          replication. Full note at
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
+          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
+        <p>
+          Every table covered in this Academy has a SAP-released
+          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
+          Open
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SE80</a>
+          and search for the view name before you build anything. Confirm the
+          annotation <code>@Analytics.dataExtract: true</code> is present. If
+          the view is absent or the annotation is missing, stop — raw table
+          extraction is not the solution.
+        </p>
+      </li>
+  
+      <li>
+        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
+        <p>
+          Your extraction user needs three authorization objects.
+          Use
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SU01</a>
+          to create a System-type (non-dialog) user, then use
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">PFCG</a>
+          to assign a role containing:
+        </p>
+        <ul>
+          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
+          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
+            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
+          <li><code>S_TABU_DIS</code> — table display access for the relevant
+            authorization group</li>
+        </ul>
+        <p>
+          For SLT-based extraction, your Basis team will also need authorization
+          in
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">LTCO</a>
+          and
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">LTRS</a>.
+          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Row-count context — understand data volumes before you run.</strong>
+        <p>
+          Use
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SE16N</a>
+          to count rows in the target table with your intended filter (company
+          code, fiscal year, material type, etc.) before you start the
+          extraction. This gives you:
+        </p>
+        <ul>
+          <li>A baseline to reconcile against after the extract.</li>
+          <li>A sense of whether your partition is safe to extract
+            (&lt;&nbsp;100M rows is generally safe for ODP;
+            larger partitions may need further splitting or SLT).</li>
+          <li>Early warning if a filter is misconfigured
+            (count returns billions — rethink the partition).</li>
+        </ul>
+      </li>
+    </ol>
+  
+    <p class="sap-preflight-footer">
+      These four checks take 15–30 minutes on a first walkthrough, and under
+      5 minutes once you know your system. They are the difference between a
+      smooth extraction and a multi-day incident.
+    </p>
   </section>
+
+  <section class="callout callout-warning license-check">
+    <h2>License check</h2>
+  
+    <p>All licenses. ODP is application-layer. License trap: Runtime vs Full Use →</p>
+  
+  
+    <div class="license-check-detail" id="license-check-detail">
+      <!--
+        JS-controlled variants — picker.js shows/hides the relevant block
+        based on ?method= in the URL. All four variants are rendered; only
+        the active one is visible at runtime.
+      -->
+      <div class="license-variant" data-method="odp">
+        <p>
+          <strong>ODP (Operational Data Provisioning)</strong> is permitted
+          under both Runtime and Full Use SAP licenses when you access data
+          through published CDS views via the OData API.
+        </p>
+        <p class="license-check-warning">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
+          call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
+          etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
+          Verify with your licensing contact.
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">Full note (SAP login required)</a>.
+          [NEEDS_SAP_CITATION — confirm current note state]
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="slt" hidden>
+        <p>
+          <strong>SLT (SAP Landscape Transformation)</strong> requires a
+          <strong>Full Use SAP license</strong>. It is not permitted under
+          Runtime licenses. Verify in
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SLICENSE</a>
+          that "SLT Landscape Transformation" is listed as Active, Type = Full
+          Use before you configure anything in
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">LTCO</a>.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="rfc" hidden>
+        <p>
+          <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
+          generally permitted for read-only access under Runtime and Full Use
+          licenses, but is not recommended for production use — it bypasses
+          authorization checks that released CDS views enforce and is subject
+          to SAP Note 3255746 restrictions when wrapped by third-party ODP
+          connectors. [NEEDS_SAP_CITATION — verify Runtime license scope for
+          direct RFC read]
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="ref" hidden>
+        <p>
+          <strong>Reference mode:</strong> you are reviewing this walkthrough
+          for SAP-side context only. No tool-specific pipeline steps are shown.
+          Check your license before selecting a tool.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+  // Inline snippet: switch visible license-variant on picker change.
+  // Runs immediately so no flash-of-wrong-content.
+  (function () {
+    function showMethod(method) {
+      var variants = document.querySelectorAll('.license-variant');
+      variants.forEach(function (el) {
+        if (el.getAttribute('data-method') === method) {
+          el.removeAttribute('hidden');
+        } else {
+          el.setAttribute('hidden', '');
+        }
+      });
+    }
+  
+    function readMethod() {
+      var params = new URLSearchParams(window.location.search);
+      return params.get('method') || 'odp';
+    }
+  
+    // Apply on load.
+    showMethod(readMethod());
+  
+    // Re-apply when picker radios change (picker.js fires change events).
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.name === 'method') {
+        showMethod(e.target.value);
+      }
+    });
+  })();
+  </script>
 
   <section class="walkthrough-intro">
     <h2>Overview</h2>
     <div class="prose">
       <h2>Scenario</h2>
-<p>Your procurement dashboard needs hourly vendor updates. Weekly full load with daily/hourly deltas is the pattern.</p>
+<p>Your procurement dashboard needs hourly vendor updates. You will implement ODP delta extraction for LFA1, test it with a controlled vendor change, and set up weekly full-load reconciliation to catch any missed changes.</p>
 <hr>
-<h2>What you&#39;ve built</h2>
-<p>You have a tiered extraction: weekly full reconciliation + hourly incremental updates. Vendor master is now near-real-time.</p>
+<h2>What you have confirmed</h2>
+<p>The SAP delta mechanism for I_Supplier is working. You can see delta changes appear in ODQMON within minutes of a vendor change, and you understand the subscription lifecycle and queue retention limits. Vendor master is now near-real-time.</p>
 
     </div>
   </section>
@@ -126,8 +419,8 @@
   <section class="prerequisites">
     <h2>Before you start</h2>
     <ul class="prerequisites-list">
-      <li>Completed LFA1 Beginner</li>
-      <li>Python and pyrfc knowledge</li>
+      <li>Completed LFA1 Beginner walkthrough</li>
+      <li>Understanding of ODP delta concepts from the ODP glossary entry</li>
     </ul>
   </section>
 
@@ -145,26 +438,37 @@
       <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
         <header class="step-header">
           <div class="step-number">Step 1</div>
-          <h2 class="step-title">Plan full + delta strategy</h2>
+          <h2 class="step-title">Verify I_Supplier has delta annotation in SE80</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-01"
-              aria-label="Mark Plan full + delta strategy as complete"
+              aria-label="Mark Verify I_Supplier has delta annotation in SE80 as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Weekly full load (Sunday) + hourly delta (Mon-Sat). This balances freshness with extraction overhead.</p>
+          <p class="step-intro">Open I_Supplier in <a href="https://help.sap.com/">SE80</a> and confirm it carries the delta changeDataCapture annotation required for incremental extraction. If the annotation is absent on your release, you will need to run full-load extractions on every cycle — which is still viable for vendor master given its small size, but is less efficient.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+                SE80
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Repository Browser → I_Supplier → Annotations</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Document: Full load every Sunday 22:00 UTC, delta every hour 00-23:00 UTC.</div>
+            <div class="step-action-body">I_Supplier has @Analytics.dataExtract: true. Delta annotation present or confirmed by Basis team.</div>
           </div>
 
         </div>
@@ -174,35 +478,37 @@
       <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
         <header class="step-header">
           <div class="step-number">Step 2</div>
-          <h2 class="step-title">Create ODP subscription for I_Supplier</h2>
+          <h2 class="step-title">Create an ODP subscription in ODQMON</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-02"
-              aria-label="Mark Create ODP subscription for I_Supplier as complete"
+              aria-label="Mark Create an ODP subscription in ODQMON as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Use pyrfc to create a persistent ODP subscription for delta tracking.</p>
+          <p class="step-intro">Your extraction tool creates subscriptions automatically when it first connects. But you can also inspect existing subscriptions manually via <a href="https://help.sap.com/">ODQMON</a> to understand their state. After the tool runs its first extraction, navigate to the Subscriptions tab, filter by ABAP_CDS context, and find the subscription name your tool created.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+                ODQMON
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Subscriptions → Context: ABAP_CDS → I_Supplier</em>.
+            </div>
+          </div>
 
-          <figure class="code-block">
-            <figcaption>ODP subscription creation</figcaption>
-            <pre><code class="language-python">odata_request_param &#x3D; {
-    &#39;DATASOURCE&#39;: &#39;I_Supplier&#39;,
-    &#39;SUBSCRIPTIONNAME&#39;: &#39;PYTHON_LFA1_HOURLY&#39;,
-    &#39;MAXDELTAREQUESTS&#39;: 100
-}
-</code></pre>
-          </figure>
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Subscription appears in ODQMON.</div>
+            <div class="step-action-body">Subscription for I_Supplier appears after the tool&#39;s first run. Status is active.</div>
           </div>
 
         </div>
@@ -212,28 +518,43 @@
       <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
         <header class="step-header">
           <div class="step-number">Step 3</div>
-          <h2 class="step-title">Implement full load (nightly)</h2>
+          <h2 class="step-title">Test delta behavior with a manual vendor change</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-03"
-              aria-label="Mark Implement full load (nightly) as complete"
+              aria-label="Mark Test delta behavior with a manual vendor change as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Python script with pyrfc for full load. Store to Snowflake STAGING_LFA1.</p>
+          <p class="step-intro">To confirm the delta mechanism is working, make a controlled change in SAP: update a vendor record in <a href="https://help.sap.com/">SU01</a> or in the vendor master transaction (FK02). After the change, wait 5 minutes and check ODQMON. The subscription should show 1 pending record in the delta queue. Then run the delta extraction and confirm that 1 record is fetched and the queue returns to 0.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+                FK02
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Vendor → Change → General Data</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Full load completes and STAGING_LFA1 is populated.</div>
+            <div class="step-action-body">After manual vendor change, ODQMON delta queue for I_Supplier shows 1 pending record. After delta extraction, queue returns to 0.</div>
           </div>
 
+          <details class="step-why">
+            <summary>Why this matters</summary>
+            <p>Testing delta with a controlled change before relying on it for production data is essential. It confirms the delta mechanism works end-to-end on your specific system and release.</p>
+          </details>
         </div>
       </article>
     </li>
@@ -241,26 +562,37 @@
       <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
         <header class="step-header">
           <div class="step-number">Step 4</div>
-          <h2 class="step-title">Implement delta extraction (hourly)</h2>
+          <h2 class="step-title">Understand ODP subscription lifecycle and queue limits</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-04"
-              aria-label="Mark Implement delta extraction (hourly) as complete"
+              aria-label="Mark Understand ODP subscription lifecycle and queue limits as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Separate script that calls ODP delta API, stores sequence number in metadata table, applies changes to production LFA1 table via MERGE.</p>
+          <p class="step-intro">ODP subscriptions have a finite queue depth. If the subscriber does not consume the queue within a defined window (typically 48 hours by default, configurable by Basis), the queue entries expire. A subscriber that falls behind more than this window will miss changes and may need a full-load re-init. Ask your Basis team what the queue retention is configured to on your system. [NEEDS_SAP_CITATION — confirm default queue retention settings]</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+                ODQMON
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Subscriptions → View Queue Depth and Age</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Hourly delta runs and updates production table.</div>
+            <div class="step-action-body">ODQMON shows queue depth for the LFA1 subscription. You understand the retention window configured on your system.</div>
           </div>
 
         </div>
@@ -270,26 +602,37 @@
       <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
         <header class="step-header">
           <div class="step-number">Step 5</div>
-          <h2 class="step-title">Monitor delta reconciliation</h2>
+          <h2 class="step-title">Set up weekly full-load reconciliation</h2>
           <label class="step-check">
             <input
               type="checkbox"
               class="step-checkbox"
               data-step-id="step-05"
-              aria-label="Mark Monitor delta reconciliation as complete"
+              aria-label="Mark Set up weekly full-load reconciliation as complete"
             >
             <span class="step-check-label">Mark complete</span>
           </label>
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Weekly, compare row count: full load count should match production count. Investigate deltas if they diverge.</p>
+          <p class="step-intro">Even with hourly delta, run a weekly full-load count comparison. Use <a href="https://help.sap.com/">SE16N</a> to count LFA1 rows in SAP. Compare to your target. If the counts diverge significantly, the delta mechanism may have missed changes. Trigger a full re-init if needed.</p>
 
+          <div class="step-action step-action--sap">
+            <div class="step-action-label">Do this in SAP</div>
+            <div class="step-action-body">
+              Open transaction
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+                SE16N
+                <span class="sr-only">(opens in new tab)</span>
+              </a>
+              and navigate to <em>Execute → LFA1 → Count</em>.
+            </div>
+          </div>
 
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
-            <div class="step-action-body">Count(STAGING) ≈ Count(LFA1_PROD)</div>
+            <div class="step-action-body">Weekly SE16N count matches target count within a small margin for in-flight updates.</div>
           </div>
 
         </div>
@@ -301,9 +644,15 @@
     <h2>Troubleshooting</h2>
     <dl class="troubleshooting-list">
       <div class="troubleshooting-item">
-        <dt>Delta misses some updates</dt>
+        <dt>Delta misses some vendor updates</dt>
         <dd>
-          <p>ODP queue may have dropped entries if extraction was delayed &gt;2 days. Re-run full load to catch missing data.</p>
+          <p>ODP queue may have expired entries if extraction was delayed more than the queue retention window. Re-run a full-load to catch missing data. Ask Basis team to increase queue retention if hourly polling is not feasible.</p>
+        </dd>
+      </div>
+      <div class="troubleshooting-item">
+        <dt>ODQMON shows subscription in ERROR state</dt>
+        <dd>
+          <p>The extraction process may have failed mid-run and left the subscription in a bad state. Reset the subscription in ODQMON (right-click → Reset). Re-run the extraction. If the error persists, review the extraction tool&#39;s connection logs and check SM21 (system log) for RFC errors.</p>
         </dd>
       </div>
     </dl>
@@ -317,7 +666,8 @@
   <section class="next-steps">
     <h2>What&#39;s next</h2>
     <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;lfa1&#x2F;">Try LFA1 Expert</a></li>
+      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;lfa1&#x2F;">Try LFA1 Expert — multi-table extraction with LFB1 and LFBK</a></li>
+      <li><a href="&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;">License trap: Runtime vs Full Use</a></li>
     </ul>
   </section>
 
@@ -329,6 +679,7 @@
 
 </div>
 
+<script src="/assets/js/picker.js" defer></script>
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 
   </main>
@@ -342,7 +693,7 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

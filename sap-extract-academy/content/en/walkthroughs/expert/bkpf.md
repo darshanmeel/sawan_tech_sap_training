@@ -2,76 +2,90 @@
 table: BKPF
 level: expert
 slug: bkpf
-title: "Extract BKPF + BSEG at Scale (Expert)"
-summary: "Enterprise accounting extraction: BKPF (header) + BSEG (line items) joined. SLT with LTRS parallel reads by company code and fiscal year. Handles billions of rows."
+title: "Extract BKPF + BSEG at Enterprise Scale (Expert)"
+summary: "SAP-side expert guide for extracting BKPF (accounting document headers) and BSEG (line items) at enterprise scale via SLT. Covers BKPF/BSEG cardinality, LTCO configuration for both tables, LTRS parallel reader setup, and ODQMON join-coherence monitoring."
 estimatedMinutes: 120
 prerequisites:
-  - "Completed BKPF Intermediate"
-  - "Understanding of BSEG (accounting line items)"
-  - "Full Use SAP License"
-licenseRelevance: "SLT requires Full Use License."
+  - "Completed BKPF Intermediate walkthrough"
+  - "Understanding of BSEG table structure (accounting line items)"
+  - "Full Use SAP license confirmed"
+licenseRelevance: "SLT requires Full Use License. License trap: Runtime vs Full Use →"
 destinations:
-  - Kafka
+  - Generic
 extractors:
   - SLT
+method: slt
+seoTitle: "Extract BKPF + BSEG at Scale (Expert) — SAP-Side Guide"
+seoDescription: "SAP-side expert guide for enterprise BKPF and BSEG extraction via SLT. Cardinality analysis, LTCO dual-table configuration, LTRS parallelism, join-coherence verification."
 steps:
   - id: step-01
-    title: "Understand BKPF + BSEG cardinality"
-    explanation: "BKPF (header, 1 row per document) joins to BSEG (line items, N rows per document). BSEG is typically 5-20x larger than BKPF."
-    verify: "In SE16N, count BKPF vs BSEG for a fiscal year. BSEG/BKPF ratio is typically 8-15."
-  
+    title: "Understand BKPF + BSEG cardinality in SE16N"
+    explanation: 'BKPF (header, 1 row per document) joins to BSEG (line items, N rows per document). For a fiscal year partition, use <a href="https://help.sap.com/">SE16N</a> to count both tables. The BSEG/BKPF row ratio is typically 8–15×. Understanding this ratio is essential for sizing your target storage and estimating full-load time.'
+    sapTransaction:
+      code: SE16N
+      menuPath: "Execute → BKPF → Filter BUKRS='1000' AND GJAHR=2024 → Count; repeat for BSEG"
+      helpUrl: "https://help.sap.com/"
+    verify: "You have row counts for both BKPF and BSEG for the same BUKRS+GJAHR partition. BSEG/BKPF ratio is documented."
+
   - id: step-02
-    title: "Configure SLT for parallel BKPF + BSEG replication"
-    explanation: "In LTCO, create separate replication objects for BKPF and BSEG. For BSEG, partition by BUKRS + GJAHR at the SLT level to avoid hot partitions in Kafka."
-    verify: "LTCO shows 2 active replication objects: BKPF_SLT and BSEG_SLT."
-  
+    title: "Configure separate SLT replication objects for BKPF and BSEG in LTCO"
+    explanation: 'In <a href="https://help.sap.com/">LTCO</a>, create two replication objects: one for BKPF (partition key BUKRS+GJAHR), one for BSEG (partition key BUKRS+GJAHR+BUZEI — adding line item for finer partitioning). Separate objects let you monitor and manage each table independently. This is important because BSEG full load will take significantly longer than BKPF.'
+    sapTransaction:
+      code: LTCO
+      menuPath: "Replication Objects → Create → BKPF (BUKRS+GJAHR); Create → BSEG (BUKRS+GJAHR+BUZEI)"
+      helpUrl: "https://help.sap.com/"
+    verify: "LTCO shows two active replication objects: BKPF_REP and BSEG_REP. Partition keys are correctly configured."
+
   - id: step-03
-    title: "Use LTRS for parallel reads"
-    explanation: "SLT's LTRS (Landscape Transformation Replication Server) can parallelize BSEG extraction by BUKRS + GJAHR. Configure 4-8 parallel readers."
-    verify: "LTRS monitor shows multiple reader processes running."
-  
+    title: "Configure LTRS parallel readers for BSEG"
+    explanation: 'BSEG is typically 10× larger than BKPF. Configure more parallel readers for BSEG in <a href="https://help.sap.com/">LTRS</a> to compensate. For BKPF, 2 readers is usually sufficient. For BSEG, start with 4 and increase to 8 if the full load takes longer than expected without causing SM50 saturation.'
+    sapTransaction:
+      code: LTRS
+      menuPath: "Administration → Settings → BKPF: 2 readers; BSEG: 4 readers"
+      helpUrl: "https://help.sap.com/"
+    verify: "LTRS shows correct reader counts per replication object. SM50 confirms work process utilization is within safe limits."
+
   - id: step-04
-    title: "Create Kafka topics with correct partitioning"
-    explanation: "bkpf-topic: 10 partitions, partition key BUKRS+GJAHR. bseg-topic: 50 partitions, partition key BUKRS+GJAHR+BUZEI (line item number)."
-    verify: "Topics exist with correct partition counts."
-  
+    title: "Trigger full replication for both tables and monitor"
+    explanation: 'Start both full replications from <a href="https://help.sap.com/">LTCO</a>. Monitor SM50 to ensure combined load from both replications stays safe. BKPF full load completes first; it will switch to DELTA while BSEG is still in full load. This is normal and expected — the two tables replicate independently.'
+    sapTransaction:
+      code: LTCO
+      menuPath: "Replication Objects → BKPF_REP → Full Replication; BSEG_REP → Full Replication"
+      helpUrl: "https://help.sap.com/"
+    verify: "Both replication objects show RUNNING status. BKPF completes and shows DELTA; BSEG is still RUNNING. SM50 work process utilization below 80%."
+
   - id: step-05
-    title: "Perform full load and enable real-time delta"
-    explanation: "SLT bulk-loads all data to Kafka, then switches to streaming delta."
-    verify: "Kafka topics are populated and show active producers."
-  
-  - id: step-06
-    title: "Consume and join in Snowflake"
-    explanation: "Kafka consumer (Snowflake Connector or Python) reads both topics, joins BKPF to BSEG on MANDT+BUKRS+GJAHR+BELNR, upserts into SNOWFLAKE.ACCOUNTING.GL_ENTRIES."
-    verify: "GL_ENTRIES table has rows with headers joined to line items."
-  
-  - id: step-07
-    title: "Monitor join lag and cardinality"
-    explanation: "Confirm no orphan line items (BSEG rows without BKPF headers). Lag should be < 5 minutes."
-    verify: "SELECT COUNT(*) FROM BSEG b WHERE NOT EXISTS (SELECT 1 FROM BKPF k WHERE k.BELNR = b.BELNR) returns 0."
+    title: "Monitor join coherence — no orphan BSEG rows"
+    explanation: 'After both full loads complete, verify referential integrity: every BSEG row must have a matching BKPF header. Because the two tables replicate independently, there is a window where a BSEG row exists in your target before the BKPF header arrives. For data quality checks, allow 24 hours after both full loads complete before running orphan queries — the small window closes once DELTA is stable for both tables.'
+    sapTransaction:
+      code: SE16N
+      menuPath: "Execute → BSEG → Filter BUKRS+GJAHR → Count. Verify matches BKPF line item total."
+      helpUrl: "https://help.sap.com/"
+    verify: "SE16N BKPF count × average line items ≈ SE16N BSEG count for the same partition. In your target, after 24 hours: orphan BSEG rows (no matching BKPF) = 0."
 
 troubleshooting:
   - problem: "LTRS parallel readers cause lock contention in SAP"
-    solution: "Reduce parallel reader count from 8 to 4. Add delay between reader launches."
-  
-  - problem: "Kafka BSEG topic has much higher lag than BKPF"
-    solution: "BSEG is 10x larger. Increase partition count or add consumer instances."
+    solution: "Reduce reader count from 8 to 4 for BSEG. Add a 30-second delay between reader launches in LTRS configuration. This reduces the burst of parallel reads and allows other SAP processes to access BSEG without lock waits."
+
+  - problem: "BSEG target lag is much higher than BKPF"
+    solution: "BSEG is 10× larger — a higher lag during full load is expected. Once both tables are in DELTA mode, the lag should equalise. If BSEG delta lag remains high after full load completes, your target sink may be the bottleneck. Investigate target write throughput."
 
 nextSteps:
-  - label: "Study ACDOCA Expert for ultra-scale patterns"
+  - label: "Study ACDOCA Expert for maximum-scale patterns"
     url: "/walkthrough/expert/acdoca/"
-
-seoTitle: "Extract BKPF + BSEG at Scale (Expert) — SLT & Kafka"
-seoDescription: "Expert-level accounting extraction: BKPF headers + BSEG line items via SLT with LTRS parallelism. Kafka streaming and Snowflake joins at enterprise scale."
+  - label: "License trap: Runtime vs Full Use"
+    url: "/articles/runtime-vs-full-use/"
 updatedAt: 2026-04-22
 ---
 
 ## Scenario
 
-Your finance warehouse needs real-time GL entries (BKPF + BSEG combined). You'll use SLT's parallel readers and Kafka to stream billions of line items with sub-minute latency.
+Your finance warehouse needs real-time GL entries (BKPF + BSEG combined). You will use SLT parallel readers and two separate replication objects to stream billions of line items with sub-minute latency.
+
+This walkthrough focuses on the SAP-side work: cardinality analysis, LTCO dual-table configuration, LTRS tuning, and verifying join coherence between BKPF and BSEG once both full loads complete.
 
 ---
 
-## What you've built
+## What you have built
 
-You've built an enterprise-scale GL fact table fed by real-time SLT replication. Finance can now run sub-minute financial close processes on current data.
+You have coordinated an enterprise-scale GL fact table fed by real-time SLT replication of BKPF and BSEG. The SAP-side configuration is correct, join coherence is verified, and the delta queue is stable. Finance can now run sub-minute financial close processes on current data.

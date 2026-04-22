@@ -1,0 +1,102 @@
+<section class="sap-preflight">
+  <h2>SAP-side preflight</h2>
+  <p>Before any tool touches your SAP system, you need four things confirmed
+  on the SAP side. Skipping these steps is the most common cause of extraction
+  failures, performance incidents, and licensing surprises.</p>
+
+  <ol class="sap-preflight-checklist">
+    <li>
+      <strong>License — confirm your extraction method is covered.</strong>
+      <p>
+        <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
+        first decision. ODP-based extraction (via
+        <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
+        SLT replication requires a Full Use license. Verify with your SAP
+        licensing contact before you design anything — not the day before
+        go-live.
+      </p>
+      <p class="sap-preflight-note">
+        <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
+        modules by third-party tools is no longer permitted. If your tool uses
+        ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
+        contract terms. Compliant alternatives are ODP via OData or SLT
+        replication. Full note at
+        <a href="https://support.sap.com/notes/3255746" target="_blank"
+          rel="noopener noreferrer">support.sap.com/notes/3255746</a>
+        (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
+      </p>
+    </li>
+
+    <li>
+      <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
+      <p>
+        Every table covered in this Academy has a SAP-released
+        <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
+        Open
+        <a href="https://help.sap.com/"
+          target="_blank" rel="noopener noreferrer">SE80</a>
+        and search for the view name before you build anything. Confirm the
+        annotation <code>@Analytics.dataExtract: true</code> is present. If
+        the view is absent or the annotation is missing, stop — raw table
+        extraction is not the solution.
+      </p>
+    </li>
+
+    <li>
+      <strong>Authorizations — grant the extraction user minimum permissions.</strong>
+      <p>
+        Your extraction user needs three authorization objects.
+        Use
+        <a href="https://help.sap.com/"
+          target="_blank" rel="noopener noreferrer">SU01</a>
+        to create a System-type (non-dialog) user, then use
+        <a href="https://help.sap.com/"
+          target="_blank" rel="noopener noreferrer">PFCG</a>
+        to assign a role containing:
+      </p>
+      <ul>
+        <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
+        <li><code>S_ODP_READ</code> — allows reading from ODP contexts
+          (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
+        <li><code>S_TABU_DIS</code> — table display access for the relevant
+          authorization group</li>
+      </ul>
+      <p>
+        For SLT-based extraction, your Basis team will also need authorization
+        in
+        <a href="https://help.sap.com/"
+          target="_blank" rel="noopener noreferrer">LTCO</a>
+        and
+        <a href="https://help.sap.com/"
+          target="_blank" rel="noopener noreferrer">LTRS</a>.
+        [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
+      </p>
+    </li>
+
+    <li>
+      <strong>Row-count context — understand data volumes before you run.</strong>
+      <p>
+        Use
+        <a href="https://help.sap.com/"
+          target="_blank" rel="noopener noreferrer">SE16N</a>
+        to count rows in the target table with your intended filter (company
+        code, fiscal year, material type, etc.) before you start the
+        extraction. This gives you:
+      </p>
+      <ul>
+        <li>A baseline to reconcile against after the extract.</li>
+        <li>A sense of whether your partition is safe to extract
+          (&lt;&nbsp;100M rows is generally safe for ODP;
+          larger partitions may need further splitting or SLT).</li>
+        <li>Early warning if a filter is misconfigured
+          (count returns billions — rethink the partition).</li>
+      </ul>
+    </li>
+  </ol>
+
+  <p class="sap-preflight-footer">
+    These four checks take 15–30 minutes on a first walkthrough, and under
+    5 minutes once you know your system. They are the difference between a
+    smooth extraction and a multi-day incident.
+  </p>
+</section>

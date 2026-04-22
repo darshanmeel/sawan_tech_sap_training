@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,13 +66,98 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Walkthrough detail page -->
 
 <div class="container">
+<div class="picker" aria-label="Extraction method, tool, and sink selector">
+  <fieldset class="picker-axis" id="picker-method">
+    <legend>Extraction method</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="method" value="odp" class="picker-radio">
+        <span>ODP</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="slt" class="picker-radio">
+        <span>SLT</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="rfc" class="picker-radio">
+        <span>RFC direct</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="ref" class="picker-radio">
+        <span>Reference only</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
+    <legend>Tool</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="adf" class="picker-radio">
+        <span>ADF</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="databricks" class="picker-radio">
+        <span>Databricks</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="fivetran" class="picker-radio">
+        <span>Fivetran</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="airbyte" class="picker-radio">
+        <span>Airbyte</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="custom" class="picker-radio">
+        <span>Custom</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis" id="picker-sink">
+    <legend>Sink</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="adls" class="picker-radio">
+        <span>ADLS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="s3" class="picker-radio">
+        <span>S3</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="gcs" class="picker-radio">
+        <span>GCS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="snowflake" class="picker-radio">
+        <span>Snowflake</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="bigquery" class="picker-radio">
+        <span>BigQuery</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="fabric" class="picker-radio">
+        <span>Fabric</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="other" class="picker-radio">
+        <span>Other</span>
+      </label>
+    </div>
+  </fieldset>
+</div>
+
 <nav class="breadcrumb" aria-label="Breadcrumb">
   <ol>
     <li><a href="/">Home</a></li>
@@ -106,10 +192,217 @@
     </dl>
   </header>
 
-  <section class="callout callout-warning">
-    <h2>License check</h2>
-    <p>IMPORTANT — Read SAP Note 3255746 before choosing your extraction tool. SAP updated this note in February 2024 (version 4): ODP via RFC is no longer permitted. This affects ADF SAP CDC connector, Qlik Replicate, Fivetran ODP connector, and most third-party tools. The compliant paths are: ODP via OData (slower, ~10x), SLT replication (separate license), or SAP Datasphere. If your tool uses RFC to call ODP, confirm the status with your SAP account executive before going live. Full note at: https:&#x2F;&#x2F;support.sap.com&#x2F;notes&#x2F;3255746 (SAP login required)</p>
+  <section class="sap-preflight">
+    <h2>SAP-side preflight</h2>
+    <p>Before any tool touches your SAP system, you need four things confirmed
+    on the SAP side. Skipping these steps is the most common cause of extraction
+    failures, performance incidents, and licensing surprises.</p>
+  
+    <ol class="sap-preflight-checklist">
+      <li>
+        <strong>License — confirm your extraction method is covered.</strong>
+        <p>
+          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a> is the
+          first decision. ODP-based extraction (via
+          <a href="/glossary/odp/">ODP</a>) is permitted under Runtime licenses.
+          SLT replication requires a Full Use license. Verify with your SAP
+          licensing contact before you design anything — not the day before
+          go-live.
+        </p>
+        <p class="sap-preflight-note">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Use of ODP RFC function
+          modules by third-party tools is no longer permitted. If your tool uses
+          ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, etc.), verify your
+          contract terms. Compliant alternatives are ODP via OData or SLT
+          replication. Full note at
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">support.sap.com/notes/3255746</a>
+          (SAP login required). [NEEDS_SAP_CITATION — verify current note version]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Released CDS view — confirm the extraction-safe view exists.</strong>
+        <p>
+          Every table covered in this Academy has a SAP-released
+          <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
+          Open
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SE80</a>
+          and search for the view name before you build anything. Confirm the
+          annotation <code>@Analytics.dataExtract: true</code> is present. If
+          the view is absent or the annotation is missing, stop — raw table
+          extraction is not the solution.
+        </p>
+      </li>
+  
+      <li>
+        <strong>Authorizations — grant the extraction user minimum permissions.</strong>
+        <p>
+          Your extraction user needs three authorization objects.
+          Use
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SU01</a>
+          to create a System-type (non-dialog) user, then use
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">PFCG</a>
+          to assign a role containing:
+        </p>
+        <ul>
+          <li><code>S_RFC</code> — allows RFC calls (set <code>RFC_TYPE=FUNC</code>)</li>
+          <li><code>S_ODP_READ</code> — allows reading from ODP contexts
+            (set <code>ODPSOURCE=ABAP_CDS</code> for CDS-based extraction)</li>
+          <li><code>S_TABU_DIS</code> — table display access for the relevant
+            authorization group</li>
+        </ul>
+        <p>
+          For SLT-based extraction, your Basis team will also need authorization
+          in
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">LTCO</a>
+          and
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">LTRS</a>.
+          [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
+        </p>
+      </li>
+  
+      <li>
+        <strong>Row-count context — understand data volumes before you run.</strong>
+        <p>
+          Use
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SE16N</a>
+          to count rows in the target table with your intended filter (company
+          code, fiscal year, material type, etc.) before you start the
+          extraction. This gives you:
+        </p>
+        <ul>
+          <li>A baseline to reconcile against after the extract.</li>
+          <li>A sense of whether your partition is safe to extract
+            (&lt;&nbsp;100M rows is generally safe for ODP;
+            larger partitions may need further splitting or SLT).</li>
+          <li>Early warning if a filter is misconfigured
+            (count returns billions — rethink the partition).</li>
+        </ul>
+      </li>
+    </ol>
+  
+    <p class="sap-preflight-footer">
+      These four checks take 15–30 minutes on a first walkthrough, and under
+      5 minutes once you know your system. They are the difference between a
+      smooth extraction and a multi-day incident.
+    </p>
   </section>
+
+  <section class="callout callout-warning license-check">
+    <h2>License check</h2>
+  
+    <p>IMPORTANT — Read SAP Note 3255746 before choosing your extraction tool. SAP updated this note in February 2024 (version 4): ODP via RFC is no longer permitted. This affects ADF SAP CDC connector, Qlik Replicate, Fivetran ODP connector, and most third-party tools. The compliant paths are: ODP via OData (slower, ~10x), SLT replication (separate license), or SAP Datasphere. If your tool uses RFC to call ODP, confirm the status with your SAP account executive before going live. Full note at: https:&#x2F;&#x2F;support.sap.com&#x2F;notes&#x2F;3255746 (SAP login required)</p>
+  
+  
+    <div class="license-check-detail" id="license-check-detail">
+      <!--
+        JS-controlled variants — picker.js shows/hides the relevant block
+        based on ?method= in the URL. All four variants are rendered; only
+        the active one is visible at runtime.
+      -->
+      <div class="license-variant" data-method="odp">
+        <p>
+          <strong>ODP (Operational Data Provisioning)</strong> is permitted
+          under both Runtime and Full Use SAP licenses when you access data
+          through published CDS views via the OData API.
+        </p>
+        <p class="license-check-warning">
+          <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
+          call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
+          etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
+          Verify with your licensing contact.
+          <a href="https://support.sap.com/notes/3255746" target="_blank"
+            rel="noopener noreferrer">Full note (SAP login required)</a>.
+          [NEEDS_SAP_CITATION — confirm current note state]
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="slt" hidden>
+        <p>
+          <strong>SLT (SAP Landscape Transformation)</strong> requires a
+          <strong>Full Use SAP license</strong>. It is not permitted under
+          Runtime licenses. Verify in
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">SLICENSE</a>
+          that "SLT Landscape Transformation" is listed as Active, Type = Full
+          Use before you configure anything in
+          <a href="https://help.sap.com/"
+            target="_blank" rel="noopener noreferrer">LTCO</a>.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="rfc" hidden>
+        <p>
+          <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
+          generally permitted for read-only access under Runtime and Full Use
+          licenses, but is not recommended for production use — it bypasses
+          authorization checks that released CDS views enforce and is subject
+          to SAP Note 3255746 restrictions when wrapped by third-party ODP
+          connectors. [NEEDS_SAP_CITATION — verify Runtime license scope for
+          direct RFC read]
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+  
+      <div class="license-variant" data-method="ref" hidden>
+        <p>
+          <strong>Reference mode:</strong> you are reviewing this walkthrough
+          for SAP-side context only. No tool-specific pipeline steps are shown.
+          Check your license before selecting a tool.
+        </p>
+        <p>
+          License trap: Runtime vs Full Use
+          <a href="/articles/runtime-vs-full-use/">→</a>
+        </p>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+  // Inline snippet: switch visible license-variant on picker change.
+  // Runs immediately so no flash-of-wrong-content.
+  (function () {
+    function showMethod(method) {
+      var variants = document.querySelectorAll('.license-variant');
+      variants.forEach(function (el) {
+        if (el.getAttribute('data-method') === method) {
+          el.removeAttribute('hidden');
+        } else {
+          el.setAttribute('hidden', '');
+        }
+      });
+    }
+  
+    function readMethod() {
+      var params = new URLSearchParams(window.location.search);
+      return params.get('method') || 'odp';
+    }
+  
+    // Apply on load.
+    showMethod(readMethod());
+  
+    // Re-apply when picker radios change (picker.js fires change events).
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.name === 'method') {
+        showMethod(e.target.value);
+      }
+    });
+  })();
+  </script>
 
   <section class="walkthrough-intro">
     <h2>Overview</h2>
@@ -233,9 +526,18 @@
           <p class="step-intro">Before touching your extraction tool, confirm these five items with your BASIS team. This is a checklist, not a lecture — email it to them.</p>
 
 
-          <figure class="code-block">
-            <figcaption>Send this to your BASIS team before starting configuration</figcaption>
-            <pre><code class="language-plaintext">BASIS CHECKLIST — ACDOCA Extraction Setup
+          <details class="reference-starter" hidden>
+            <summary>Reference starter — this is a starting point, not a tutorial</summary>
+            <p class="reference-starter-disclaimer">
+              The snippet below is a minimal starting point to orient you
+              with the vendor-specific configuration. It is not a
+              production-ready implementation. Refer to your tool vendor's
+              documentation for full configuration guidance:
+              .
+            </p>
+            <figure class="code-block">
+              <figcaption>Send this to your BASIS team before starting configuration</figcaption>
+              <pre><code class="language-plaintext">BASIS CHECKLIST — ACDOCA Extraction Setup
 
 1. LICENSE
    Confirm Runtime Use License covers ODP via CDS extraction.
@@ -263,7 +565,8 @@
    Request read access to transaction ODQMON
    so you can monitor delta queues after extraction runs.
 </code></pre>
-          </figure>
+            </figure>
+          </details>
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
@@ -357,9 +660,18 @@
           <p class="step-intro">For your first extraction, start with the core financial fields only. Add currency fields, extension fields, and segment fields in the Intermediate walkthrough once you have the pipeline working.</p>
 
 
-          <figure class="code-block">
-            <figcaption>Starting field selection for ACDOCA beginner extract — source: wiki&#x2F;tables&#x2F;ACDOCA.md</figcaption>
-            <pre><code class="language-plaintext">FIELDS TO INCLUDE IN INITIAL EXTRACT:
+          <details class="reference-starter" hidden>
+            <summary>Reference starter — this is a starting point, not a tutorial</summary>
+            <p class="reference-starter-disclaimer">
+              The snippet below is a minimal starting point to orient you
+              with the vendor-specific configuration. It is not a
+              production-ready implementation. Refer to your tool vendor's
+              documentation for full configuration guidance:
+              .
+            </p>
+            <figure class="code-block">
+              <figcaption>Starting field selection for ACDOCA beginner extract — source: wiki&#x2F;tables&#x2F;ACDOCA.md</figcaption>
+              <pre><code class="language-plaintext">FIELDS TO INCLUDE IN INITIAL EXTRACT:
 
 MANDT      -- Client (filter this &#x3D; your client number, e.g. 100)
 RLDNR      -- Ledger (0L &#x3D; leading ledger)
@@ -382,7 +694,8 @@ TSL, WSL, MSL  -- Additional currency amounts (confusing without context)
 ZZFIELD*       -- Customer Z-fields (require CDS Extension View understanding)
 SEGMENT fields -- PSEGMENT, RFAREA (segment reporting — add later)
 </code></pre>
-          </figure>
+            </figure>
+          </details>
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
@@ -416,9 +729,18 @@ SEGMENT fields -- PSEGMENT, RFAREA (segment reporting — add later)
           <p class="step-intro">Never extract all of ACDOCA in one request. Partition by GJAHR (fiscal year) and optionally RBUKRS (company code). Start with the current fiscal year and a single company code. This is not optional — an unpartitioned ACDOCA extract at a large enterprise will consume SAP dialog work processes for hours and trigger BASIS team intervention.</p>
 
 
-          <figure class="code-block">
-            <figcaption>ODP filter for ACDOCA initial extract — replace with your values</figcaption>
-            <pre><code class="language-sql">-- Your extraction tool will expose ODP filters as a WHERE clause.
+          <details class="reference-starter" hidden>
+            <summary>Reference starter — this is a starting point, not a tutorial</summary>
+            <p class="reference-starter-disclaimer">
+              The snippet below is a minimal starting point to orient you
+              with the vendor-specific configuration. It is not a
+              production-ready implementation. Refer to your tool vendor's
+              documentation for full configuration guidance:
+              .
+            </p>
+            <figure class="code-block">
+              <figcaption>ODP filter for ACDOCA initial extract — replace with your values</figcaption>
+              <pre><code class="language-sql">-- Your extraction tool will expose ODP filters as a WHERE clause.
 -- For your first run, use this filter:
 
 GJAHR &#x3D; &#39;2024&#39; AND RBUKRS &#x3D; &#39;1000&#39;
@@ -433,7 +755,8 @@ GJAHR &#x3D; &#39;2024&#39; AND RBUKRS &#x3D; &#39;1000&#39;
 --   GJAHR &#x3D; &#39;2024&#39;   ✓ correct
 --   GJAHR &#x3D; 2024     ✗ will return 0 rows or error in most tools
 </code></pre>
-          </figure>
+            </figure>
+          </details>
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
@@ -467,9 +790,18 @@ GJAHR &#x3D; &#39;2024&#39; AND RBUKRS &#x3D; &#39;1000&#39;
           <p class="step-intro">In whatever tool you are using (ADF SAP CDC, Qlik, Fivetran, Matillion, custom client), configure the ODP source with these exact settings. Pay attention to the delta type — ABAP_CDS uses CDC (Change Data Capture), not AIE. This is a common misconfiguration.</p>
 
 
-          <figure class="code-block">
-            <figcaption>Exact ODP settings — copy to your tool&#39;s configuration</figcaption>
-            <pre><code class="language-plaintext">ODP CONFIGURATION — ACDOCA Beginner Extract
+          <details class="reference-starter" hidden>
+            <summary>Reference starter — this is a starting point, not a tutorial</summary>
+            <p class="reference-starter-disclaimer">
+              The snippet below is a minimal starting point to orient you
+              with the vendor-specific configuration. It is not a
+              production-ready implementation. Refer to your tool vendor's
+              documentation for full configuration guidance:
+              .
+            </p>
+            <figure class="code-block">
+              <figcaption>Exact ODP settings — copy to your tool&#39;s configuration</figcaption>
+              <pre><code class="language-plaintext">ODP CONFIGURATION — ACDOCA Beginner Extract
 
 ODP Context:     ABAP_CDS
 Object Name:     I_JournalEntryItem
@@ -498,7 +830,8 @@ LICENSE COMPLIANCE — SAP Note 3255746 (Feb 2024):
     - SLT replication (separate license, real-time capable)
   Review with your SAP account executive before go-live.
 </code></pre>
-          </figure>
+            </figure>
+          </details>
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
@@ -604,9 +937,18 @@ AND RBUKRS &#x3D; &#39;1000&#39;. They should match within ~1% (timing skew).
           <p class="step-intro">When creating your target table schema, SAP field types do not map cleanly to SQL or cloud data types. ACDOCA has several fields where the wrong data type causes subtle bugs that are hard to find later.</p>
 
 
-          <figure class="code-block">
-            <figcaption>Target table schema — ACDOCA on any cloud platform</figcaption>
-            <pre><code class="language-sql">-- ACDOCA target table: recommended data types
+          <details class="reference-starter" hidden>
+            <summary>Reference starter — this is a starting point, not a tutorial</summary>
+            <p class="reference-starter-disclaimer">
+              The snippet below is a minimal starting point to orient you
+              with the vendor-specific configuration. It is not a
+              production-ready implementation. Refer to your tool vendor's
+              documentation for full configuration guidance:
+              .
+            </p>
+            <figure class="code-block">
+              <figcaption>Target table schema — ACDOCA on any cloud platform</figcaption>
+              <pre><code class="language-sql">-- ACDOCA target table: recommended data types
 
 MANDT      VARCHAR(3)        -- not INTEGER
 RLDNR      VARCHAR(2)        -- ledger, e.g. &#39;0L&#39;
@@ -634,7 +976,8 @@ KSL        DECIMAL(23, 2)    -- amount in global currency
 -- Currency AMOUNT fields (HSL, KSL) are DECIMAL.
 -- Confusing the two causes silent data loss.
 </code></pre>
-          </figure>
+            </figure>
+          </details>
 
           <div class="step-action step-action--verify">
             <div class="step-action-label">Verify</div>
@@ -716,6 +1059,7 @@ KSL        DECIMAL(23, 2)    -- amount in global currency
 
 </div>
 
+<script src="/assets/js/picker.js" defer></script>
 <script type="module" src="/assets/js/checklist.js?v=1" defer></script>
 
   </main>
@@ -729,7 +1073,7 @@ KSL        DECIMAL(23, 2)    -- amount in global currency
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

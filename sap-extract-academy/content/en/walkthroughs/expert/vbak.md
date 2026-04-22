@@ -2,146 +2,101 @@
 table: VBAK
 level: expert
 slug: vbak
-title: "Extract VBAK via SLT Push to Kafka (Expert)"
-summary: "Enterprise-scale VBAK extraction using SAP Landscape Transformation (SLT) push replication to Apache Kafka with log compaction. Includes multi-partition strategy and Z-field handling at scale."
+title: "Extract VBAK via SLT Push Replication (Expert)"
+summary: "SAP-side expert guide for enterprise-scale VBAK extraction via SLT. Covers Full Use license verification, SLT replication object configuration in LTCO, SM59 RFC destination validation, LTRS parallel reader setup, and LTRS lag monitoring."
 estimatedMinutes: 120
 prerequisites:
-  - "Completed VBAK Intermediate"
-  - "S/4HANA system with SLT configured (RFC connection to source)"
-  - "Kafka cluster (3+ brokers, min 20GB storage)"
-  - "Full Use SAP License (SLT requires it)"
-licenseRelevance: "SLT replication of VBAK requires Full Use SAP License. This is NOT permitted under Runtime License."
+  - "Completed VBAK Intermediate walkthrough"
+  - "Full Use SAP license confirmed in writing"
+  - "Basis team available for SLT configuration"
+licenseRelevance: "SLT replication of VBAK requires Full Use SAP License. This is NOT permitted under Runtime License. License trap: Runtime vs Full Use →"
 destinations:
-  - Kafka
+  - Generic
 extractors:
   - SLT
+method: slt
+seoTitle: "Extract VBAK via SLT (Expert) — SAP-Side Guide"
+seoDescription: "SAP-side expert guide for VBAK SLT push replication. SLICENSE check, LTCO replication object, SM59 RFC destination, LTRS lag monitoring."
 steps:
   - id: step-01
-    title: "Verify SLT is installed and licensed"
-    explanation: "<a href='https://help.sap.com/"
+    title: "Verify Full Use License in SLICENSE"
+    explanation: 'Open <a href="https://help.sap.com/">SLICENSE</a> and confirm SLT Landscape Transformation is listed as Active, Type = Full Use. Get written confirmation from your SAP licensing contact. SLT will run on any system regardless of license — SAP enforces compliance through audits, not technical blocks.'
     sapTransaction:
-      code: LTCO
-      menuPath: "Administration → System → License"
+      code: SLICENSE
+      menuPath: "License Overview → Check SLT entry"
       helpUrl: "https://help.sap.com/"
-    verify: "Full Use License is visible and SLT is listed as an active module."
+    verify: "SLICENSE shows SLT Landscape Transformation = Active, Full Use. Written licensing confirmation exists."
 
   - id: step-02
-    title: "Configure SLT Kafka connector"
-    explanation: "In the SLT cluster (HANA appliance or separate instance), configure the Kafka RFC destination and login credentials."
+    title: "Validate the RFC destination for the target system (SM59)"
+    explanation: 'SLT pushes data to a target system via an RFC destination. Confirm the RFC destination your Basis team has configured points to the correct target and the connection test passes. Use <a href="https://help.sap.com/">SM59</a> to run the test. A failed RFC destination will silently drop replication data without SLT raising an error in LTCO.'
     sapTransaction:
       code: SM59
-      menuPath: "RFC Connections → Create → TCP/IP"
+      menuPath: "RFC Connections → TCP/IP → Test Connection"
       helpUrl: "https://help.sap.com/"
-    verify: "Test connection returns green for the Kafka RFC destination."
+    verify: "Test Connection returns green for the RFC destination your SLT replication object uses."
 
   - id: step-03
-    title: "Create Kafka topics for VBAK"
-    explanation: "Create a compacted Kafka topic for VBAK: vbak-source-topic, replication=3, log.retention=-1, log.cleanup.policy=compact."
-    codeBlock:
-      language: bash
-      content: |
-        kafka-topics --create --topic vbak-source-topic \
-          --partitions 10 \
-          --replication-factor 3 \
-          --config log.cleanup.policy=compact \
-          --config log.retention.ms=-1
-      caption: "Kafka topic creation"
-    verify: "Topic vbak-source-topic exists with 10 partitions and log compaction enabled."
+    title: "Configure SLT replication object for VBAK in LTCO"
+    explanation: 'Work with your Basis team to create a replication object for VBAK in <a href="https://help.sap.com/">LTCO</a>. For VBAK, partition by VKORG (sales organisation) to distribute load evenly across SLT readers. Confirm the replication object is in ACTIVE status before triggering any load.'
+    sapTransaction:
+      code: LTCO
+      menuPath: "Replication Objects → Create → Source Table: VBAK → Partition Key: VKORG"
+      helpUrl: "https://help.sap.com/"
+    verify: "LTCO shows a VBAK replication object with VKORG as partition key. Status = ACTIVE."
 
   - id: step-04
-    title: "Configure SLT Replication Object for VBAK"
-    explanation: "In LTCO, create a new replication object: source table VBAK, target Kafka topic vbak-source-topic. Include all fields, enable key-based delta (to leverage log compaction)."
+    title: "Perform initial full load via LTCO"
+    explanation: 'Trigger the full replication in <a href="https://help.sap.com/">LTCO</a>. SLT reads all VBAK rows and pushes them to the target. Depending on VBAK size, this takes minutes to hours. Monitor progress via LTCO status and confirm SM50 work process utilization stays safe.'
     sapTransaction:
       code: LTCO
-      menuPath: "Replication Objects → Create"
+      menuPath: "Replication Objects → VBAK_REP → Full Replication"
       helpUrl: "https://help.sap.com/"
-    verify: "Replication object VBAK_KAFKA is created with status ACTIVE."
+    verify: "Full load completes. LTCO status switches from RUNNING to DELTA automatically."
 
   - id: step-05
-    title: "Define partitioning strategy"
-    explanation: "To avoid hot partitions, partition VBAK by VKORG (sales org) at the SLT level. This distributes load evenly across Kafka partitions."
-    codeBlock:
-      language: plaintext
-      content: |
-        Partition key: VKORG (Sales Organization)
-        Rationale: Sales orgs are typically 10-20 distinct values, distributing rows evenly.
-        Alternative: VBELN_HASH % 10 for numeric key distribution.
-      caption: "Partitioning strategy"
-    verify: "In LTCO, the replication object shows VKORG as partition key."
-
-  - id: step-06
-    title: "Perform initial full load via SLT"
-    explanation: "Trigger a full load: SLT reads all VBAK rows and pushes to Kafka in a single batch. Depending on VBAK size, this may take hours."
-    sapTransaction:
-      code: LTCO
-      menuPath: "Replication Objects → VBAK_KAFKA → Full Replication"
-      helpUrl: "https://help.sap.com/"
-    verify: "Full load completes. Kafka topic vbak-source-topic has partitions filled with VBAK rows."
-
-  - id: step-07
-    title: "Enable real-time delta (CDC)"
-    explanation: "After full load, SLT automatically captures deltas from the VBAK log. New/changed rows are pushed to Kafka in near-real-time (typically sub-minute latency)."
-    verify: "In LTCO, monitor shows 'DELTA' status and a heartbeat/row count in LTRS."
-
-  - id: step-08
-    title: "Consume from Kafka and land in Snowflake"
-    explanation: "Use Kafka Connect (Snowflake Connector) or Python Kafka consumer to read vbak-source-topic and upsert into Snowflake. Use VBELN (document number) + MANDT as the upsert key."
-    codeBlock:
-      language: python
-      content: |
-        from kafka import KafkaConsumer
-        import snowflake.connector
-        
-        consumer = KafkaConsumer('vbak-source-topic', bootstrap_servers=['kafka:9092'])
-        
-        for message in consumer:
-          row = json.loads(message.value)
-          # INSERT or UPDATE Snowflake on (MANDT, VBELN)
-      caption: "Kafka consumer for Snowflake upsert"
-    verify: "Consumer runs and rows appear in Snowflake VBAK table in real-time."
-
-  - id: step-09
-    title: "Monitor SLT replication lag"
-    explanation: "In LTRS, monitor the delta queue. Confirm replication lag is within your SLA (e.g., < 5 minutes)."
+    title: "Confirm real-time delta and monitor lag in LTRS"
+    explanation: 'After full load, SLT captures changes from VBAK in near-real-time. Monitor lag in <a href="https://help.sap.com/">LTRS</a>. Expected lag for VBAK is under 60 seconds. If lag grows continuously, investigate SM50 for SLT process saturation or network issues between SAP and the target.'
     sapTransaction:
       code: LTRS
-      menuPath: "Monitor → Replication Status"
+      menuPath: "Monitor → Replication Status → Lag"
       helpUrl: "https://help.sap.com/"
-    verify: "LTRS shows green status, replication lag < SLA."
+    verify: "LTRS shows DELTA status and replication lag within SLA (e.g., under 60 seconds for VBAK)."
 
-  - id: step-10
-    title: "Handle multi-Z-field scenarios"
-    explanation: "At scale, VBAK may have 5+ Z-fields. Confirm SLT includes all in the Kafka payload. If custom extraction is needed, use parallel SLT jobs per VKORG to avoid contention."
-    verify: "VBAK records in Kafka and Snowflake include all Z-fields (verified via SELECT *)"
+  - id: step-06
+    title: "Handle Z-fields at scale"
+    explanation: 'If VBAK has multiple Z-fields (more than 5), SLT may need a field-mapping configuration to include them in the replication object. Confirm with your Basis team that all Z-fields are included in the LTCO replication object definition. If a Z-field was added after the initial replication object was created, it may need to be added manually and a partial re-init triggered. [NEEDS_SAP_CITATION — confirm SLT behavior when Z-fields are added post-configuration]'
+    sapTransaction:
+      code: LTCO
+      menuPath: "Replication Objects → VBAK_REP → Field Mapping"
+      helpUrl: "https://help.sap.com/"
+    verify: "LTCO field mapping includes all VBAK Z-fields. Target system records include Z-field values."
 
 troubleshooting:
   - problem: "SLT replication lag exceeds SLA"
-    solution: "SLT processes sequentially. Parallelize by creating separate replication objects per VKORG or company code. Scale Kafka brokers. Monitor network bandwidth."
-  
-  - problem: "Snowflake upsert is slow"
-    solution: "Kafka Snowflake connector batches rows; adjust batch size and commit interval. Use MERGE statements instead of individual INSERTs."
+    solution: "Add a second SLT replication object scoped to a subset of sales organisations to distribute the load. Scale your target sink infrastructure if it is the bottleneck. Check SM50 to confirm SLT processes are not queued waiting for work processes."
+
+  - problem: "SM59 test connection fails after LTCO is configured"
+    solution: "The target system's RFC configuration has changed. The Basis team needs to update the SM59 destination with the correct host, port, and credentials. SLT does not alert you if the RFC destination breaks — it silently drops replication events."
 
 nextSteps:
   - label: "Compare with ACDOCA Expert for ultra-large-scale patterns"
     url: "/walkthrough/expert/acdoca/"
   - label: "Glossary: SAP Landscape Transformation"
     url: "/glossary/slt/"
-
-seoTitle: "Extract VBAK via SLT to Kafka (Expert) — Enterprise Scale"
-seoDescription: "Expert VBAK extraction at enterprise scale using SAP Landscape Transformation (SLT) push replication to Kafka. Real-time CDC, partitioning, and multi-Z-field handling."
+  - label: "License trap: Runtime vs Full Use"
+    url: "/articles/runtime-vs-full-use/"
 updatedAt: 2026-04-22
 ---
 
 ## Scenario
 
-Your company's real-time analytics platform needs VBAK updates in near-real-time. SLT push replication to Kafka is the industry-standard approach: it captures every change at the database level and delivers rows to Kafka faster than any application-level extraction.
+Your analytics platform needs VBAK updates in near-real-time. SLT push replication to your target is the approach: it captures every insert, update, and delete at the database level and delivers them faster than any application-level extraction.
 
-You have SLT licensed (Full Use), a Kafka cluster, and Snowflake ready. This walkthrough covers the end-to-end setup from SLT configuration to Snowflake upserts.
-
-Estimated time: 2 hours setup + tuning.
+This walkthrough covers SAP-side configuration: license check, RFC destination validation, LTCO replication object setup, and LTRS lag monitoring. Your infrastructure team owns the target sink; your Basis team owns LTCO and LTRS configuration.
 
 ---
 
-## What you've built
+## What you have built
 
-You've built an enterprise-scale, real-time VBAK pipeline. SLT replicates changes within minutes, Kafka provides durable queueing and partitioning, and Snowflake maintains an up-to-date replica. This architecture supports analytics dashboards refreshing every few minutes and can be extended to 10+ tables using the same patterns.
+You have coordinated an enterprise-scale, real-time VBAK replication from SAP. SLT replicates changes within the target SLA, and you have confirmed SM59, LTCO, and LTRS are all healthy. This architecture extends to 10+ tables using the same SAP-side patterns.
