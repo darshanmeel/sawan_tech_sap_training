@@ -102,6 +102,20 @@
       {{/availableLevels}}
     </div>
   </section>
+
+  <section class="external-refs">
+    <h2>External references</h2>
+    <ul class="refs-list">
+      {{#sapHelpUrl}}
+      <li><a href="{{sapHelpUrl}}" target="_blank" rel="noopener noreferrer">SAP Help Portal — {{code}}</a></li>
+      {{/sapHelpUrl}}
+      {{^sapHelpUrl}}
+      <li><span class="refs-unverified">SAP Help Portal — [NEEDS_SAP_CITATION]</span></li>
+      {{/sapHelpUrl}}
+      <li><a href="https://www.leanx.eu/en/sap/table/{{slug}}.html" target="_blank" rel="noopener noreferrer">leanx.eu — {{code}} field list</a></li>
+      <li><a href="https://www.saptables.net/table/{{slug}}" target="_blank" rel="noopener noreferrer">saptables.net — {{code}}</a></li>
+    </ul>
+  </section>
 </article>
 
 </div>

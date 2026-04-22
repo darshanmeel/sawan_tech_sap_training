@@ -979,6 +979,51 @@ legend {
 }
 
 /* Show when source version matches */
+/* External references — supplementary, low visual weight */
+.external-refs {
+  margin-top: var(--space-8, 2rem);
+  padding-top: var(--space-5, 1.25rem);
+  border-top: 1px solid var(--color-border, #e5e7eb);
+}
+
+.external-refs h2 {
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted, #6b7280);
+  margin-bottom: 0.5rem;
+}
+
+.refs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+}
+
+.refs-list li {
+  font-size: var(--text-sm, 0.875rem);
+}
+
+.refs-list a {
+  color: var(--color-text-muted, #6b7280);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.refs-list a:hover {
+  color: var(--color-text, #111827);
+}
+
+.refs-unverified {
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text-muted, #9ca3af);
+  font-style: italic;
+}
+
 [data-source-version="ecc"] [data-ecc-only],
 [data-source-version="s4hana"] [data-s4hana-only] {
   display: block;
