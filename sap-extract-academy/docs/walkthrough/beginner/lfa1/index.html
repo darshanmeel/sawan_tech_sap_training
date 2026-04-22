@@ -113,22 +113,6 @@
       <li>EXTRACT_VBAK technical user (can reuse from VBAK walkthrough)</li>
     </ul>
   </section>
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Access to an S&#x2F;4HANA on-premise system with SE80</li>
-      <li>Azure Data Factory and ADLS Gen2 infrastructure (from VBAK Beginner walkthrough)</li>
-      <li>EXTRACT_VBAK technical user (can reuse from VBAK walkthrough)</li>
-    </ul>
-  </section>
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Access to an S&#x2F;4HANA on-premise system with SE80</li>
-      <li>Azure Data Factory and ADLS Gen2 infrastructure (from VBAK Beginner walkthrough)</li>
-      <li>EXTRACT_VBAK technical user (can reuse from VBAK walkthrough)</li>
-    </ul>
-  </section>
 
   <section class="walkthrough-intro">
     <h2>Getting started</h2>
@@ -421,74 +405,12 @@
       </div>
     </dl>
   </section>
-  <section class="troubleshooting">
-    <h2>Troubleshooting</h2>
-    <dl class="troubleshooting-list">
-      <div class="troubleshooting-item">
-        <dt>ODP_NO_DATA_AVAILABLE error</dt>
-        <dd>
-          <p>The CDS view might have no data or be filtered. Verify LFA1 has vendors via SE16N. Remove any filter conditions from the ADF dataset.</p>
-        </dd>
-      </div>
-      <div class="troubleshooting-item">
-        <dt>Parquet file is empty after successful pipeline run</dt>
-        <dd>
-          <p>Check if the I_Supplier CDS view applies a hidden filter (e.g., only active vendors). Review the CDS view definition in SE80.</p>
-        </dd>
-      </div>
-      <div class="troubleshooting-item">
-        <dt>ADF pipeline times out</dt>
-        <dd>
-          <p>LFA1 is small but if it has millions of vendors, partition the extract by LAND1 (country) in multiple ADF iterations.</p>
-        </dd>
-      </div>
-    </dl>
-  </section>
-  <section class="troubleshooting">
-    <h2>Troubleshooting</h2>
-    <dl class="troubleshooting-list">
-      <div class="troubleshooting-item">
-        <dt>ODP_NO_DATA_AVAILABLE error</dt>
-        <dd>
-          <p>The CDS view might have no data or be filtered. Verify LFA1 has vendors via SE16N. Remove any filter conditions from the ADF dataset.</p>
-        </dd>
-      </div>
-      <div class="troubleshooting-item">
-        <dt>Parquet file is empty after successful pipeline run</dt>
-        <dd>
-          <p>Check if the I_Supplier CDS view applies a hidden filter (e.g., only active vendors). Review the CDS view definition in SE80.</p>
-        </dd>
-      </div>
-      <div class="troubleshooting-item">
-        <dt>ADF pipeline times out</dt>
-        <dd>
-          <p>LFA1 is small but if it has millions of vendors, partition the extract by LAND1 (country) in multiple ADF iterations.</p>
-        </dd>
-      </div>
-    </dl>
-  </section>
 
   <section class="walkthrough-summary">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the beginner walkthrough for LFA1. You now have 8 steps of experience extracting this table, and you understand the key considerations for the LFA1 use case.</p>
   </section>
 
-  <section class="next-steps">
-    <h2>What&#39;s next</h2>
-    <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;lfa1&#x2F;">Try the LFA1 Intermediate walkthrough — add hourly delta</a></li>
-      <li><a href="&#x2F;tables&#x2F;lfa1&#x2F;">Table overview: LFA1 Vendor Master</a></li>
-      <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning</a></li>
-    </ul>
-  </section>
-  <section class="next-steps">
-    <h2>What&#39;s next</h2>
-    <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;lfa1&#x2F;">Try the LFA1 Intermediate walkthrough — add hourly delta</a></li>
-      <li><a href="&#x2F;tables&#x2F;lfa1&#x2F;">Table overview: LFA1 Vendor Master</a></li>
-      <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning</a></li>
-    </ul>
-  </section>
   <section class="next-steps">
     <h2>What&#39;s next</h2>
     <ul>

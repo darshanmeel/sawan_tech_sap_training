@@ -114,33 +114,6 @@
       <li>Full Use SAP License (SLT requires it)</li>
     </ul>
   </section>
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed VBAK Intermediate</li>
-      <li>S&#x2F;4HANA system with SLT configured (RFC connection to source)</li>
-      <li>Kafka cluster (3+ brokers, min 20GB storage)</li>
-      <li>Full Use SAP License (SLT requires it)</li>
-    </ul>
-  </section>
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed VBAK Intermediate</li>
-      <li>S&#x2F;4HANA system with SLT configured (RFC connection to source)</li>
-      <li>Kafka cluster (3+ brokers, min 20GB storage)</li>
-      <li>Full Use SAP License (SLT requires it)</li>
-    </ul>
-  </section>
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Completed VBAK Intermediate</li>
-      <li>S&#x2F;4HANA system with SLT configured (RFC connection to source)</li>
-      <li>Kafka cluster (3+ brokers, min 20GB storage)</li>
-      <li>Full Use SAP License (SLT requires it)</li>
-    </ul>
-  </section>
 
   <section class="walkthrough-intro">
     <h2>Getting started</h2>
@@ -556,36 +529,12 @@ for message in consumer:
       </div>
     </dl>
   </section>
-  <section class="troubleshooting">
-    <h2>Troubleshooting</h2>
-    <dl class="troubleshooting-list">
-      <div class="troubleshooting-item">
-        <dt>SLT replication lag exceeds SLA</dt>
-        <dd>
-          <p>SLT processes sequentially. Parallelize by creating separate replication objects per VKORG or company code. Scale Kafka brokers. Monitor network bandwidth.</p>
-        </dd>
-      </div>
-      <div class="troubleshooting-item">
-        <dt>Snowflake upsert is slow</dt>
-        <dd>
-          <p>Kafka Snowflake connector batches rows; adjust batch size and commit interval. Use MERGE statements instead of individual INSERTs.</p>
-        </dd>
-      </div>
-    </dl>
-  </section>
 
   <section class="walkthrough-summary">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the expert walkthrough for VBAK. You now have 10 steps of experience extracting this table, and you understand the key considerations for the VBAK use case.</p>
   </section>
 
-  <section class="next-steps">
-    <h2>What&#39;s next</h2>
-    <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;expert&#x2F;acdoca&#x2F;">Compare with ACDOCA Expert for ultra-large-scale patterns</a></li>
-      <li><a href="&#x2F;glossary&#x2F;slt&#x2F;">Glossary: SAP Landscape Transformation</a></li>
-    </ul>
-  </section>
   <section class="next-steps">
     <h2>What&#39;s next</h2>
     <ul>

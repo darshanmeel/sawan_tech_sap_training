@@ -45,7 +45,7 @@
   </section>
   {{/licenseRelevance}}
 
-  {{#prerequisites}}
+  {{#hasPrerequisites}}
   <section class="prerequisites">
     <h2>Before you start</h2>
     <ul>
@@ -54,7 +54,7 @@
       {{/prerequisites}}
     </ul>
   </section>
-  {{/prerequisites}}
+  {{/hasPrerequisites}}
 
   <section class="walkthrough-intro">
     <h2>Getting started</h2>
@@ -129,7 +129,7 @@
     {{/steps}}
   </ol>
 
-  {{#troubleshooting}}
+  {{#hasTroubleshooting}}
   <section class="troubleshooting">
     <h2>{{strings.walkthrough.troubleshootingHeading}}</h2>
     <dl class="troubleshooting-list">
@@ -151,14 +151,14 @@
       {{/troubleshooting}}
     </dl>
   </section>
-  {{/troubleshooting}}
+  {{/hasTroubleshooting}}
 
   <section class="walkthrough-summary">
     <h2>You've built:</h2>
     <p>Congratulations! You've completed the {{level}} walkthrough for {{table}}. You now have {{stepCount}} steps of experience extracting this table, and you understand the key considerations for the {{table}} use case.</p>
   </section>
 
-  {{#nextSteps}}
+  {{#hasNextSteps}}
   <section class="next-steps">
     <h2>{{strings.walkthrough.nextStepsHeading}}</h2>
     <ul>
@@ -167,7 +167,7 @@
       {{/nextSteps}}
     </ul>
   </section>
-  {{/nextSteps}}
+  {{/hasNextSteps}}
 
   <section class="walkthrough-actions">
     <button type="button" class="btn btn-primary" id="download-pdf" hidden>{{strings.cta.downloadPdf}}</button>

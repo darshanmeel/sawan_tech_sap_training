@@ -113,22 +113,6 @@
       <li>A Windows VM or workstation for the Self-Hosted Integration Runtime (6 GB RAM minimum)</li>
     </ul>
   </section>
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Access to an S&#x2F;4HANA on-premise system with SE80 and authorization to create a technical user</li>
-      <li>An Azure subscription with rights to create Data Factory and Storage Account resources</li>
-      <li>A Windows VM or workstation for the Self-Hosted Integration Runtime (6 GB RAM minimum)</li>
-    </ul>
-  </section>
-  <section class="prerequisites">
-    <h2>Before you start</h2>
-    <ul>
-      <li>Access to an S&#x2F;4HANA on-premise system with SE80 and authorization to create a technical user</li>
-      <li>An Azure subscription with rights to create Data Factory and Storage Account resources</li>
-      <li>A Windows VM or workstation for the Self-Hosted Integration Runtime (6 GB RAM minimum)</li>
-    </ul>
-  </section>
 
   <section class="walkthrough-intro">
     <h2>Getting started</h2>
@@ -534,76 +518,6 @@ Last name: VBAK Service User
         <dt>Pipeline fails with SAP_ODP_AUTHORIZATION_MISSING</dt>
         <dd>
           <p>The EXTRACT_VBAK user lacks S_ODP_READ for context ABAP_CDS. Return to PFCG and add this authorization with parameter ODPSOURCE &#x3D; ABAP_CDS.</p>
-          <p>
-            <a href="https:&#x2F;&#x2F;launchpad.support.sap.com&#x2F;#&#x2F;notes&#x2F;2362078" target="_blank" rel="noopener noreferrer">
-              Related SAP Note
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-          </p>
-        </dd>
-      </div>
-      <div class="troubleshooting-item">
-        <dt>Parquet files are empty (0 rows written)</dt>
-        <dd>
-          <p>The CDS view filter likely excluded all rows. Check the ADF dataset&#39;s filter settings. For a full load, there should be no WHERE clause.</p>
-          <p>
-            <a href="https:&#x2F;&#x2F;launchpad.support.sap.com&#x2F;#&#x2F;notes&#x2F;2362078" target="_blank" rel="noopener noreferrer">
-              Related SAP Note
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-          </p>
-        </dd>
-      </div>
-    </dl>
-  </section>
-  <section class="troubleshooting">
-    <h2>Troubleshooting</h2>
-    <dl class="troubleshooting-list">
-      <div class="troubleshooting-item">
-        <dt>Linked service Test Connection fails with SAP SNC error</dt>
-        <dd>
-          <p>SNC (Secure Network Communication) is a TLS layer for SAP RFC. Either disable SNC in the linked service if your SAP system allows plaintext on the RFC port, or configure SNC with a certificate. For beginner scenarios, plaintext within a secure network is acceptable.</p>
-          <p>
-            <a href="https:&#x2F;&#x2F;launchpad.support.sap.com&#x2F;#&#x2F;notes&#x2F;2362078" target="_blank" rel="noopener noreferrer">
-              Related SAP Note
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-          </p>
-        </dd>
-      </div>
-      <div class="troubleshooting-item">
-        <dt>Pipeline fails with SAP_ODP_AUTHORIZATION_MISSING</dt>
-        <dd>
-          <p>The EXTRACT_VBAK user lacks S_ODP_READ for context ABAP_CDS. Return to PFCG and add this authorization with parameter ODPSOURCE &#x3D; ABAP_CDS.</p>
-        </dd>
-      </div>
-      <div class="troubleshooting-item">
-        <dt>Parquet files are empty (0 rows written)</dt>
-        <dd>
-          <p>The CDS view filter likely excluded all rows. Check the ADF dataset&#39;s filter settings. For a full load, there should be no WHERE clause.</p>
-        </dd>
-      </div>
-    </dl>
-  </section>
-  <section class="troubleshooting">
-    <h2>Troubleshooting</h2>
-    <dl class="troubleshooting-list">
-      <div class="troubleshooting-item">
-        <dt>Linked service Test Connection fails with SAP SNC error</dt>
-        <dd>
-          <p>SNC (Secure Network Communication) is a TLS layer for SAP RFC. Either disable SNC in the linked service if your SAP system allows plaintext on the RFC port, or configure SNC with a certificate. For beginner scenarios, plaintext within a secure network is acceptable.</p>
-          <p>
-            <a href="https:&#x2F;&#x2F;launchpad.support.sap.com&#x2F;#&#x2F;notes&#x2F;2362078" target="_blank" rel="noopener noreferrer">
-              Related SAP Note
-              <span class="sr-only">(opens in new tab)</span>
-            </a>
-          </p>
-        </dd>
-      </div>
-      <div class="troubleshooting-item">
-        <dt>Pipeline fails with SAP_ODP_AUTHORIZATION_MISSING</dt>
-        <dd>
-          <p>The EXTRACT_VBAK user lacks S_ODP_READ for context ABAP_CDS. Return to PFCG and add this authorization with parameter ODPSOURCE &#x3D; ABAP_CDS.</p>
         </dd>
       </div>
       <div class="troubleshooting-item">
@@ -620,22 +534,6 @@ Last name: VBAK Service User
     <p>Congratulations! You've completed the beginner walkthrough for VBAK. You now have 10 steps of experience extracting this table, and you understand the key considerations for the VBAK use case.</p>
   </section>
 
-  <section class="next-steps">
-    <h2>What&#39;s next</h2>
-    <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;vbak&#x2F;">Try the VBAK Intermediate walkthrough — adds delta and one Z-field</a></li>
-      <li><a href="&#x2F;articles&#x2F;why-acdoca-breaks-sap&#x2F;">Read: Why Reading ACDOCA Directly Breaks Your SAP System</a></li>
-      <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning (ODP)</a></li>
-    </ul>
-  </section>
-  <section class="next-steps">
-    <h2>What&#39;s next</h2>
-    <ul>
-      <li><a href="&#x2F;walkthrough&#x2F;intermediate&#x2F;vbak&#x2F;">Try the VBAK Intermediate walkthrough — adds delta and one Z-field</a></li>
-      <li><a href="&#x2F;articles&#x2F;why-acdoca-breaks-sap&#x2F;">Read: Why Reading ACDOCA Directly Breaks Your SAP System</a></li>
-      <li><a href="&#x2F;glossary&#x2F;odp&#x2F;">Glossary: Operational Data Provisioning (ODP)</a></li>
-    </ul>
-  </section>
   <section class="next-steps">
     <h2>What&#39;s next</h2>
     <ul>

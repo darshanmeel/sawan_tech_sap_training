@@ -203,6 +203,17 @@ function buildPage(filePath, content) {
 
   const tableSlug = data.slug || (data.code ? data.code.toLowerCase() : '');
 
+  const primaryKeyList = Array.isArray(data.primaryKey) ? data.primaryKey : [];
+  const keyFieldsRaw = Array.isArray(data.keyFields) ? data.keyFields : [];
+  const keyFields = keyFieldsRaw.length > 0
+    ? keyFieldsRaw.map(f => typeof f === 'string' ? { name: f, description: '' } : f)
+    : primaryKeyList.map(name => ({ name, description: '' }));
+
+  const prerequisites = Array.isArray(data.prerequisites) ? data.prerequisites : [];
+  const extractionGotchas = Array.isArray(data.extractionGotchas) ? data.extractionGotchas : [];
+  const troubleshooting = Array.isArray(data.troubleshooting) ? data.troubleshooting : [];
+  const nextSteps = Array.isArray(data.nextSteps) ? data.nextSteps : [];
+
   const mergedData = {
     ...data,
     strings,
@@ -217,7 +228,16 @@ function buildPage(filePath, content) {
     stepCount,
     destinations: Array.isArray(data.destinations) ? data.destinations.join(', ') : data.destinations,
     extractors: Array.isArray(data.extractors) ? data.extractors.join(', ') : data.extractors,
-    prerequisites: Array.isArray(data.prerequisites) ? data.prerequisites : [],
+    prerequisites,
+    extractionGotchas,
+    troubleshooting,
+    nextSteps,
+    keyFields,
+    hasKeyFields: keyFields.length > 0,
+    hasExtractionGotchas: extractionGotchas.length > 0,
+    hasPrerequisites: prerequisites.length > 0,
+    hasTroubleshooting: troubleshooting.length > 0,
+    hasNextSteps: nextSteps.length > 0,
     availableLevels: Array.isArray(data.availableLevels)
       ? data.availableLevels.map(level => ({
           level,
