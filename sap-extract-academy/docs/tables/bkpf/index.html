@@ -110,22 +110,22 @@
         <tr>
           <td><code>MANDT</code></td>
           <td>Key</td>
-          <td></td>
+          <td>Client (always filter to current client, never extract all)</td>
         </tr>
         <tr>
           <td><code>BUKRS</code></td>
           <td>Key</td>
-          <td></td>
+          <td>Company Code (4-char, primary partition key)</td>
         </tr>
         <tr>
           <td><code>GJAHR</code></td>
           <td>Key</td>
-          <td></td>
+          <td>Fiscal Year (partition key; most extractions slice by year)</td>
         </tr>
         <tr>
           <td><code>BELNR</code></td>
           <td>Key</td>
-          <td></td>
+          <td>Accounting Document Number (10-char, unique within BUKRS+GJAHR)</td>
         </tr>
       </tbody>
     </table>
@@ -218,7 +218,7 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/example/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

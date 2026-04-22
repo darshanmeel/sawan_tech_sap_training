@@ -9,6 +9,11 @@ typicalRowCount: "10M-200M"
 primaryKey:
   - MANDT
   - VBELN
+keyFields:
+  - name: MANDT
+    description: "Client (always filter to current client, never extract all)"
+  - name: VBELN
+    description: "Sales Document Number (10-char, zero-padded identifier)"
 releasedCdsView: "I_SalesDocument"
 cdsViewDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/e4a58de831c54ea89e2d9f07a2a8e3c7.html"
 sapHelpUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/4e4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b.html"

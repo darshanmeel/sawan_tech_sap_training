@@ -9,6 +9,11 @@ typicalRowCount: "10K-500K"
 primaryKey:
   - MANDT
   - LIFNR
+keyFields:
+  - name: MANDT
+    description: "Client (always filter to current client, never extract all)"
+  - name: LIFNR
+    description: "Vendor Number (10-char, zero-padded vendor identifier)"
 releasedCdsView: "I_Supplier"
 cdsViewDocUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/supplier-cds.html"
 sapHelpUrl: "https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/vendor-master.html"
