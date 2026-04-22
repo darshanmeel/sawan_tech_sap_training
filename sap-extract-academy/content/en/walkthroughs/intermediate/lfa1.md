@@ -37,7 +37,7 @@ steps:
 
   - id: step-03
     title: "Test delta behavior with a manual vendor change"
-    explanation: 'To confirm the delta mechanism is working, make a controlled change in SAP: update a vendor record in <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html">SU01</a> or in the vendor master transaction (FK02). After the change, wait 5 minutes and check ODQMON. The subscription should show 1 pending record in the delta queue. Then run the delta extraction and confirm that 1 record is fetched and the queue returns to 0.'
+    explanation: 'To confirm the delta mechanism is working, make a controlled change in SAP: update a vendor record in <a href="https://help.sap.com/">SU01</a> or in the vendor master transaction (FK02). After the change, wait 5 minutes and check ODQMON. The subscription should show 1 pending record in the delta queue. Then run the delta extraction and confirm that 1 record is fetched and the queue returns to 0.'
     sapTransaction:
       code: FK02
       menuPath: "Vendor → Change → General Data"

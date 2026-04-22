@@ -39,29 +39,29 @@ steps:
 
   - id: step-03
     title: "Create a technical RFC user with minimum permissions"
-    explanation: 'Create a System-type (non-dialog) user via <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html">SU01</a>. System users cannot log on interactively and do not consume a dialog work process. Never reuse a named user account for automated extraction — it creates audit, security, and performance problems.'
+    explanation: 'Create a System-type (non-dialog) user via <a href="https://help.sap.com/">SU01</a>. System users cannot log on interactively and do not consume a dialog work process. Never reuse a named user account for automated extraction — it creates audit, security, and performance problems.'
     sapTransaction:
       code: SU01
       menuPath: "User → Create → User type: System"
-      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+      helpUrl: "https://help.sap.com/"
     verify: "User EXTRACT_VBAK exists in SU01 with User Type = System. The user is locked for interactive logon."
 
   - id: step-04
     title: "Assign authorizations via PFCG"
-    explanation: 'In <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html">PFCG</a>, create a single custom role. Add three authorization objects: S_RFC (RFC_TYPE=FUNC), S_ODP_READ (ODPSOURCE=ABAP_CDS), and S_TABU_DIS (authorization group SD). Generate the profile and assign the role to EXTRACT_VBAK.'
+    explanation: 'In <a href="https://help.sap.com/">PFCG</a>, create a single custom role. Add three authorization objects: S_RFC (RFC_TYPE=FUNC), S_ODP_READ (ODPSOURCE=ABAP_CDS), and S_TABU_DIS (authorization group SD). Generate the profile and assign the role to EXTRACT_VBAK.'
     sapTransaction:
       code: PFCG
       menuPath: "Role → Create → Authorizations → Add Object"
-      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+      helpUrl: "https://help.sap.com/"
     verify: "In SU01, EXTRACT_VBAK shows one role assigned. In PFCG, the role authorization data contains S_ODP_READ with ODPSOURCE=ABAP_CDS."
 
   - id: step-05
     title: "Verify the RFC destination is reachable (SM59)"
-    explanation: 'Your extraction tool connects to SAP over an RFC destination. Ask your Basis team to check <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/sm59.html">SM59</a> for the destination your tool will use. The test connection must pass before any extraction attempt.'
+    explanation: 'Your extraction tool connects to SAP over an RFC destination. Ask your Basis team to check <a href="https://help.sap.com/">SM59</a> for the destination your tool will use. The test connection must pass before any extraction attempt.'
     sapTransaction:
       code: SM59
       menuPath: "RFC Connections → ABAP Connections or TCP/IP → Test Connection"
-      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/sm59.html"
+      helpUrl: "https://help.sap.com/"
     verify: "Test Connection returns green for the RFC destination your tool uses."
 
   - id: step-06

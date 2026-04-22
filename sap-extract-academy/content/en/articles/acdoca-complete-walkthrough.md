@@ -27,18 +27,18 @@ This article describes three extraction patterns at increasing scale. The decisi
 
 Regardless of which pattern you choose, you must partition ACDOCA by company code (RBUKRS) and fiscal year (RYEAR) before running any extraction. A raw, unfiltered read of ACDOCA exhausts SAP application server work process memory within minutes on any production system — resulting in a `TSV_TNEW_PAGE_ALLOC_FAILED` short dump and, in worse cases, locking ACDOCA rows and preventing finance users from posting during the window.
 
-Use [SE16N](https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html) to count rows for your intended partition before running any extraction. Write down the count. This is your reconciliation target.
+Use [SE16N](https://help.sap.com/) to count rows for your intended partition before running any extraction. Write down the count. This is your reconciliation target.
 
 ## Always Use the Released CDS View
 
-Never extract raw ACDOCA. SAP ships [I_JournalEntryItem](https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html) as the released CDS view for the Universal Journal. This view:
+Never extract raw ACDOCA. SAP ships [I_JournalEntryItem](https://help.sap.com/) as the released CDS view for the Universal Journal. This view:
 
 - Enforces authorization (you see only GL entries your user role is permitted to see)
 - Applies currency conversion (currency fields are pre-converted to your local/group currency)
 - Exposes the data through [ODP](/glossary/odp/) — SAP's standard extraction framework
 - Includes database hints that prevent the memory exhaustion a raw SELECT * causes
 
-Confirm it is present and annotated in [SE80](https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html) before proceeding: look for `@Analytics.dataExtract: true` in the view header.
+Confirm it is present and annotated in [SE80](https://help.sap.com/) before proceeding: look for `@Analytics.dataExtract: true` in the view header.
 
 ## Pattern 1: ODP Single Partition (Beginner)
 
@@ -47,8 +47,8 @@ Confirm it is present and annotated in [SE80](https://help.sap.com/docs/SAP_S4HA
 **What you do in SAP:**
 1. Confirm I_JournalEntryItem exists with the extraction annotation in SE80.
 2. Count rows for your partition in SE16N (RBUKRS='1000' AND RYEAR=2024).
-3. Create a System-type extraction user in [SU01](https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html) with S_RFC and S_ODP_READ (ODPSOURCE=ABAP_CDS) authorization.
-4. After the extraction runs, check [ODQMON](https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html) to confirm the subscription is registered and active.
+3. Create a System-type extraction user in [SU01](https://help.sap.com/) with S_RFC and S_ODP_READ (ODPSOURCE=ABAP_CDS) authorization.
+4. After the extraction runs, check [ODQMON](https://help.sap.com/) to confirm the subscription is registered and active.
 5. After the extraction completes, reconcile: SE16N count must match your target row count.
 
 **What your tool does:** Your extraction tool (ADF, Databricks, Fivetran, Airbyte, or custom) connects via ODP OData, registers a subscription, and fetches rows in batches. The SAP-side configuration above is what you control; the tool pipeline configuration is in your vendor's documentation.
@@ -62,7 +62,7 @@ Confirm it is present and annotated in [SE80](https://help.sap.com/docs/SAP_S4HA
 **What you do in SAP:**
 1. Use SE16N to count rows for each (RBUKRS, RYEAR) combination you plan to extract. Record each count separately.
 2. For each partition, verify that the count is under 500M rows. If any single partition exceeds this, sub-partition further by posting period (POPER).
-3. Monitor [SM50](https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SM50.html) during extraction. Multiple simultaneous ODP connections each consume a work process. Keep total utilization below 80% to avoid impacting finance users.
+3. Monitor [SM50](https://help.sap.com/) during extraction. Multiple simultaneous ODP connections each consume a work process. Keep total utilization below 80% to avoid impacting finance users.
 4. Monitor ODQMON for multiple active subscriptions — one per partition if your tool creates separate subscribers, or one shared subscriber if it uses a single subscription with filter parameters.
 5. After extraction, reconcile each partition individually against SE16N.
 
@@ -74,9 +74,9 @@ Confirm it is present and annotated in [SE80](https://help.sap.com/docs/SAP_S4HA
 
 **What you do in SAP (summary — see [Expert walkthrough](/walkthrough/expert/acdoca/) for full detail):**
 
-1. Verify Full Use license in [SLICENSE](https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html). Get written confirmation from SAP licensing.
-2. Work with Basis to create an SLT replication object in [LTCO](https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html) for ACDOCA with partition key RBUKRS+RYEAR.
-3. Configure 4–8 parallel readers in [LTRS](https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html). More readers = faster full load, more SAP resource consumption. Coordinate with Basis.
+1. Verify Full Use license in [SLICENSE](https://help.sap.com/). Get written confirmation from SAP licensing.
+2. Work with Basis to create an SLT replication object in [LTCO](https://help.sap.com/) for ACDOCA with partition key RBUKRS+RYEAR.
+3. Configure 4–8 parallel readers in [LTRS](https://help.sap.com/). More readers = faster full load, more SAP resource consumption. Coordinate with Basis.
 4. Monitor SM50 throughout the 48–72 hour full load. Finance operations must not be impacted.
 5. After full load, LTCO switches to DELTA automatically. Monitor LTRS for lag. Reconcile with SE16N.
 

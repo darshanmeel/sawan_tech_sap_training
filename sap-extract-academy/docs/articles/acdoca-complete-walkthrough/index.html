@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Article detail page -->
 
@@ -106,24 +108,24 @@
 <p><strong>License trap:</strong> Before reading further, confirm your SAP license type. SLT replication (Pattern 3) requires a Full Use license. ODP-based extraction (Patterns 1 and 2) is permitted under Runtime licenses when using the OData API. See <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use →</a> for the full explanation.</p>
 <h2>The Core Rule: Always Partition</h2>
 <p>Regardless of which pattern you choose, you must partition ACDOCA by company code (RBUKRS) and fiscal year (RYEAR) before running any extraction. A raw, unfiltered read of ACDOCA exhausts SAP application server work process memory within minutes on any production system — resulting in a <code>TSV_TNEW_PAGE_ALLOC_FAILED</code> short dump and, in worse cases, locking ACDOCA rows and preventing finance users from posting during the window.</p>
-<p>Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html">SE16N</a> to count rows for your intended partition before running any extraction. Write down the count. This is your reconciliation target.</p>
+<p>Use <a href="https://help.sap.com/">SE16N</a> to count rows for your intended partition before running any extraction. Write down the count. This is your reconciliation target.</p>
 <h2>Always Use the Released CDS View</h2>
-<p>Never extract raw ACDOCA. SAP ships <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html">I_JournalEntryItem</a> as the released CDS view for the Universal Journal. This view:</p>
+<p>Never extract raw ACDOCA. SAP ships <a href="https://help.sap.com/">I_JournalEntryItem</a> as the released CDS view for the Universal Journal. This view:</p>
 <ul>
 <li>Enforces authorization (you see only GL entries your user role is permitted to see)</li>
 <li>Applies currency conversion (currency fields are pre-converted to your local/group currency)</li>
 <li>Exposes the data through <a href="/glossary/odp/">ODP</a> — SAP&#39;s standard extraction framework</li>
 <li>Includes database hints that prevent the memory exhaustion a raw SELECT * causes</li>
 </ul>
-<p>Confirm it is present and annotated in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html">SE80</a> before proceeding: look for <code>@Analytics.dataExtract: true</code> in the view header.</p>
+<p>Confirm it is present and annotated in <a href="https://help.sap.com/">SE80</a> before proceeding: look for <code>@Analytics.dataExtract: true</code> in the view header.</p>
 <h2>Pattern 1: ODP Single Partition (Beginner)</h2>
 <p><strong>When to use:</strong> One company code, one fiscal year. SE16N shows under 100M rows for your partition. You need a one-time historical load or an initial extract for a single reporting entity.</p>
 <p><strong>What you do in SAP:</strong></p>
 <ol>
 <li>Confirm I_JournalEntryItem exists with the extraction annotation in SE80.</li>
 <li>Count rows for your partition in SE16N (RBUKRS=&#39;1000&#39; AND RYEAR=2024).</li>
-<li>Create a System-type extraction user in <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html">SU01</a> with S_RFC and S_ODP_READ (ODPSOURCE=ABAP_CDS) authorization.</li>
-<li>After the extraction runs, check <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html">ODQMON</a> to confirm the subscription is registered and active.</li>
+<li>Create a System-type extraction user in <a href="https://help.sap.com/">SU01</a> with S_RFC and S_ODP_READ (ODPSOURCE=ABAP_CDS) authorization.</li>
+<li>After the extraction runs, check <a href="https://help.sap.com/">ODQMON</a> to confirm the subscription is registered and active.</li>
 <li>After the extraction completes, reconcile: SE16N count must match your target row count.</li>
 </ol>
 <p><strong>What your tool does:</strong> Your extraction tool (ADF, Databricks, Fivetran, Airbyte, or custom) connects via ODP OData, registers a subscription, and fetches rows in batches. The SAP-side configuration above is what you control; the tool pipeline configuration is in your vendor&#39;s documentation.</p>
@@ -134,7 +136,7 @@
 <ol>
 <li>Use SE16N to count rows for each (RBUKRS, RYEAR) combination you plan to extract. Record each count separately.</li>
 <li>For each partition, verify that the count is under 500M rows. If any single partition exceeds this, sub-partition further by posting period (POPER).</li>
-<li>Monitor <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SM50.html">SM50</a> during extraction. Multiple simultaneous ODP connections each consume a work process. Keep total utilization below 80% to avoid impacting finance users.</li>
+<li>Monitor <a href="https://help.sap.com/">SM50</a> during extraction. Multiple simultaneous ODP connections each consume a work process. Keep total utilization below 80% to avoid impacting finance users.</li>
 <li>Monitor ODQMON for multiple active subscriptions — one per partition if your tool creates separate subscribers, or one shared subscriber if it uses a single subscription with filter parameters.</li>
 <li>After extraction, reconcile each partition individually against SE16N.</li>
 </ol>
@@ -143,9 +145,9 @@
 <p><strong>When to use:</strong> Billions of rows. Real-time delta required (GL postings visible in target within minutes). Full Use license in place.</p>
 <p><strong>What you do in SAP (summary — see <a href="/walkthrough/expert/acdoca/">Expert walkthrough</a> for full detail):</strong></p>
 <ol>
-<li>Verify Full Use license in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html">SLICENSE</a>. Get written confirmation from SAP licensing.</li>
-<li>Work with Basis to create an SLT replication object in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html">LTCO</a> for ACDOCA with partition key RBUKRS+RYEAR.</li>
-<li>Configure 4–8 parallel readers in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html">LTRS</a>. More readers = faster full load, more SAP resource consumption. Coordinate with Basis.</li>
+<li>Verify Full Use license in <a href="https://help.sap.com/">SLICENSE</a>. Get written confirmation from SAP licensing.</li>
+<li>Work with Basis to create an SLT replication object in <a href="https://help.sap.com/">LTCO</a> for ACDOCA with partition key RBUKRS+RYEAR.</li>
+<li>Configure 4–8 parallel readers in <a href="https://help.sap.com/">LTRS</a>. More readers = faster full load, more SAP resource consumption. Coordinate with Basis.</li>
 <li>Monitor SM50 throughout the 48–72 hour full load. Finance operations must not be impacted.</li>
 <li>After full load, LTCO switches to DELTA automatically. Monitor LTRS for lag. Reconcile with SE16N.</li>
 </ol>
@@ -233,7 +235,7 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

@@ -47,10 +47,10 @@ steps:
 
   - id: step-04
     title: "Confirm the extraction user has MM authorization"
-    explanation: 'Material master tables are in authorization group MM. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM (or broader) in <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html">PFCG</a>.'
+    explanation: 'Material master tables are in authorization group MM. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM (or broader) in <a href="https://help.sap.com/">PFCG</a>.'
     sapTransaction:
       code: PFCG
-      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+      helpUrl: "https://help.sap.com/"
     verify: "Role includes S_TABU_DIS for authorization group MM."
 
   - id: step-05

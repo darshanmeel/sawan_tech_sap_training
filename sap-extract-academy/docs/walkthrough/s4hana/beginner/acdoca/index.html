@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Walkthrough detail page -->
 
@@ -225,7 +227,7 @@
           Every table covered in this Academy has a SAP-released
           <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
           Open
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE80</a>
           and search for the view name before you build anything. Confirm the
           annotation <code>@Analytics.dataExtract: true</code> is present. If
@@ -239,10 +241,10 @@
         <p>
           Your extraction user needs three authorization objects.
           Use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SU01</a>
           to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">PFCG</a>
           to assign a role containing:
         </p>
@@ -256,10 +258,10 @@
         <p>
           For SLT-based extraction, your Basis team will also need authorization
           in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>
           and
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTRS</a>.
           [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
         </p>
@@ -269,7 +271,7 @@
         <strong>Row-count context — understand data volumes before you run.</strong>
         <p>
           Use
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE16N</a>
           to count rows in the target table with your intended filter (company
           code, fiscal year, material type, etc.) before you start the
@@ -327,11 +329,11 @@
           <strong>SLT (SAP Landscape Transformation)</strong> requires a
           <strong>Full Use SAP license</strong>. It is not permitted under
           Runtime licenses. Verify in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SLICENSE</a>
           that "SLT Landscape Transformation" is listed as Active, Type = Full
           Use before you configure anything in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>.
         </p>
         <p>
@@ -1071,7 +1073,7 @@ KSL        DECIMAL(23, 2)    -- amount in global currency
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

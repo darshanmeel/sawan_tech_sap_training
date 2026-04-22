@@ -21,7 +21,7 @@
   <meta name="twitter:description" content="SAP-side beginner guide for MARA material master extraction. Confirm I_Product CDS view, check field types in SE11, assign authorizations, reconcile with SE16N.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract MARA Material Master (Beginner)","description":"SAP-side preparation for full-load extraction of material master general data. Covers the released CDS view I_Product, authorization for material master tables, key field characteristics (MATNR, MTART, MEINS), and SE16N reconciliation.","totalTime":"PT45M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Locate and confirm the released CDS view I_Product","text":"Material master general data is exposed via <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/product-cds.html\">I_Product</a>. Confirm it exists in your system and carries the extraction annotation.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Inspect key field characteristics in SE11","text":"Before extracting, understand the field types in MARA that affect downstream processing. Use <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html\">SE11</a> to inspect the table definition. Key fields: MATNR (material number — 18-char numeric-character, often zero-padded), MTART (material type — 4-char, important for filtering), MATKL (product category), MEINS (base unit of measure — 3-char, may carry trailing spaces).","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Count materials in SE16N (baseline)","text":"Use <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html\">SE16N</a> to count MARA rows. You can optionally filter by MTART to count a specific material type. Write the count down.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Confirm the extraction user has MM authorization","text":"Material master tables are in authorization group MM. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM (or broader) in <a href=\"https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html\">PFCG</a>.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Check ODQMON after first tool run","text":"Verify an active subscription appears in <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html\">ODQMON</a> for I_Product under context ABAP_CDS.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract MARA Material Master (Beginner)"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract MARA Material Master (Beginner)","description":"SAP-side preparation for full-load extraction of material master general data. Covers the released CDS view I_Product, authorization for material master tables, key field characteristics (MATNR, MTART, MEINS), and SE16N reconciliation.","totalTime":"PT45M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Locate and confirm the released CDS view I_Product","text":"Material master general data is exposed via <a href=\"https://help.sap.com/\">I_Product</a>. Confirm it exists in your system and carries the extraction annotation.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Inspect key field characteristics in SE11","text":"Before extracting, understand the field types in MARA that affect downstream processing. Use <a href=\"https://help.sap.com/\">SE11</a> to inspect the table definition. Key fields: MATNR (material number — 18-char numeric-character, often zero-padded), MTART (material type — 4-char, important for filtering), MATKL (product category), MEINS (base unit of measure — 3-char, may carry trailing spaces).","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Count materials in SE16N (baseline)","text":"Use <a href=\"https://help.sap.com/\">SE16N</a> to count MARA rows. You can optionally filter by MTART to count a specific material type. Write the count down.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Confirm the extraction user has MM authorization","text":"Material master tables are in authorization group MM. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM (or broader) in <a href=\"https://help.sap.com/\">PFCG</a>.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Check ODQMON after first tool run","text":"Verify an active subscription appears in <a href=\"https://help.sap.com/\">ODQMON</a> for I_Product under context ABAP_CDS.","url":"https://academy.example.com/walkthrough/beginner/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract MARA Material Master (Beginner)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Walkthrough detail page -->
 
@@ -225,7 +227,7 @@
           Every table covered in this Academy has a SAP-released
           <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
           Open
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE80</a>
           and search for the view name before you build anything. Confirm the
           annotation <code>@Analytics.dataExtract: true</code> is present. If
@@ -239,10 +241,10 @@
         <p>
           Your extraction user needs three authorization objects.
           Use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SU01</a>
           to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">PFCG</a>
           to assign a role containing:
         </p>
@@ -256,10 +258,10 @@
         <p>
           For SLT-based extraction, your Basis team will also need authorization
           in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>
           and
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTRS</a>.
           [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
         </p>
@@ -269,7 +271,7 @@
         <strong>Row-count context — understand data volumes before you run.</strong>
         <p>
           Use
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE16N</a>
           to count rows in the target table with your intended filter (company
           code, fiscal year, material type, etc.) before you start the
@@ -327,11 +329,11 @@
           <strong>SLT (SAP Landscape Transformation)</strong> requires a
           <strong>Full Use SAP license</strong>. It is not permitted under
           Runtime licenses. Verify in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SLICENSE</a>
           that "SLT Landscape Transformation" is listed as Active, Type = Full
           Use before you configure anything in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>.
         </p>
         <p>
@@ -449,13 +451,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Material master general data is exposed via <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/product-cds.html">I_Product</a>. Confirm it exists in your system and carries the extraction annotation.</p>
+          <p class="step-intro">Material master general data is exposed via <a href="https://help.sap.com/">I_Product</a>. Confirm it exists in your system and carries the extraction annotation.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE80
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -489,13 +491,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Before extracting, understand the field types in MARA that affect downstream processing. Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html">SE11</a> to inspect the table definition. Key fields: MATNR (material number — 18-char numeric-character, often zero-padded), MTART (material type — 4-char, important for filtering), MATKL (product category), MEINS (base unit of measure — 3-char, may carry trailing spaces).</p>
+          <p class="step-intro">Before extracting, understand the field types in MARA that affect downstream processing. Use <a href="https://help.sap.com/">SE11</a> to inspect the table definition. Key fields: MATNR (material number — 18-char numeric-character, often zero-padded), MTART (material type — 4-char, important for filtering), MATKL (product category), MEINS (base unit of measure — 3-char, may carry trailing spaces).</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE11.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE11
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -533,13 +535,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html">SE16N</a> to count MARA rows. You can optionally filter by MTART to count a specific material type. Write the count down.</p>
+          <p class="step-intro">Use <a href="https://help.sap.com/">SE16N</a> to count MARA rows. You can optionally filter by MTART to count a specific material type. Write the count down.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE16N
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -573,13 +575,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Material master tables are in authorization group MM. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM (or broader) in <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html">PFCG</a>.</p>
+          <p class="step-intro">Material master tables are in authorization group MM. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM (or broader) in <a href="https://help.sap.com/">PFCG</a>.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;e5e83c2825c34a7896bdb97c0da65fb5.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 PFCG
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -613,13 +615,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Verify an active subscription appears in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html">ODQMON</a> for I_Product under context ABAP_CDS.</p>
+          <p class="step-intro">Verify an active subscription appears in <a href="https://help.sap.com/">ODQMON</a> for I_Product under context ABAP_CDS.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;ODQMON.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 ODQMON
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -659,7 +661,7 @@
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE16N
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -731,7 +733,7 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

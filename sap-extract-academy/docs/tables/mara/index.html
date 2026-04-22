@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Table detail page -->
 
@@ -96,7 +98,7 @@
     <div class="prose">
       <p>MARA is the material master table in the Materials Management (MM) module, storing company-wide product/material information: names, material types, categories, units of measure, and classification attributes. Each material has one MARA record (identified by MATNR, the material number) containing general data applicable across all plants and sales organizations.</p>
 <p>Material master extraction is essential for product dimension tables in data warehouses. The table is moderately sized (typically 100K to 10M materials depending on enterprise size) and often extended with custom fields (Z-fields) for industry-specific attributes like colors, sizes, or regulatory flags.</p>
-<p><a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/material-master-overview.html">SAP S/4HANA Material Master overview</a> documents the complete schema. Like vendor master, material data is distributed: MARA (general), MARC (plant level), and MVKE (sales organization level). Your extraction strategy depends on the analytics use case — product hierarchy questions often start with MARA; supply chain questions require MARC.</p>
+<p><a href="https://help.sap.com/">SAP S/4HANA Material Master overview</a> documents the complete schema. Like vendor master, material data is distributed: MARA (general), MARC (plant level), and MVKE (sales organization level). Your extraction strategy depends on the analytics use case — product hierarchy questions often start with MARA; supply chain questions require MARC.</p>
 
     </div>
   </section>
@@ -149,14 +151,14 @@
     <ul class="gotchas-list">
       <li class="gotcha-item">
         <p class="gotcha-text">MARA stores general data only. Plant-specific data lives in MARC, sales organization data in MVKE. For complete material context, join all three tables.</p>
-        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;material-tables.html" target="_blank" rel="noopener noreferrer">
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
           SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
       </li>
       <li class="gotcha-item">
         <p class="gotcha-text">Z-fields (custom fields) are common in MARA because companies extend material master with industry-specific attributes (e.g., color, size, hazmat flags). Check your system&#39;s APPEND structures.</p>
-        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;zfields.html" target="_blank" rel="noopener noreferrer">
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
           SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
@@ -186,7 +188,7 @@
   <section class="external-refs">
     <h2>External references</h2>
     <ul class="refs-list">
-      <li><a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;material-master.html" target="_blank" rel="noopener noreferrer">SAP Help Portal — MARA</a></li>
+      <li><a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">SAP Help Portal — MARA</a></li>
       <li><a href="https://www.leanx.eu/en/sap/table/mara.html" target="_blank" rel="noopener noreferrer">leanx.eu — MARA field list</a></li>
       <li><a href="https://www.saptables.net/table/mara" target="_blank" rel="noopener noreferrer">saptables.net — MARA</a></li>
     </ul>
@@ -206,7 +208,7 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Table detail page -->
 
@@ -96,7 +98,7 @@
     <div class="prose">
       <p>LFA1 is the vendor master data table in the Materials Management (MM) module, storing company-wide vendor information: names, addresses, countries, contact details, and tax registration numbers. Each vendor has one LFA1 record (identified by LIFNR, the vendor number) containing general data used across purchasing, accounts payable, and procurement analytics.</p>
 <p>The table is straightforward for extraction because its volume is typically small (tens of thousands of vendors even in large enterprises) and deletion is rare. It&#39;s an ideal first data extraction for beginners learning SAP table structures and ODP mechanics.</p>
-<p><a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/vendor-master-overview.html">SAP S/4HANA Vendor Master overview</a> documents the full schema. Note that vendor data is split across three logical sections: LFA1 (general), LFB1 (company code level), and LFM1 (purchasing organization level). For procurement analytics, you&#39;ll typically join all three.</p>
+<p><a href="https://help.sap.com/">SAP S/4HANA Vendor Master overview</a> documents the full schema. Note that vendor data is split across three logical sections: LFA1 (general), LFB1 (company code level), and LFM1 (purchasing organization level). For procurement analytics, you&#39;ll typically join all three.</p>
 
     </div>
   </section>
@@ -149,7 +151,7 @@
     <ul class="gotchas-list">
       <li class="gotcha-item">
         <p class="gotcha-text">LFA1 is the general section of vendor master. Purchasing (LFM1) and company code (LFB1) data are in separate tables. Join all three for complete vendor context.</p>
-        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;vendor-tables.html" target="_blank" rel="noopener noreferrer">
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
           SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
@@ -179,7 +181,7 @@
   <section class="external-refs">
     <h2>External references</h2>
     <ul class="refs-list">
-      <li><a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;vendor-master.html" target="_blank" rel="noopener noreferrer">SAP Help Portal — LFA1</a></li>
+      <li><a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">SAP Help Portal — LFA1</a></li>
       <li><a href="https://www.leanx.eu/en/sap/table/lfa1.html" target="_blank" rel="noopener noreferrer">leanx.eu — LFA1 field list</a></li>
       <li><a href="https://www.saptables.net/table/lfa1" target="_blank" rel="noopener noreferrer">saptables.net — LFA1</a></li>
     </ul>
@@ -199,7 +201,7 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

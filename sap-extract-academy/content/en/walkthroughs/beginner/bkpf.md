@@ -37,11 +37,11 @@ steps:
 
   - id: step-03
     title: "Confirm the extraction user has FI authorization group"
-    explanation: 'BKPF data is finance-sensitive. Verify the extraction user (created in the VBAK beginner walkthrough or equivalent) has <code>S_TABU_DIS</code> with authorization group <code>FC</code> (Finance) in addition to the S_RFC and S_ODP_READ already in place. If you are reusing EXTRACT_VBAK, check via <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html">PFCG</a> whether the role covers finance tables.'
+    explanation: 'BKPF data is finance-sensitive. Verify the extraction user (created in the VBAK beginner walkthrough or equivalent) has <code>S_TABU_DIS</code> with authorization group <code>FC</code> (Finance) in addition to the S_RFC and S_ODP_READ already in place. If you are reusing EXTRACT_VBAK, check via <a href="https://help.sap.com/">PFCG</a> whether the role covers finance tables.'
     sapTransaction:
       code: PFCG
       menuPath: "Role → Display → Authorization Data → S_TABU_DIS"
-      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+      helpUrl: "https://help.sap.com/"
     verify: "S_TABU_DIS includes authorization group FC or the extraction user receives rows in a preview without authorization errors."
 
   - id: step-04

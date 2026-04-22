@@ -37,11 +37,11 @@ steps:
 
   - id: step-03
     title: "Confirm the extraction user has vendor master authorization"
-    explanation: 'Vendor master sits in authorization group MM (Materials Management) for table display. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM in addition to S_RFC and S_ODP_READ. Use <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html">PFCG</a> to check or update.'
+    explanation: 'Vendor master sits in authorization group MM (Materials Management) for table display. Confirm the extraction user has <code>S_TABU_DIS</code> for group MM in addition to S_RFC and S_ODP_READ. Use <a href="https://help.sap.com/">PFCG</a> to check or update.'
     sapTransaction:
       code: PFCG
       menuPath: "Role → Display → Authorization Data"
-      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+      helpUrl: "https://help.sap.com/"
     verify: "Role covers S_TABU_DIS for authorization group MM (or a broader group that includes vendor master tables)."
 
   - id: step-04

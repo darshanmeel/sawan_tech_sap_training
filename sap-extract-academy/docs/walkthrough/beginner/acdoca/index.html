@@ -21,7 +21,7 @@
   <meta name="twitter:description" content="SAP-side beginner guide for ACDOCA Universal Journal extraction. Confirm released CDS view, set authorizations, understand partitioning — before running any tool.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract ACDOCA Universal Journal (One Fiscal Year)","description":"Beginner-level SAP-side preparation for extracting one company code and one fiscal year from the Universal Journal. Covers the mandatory partitioning strategy, the released CDS view, and the authorization setup — the SAP work you must complete before any tool runs.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Confirm the released CDS view I_JournalEntryItem","text":"Never extract raw ACDOCA directly. SAP ships <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html\">I_JournalEntryItem</a> as the released CDS view for the Universal Journal. It enforces authorization, applies currency conversion, and exposes the table through <a href=\"/glossary/odp/\">ODP</a> without triggering a full table scan.","url":"https://academy.example.com/walkthrough/beginner/acdoca/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Understand ACDOCA partitioning (RBUKRS, RYEAR)","text":"ACDOCA primary key fields are MANDT, RBUKRS (company code), RYEAR (reporting year), POPER (posting period), BELNR (document number), and DOCLN (line number). For a beginner extraction, always fix to one company code and one reporting year. This gives a manageable partition that finishes in a predictable time window rather than timing out.","url":"https://academy.example.com/walkthrough/beginner/acdoca/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Create the technical RFC extraction user","text":"Create a System-type (non-dialog) user dedicated to extraction via <a href=\"https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html\">SU01</a>. Never use a named dialog user for automated extraction — it consumes a dialog work process and cannot be safely locked after use.","url":"https://academy.example.com/walkthrough/beginner/acdoca/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Assign authorization objects S_RFC and S_ODP_READ","text":"In <a href=\"https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html\">PFCG</a>, create a role for the extraction user. The role must contain S_RFC (RFC_TYPE=FUNC) and S_ODP_READ (ODPSOURCE=ABAP_CDS). S_ODP_READ for ABAP_CDS is the specific authorization needed to read CDS-based ODP sources. Without it, the extraction returns authorization errors immediately.","url":"https://academy.example.com/walkthrough/beginner/acdoca/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Verify the ODP subscription in ODQMON","text":"After your extraction tool makes its first connection attempt, check <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html\">ODQMON</a> on the SAP side. ODQMON (Operational Delta Queue Monitor) shows all active ODP subscriptions, their queue depth, and any errors. A healthy subscription appears here within seconds of the tool registering.","url":"https://academy.example.com/walkthrough/beginner/acdoca/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"ACDOCA","item":"https://academy.example.com/tables/acdoca/"},{"@type":"ListItem","position":4,"name":"Extract ACDOCA Universal Journal (One Fiscal Year)"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract ACDOCA Universal Journal (One Fiscal Year)","description":"Beginner-level SAP-side preparation for extracting one company code and one fiscal year from the Universal Journal. Covers the mandatory partitioning strategy, the released CDS view, and the authorization setup — the SAP work you must complete before any tool runs.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Confirm the released CDS view I_JournalEntryItem","text":"Never extract raw ACDOCA directly. SAP ships <a href=\"https://help.sap.com/\">I_JournalEntryItem</a> as the released CDS view for the Universal Journal. It enforces authorization, applies currency conversion, and exposes the table through <a href=\"/glossary/odp/\">ODP</a> without triggering a full table scan.","url":"https://academy.example.com/walkthrough/beginner/acdoca/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Understand ACDOCA partitioning (RBUKRS, RYEAR)","text":"ACDOCA primary key fields are MANDT, RBUKRS (company code), RYEAR (reporting year), POPER (posting period), BELNR (document number), and DOCLN (line number). For a beginner extraction, always fix to one company code and one reporting year. This gives a manageable partition that finishes in a predictable time window rather than timing out.","url":"https://academy.example.com/walkthrough/beginner/acdoca/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Create the technical RFC extraction user","text":"Create a System-type (non-dialog) user dedicated to extraction via <a href=\"https://help.sap.com/\">SU01</a>. Never use a named dialog user for automated extraction — it consumes a dialog work process and cannot be safely locked after use.","url":"https://academy.example.com/walkthrough/beginner/acdoca/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Assign authorization objects S_RFC and S_ODP_READ","text":"In <a href=\"https://help.sap.com/\">PFCG</a>, create a role for the extraction user. The role must contain S_RFC (RFC_TYPE=FUNC) and S_ODP_READ (ODPSOURCE=ABAP_CDS). S_ODP_READ for ABAP_CDS is the specific authorization needed to read CDS-based ODP sources. Without it, the extraction returns authorization errors immediately.","url":"https://academy.example.com/walkthrough/beginner/acdoca/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Verify the ODP subscription in ODQMON","text":"After your extraction tool makes its first connection attempt, check <a href=\"https://help.sap.com/\">ODQMON</a> on the SAP side. ODQMON (Operational Delta Queue Monitor) shows all active ODP subscriptions, their queue depth, and any errors. A healthy subscription appears here within seconds of the tool registering.","url":"https://academy.example.com/walkthrough/beginner/acdoca/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"ACDOCA","item":"https://academy.example.com/tables/acdoca/"},{"@type":"ListItem","position":4,"name":"Extract ACDOCA Universal Journal (One Fiscal Year)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Walkthrough detail page -->
 
@@ -225,7 +227,7 @@
           Every table covered in this Academy has a SAP-released
           <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
           Open
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE80</a>
           and search for the view name before you build anything. Confirm the
           annotation <code>@Analytics.dataExtract: true</code> is present. If
@@ -239,10 +241,10 @@
         <p>
           Your extraction user needs three authorization objects.
           Use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SU01</a>
           to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">PFCG</a>
           to assign a role containing:
         </p>
@@ -256,10 +258,10 @@
         <p>
           For SLT-based extraction, your Basis team will also need authorization
           in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>
           and
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTRS</a>.
           [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
         </p>
@@ -269,7 +271,7 @@
         <strong>Row-count context — understand data volumes before you run.</strong>
         <p>
           Use
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE16N</a>
           to count rows in the target table with your intended filter (company
           code, fiscal year, material type, etc.) before you start the
@@ -327,11 +329,11 @@
           <strong>SLT (SAP Landscape Transformation)</strong> requires a
           <strong>Full Use SAP license</strong>. It is not permitted under
           Runtime licenses. Verify in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SLICENSE</a>
           that "SLT Landscape Transformation" is listed as Active, Type = Full
           Use before you configure anything in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>.
         </p>
         <p>
@@ -449,13 +451,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Never extract raw ACDOCA directly. SAP ships <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/journal-entry-item-cds.html">I_JournalEntryItem</a> as the released CDS view for the Universal Journal. It enforces authorization, applies currency conversion, and exposes the table through <a href="/glossary/odp/">ODP</a> without triggering a full table scan.</p>
+          <p class="step-intro">Never extract raw ACDOCA directly. SAP ships <a href="https://help.sap.com/">I_JournalEntryItem</a> as the released CDS view for the Universal Journal. It enforces authorization, applies currency conversion, and exposes the table through <a href="/glossary/odp/">ODP</a> without triggering a full table scan.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE80
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -499,7 +501,7 @@
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE16N
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -537,13 +539,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Create a System-type (non-dialog) user dedicated to extraction via <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html">SU01</a>. Never use a named dialog user for automated extraction — it consumes a dialog work process and cannot be safely locked after use.</p>
+          <p class="step-intro">Create a System-type (non-dialog) user dedicated to extraction via <a href="https://help.sap.com/">SU01</a>. Never use a named dialog user for automated extraction — it consumes a dialog work process and cannot be safely locked after use.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;ae58e3c3a8c54e6f9573f3b0ee75ea94.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SU01
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -577,13 +579,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">In <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html">PFCG</a>, create a role for the extraction user. The role must contain S_RFC (RFC_TYPE=FUNC) and S_ODP_READ (ODPSOURCE=ABAP_CDS). S_ODP_READ for ABAP_CDS is the specific authorization needed to read CDS-based ODP sources. Without it, the extraction returns authorization errors immediately.</p>
+          <p class="step-intro">In <a href="https://help.sap.com/">PFCG</a>, create a role for the extraction user. The role must contain S_RFC (RFC_TYPE=FUNC) and S_ODP_READ (ODPSOURCE=ABAP_CDS). S_ODP_READ for ABAP_CDS is the specific authorization needed to read CDS-based ODP sources. Without it, the extraction returns authorization errors immediately.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;e5e83c2825c34a7896bdb97c0da65fb5.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 PFCG
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -617,13 +619,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">After your extraction tool makes its first connection attempt, check <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/ODQMON.html">ODQMON</a> on the SAP side. ODQMON (Operational Delta Queue Monitor) shows all active ODP subscriptions, their queue depth, and any errors. A healthy subscription appears here within seconds of the tool registering.</p>
+          <p class="step-intro">After your extraction tool makes its first connection attempt, check <a href="https://help.sap.com/">ODQMON</a> on the SAP side. ODQMON (Operational Delta Queue Monitor) shows all active ODP subscriptions, their queue depth, and any errors. A healthy subscription appears here within seconds of the tool registering.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;ODQMON.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 ODQMON
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -661,13 +663,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">After the extract completes, return to <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html">SE16N</a> and re-run the count you noted in step 02. Compare this number to the row count in your target system. A mismatch larger than zero suggests the extraction dropped rows — investigate the ODQMON queue for errors before trusting the data.</p>
+          <p class="step-intro">After the extract completes, return to <a href="https://help.sap.com/">SE16N</a> and re-run the count you noted in step 02. Compare this number to the row count in your target system. A mismatch larger than zero suggests the extraction dropped rows — investigate the ODQMON queue for errors before trusting the data.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE16N
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -746,7 +748,7 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

@@ -29,11 +29,11 @@ steps:
 
   - id: step-02
     title: "Validate the RFC destination for the target system (SM59)"
-    explanation: 'SLT pushes data to a target system via an RFC destination. Confirm the RFC destination your Basis team has configured points to the correct target and the connection test passes. Use <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/sm59.html">SM59</a> to run the test. A failed RFC destination will silently drop replication data without SLT raising an error in LTCO.'
+    explanation: 'SLT pushes data to a target system via an RFC destination. Confirm the RFC destination your Basis team has configured points to the correct target and the connection test passes. Use <a href="https://help.sap.com/">SM59</a> to run the test. A failed RFC destination will silently drop replication data without SLT raising an error in LTCO.'
     sapTransaction:
       code: SM59
       menuPath: "RFC Connections → TCP/IP → Test Connection"
-      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/sm59.html"
+      helpUrl: "https://help.sap.com/"
     verify: "Test Connection returns green for the RFC destination your SLT replication object uses."
 
   - id: step-03

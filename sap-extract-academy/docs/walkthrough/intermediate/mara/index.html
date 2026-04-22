@@ -21,7 +21,7 @@
   <meta name="twitter:description" content="SAP-side intermediate guide for MARA Z-field extraction. SE11 Append Structure identification, CDS extension view creation in SE80, Z-field validation with SE16N.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract MARA with Z-Fields via CDS Extension (Intermediate)","description":"SAP-side intermediate guide for MARA extraction with custom Z-fields. Covers identifying Z-fields in SE11 Append Structures, creating a CDS extension view in SE80, confirming the extension view activates cleanly, and verifying Z-field values with SE16N.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Identify Z-fields in MARA via SE11","text":"Your MARA table carries custom Z-fields added through Append Structures. Open <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html\">SE11</a>, display the MARA table definition, and scroll to the field list. Append Structure fields are grouped separately. In this walkthrough, the target Z-fields are ZZ_BRAND (20-char) and ZZ_SUSTAINABILITY (1-char).","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Check that the Append Structure has data","text":"Use <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html\">SE16N</a> to browse MARA rows and confirm that ZZ_BRAND contains expected values. If all values are empty (initial), the Z-field may not yet be populated from the upstream business process. Extracting empty Z-fields is harmless but produces no analytical value.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Create a CDS extension view to expose Z-fields","text":"In <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html\">SE80</a> or ABAP Development Tools (ADT), create an extension view that adds ZZ_BRAND and ZZ_SUSTAINABILITY to I_Product. The extension view must carry <code>@AccessControl.authorizationCheck: #CHECK</code> — without it, unauthorized users can read the Z-fields. Activate the view and verify it has no syntax errors.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Verify the extension view returns Z-field data","text":"From <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html\">SE80</a>, run a data preview on ZPROD_ZFIELDS and confirm ZZ_BRAND and ZZ_SUSTAINABILITY values appear alongside standard MARA fields.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Cross-check Z-field values with SE16N after extraction","text":"After extraction, pick a sample of MATNR values and compare ZZ_BRAND values in your target system against the SE16N MARA values for the same material numbers.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract MARA with Z-Fields via CDS Extension (Intermediate)"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract MARA with Z-Fields via CDS Extension (Intermediate)","description":"SAP-side intermediate guide for MARA extraction with custom Z-fields. Covers identifying Z-fields in SE11 Append Structures, creating a CDS extension view in SE80, confirming the extension view activates cleanly, and verifying Z-field values with SE16N.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Identify Z-fields in MARA via SE11","text":"Your MARA table carries custom Z-fields added through Append Structures. Open <a href=\"https://help.sap.com/\">SE11</a>, display the MARA table definition, and scroll to the field list. Append Structure fields are grouped separately. In this walkthrough, the target Z-fields are ZZ_BRAND (20-char) and ZZ_SUSTAINABILITY (1-char).","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Check that the Append Structure has data","text":"Use <a href=\"https://help.sap.com/\">SE16N</a> to browse MARA rows and confirm that ZZ_BRAND contains expected values. If all values are empty (initial), the Z-field may not yet be populated from the upstream business process. Extracting empty Z-fields is harmless but produces no analytical value.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Create a CDS extension view to expose Z-fields","text":"In <a href=\"https://help.sap.com/\">SE80</a> or ABAP Development Tools (ADT), create an extension view that adds ZZ_BRAND and ZZ_SUSTAINABILITY to I_Product. The extension view must carry <code>@AccessControl.authorizationCheck: #CHECK</code> — without it, unauthorized users can read the Z-fields. Activate the view and verify it has no syntax errors.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Verify the extension view returns Z-field data","text":"From <a href=\"https://help.sap.com/\">SE80</a>, run a data preview on ZPROD_ZFIELDS and confirm ZZ_BRAND and ZZ_SUSTAINABILITY values appear alongside standard MARA fields.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Cross-check Z-field values with SE16N after extraction","text":"After extraction, pick a sample of MATNR values and compare ZZ_BRAND values in your target system against the SE16N MARA values for the same material numbers.","url":"https://academy.example.com/walkthrough/intermediate/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract MARA with Z-Fields via CDS Extension (Intermediate)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Walkthrough detail page -->
 
@@ -225,7 +227,7 @@
           Every table covered in this Academy has a SAP-released
           <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
           Open
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE80</a>
           and search for the view name before you build anything. Confirm the
           annotation <code>@Analytics.dataExtract: true</code> is present. If
@@ -239,10 +241,10 @@
         <p>
           Your extraction user needs three authorization objects.
           Use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SU01</a>
           to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">PFCG</a>
           to assign a role containing:
         </p>
@@ -256,10 +258,10 @@
         <p>
           For SLT-based extraction, your Basis team will also need authorization
           in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>
           and
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTRS</a>.
           [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
         </p>
@@ -269,7 +271,7 @@
         <strong>Row-count context — understand data volumes before you run.</strong>
         <p>
           Use
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE16N</a>
           to count rows in the target table with your intended filter (company
           code, fiscal year, material type, etc.) before you start the
@@ -327,11 +329,11 @@
           <strong>SLT (SAP Landscape Transformation)</strong> requires a
           <strong>Full Use SAP license</strong>. It is not permitted under
           Runtime licenses. Verify in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SLICENSE</a>
           that "SLT Landscape Transformation" is listed as Active, Type = Full
           Use before you configure anything in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>.
         </p>
         <p>
@@ -451,13 +453,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Your MARA table carries custom Z-fields added through Append Structures. Open <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html">SE11</a>, display the MARA table definition, and scroll to the field list. Append Structure fields are grouped separately. In this walkthrough, the target Z-fields are ZZ_BRAND (20-char) and ZZ_SUSTAINABILITY (1-char).</p>
+          <p class="step-intro">Your MARA table carries custom Z-fields added through Append Structures. Open <a href="https://help.sap.com/">SE11</a>, display the MARA table definition, and scroll to the field list. Append Structure fields are grouped separately. In this walkthrough, the target Z-fields are ZZ_BRAND (20-char) and ZZ_SUSTAINABILITY (1-char).</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE11.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE11
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -495,13 +497,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html">SE16N</a> to browse MARA rows and confirm that ZZ_BRAND contains expected values. If all values are empty (initial), the Z-field may not yet be populated from the upstream business process. Extracting empty Z-fields is harmless but produces no analytical value.</p>
+          <p class="step-intro">Use <a href="https://help.sap.com/">SE16N</a> to browse MARA rows and confirm that ZZ_BRAND contains expected values. If all values are empty (initial), the Z-field may not yet be populated from the upstream business process. Extracting empty Z-fields is harmless but produces no analytical value.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE16N
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -535,13 +537,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">In <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html">SE80</a> or ABAP Development Tools (ADT), create an extension view that adds ZZ_BRAND and ZZ_SUSTAINABILITY to I_Product. The extension view must carry <code>@AccessControl.authorizationCheck: #CHECK</code> — without it, unauthorized users can read the Z-fields. Activate the view and verify it has no syntax errors.</p>
+          <p class="step-intro">In <a href="https://help.sap.com/">SE80</a> or ABAP Development Tools (ADT), create an extension view that adds ZZ_BRAND and ZZ_SUSTAINABILITY to I_Product. The extension view must carry <code>@AccessControl.authorizationCheck: #CHECK</code> — without it, unauthorized users can read the Z-fields. Activate the view and verify it has no syntax errors.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE80
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -585,13 +587,13 @@ extend view I_Product with ZPROD_ZFIELDS {
         </header>
 
         <div class="step-body">
-          <p class="step-intro">From <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html">SE80</a>, run a data preview on ZPROD_ZFIELDS and confirm ZZ_BRAND and ZZ_SUSTAINABILITY values appear alongside standard MARA fields.</p>
+          <p class="step-intro">From <a href="https://help.sap.com/">SE80</a>, run a data preview on ZPROD_ZFIELDS and confirm ZZ_BRAND and ZZ_SUSTAINABILITY values appear alongside standard MARA fields.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE80
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -631,7 +633,7 @@ extend view I_Product with ZPROD_ZFIELDS {
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE16N
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -703,7 +705,7 @@ extend view I_Product with ZPROD_ZFIELDS {
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

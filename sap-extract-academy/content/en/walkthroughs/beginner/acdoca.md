@@ -41,20 +41,20 @@ steps:
 
   - id: step-03
     title: "Create the technical RFC extraction user"
-    explanation: 'Create a System-type (non-dialog) user dedicated to extraction via <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html">SU01</a>. Never use a named dialog user for automated extraction — it consumes a dialog work process and cannot be safely locked after use.'
+    explanation: 'Create a System-type (non-dialog) user dedicated to extraction via <a href="https://help.sap.com/">SU01</a>. Never use a named dialog user for automated extraction — it consumes a dialog work process and cannot be safely locked after use.'
     sapTransaction:
       code: SU01
       menuPath: "User → Create → User type: System"
-      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+      helpUrl: "https://help.sap.com/"
     verify: "User EXTRACT_ACDOCA exists in SU01 with User Type = System and is locked for interactive logon."
 
   - id: step-04
     title: "Assign authorization objects S_RFC and S_ODP_READ"
-    explanation: 'In <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html">PFCG</a>, create a role for the extraction user. The role must contain S_RFC (RFC_TYPE=FUNC) and S_ODP_READ (ODPSOURCE=ABAP_CDS). S_ODP_READ for ABAP_CDS is the specific authorization needed to read CDS-based ODP sources. Without it, the extraction returns authorization errors immediately.'
+    explanation: 'In <a href="https://help.sap.com/">PFCG</a>, create a role for the extraction user. The role must contain S_RFC (RFC_TYPE=FUNC) and S_ODP_READ (ODPSOURCE=ABAP_CDS). S_ODP_READ for ABAP_CDS is the specific authorization needed to read CDS-based ODP sources. Without it, the extraction returns authorization errors immediately.'
     sapTransaction:
       code: PFCG
       menuPath: "Role → Create → Authorization → Add Objects"
-      helpUrl: "https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+      helpUrl: "https://help.sap.com/"
     verify: "In SU01, EXTRACT_ACDOCA has the custom role assigned. In PFCG, the role shows S_ODP_READ with ODPSOURCE=ABAP_CDS in the authorization data."
 
   - id: step-05

@@ -21,7 +21,7 @@
   <meta name="twitter:description" content="SAP-side expert guide for MARA with 20+ Z-fields and MARC&#x2F;MVKE joins. SE11 Append Structure audit, CDS extension view strategy, transport discipline, SE16N reconciliation.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract Extended MARA (20+ Z-Fields, Multi-Table) (Expert)","description":"SAP-side expert guide for large-scale MARA extraction with 20+ Z-fields and related tables MARC and MVKE. Covers SE11 Append Structure audit, multi-CDS extension view strategy, Basis transport discipline for Z-field views, and SE16N cross-table reconciliation.","totalTime":"PT90M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Audit all Z-fields in MARA via SE11 Append Structures","text":"When MARA has 20+ Z-fields, they are typically spread across multiple Append Structures (one per development team or project). Use <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html\">SE11</a> to display MARA and expand the Append Structure entries. Document each Append Structure name, its fields, and data types. This becomes the input for your CDS extension view design.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Identify released CDS views for MARC and MVKE","text":"The related tables for material master are MARC (plant data per material) and MVKE (sales org data per material). Confirm their released CDS views in <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html\">SE80</a>. Typical view names: I_ProductPlant (MARC) and I_ProductSalesDelivery (MVKE). [NEEDS_SAP_CITATION — confirm exact view names for MARC/MVKE across releases]","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Design CDS extension view strategy for 20+ Z-fields","text":"With 20+ Z-fields spread across multiple Append Structures, you have two options: (1) create one large extension view combining all Z-fields, or (2) create multiple smaller extension views grouped by business domain (e.g., one for brand/sustainability fields, one for supply chain fields). Option 2 is more maintainable and easier to transport. Agree the design with your ABAP development team before creating any views.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Create extension views with correct transport assignment","text":"In <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html\">SE80</a> or ADT, create each extension view. Assign them to the correct transport requests. Each extension view must be activated and transported to production before the extraction runs. A Z-field extension view that is active in development but not in production will cause extraction failures in production.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Count rows in MARA, MARC, and MVKE for reconciliation baselines","text":"Use <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html\">SE16N</a> to count MARA, MARC, and MVKE separately. MARC count > MARA count (a material can have plant records across multiple plants). MVKE count > MARA count (a material can exist in multiple sales organisations). Document the expected ratios for reconciliation.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract Extended MARA (20+ Z-Fields, Multi-Table) (Expert)"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract Extended MARA (20+ Z-Fields, Multi-Table) (Expert)","description":"SAP-side expert guide for large-scale MARA extraction with 20+ Z-fields and related tables MARC and MVKE. Covers SE11 Append Structure audit, multi-CDS extension view strategy, Basis transport discipline for Z-field views, and SE16N cross-table reconciliation.","totalTime":"PT90M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Audit all Z-fields in MARA via SE11 Append Structures","text":"When MARA has 20+ Z-fields, they are typically spread across multiple Append Structures (one per development team or project). Use <a href=\"https://help.sap.com/\">SE11</a> to display MARA and expand the Append Structure entries. Document each Append Structure name, its fields, and data types. This becomes the input for your CDS extension view design.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Identify released CDS views for MARC and MVKE","text":"The related tables for material master are MARC (plant data per material) and MVKE (sales org data per material). Confirm their released CDS views in <a href=\"https://help.sap.com/\">SE80</a>. Typical view names: I_ProductPlant (MARC) and I_ProductSalesDelivery (MVKE). [NEEDS_SAP_CITATION — confirm exact view names for MARC/MVKE across releases]","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Design CDS extension view strategy for 20+ Z-fields","text":"With 20+ Z-fields spread across multiple Append Structures, you have two options: (1) create one large extension view combining all Z-fields, or (2) create multiple smaller extension views grouped by business domain (e.g., one for brand/sustainability fields, one for supply chain fields). Option 2 is more maintainable and easier to transport. Agree the design with your ABAP development team before creating any views.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Create extension views with correct transport assignment","text":"In <a href=\"https://help.sap.com/\">SE80</a> or ADT, create each extension view. Assign them to the correct transport requests. Each extension view must be activated and transported to production before the extraction runs. A Z-field extension view that is active in development but not in production will cause extraction failures in production.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Count rows in MARA, MARC, and MVKE for reconciliation baselines","text":"Use <a href=\"https://help.sap.com/\">SE16N</a> to count MARA, MARC, and MVKE separately. MARC count > MARA count (a material can have plant records across multiple plants). MVKE count > MARA count (a material can exist in multiple sales organisations). Document the expected ratios for reconciliation.","url":"https://academy.example.com/walkthrough/expert/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract Extended MARA (20+ Z-Fields, Multi-Table) (Expert)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Walkthrough detail page -->
 
@@ -225,7 +227,7 @@
           Every table covered in this Academy has a SAP-released
           <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
           Open
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE80</a>
           and search for the view name before you build anything. Confirm the
           annotation <code>@Analytics.dataExtract: true</code> is present. If
@@ -239,10 +241,10 @@
         <p>
           Your extraction user needs three authorization objects.
           Use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SU01</a>
           to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">PFCG</a>
           to assign a role containing:
         </p>
@@ -256,10 +258,10 @@
         <p>
           For SLT-based extraction, your Basis team will also need authorization
           in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>
           and
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTRS</a>.
           [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
         </p>
@@ -269,7 +271,7 @@
         <strong>Row-count context — understand data volumes before you run.</strong>
         <p>
           Use
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE16N</a>
           to count rows in the target table with your intended filter (company
           code, fiscal year, material type, etc.) before you start the
@@ -327,11 +329,11 @@
           <strong>SLT (SAP Landscape Transformation)</strong> requires a
           <strong>Full Use SAP license</strong>. It is not permitted under
           Runtime licenses. Verify in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SLICENSE</a>
           that "SLT Landscape Transformation" is listed as Active, Type = Full
           Use before you configure anything in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>.
         </p>
         <p>
@@ -451,13 +453,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">When MARA has 20+ Z-fields, they are typically spread across multiple Append Structures (one per development team or project). Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE11.html">SE11</a> to display MARA and expand the Append Structure entries. Document each Append Structure name, its fields, and data types. This becomes the input for your CDS extension view design.</p>
+          <p class="step-intro">When MARA has 20+ Z-fields, they are typically spread across multiple Append Structures (one per development team or project). Use <a href="https://help.sap.com/">SE11</a> to display MARA and expand the Append Structure entries. Document each Append Structure name, its fields, and data types. This becomes the input for your CDS extension view design.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE11.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE11
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -491,13 +493,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">The related tables for material master are MARC (plant data per material) and MVKE (sales org data per material). Confirm their released CDS views in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html">SE80</a>. Typical view names: I_ProductPlant (MARC) and I_ProductSalesDelivery (MVKE). [NEEDS_SAP_CITATION — confirm exact view names for MARC/MVKE across releases]</p>
+          <p class="step-intro">The related tables for material master are MARC (plant data per material) and MVKE (sales org data per material). Confirm their released CDS views in <a href="https://help.sap.com/">SE80</a>. Typical view names: I_ProductPlant (MARC) and I_ProductSalesDelivery (MVKE). [NEEDS_SAP_CITATION — confirm exact view names for MARC/MVKE across releases]</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE80
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -560,13 +562,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">In <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html">SE80</a> or ADT, create each extension view. Assign them to the correct transport requests. Each extension view must be activated and transported to production before the extraction runs. A Z-field extension view that is active in development but not in production will cause extraction failures in production.</p>
+          <p class="step-intro">In <a href="https://help.sap.com/">SE80</a> or ADT, create each extension view. Assign them to the correct transport requests. Each extension view must be activated and transported to production before the extraction runs. A Z-field extension view that is active in development but not in production will cause extraction failures in production.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE80.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE80
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -604,13 +606,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Use <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html">SE16N</a> to count MARA, MARC, and MVKE separately. MARC count &gt; MARA count (a material can have plant records across multiple plants). MVKE count &gt; MARA count (a material can exist in multiple sales organisations). Document the expected ratios for reconciliation.</p>
+          <p class="step-intro">Use <a href="https://help.sap.com/">SE16N</a> to count MARA, MARC, and MVKE separately. MARC count &gt; MARA count (a material can have plant records across multiple plants). MVKE count &gt; MARA count (a material can exist in multiple sales organisations). Document the expected ratios for reconciliation.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;SE16N.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SE16N
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -682,7 +684,7 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

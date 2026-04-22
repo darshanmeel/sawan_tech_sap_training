@@ -21,7 +21,7 @@
   <meta name="twitter:description" content="SAP-side expert guide for VBAK SLT push replication. SLICENSE check, LTCO replication object, SM59 RFC destination, LTRS lag monitoring.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract VBAK via SLT Push Replication (Expert)","description":"SAP-side expert guide for enterprise-scale VBAK extraction via SLT. Covers Full Use license verification, SLT replication object configuration in LTCO, SM59 RFC destination validation, LTRS parallel reader setup, and LTRS lag monitoring.","totalTime":"PT120M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Verify Full Use License in SLICENSE","text":"Open <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html\">SLICENSE</a> and confirm SLT Landscape Transformation is listed as Active, Type = Full Use. Get written confirmation from your SAP licensing contact. SLT will run on any system regardless of license — SAP enforces compliance through audits, not technical blocks.","url":"https://academy.example.com/walkthrough/expert/vbak/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Validate the RFC destination for the target system (SM59)","text":"SLT pushes data to a target system via an RFC destination. Confirm the RFC destination your Basis team has configured points to the correct target and the connection test passes. Use <a href=\"https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/sm59.html\">SM59</a> to run the test. A failed RFC destination will silently drop replication data without SLT raising an error in LTCO.","url":"https://academy.example.com/walkthrough/expert/vbak/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Configure SLT replication object for VBAK in LTCO","text":"Work with your Basis team to create a replication object for VBAK in <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html\">LTCO</a>. For VBAK, partition by VKORG (sales organisation) to distribute load evenly across SLT readers. Confirm the replication object is in ACTIVE status before triggering any load.","url":"https://academy.example.com/walkthrough/expert/vbak/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Perform initial full load via LTCO","text":"Trigger the full replication in <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html\">LTCO</a>. SLT reads all VBAK rows and pushes them to the target. Depending on VBAK size, this takes minutes to hours. Monitor progress via LTCO status and confirm SM50 work process utilization stays safe.","url":"https://academy.example.com/walkthrough/expert/vbak/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Confirm real-time delta and monitor lag in LTRS","text":"After full load, SLT captures changes from VBAK in near-real-time. Monitor lag in <a href=\"https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html\">LTRS</a>. Expected lag for VBAK is under 60 seconds. If lag grows continuously, investigate SM50 for SLT process saturation or network issues between SAP and the target.","url":"https://academy.example.com/walkthrough/expert/vbak/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"VBAK","item":"https://academy.example.com/tables/vbak/"},{"@type":"ListItem","position":4,"name":"Extract VBAK via SLT Push Replication (Expert)"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract VBAK via SLT Push Replication (Expert)","description":"SAP-side expert guide for enterprise-scale VBAK extraction via SLT. Covers Full Use license verification, SLT replication object configuration in LTCO, SM59 RFC destination validation, LTRS parallel reader setup, and LTRS lag monitoring.","totalTime":"PT120M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Verify Full Use License in SLICENSE","text":"Open <a href=\"https://help.sap.com/\">SLICENSE</a> and confirm SLT Landscape Transformation is listed as Active, Type = Full Use. Get written confirmation from your SAP licensing contact. SLT will run on any system regardless of license — SAP enforces compliance through audits, not technical blocks.","url":"https://academy.example.com/walkthrough/expert/vbak/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Validate the RFC destination for the target system (SM59)","text":"SLT pushes data to a target system via an RFC destination. Confirm the RFC destination your Basis team has configured points to the correct target and the connection test passes. Use <a href=\"https://help.sap.com/\">SM59</a> to run the test. A failed RFC destination will silently drop replication data without SLT raising an error in LTCO.","url":"https://academy.example.com/walkthrough/expert/vbak/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Configure SLT replication object for VBAK in LTCO","text":"Work with your Basis team to create a replication object for VBAK in <a href=\"https://help.sap.com/\">LTCO</a>. For VBAK, partition by VKORG (sales organisation) to distribute load evenly across SLT readers. Confirm the replication object is in ACTIVE status before triggering any load.","url":"https://academy.example.com/walkthrough/expert/vbak/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Perform initial full load via LTCO","text":"Trigger the full replication in <a href=\"https://help.sap.com/\">LTCO</a>. SLT reads all VBAK rows and pushes them to the target. Depending on VBAK size, this takes minutes to hours. Monitor progress via LTCO status and confirm SM50 work process utilization stays safe.","url":"https://academy.example.com/walkthrough/expert/vbak/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Confirm real-time delta and monitor lag in LTRS","text":"After full load, SLT captures changes from VBAK in near-real-time. Monitor lag in <a href=\"https://help.sap.com/\">LTRS</a>. Expected lag for VBAK is under 60 seconds. If lag grows continuously, investigate SM50 for SLT process saturation or network issues between SAP and the target.","url":"https://academy.example.com/walkthrough/expert/vbak/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"VBAK","item":"https://academy.example.com/tables/vbak/"},{"@type":"ListItem","position":4,"name":"Extract VBAK via SLT Push Replication (Expert)"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Walkthrough detail page -->
 
@@ -225,7 +227,7 @@
           Every table covered in this Academy has a SAP-released
           <a href="/glossary/cds-view/">CDS view</a> annotated for extraction.
           Open
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE80.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE80</a>
           and search for the view name before you build anything. Confirm the
           annotation <code>@Analytics.dataExtract: true</code> is present. If
@@ -239,10 +241,10 @@
         <p>
           Your extraction user needs three authorization objects.
           Use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/ae58e3c3a8c54e6f9573f3b0ee75ea94.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SU01</a>
           to create a System-type (non-dialog) user, then use
-          <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/e5e83c2825c34a7896bdb97c0da65fb5.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">PFCG</a>
           to assign a role containing:
         </p>
@@ -256,10 +258,10 @@
         <p>
           For SLT-based extraction, your Basis team will also need authorization
           in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>
           and
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTRS</a>.
           [NEEDS_SAP_CITATION — confirm exact auth objects for LTCO/LTRS]
         </p>
@@ -269,7 +271,7 @@
         <strong>Row-count context — understand data volumes before you run.</strong>
         <p>
           Use
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/SE16N.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SE16N</a>
           to count rows in the target table with your intended filter (company
           code, fiscal year, material type, etc.) before you start the
@@ -327,11 +329,11 @@
           <strong>SLT (SAP Landscape Transformation)</strong> requires a
           <strong>Full Use SAP license</strong>. It is not permitted under
           Runtime licenses. Verify in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">SLICENSE</a>
           that "SLT Landscape Transformation" is listed as Active, Type = Full
           Use before you configure anything in
-          <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html"
+          <a href="https://help.sap.com/"
             target="_blank" rel="noopener noreferrer">LTCO</a>.
         </p>
         <p>
@@ -451,13 +453,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Open <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/license.html">SLICENSE</a> and confirm SLT Landscape Transformation is listed as Active, Type = Full Use. Get written confirmation from your SAP licensing contact. SLT will run on any system regardless of license — SAP enforces compliance through audits, not technical blocks.</p>
+          <p class="step-intro">Open <a href="https://help.sap.com/">SLICENSE</a> and confirm SLT Landscape Transformation is listed as Active, Type = Full Use. Get written confirmation from your SAP licensing contact. SLT will run on any system regardless of license — SAP enforces compliance through audits, not technical blocks.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;license.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SLICENSE
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -491,13 +493,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">SLT pushes data to a target system via an RFC destination. Confirm the RFC destination your Basis team has configured points to the correct target and the connection test passes. Use <a href="https://help.sap.com/docs/SAP_NETWEAVER_750/wm_netweaver_740_ehp1_html/sm59.html">SM59</a> to run the test. A failed RFC destination will silently drop replication data without SLT raising an error in LTCO.</p>
+          <p class="step-intro">SLT pushes data to a target system via an RFC destination. Confirm the RFC destination your Basis team has configured points to the correct target and the connection test passes. Use <a href="https://help.sap.com/">SM59</a> to run the test. A failed RFC destination will silently drop replication data without SLT raising an error in LTCO.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_NETWEAVER_750&#x2F;wm_netweaver_740_ehp1_html&#x2F;sm59.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 SM59
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -531,13 +533,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Work with your Basis team to create a replication object for VBAK in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html">LTCO</a>. For VBAK, partition by VKORG (sales organisation) to distribute load evenly across SLT readers. Confirm the replication object is in ACTIVE status before triggering any load.</p>
+          <p class="step-intro">Work with your Basis team to create a replication object for VBAK in <a href="https://help.sap.com/">LTCO</a>. For VBAK, partition by VKORG (sales organisation) to distribute load evenly across SLT readers. Confirm the replication object is in ACTIVE status before triggering any load.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 LTCO
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -571,13 +573,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">Trigger the full replication in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTCO.html">LTCO</a>. SLT reads all VBAK rows and pushes them to the target. Depending on VBAK size, this takes minutes to hours. Monitor progress via LTCO status and confirm SM50 work process utilization stays safe.</p>
+          <p class="step-intro">Trigger the full replication in <a href="https://help.sap.com/">LTCO</a>. SLT reads all VBAK rows and pushes them to the target. Depending on VBAK size, this takes minutes to hours. Monitor progress via LTCO status and confirm SM50 work process utilization stays safe.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 LTCO
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -611,13 +613,13 @@
         </header>
 
         <div class="step-body">
-          <p class="step-intro">After full load, SLT captures changes from VBAK in near-real-time. Monitor lag in <a href="https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/0f69a8fb28ac48d89de2381c2f02a1e9/LTRS.html">LTRS</a>. Expected lag for VBAK is under 60 seconds. If lag grows continuously, investigate SM50 for SLT process saturation or network issues between SAP and the target.</p>
+          <p class="step-intro">After full load, SLT captures changes from VBAK in near-real-time. Monitor lag in <a href="https://help.sap.com/">LTRS</a>. Expected lag for VBAK is under 60 seconds. If lag grows continuously, investigate SM50 for SLT process saturation or network issues between SAP and the target.</p>
 
           <div class="step-action step-action--sap">
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTRS.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 LTRS
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -657,7 +659,7 @@
             <div class="step-action-label">Do this in SAP</div>
             <div class="step-action-body">
               Open transaction
-              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;0f69a8fb28ac48d89de2381c2f02a1e9&#x2F;LTCO.html" target="_blank" rel="noopener noreferrer">
+              <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
                 LTCO
                 <span class="sr-only">(opens in new tab)</span>
               </a>
@@ -730,7 +732,7 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>

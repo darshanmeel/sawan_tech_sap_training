@@ -33,6 +33,7 @@
   <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
 
   <script src="/assets/js/source-picker.js" defer></script>
+  <script src="/assets/js/banner.js" defer></script>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to content</a>
@@ -65,9 +66,10 @@
   </header>
 
   <main id="main">
-    <div data-source-indicator data-source-version="s4hana">
+    <div data-source-indicator class="mode-banner" data-source-version="s4hana">
       <span data-source-label>Viewing S/4HANA Extraction Patterns</span>
       <small>Switch to ECC mode from the navigation menu to see legacy extraction patterns.</small>
+      <button class="banner-dismiss" aria-label="Dismiss">×</button>
     </div>
     <!-- Table detail page -->
 
@@ -96,7 +98,7 @@
     <div class="prose">
       <p>VBAK is the sales document header table in SAP S/4HANA, storing the master data for all sales documents: purchase orders, quotations, contracts, and returns. Each row represents one sales document with 100+ fields covering dates, organizational context, document type, and status.</p>
 <p>The table is fundamental to order-to-cash (O2C) analytics. It links to VBAP (line items), VBKD (sales document schedule lines), and other SD tables. Most extraction use cases start with VBAK because it&#39;s the entry point for understanding sales volume, velocity, and customer patterns.</p>
-<p><a href="https://help.sap.com/docs/SAP_S4HANA_CLOUD/89a3a7de88e44b18a6bfc1eb74cf8d3c/sales-doc-overview.html">SAP S/4HANA Sales documents overview</a> provides the complete technical reference. For cloud customers, SAP strongly recommends the released CDS view <code>I_SalesDocument</code>, which enforces authorization and applies post-processing logic automatically. Raw VBAK extraction bypasses these safeguards and should only be used when business rules don&#39;t apply.</p>
+<p><a href="https://help.sap.com/">SAP S/4HANA Sales documents overview</a> provides the complete technical reference. For cloud customers, SAP strongly recommends the released CDS view <code>I_SalesDocument</code>, which enforces authorization and applies post-processing logic automatically. Raw VBAK extraction bypasses these safeguards and should only be used when business rules don&#39;t apply.</p>
 
     </div>
   </section>
@@ -149,14 +151,14 @@
     <ul class="gotchas-list">
       <li class="gotcha-item">
         <p class="gotcha-text">Sales document type (AUART) drives business logic. Filtering by type during extraction improves performance and ensures correct subset.</p>
-        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;sales-doc-types.html" target="_blank" rel="noopener noreferrer">
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
           SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
       </li>
       <li class="gotcha-item">
         <p class="gotcha-text">Large enterprises partition VBAK by sales organization (VKORG) and document type to manage extraction windows. Consider this in your delta strategy.</p>
-        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;partitioning.html" target="_blank" rel="noopener noreferrer">
+        <a class="gotcha-link" href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
           SAP Note <span aria-hidden="true">↗</span>
           <span class="sr-only">(opens in new tab)</span>
         </a>
@@ -186,7 +188,7 @@
   <section class="external-refs">
     <h2>External references</h2>
     <ul class="refs-list">
-      <li><a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;89a3a7de88e44b18a6bfc1eb74cf8d3c&#x2F;4e4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b.html" target="_blank" rel="noopener noreferrer">SAP Help Portal — VBAK</a></li>
+      <li><a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">SAP Help Portal — VBAK</a></li>
       <li><a href="https://www.leanx.eu/en/sap/table/vbak.html" target="_blank" rel="noopener noreferrer">leanx.eu — VBAK field list</a></li>
       <li><a href="https://www.saptables.net/table/vbak" target="_blank" rel="noopener noreferrer">saptables.net — VBAK</a></li>
     </ul>
@@ -206,7 +208,7 @@
             <li><a href="/roadmap/">Roadmap</a></li>
             <li><a href="/glossary/">Glossary</a></li>
             <li><a href="/articles/">Articles</a></li>
-            <li><a href="https://github.com/darshanmeel/sap-extract-academy" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
           </ul>
         </nav>
       </div>
