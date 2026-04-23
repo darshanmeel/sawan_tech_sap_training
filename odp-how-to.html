@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODP (Operational Data Provisioning) How-To Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+        }
+        header {
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            color: white;
+            padding: 40px 30px;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        nav {
+            background: #f5f5f5;
+            padding: 15px 30px;
+            border-bottom: 1px solid #ddd;
+        }
+        nav a {
+            color: #4ECDC4;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        h2 {
+            color: #4ECDC4;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #E0F7F6;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        p, li {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .step {
+            background: #E0F7F6;
+            border-left: 4px solid #4ECDC4;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .transaction {
+            display: inline-block;
+            background: #E0F7F6;
+            color: #4ECDC4;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin: 0 5px;
+        }
+        .comparison {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        table th {
+            background: #E0F7F6;
+            color: #4ECDC4;
+        }
+        footer {
+            background: #f5f5f5;
+            padding: 20px 30px;
+            text-align: center;
+            color: #777;
+            border-top: 1px solid #ddd;
+        }
+        .badge {
+            display: inline-block;
+            background: #4ECDC4;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-right: 10px;
+        }
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #4ECDC4;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 ODP - Operational Data Provisioning</h1>
+            <p>Modern SAP Framework for Data Extraction with Multi-Subscriber Support</p>
+        </header>
+
+        <nav>
+            <a href="index.html">← Back to Main</a>
+        </nav>
+
+        <div class="content">
+            <a href="index.html" class="back-btn">← Back to All Methods</a>
+
+            <span class="badge">Modern Framework</span>
+            <span class="badge">Multi-Subscriber</span>
+            <span class="badge">15-60 min Latency</span>
+
+            <h2>Overview</h2>
+            <p>Operational Data Provisioning (ODP) is SAP's modern framework for data extraction. It uses a provider/subscriber model with the Operational Delta Queue (ODQ) for efficient change data capture. Perfect for external analytics platforms and cloud integrations.</p>
+
+            <h2>Part 1: Setup & Enablement Check</h2>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>SAP source system (S/4HANA 2020 or later recommended)</li>
+                <li>ODP providers configured (DataSources, CDS Views, BW objects)</li>
+                <li>Target subscription system or external application</li>
+                <li>ODP configuration and extraction privileges</li>
+            </ul>
+
+            <h3>Step 1: Identify ODP Provider Type</h3>
+            <div class="step">
+                <strong>Option A: CDS Views (Recommended)</strong>
+                <pre><code>@Analytics.dataExtraction.enabled: true
+@Analytics.dataExtraction.delta.changeDataCapture: true
+define view ZMY_VBAK_VIEW as
+select from vbak {
+  key vbak.vbeln,
+  key vbak.posnr,
+  vbak.kunnr,
+  vbak.erdat,
+  ...
+}</code></pre>
+
+                <strong>Option B: Standard DataSource (e.g., 2LIS_11_VAHDR)</strong>
+                <p>Pre-built extractor for VBAK Sales Document Header - covers most standard fields</p>
+            </div>
+
+            <h3>Step 2: Enable ODP for CDS Views</h3>
+            <div class="step">
+                Add these annotations to your CDS view definition:
+                <pre><code>@Analytics.dataExtraction.enabled: true
+@Analytics.dataExtraction.delta.changeDataCapture: true
+@Analytics.dataExtraction.delta.changeDataCapture.automatic: true</code></pre>
+            </div>
+
+            <h3>Step 3: Expose as OData Service</h3>
+            <div class="step">
+                <strong>Transaction:</strong> <span class="transaction">/IWFND/MAINT_SERVICE</span><br/>
+                <ol>
+                    <li>Create or register OData service</li>
+                    <li>Bind service to CDS view or DataSource</li>
+                    <li>Set service as "Active"</li>
+                    <li>Test service connectivity</li>
+                    <li>Document service endpoint URL</li>
+                </ol>
+            </div>
+
+            <h3>Step 4: Configure DataSource (If Using Standard Extractors)</h3>
+            <div class="step">
+                <strong>Transaction:</strong> <span class="transaction">RSA6</span><br/>
+                <ol>
+                    <li>Search for DataSource: <code>2LIS_11_VAHDR</code> (Sales Document Header)</li>
+                    <li>Check if ODP-enabled (Green tick = enabled)</li>
+                    <li>If not enabled:
+                        <ul>
+                            <li>Transaction: <span class="transaction">SE38</span></li>
+                            <li>Program: <code>RODPS_OS_EXPOSE</code></li>
+                            <li>Select DataSource to release</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <h3>Checking if ODP is Enabled</h3>
+            <table>
+                <tr>
+                    <th>Verification Step</th>
+                    <th>How to Check</th>
+                </tr>
+                <tr>
+                    <td>CDS View Annotations</td>
+                    <td>SE11 → View definition → Look for @Analytics.dataExtraction</td>
+                </tr>
+                <tr>
+                    <td>DataSource ODP Status</td>
+                    <td>RSA6 → Search 2LIS_11_VAHDR → Green tick = ODP-enabled</td>
+                </tr>
+                <tr>
+                    <td>Test Extraction</td>
+                    <td>SE38 → RODPS_REPL_TEST → Execute and verify</td>
+                </tr>
+                <tr>
+                    <td>OData Service</td>
+                    <td>/IWFND/MAINT_SERVICE → Verify service is Active</td>
+                </tr>
+            </table>
+
+            <h2>Part 2: Using ODP for VBAK Replication</h2>
+
+            <h3>Step 1: Select ODP Provider</h3>
+            <div class="step">
+                <strong>Option 1: Standard VBAK Extractor</strong>
+                <ul>
+                    <li>DataSource: <code>2LIS_11_VAHDR</code></li>
+                    <li>Provider Type: Standard SAP DataSource</li>
+                    <li>Status: Verify ODP-enabled in RSA6</li>
+                </ul>
+
+                <strong>Option 2: Custom CDS View</strong>
+                <ul>
+                    <li>Provider Type: ABAP CDS View</li>
+                    <li>View Name: <code>Z_VBAK_EXTRACTION</code></li>
+                </ul>
+            </div>
+
+            <h3>Step 2: Configure ODP Subscriber Connection</h3>
+            <div class="step">
+                <strong>In SAP Source System:</strong>
+                <ul>
+                    <li>Expose OData service: <span class="transaction">/IWFND/MAINT_SERVICE</span></li>
+                    <li>Service Endpoint: <code>https://SAP_Host:Port/sap/opu/odata/sap/2LIS_11_VAHDR_CDS</code></li>
+                </ul>
+
+                <strong>In Target System (Amazon AppFlow / Azure Data Factory):</strong>
+                <ul>
+                    <li>Create connection to OData service</li>
+                    <li>Provide SAP Gateway credentials</li>
+                    <li>Test connection</li>
+                </ul>
+            </div>
+
+            <h3>Step 3: Configure Full Load Settings</h3>
+            <div class="step">
+                <ol>
+                    <li>Create mapping from ODP provider to target system</li>
+                    <li>Select Trigger Type: "On Demand" (for full load)</li>
+                    <li>Configure field mapping:
+                        <ul>
+                            <li>VBELN → Order Number</li>
+                            <li>KUNNR → Customer Number</li>
+                            <li>ERDAT → Document Date</li>
+                            <li>NETWR → Net Value</li>
+                            <li>(Map all required VBAK fields)</li>
+                        </ul>
+                    </li>
+                    <li>Set initial execution to "Full Load"</li>
+                </ol>
+            </div>
+
+            <h3>Step 4: Configure Delta Load Settings</h3>
+            <div class="step">
+                <ol>
+                    <li>After full load completes, configure delta trigger</li>
+                    <li>Select Trigger Type: "On Schedule"</li>
+                    <li>Set Schedule Frequency:
+                        <ul>
+                            <li>Recommended: Hourly or Every 15 minutes</li>
+                            <li>Minimum interval: 15 minutes</li>
+                        </ul>
+                    </li>
+                    <li>Enable: "Subscribe to Delta Queue"</li>
+                </ol>
+            </div>
+
+            <h2>ODP Automatic Processes</h2>
+
+            <h3>Phase 1: Full Load (On Demand)</h3>
+            <div class="comparison">
+                <ol>
+                    <li>ODP Provider reads all VBAK records from source</li>
+                    <li>Packages data for transmission via OData</li>
+                    <li>Sends full dataset to target system</li>
+                    <li>Target creates table structure automatically</li>
+                    <li>Target loads all records in batches</li>
+                    <li>Confirms successful load</li>
+                </ol>
+            </div>
+
+            <h3>Phase 2: Delta Replication (On Schedule)</h3>
+            <div class="comparison">
+                <ol>
+                    <li>Operational Delta Queue (ODQ) captures VBAK changes</li>
+                    <li>Changes stored with delta tokens</li>
+                    <li>Consumer applications request deltas at scheduled intervals</li>
+                    <li>ODQ provides delta data packages</li>
+                    <li>Target system applies changes</li>
+                </ol>
+            </div>
+
+            <h2>ODP Target Destinations</h2>
+            <ul>
+                <li><strong>Analytics Platforms:</strong> Amazon AppFlow, Azure Data Factory, Qlik, Tableau</li>
+                <li><strong>Cloud Services:</strong> SAP Analytics Cloud, SAP BW Cloud, SAP C4C</li>
+                <li><strong>Data Platforms:</strong> Google BigQuery, Apache Spark, AWS Lake Formation</li>
+                <li><strong>Integration Tools:</strong> Fivetran, Talend, Informatica, Stitch</li>
+            </ul>
+
+            <h2>Delta Load Fields</h2>
+            <div class="comparison">
+                <strong>Operational Delta Queue (ODQ) Structure:</strong>
+                <table style="margin-top: 10px;">
+                    <tr>
+                        <th>Field</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>ODQ_CHANGEMODE</td>
+                        <td>"C" = Change/Insert/Update, "D" = Delete</td>
+                    </tr>
+                    <tr>
+                        <td>ODQ_ENTITYCNTR</td>
+                        <td>Unique counter for each change</td>
+                    </tr>
+                    <tr>
+                        <td>Original VBAK Fields</td>
+                        <td>All mapped extraction fields</td>
+                    </tr>
+                    <tr>
+                        <td>Delta Token</td>
+                        <td>Tracks last processed change</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h2>Monitoring ODP</h2>
+            <table>
+                <tr>
+                    <th>Monitoring Tool</th>
+                    <th>Transaction</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td>Monitoring</td>
+                    <td>ODQMON</td>
+                    <td>View active queues, data volumes, extraction status</td>
+                </tr>
+                <tr>
+                    <td>ODP-Enabled Views</td>
+                    <td>SE11 / I_DataExtractionEnabledView</td>
+                    <td>See all ODP-enabled CDS views (S/4HANA 2020+)</td>
+                </tr>
+                <tr>
+                    <td>DataSource Status</td>
+                    <td>RSA6</td>
+                    <td>Monitor specific DataSource extractions</td>
+                </tr>
+            </table>
+
+            <h2>Quick Reference: Key Transactions</h2>
+            <ul>
+                <li><span class="transaction">SE11</span> - CDS View definitions</li>
+                <li><span class="transaction">RSA6</span> - DataSource configuration</li>
+                <li><span class="transaction">/IWFND/MAINT_SERVICE</span> - OData service management</li>
+                <li><span class="transaction">ODQMON</span> - ODP queue monitoring</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>ODP How-To Guide | Modern Data Provisioning Framework | Last Updated: April 23, 2026</p>
+            <p><a href="index.html" style="color: #4ECDC4; text-decoration: none;">Back to Main Navigation</a></p>
+        </footer>
+    </div>
+</body>
+</html>

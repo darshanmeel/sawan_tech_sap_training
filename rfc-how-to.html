@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFC (Remote Function Call) How-To Guide</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #FFE66D 0%, #FFB700 100%); padding: 20px; min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.2); }
+        header { background: linear-gradient(135deg, #FFE66D 0%, #FFB700 100%); color: white; padding: 40px 30px; }
+        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        nav { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        nav a { color: #FFB700; text-decoration: none; font-weight: 600; }
+        .content { padding: 40px 30px; }
+        h2 { color: #FFB700; margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #FFF5D0; padding-bottom: 10px; }
+        h3 { color: #333; margin-top: 20px; margin-bottom: 10px; }
+        p, li { color: #555; line-height: 1.8; margin-bottom: 12px; }
+        ul, ol { margin-left: 20px; margin-bottom: 15px; }
+        .step { background: #FFF5D0; border-left: 4px solid #FFE66D; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        .transaction { display: inline-block; background: #FFF5D0; color: #FFB700; padding: 5px 10px; border-radius: 3px; font-weight: 600; font-size: 0.9em; margin: 0 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        table th, table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        table th { background: #FFF5D0; color: #FFB700; }
+        .badge { display: inline-block; background: #FFB700; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.85em; margin-right: 10px; }
+        .back-btn { display: inline-block; padding: 10px 20px; background: #FFB700; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 20px; }
+        footer { background: #f5f5f5; padding: 20px 30px; text-align: center; color: #777; border-top: 1px solid #ddd; }
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📞 RFC - Remote Function Call</h1>
+            <p>Traditional SAP Protocol for Internal System-to-System Communication</p>
+        </header>
+
+        <nav>
+            <a href="index.html">← Back to Main</a>
+        </nav>
+
+        <div class="content">
+            <a href="index.html" class="back-btn">← Back to All Methods</a>
+
+            <span class="badge">Legacy Support</span>
+            <span class="badge">Internal SAP</span>
+            <span class="badge">1-5 min Latency</span>
+
+            <div class="warning">
+                <strong>⚠️ Important Policy Update (SAP Note 3255746):</strong><br/>
+                Native ODP RFC modules are now "UNPERMITTED" for third-party applications. SAP recommends using ODP Framework or OData Services for external integrations. RFC remains essential for internal SAP-to-SAP connections (like SLT).
+            </div>
+
+            <h2>Overview</h2>
+            <p>RFC is the traditional SAP protocol for synchronous function calls between systems. While still used for internal SLT-based replication, SAP has restricted its use for third-party applications. Best for legacy systems and internal SAP-to-SAP integration.</p>
+
+            <h2>Part 1: Setup & Enablement Check</h2>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>SAP source system with RFC modules active</li>
+                <li>SAP target system or SLT Replication Server</li>
+                <li>Network connectivity and firewall rules configured</li>
+                <li>RFC users with appropriate authorizations</li>
+            </ul>
+
+            <h3>Step 1: Create RFC Connection</h3>
+            <div class="step">
+                <strong>Transaction:</strong> <span class="transaction">SM59</span><br/>
+                <strong>Connection Type:</strong> 3 (ABAP to ABAP)<br/>
+                <strong>Details:</strong>
+                <ul>
+                    <li>Connection Name: e.g., "PROD_VBAK_SLT"</li>
+                    <li>Target Host: Source SAP hostname</li>
+                    <li>System Number: Source system number</li>
+                    <li>Client: Source client (e.g., 100)</li>
+                    <li>Logon User: RFC communication user</li>
+                    <li>Query Timeout: 600 seconds</li>
+                </ul>
+            </div>
+
+            <h3>Step 2: Test RFC Connection</h3>
+            <div class="step">
+                <strong>Transaction:</strong> <span class="transaction">SM59</span><br/>
+                <ol>
+                    <li>Select your RFC connection</li>
+                    <li>Click "Connection Test"</li>
+                    <li>Click "Remote Logon Test"</li>
+                    <li>Verify: "Connection OK" message</li>
+                    <li>Check user permissions sufficient</li>
+                </ol>
+            </div>
+
+            <h3>Step 3: Authorize RFC User</h3>
+            <div class="step">
+                <strong>Transaction:</strong> <span class="transaction">SU01</span><br/>
+                <strong>Authorization Objects Required:</strong>
+                <ul>
+                    <li><code>S_DEVELOP</code> - Table access for extraction</li>
+                    <li><code>S_TABU_DIS</code> - VBAK table access (full access)</li>
+                    <li><code>RFC1</code> - RFC call permission</li>
+                    <li><code>S_RFC</code> - RFC function module execution</li>
+                </ul>
+                <strong>Steps:</strong>
+                <ol>
+                    <li>User: Select RFC user account</li>
+                    <li>Assign roles: SAP_USER (basic) + Z_RFC_VBAK_ACCESS (custom)</li>
+                    <li>Save and confirm</li>
+                </ol>
+            </div>
+
+            <h3>Checking if RFC is Enabled</h3>
+            <table>
+                <tr>
+                    <th>Verification Step</th>
+                    <th>How to Check</th>
+                </tr>
+                <tr>
+                    <td>RFC Connection Status</td>
+                    <td>SM59 → Select connection → Connection Test</td>
+                </tr>
+                <tr>
+                    <td>RFC User Permissions</td>
+                    <td>SU01 → User → Check S_TABU_DIS for VBAK</td>
+                </tr>
+                <tr>
+                    <td>Network Connectivity</td>
+                    <td>SM59 → Connection test should pass</td>
+                </tr>
+                <tr>
+                    <td>SLT RFC Config</td>
+                    <td>LTRC → Configuration → Verify RFC selected</td>
+                </tr>
+            </table>
+
+            <h2>Part 2: Using RFC for VBAK Replication (via SLT)</h2>
+
+            <h3>Step 1: Configure Full Load Transfer</h3>
+            <div class="step">
+                <strong>Transaction:</strong> <span class="transaction">LTRC</span><br/>
+                <ol>
+                    <li>Select VBAK table in Data Provisioning</li>
+                    <li>Set "Initial Load Mode": Performance Optimized</li>
+                    <li>RFC Transfer Parameters:
+                        <ul>
+                            <li>Data Transfer Jobs: 4</li>
+                            <li>Package Size: 50,000 records</li>
+                            <li>RFC Timeout: 600 seconds</li>
+                            <li>Retry Count: 3</li>
+                        </ul>
+                    </li>
+                    <li>Click "Start Replication (Including Initial Load)"</li>
+                </ol>
+            </div>
+
+            <h3>Step 2: Configure Delta Load Transfer</h3>
+            <div class="step">
+                <ol>
+                    <li>After initial load completes</li>
+                    <li>SLT monitors logging table via RFC calls</li>
+                    <li>Retrieves delta batches periodically</li>
+                    <li>Sends updates through RFC interface</li>
+                    <li>Frequency: Default every 5,000 records (1-5 minutes)</li>
+                </ol>
+            </div>
+
+            <h2>RFC Automatic Processes</h2>
+
+            <h3>Phase 1: Initial Load</h3>
+            <div class="step">
+                <ol>
+                    <li>SLT constructs RFC function calls</li>
+                    <li>Calls SM59 connection to source system</li>
+                    <li>Source system reads VBAK in parallel (4 jobs)</li>
+                    <li>Data packaged in 50,000-record batches</li>
+                    <li>RFC transfer sends each batch to target</li>
+                    <li>Target writes received data</li>
+                    <li>Acknowledgment sent back via RFC</li>
+                </ol>
+                <strong>Performance:</strong> Typically 100K-500K records/minute
+            </div>
+
+            <h3>Phase 2: Delta Load</h3>
+            <div class="step">
+                <ol>
+                    <li>Source system maintains logging table (VBAK#0)</li>
+                    <li>SLT queries logging table via RFC</li>
+                    <li>Retrieves batch of deltas (5,000 records)</li>
+                    <li>Identifies change type (I/U/D)</li>
+                    <li>Sends delta batch via RFC to target</li>
+                    <li>Target applies changes</li>
+                    <li>Process marks records as processed</li>
+                </ol>
+            </div>
+
+            <h2>RFC Target Destinations</h2>
+            <ul>
+                <li><strong>SAP Systems:</strong> SAP HANA, SAP BW, SAP S/4HANA, Legacy SAP R/3</li>
+                <li><strong>Custom ABAP Systems:</strong> Any system with ABAP stack and RFC support</li>
+                <li><strong>Via SLT to Cloud:</strong> SAP Data Intelligence, Cloud databases, AWS/Azure/GCP</li>
+            </ul>
+
+            <h2>RFC Logging Table (VBAK#0)</h2>
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>VBELN</td>
+                    <td>Sales document number (key)</td>
+                </tr>
+                <tr>
+                    <td>POSNR</td>
+                    <td>Item number (key)</td>
+                </tr>
+                <tr>
+                    <td>OPERATION</td>
+                    <td>I (Insert), U (Update), D (Delete)</td>
+                </tr>
+                <tr>
+                    <td>TMSTMP</td>
+                    <td>Timestamp of change</td>
+                </tr>
+            </table>
+
+            <h2>Monitoring RFC Replication</h2>
+            <table>
+                <tr>
+                    <th>Monitor</th>
+                    <th>Transaction</th>
+                    <th>What to Check</th>
+                </tr>
+                <tr>
+                    <td>Data Transfer Monitor</td>
+                    <td>LTRC</td>
+                    <td>RFC call status, records transferred, timeouts</td>
+                </tr>
+                <tr>
+                    <td>RFC Connection</td>
+                    <td>SM59</td>
+                    <td>Connection state, last successful call</td>
+                </tr>
+                <tr>
+                    <td>Logging Table</td>
+                    <td>SE12</td>
+                    <td>VBAK#0 row count, unprocessed changes</td>
+                </tr>
+            </table>
+
+            <h2>Quick Reference: Key Transactions</h2>
+            <ul>
+                <li><span class="transaction">SM59</span> - Create/test RFC connections</li>
+                <li><span class="transaction">SU01</span> - User authorization configuration</li>
+                <li><span class="transaction">LTRC</span> - SLT Cockpit (for RFC-based replication)</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>RFC How-To Guide | Legacy SAP Protocol | Last Updated: April 23, 2026</p>
+            <p><a href="index.html" style="color: #FFB700; text-decoration: none;">Back to Main Navigation</a></p>
+        </footer>
+    </div>
+</body>
+</html>

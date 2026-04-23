@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OData Services How-To Guide</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #95E1D3 0%, #4ECDC4 100%); padding: 20px; min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.2); }
+        header { background: linear-gradient(135deg, #95E1D3 0%, #4ECDC4 100%); color: white; padding: 40px 30px; }
+        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        nav { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        nav a { color: #4ECDC4; text-decoration: none; font-weight: 600; }
+        .content { padding: 40px 30px; }
+        h2 { color: #4ECDC4; margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #E8F8F5; padding-bottom: 10px; }
+        h3 { color: #333; margin-top: 20px; margin-bottom: 10px; }
+        p, li { color: #555; line-height: 1.8; margin-bottom: 12px; }
+        ul, ol { margin-left: 20px; margin-bottom: 15px; }
+        .step { background: #E8F8F5; border-left: 4px solid #4ECDC4; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        .transaction { display: inline-block; background: #E8F8F5; color: #4ECDC4; padding: 5px 10px; border-radius: 3px; font-weight: 600; font-size: 0.9em; margin: 0 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        table th, table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        table th { background: #E8F8F5; color: #4ECDC4; }
+        .badge { display: inline-block; background: #4ECDC4; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.85em; margin-right: 10px; }
+        .back-btn { display: inline-block; padding: 10px 20px; background: #4ECDC4; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 20px; }
+        footer { background: #f5f5f5; padding: 20px 30px; text-align: center; color: #777; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌐 OData Services Integration</h1>
+            <p>HTTP/REST-Based Data Integration for Cloud Platforms</p>
+        </header>
+
+        <nav>
+            <a href="index.html">← Back to Main</a>
+        </nav>
+
+        <div class="content">
+            <a href="index.html" class="back-btn">← Back to All Methods</a>
+
+            <span class="badge">REST-Based</span>
+            <span class="badge">HTTP/HTTPS</span>
+            <span class="badge">15+ min Latency</span>
+
+            <h2>Overview</h2>
+            <p>OData Services expose data through REST/HTTP APIs, making them ideal for cloud platforms and external systems. While slower than native protocols, OData offers firewall-friendly connectivity and broad platform support.</p>
+
+            <h2>Part 1: Setup & Enablement Check</h2>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>SAP Gateway system (NetWeaver or SAP Fiori)</li>
+                <li>OData provider services exposed</li>
+                <li>Client applications with HTTP/HTTPS support</li>
+                <li>Web service user credentials</li>
+            </ul>
+
+            <h3>Step 1: Expose ODP Provider as OData Service</h3>
+            <div class="step">
+                <strong>Transaction:</strong> <span class="transaction">/IWFND/MAINT_SERVICE</span><br/>
+                <ol>
+                    <li>Access SAP Gateway</li>
+                    <li>Create/register service for your provider</li>
+                    <li>Service Type: OData (V2 or V4)</li>
+                    <li>Select Provider:
+                        <ul>
+                            <li>CDS View (e.g., Z_VBAK_EXTRACT)</li>
+                            <li>Standard DataSource (2LIS_11_VAHDR)</li>
+                            <li>BW query</li>
+                        </ul>
+                    </li>
+                    <li>Activate Service</li>
+                    <li>Set Access Level: Public (if external access needed)</li>
+                </ol>
+            </div>
+
+            <h3>Step 2: Register OData Service Metadata</h3>
+            <div class="step">
+                <ol>
+                    <li>Service alias: <code>/sap/opu/odata/sap/2LIS_11_VAHDR_CDS</code></li>
+                    <li>Document service endpoint</li>
+                    <li>Generate technical documentation</li>
+                    <li>Create user documentation</li>
+                </ol>
+            </div>
+
+            <h3>Step 3: Create Gateway User</h3>
+            <div class="step">
+                <strong>Transaction:</strong> <span class="transaction">SU01</span><br/>
+                <ul>
+                    <li>User type: System/Communication</li>
+                    <li>Role: <code>SAP_GATEWAY_USER</code></li>
+                    <li>Assign: VBAK table access</li>
+                    <li>Set password: Secure credentials</li>
+                </ul>
+            </div>
+
+            <h3>Checking if OData Service is Enabled</h3>
+            <table>
+                <tr>
+                    <th>Verification Step</th>
+                    <th>How to Check</th>
+                </tr>
+                <tr>
+                    <td>Service Registration</td>
+                    <td>/IWFND/MAINT_SERVICE → Search service → Status = "Active"</td>
+                </tr>
+                <tr>
+                    <td>Service Metadata</td>
+                    <td>URL: Service + /$metadata → Returns valid XML schema</td>
+                </tr>
+                <tr>
+                    <td>Test Access</td>
+                    <td>Postman/curl → GET Service/Entity → HTTP 200</td>
+                </tr>
+                <tr>
+                    <td>Gateway User</td>
+                    <td>SU01 → User → Verify active with roles assigned</td>
+                </tr>
+            </table>
+
+            <h2>Part 2: Using OData for VBAK Replication</h2>
+
+            <h3>Step 1: Configure OData Consumer</h3>
+            <div class="step">
+                <strong>In External System (e.g., Amazon AppFlow):</strong>
+                <ol>
+                    <li>Create new data source</li>
+                    <li>Type: SAP OData Service</li>
+                    <li>URL: <code>https://[SAP_HOST]:port/sap/opu/odata/sap/2LIS_11_VAHDR_CDS</code></li>
+                    <li>Authentication:
+                        <ul>
+                            <li>Type: Basic Auth</li>
+                            <li>Username: Gateway user</li>
+                            <li>Password: User password</li>
+                        </ul>
+                    </li>
+                    <li>Test connection</li>
+                </ol>
+            </div>
+
+            <h3>Step 2: Configure Full Load Extraction</h3>
+            <div class="step">
+                <ol>
+                    <li>Entity: <code>ZMY_VBAK_SET</code> (VBAK data)</li>
+                    <li>Load Mode: Full Extract</li>
+                    <li>Fields to Extract:
+                        <ul>
+                            <li>VBELN (Sales Document Number)</li>
+                            <li>POSNR (Item Number)</li>
+                            <li>KUNNR (Customer Number)</li>
+                            <li>ERDAT (Creation Date)</li>
+                            <li>NETWR (Net Value)</li>
+                            <li>WAERK (Currency)</li>
+                        </ul>
+                    </li>
+                    <li>Filter (optional): <code>$filter=ERDAT ge '20260101'</code></li>
+                    <li>Pagination: <code>$top=100000, $skip=0</code> (repeat for all records)</li>
+                </ol>
+            </div>
+
+            <h3>Step 3: Configure Delta Load Extraction</h3>
+            <div class="step">
+                <ol>
+                    <li>After full load completes</li>
+                    <li>Delta Detection: ODP change tokens</li>
+                    <li>Schedule: Every 15 minutes (minimum)</li>
+                    <li>Delta Query:
+                        <ul>
+                            <li>Include timestamp filter</li>
+                            <li>Request only modified records</li>
+                            <li>Use change data capture fields</li>
+                        </ul>
+                    </li>
+                    <li>Target Merge: Upsert (update/insert)</li>
+                </ol>
+            </div>
+
+            <h2>OData Automatic Processes</h2>
+
+            <h3>Phase 1: OData Full Load</h3>
+            <div class="step">
+                <strong>HTTP Request Pattern:</strong>
+                <pre><code>GET /sap/opu/odata/sap/2LIS_11_VAHDR_CDS/ZMY_VBAK_SET
+Headers: Authorization, Accept: application/json</code></pre>
+
+                <strong>Process:</strong>
+                <ul>
+                    <li>Returns first 10,000 records (default page size)</li>
+                    <li>Includes pagination token</li>
+                    <li>Consumer repeats request with token until completion</li>
+                </ul>
+            </div>
+
+            <h3>Phase 2: OData Delta Load (Every 15 minutes)</h3>
+            <div class="step">
+                <pre><code>GET /sap/.../ZMY_VBAK_SET?$filter=LastModified gt 'timestamp'</code></pre>
+
+                <strong>Response includes:</strong>
+                <ul>
+                    <li>Records modified since timestamp</li>
+                    <li>ODQ_CHANGEMODE: 'C' (change) or 'D' (delete)</li>
+                    <li>Last modified timestamp</li>
+                    <li>Record version ID</li>
+                </ul>
+            </div>
+
+            <h2>OData Target Destinations</h2>
+            <ul>
+                <li><strong>Analytics:</strong> Amazon AppFlow, Azure Data Factory, Google Cloud Data Integration</li>
+                <li><strong>Platforms:</strong> Qlik, Tableau, Snowflake, Apache Spark</li>
+                <li><strong>Data Lakes:</strong> S3, Azure Blob, GCS</li>
+                <li><strong>Integration:</strong> Fivetran, Talend, Informatica, Stitch</li>
+            </ul>
+
+            <h2>OData Delta Load Fields</h2>
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>ODQ_CHANGEMODE</td>
+                    <td>"C" = Change/Insert/Update, "D" = Delete marker</td>
+                </tr>
+                <tr>
+                    <td>ODQ_ENTITYCNTR</td>
+                    <td>Unique counter per change, prevents duplicates</td>
+                </tr>
+                <tr>
+                    <td>Original VBAK Fields</td>
+                    <td>All extracted fields (for deletes: key fields only)</td>
+                </tr>
+                <tr>
+                    <td>Metadata</td>
+                    <td>Modified timestamp, record version ID</td>
+                </tr>
+            </table>
+
+            <h2>Monitoring OData</h2>
+            <table>
+                <tr>
+                    <th>Monitor</th>
+                    <th>Transaction</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td>Service Status</td>
+                    <td>/IWFND/MAINT_SERVICE</td>
+                    <td>Service status, access logs</td>
+                </tr>
+                <tr>
+                    <td>OData Logs</td>
+                    <td>/IWFND/MONITOR_LOG</td>
+                    <td>Call logs, performance, errors</td>
+                </tr>
+                <tr>
+                    <td>External Monitoring</td>
+                    <td>AppFlow/ADF</td>
+                    <td>Job logs, row counts, delta status</td>
+                </tr>
+            </table>
+
+            <h2>Quick Reference: Key Transactions</h2>
+            <ul>
+                <li><span class="transaction">/IWFND/MAINT_SERVICE</span> - Gateway service management</li>
+                <li><span class="transaction">SU01</span> - Gateway user configuration</li>
+                <li><span class="transaction">/IWFND/MONITOR_LOG</span> - OData monitoring</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>OData How-To Guide | REST-Based Integration | Last Updated: April 23, 2026</p>
+            <p><a href="index.html" style="color: #4ECDC4; text-decoration: none;">Back to Main Navigation</a></p>
+        </footer>
+    </div>
+</body>
+</html>

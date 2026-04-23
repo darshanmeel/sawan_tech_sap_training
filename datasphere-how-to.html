@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP Datasphere Replication Flows How-To Guide</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #A8E6CF 0%, #56AB91 100%); padding: 20px; min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.2); }
+        header { background: linear-gradient(135deg, #A8E6CF 0%, #56AB91 100%); color: white; padding: 40px 30px; }
+        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        nav { background: #f5f5f5; padding: 15px 30px; border-bottom: 1px solid #ddd; }
+        nav a { color: #56AB91; text-decoration: none; font-weight: 600; }
+        .content { padding: 40px 30px; }
+        h2 { color: #56AB91; margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #E8F9F7; padding-bottom: 10px; }
+        h3 { color: #333; margin-top: 20px; margin-bottom: 10px; }
+        p, li { color: #555; line-height: 1.8; margin-bottom: 12px; }
+        ul, ol { margin-left: 20px; margin-bottom: 15px; }
+        .step { background: #E8F9F7; border-left: 4px solid #A8E6CF; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        .transaction { display: inline-block; background: #E8F9F7; color: #56AB91; padding: 5px 10px; border-radius: 3px; font-weight: 600; font-size: 0.9em; margin: 0 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        table th, table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        table th { background: #E8F9F7; color: #56AB91; }
+        .badge { display: inline-block; background: #56AB91; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.85em; margin-right: 10px; }
+        .back-btn { display: inline-block; padding: 10px 20px; background: #56AB91; color: white; text-decoration: none; border-radius: 5px; margin-bottom: 20px; }
+        footer { background: #f5f5f5; padding: 20px 30px; text-align: center; color: #777; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>☁️ SAP Datasphere Replication Flows</h1>
+            <p>Cloud-Native Managed Service for Modern Data Integration</p>
+        </header>
+
+        <nav>
+            <a href="index.html">← Back to Main</a>
+        </nav>
+
+        <div class="content">
+            <a href="index.html" class="back-btn">← Back to All Methods</a>
+
+            <span class="badge">Cloud-Native</span>
+            <span class="badge">Managed Service</span>
+            <span class="badge">1-60 min Latency</span>
+
+            <h2>Overview</h2>
+            <p>SAP Datasphere Replication Flows is the cloud-native solution for SAP data integration. It automates data replication from on-premise SAP systems to cloud targets with automatic CDC via Resilient Data Buffer (RDB). Ideal for long-term cloud migration strategies.</p>
+
+            <h2>Part 1: Setup & Enablement Check</h2>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>SAP Datasphere subscription (cloud)</li>
+                <li>SAP Cloud Connector (for on-premise source systems)</li>
+                <li>S/4HANA 2021 or later (on-premise source)</li>
+                <li>RFC resources configured: DHAMB_, DHAPE_, RFC_FUNCTION_SEARCH</li>
+                <li>Datasphere admin rights</li>
+            </ul>
+
+            <h3>Step 1: Install and Configure Cloud Connector</h3>
+            <div class="step">
+                <strong>SAP Cloud Connector Setup:</strong>
+                <ul>
+                    <li>Location: Download from SAP Launchpad</li>
+                    <li>Install on: On-premise network DMZ/internal network</li>
+                    <li>Configure to reach Datasphere region</li>
+                    <li>Configure RFC protocol resources</li>
+                </ul>
+            </div>
+
+            <h3>Step 2: Create Connection in SAP Datasphere</h3>
+            <div class="step">
+                <strong>UI Navigation:</strong> Connections → New Connection<br/>
+                <strong>Connection Type:</strong> SAP S/4HANA On-Premise<br/>
+                <strong>Configuration:</strong>
+                <ul>
+                    <li>Name: e.g., "PROD_S4_Connection"</li>
+                    <li>Cloud Connector: Select configured connector</li>
+                    <li>System ID: Source SAP system ID</li>
+                    <li>System Client: Client to replicate from</li>
+                    <li>System Number: Source system number</li>
+                    <li>Authentication: RFC user credentials</li>
+                </ul>
+                <strong>Validation:</strong> "Replication flows are enabled"
+            </div>
+
+            <h3>Step 3: Verify CDS View Configuration</h3>
+            <div class="step">
+                <strong>In S/4HANA, create/verify CDS view:</strong>
+                <pre><code>define view ZC_VBAK_EXTRACT
+@Analytics.dataExtraction.enabled: true
+@Analytics.dataExtraction.delta.changeDataCapture: true
+@Analytics.dataExtraction.delta.changeDataCapture.automatic: true
+as select from vbak {
+  key vbak.vbeln,
+  vbak.posnr,
+  vbak.kunnr,
+  vbak.erdat,
+  vbak.netwr,
+  ...
+}</code></pre>
+                <strong>Verify all three annotations are present</strong>
+            </div>
+
+            <h3>Step 4: Enable Resilient Data Buffer (RDB)</h3>
+            <div class="step">
+                <strong>In S/4HANA Source System:</strong>
+                <ol>
+                    <li>Transaction: <span class="transaction">/1DH/SETUP</span> (Data Hub setup)</li>
+                    <li>Initialize Resilient Data Buffer framework</li>
+                    <li>Configure RFC user permissions for RDB</li>
+                    <li>Schedule observer job: <span class="transaction">/1DH/OBSERVE_LOGTAB</span>
+                        <ul>
+                            <li>Frequency: Every 30 minutes</li>
+                            <li>Purpose: Push changes to RDB buffers</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <h3>Checking if Datasphere Replication is Enabled</h3>
+            <table>
+                <tr>
+                    <th>Verification Step</th>
+                    <th>How to Check</th>
+                </tr>
+                <tr>
+                    <td>Cloud Connector</td>
+                    <td>UI: https://localhost:8443 → Connected to Datasphere region</td>
+                </tr>
+                <tr>
+                    <td>Datasphere Connection</td>
+                    <td>Connections → Test connection → "Connection successful"</td>
+                </tr>
+                <tr>
+                    <td>CDS View Annotations</td>
+                    <td>SE11 → Verify all required annotations present</td>
+                </tr>
+                <tr>
+                    <td>RDB Framework</td>
+                    <td>/1DH/SETUP → Verify active, check observer job scheduled</td>
+                </tr>
+            </table>
+
+            <h2>Part 2: Using Datasphere for VBAK Replication</h2>
+
+            <h3>Step 1: Create Replication Flow</h3>
+            <div class="step">
+                <strong>In SAP Datasphere UI:</strong>
+                <ol>
+                    <li>Navigate: Data Builder → New Object → Replication Flow</li>
+                    <li>Flow Name: e.g., "VBAK_Replication_Flow"</li>
+                    <li>Description: Sales Document Header replication</li>
+                    <li>Source Connection: Select S/4HANA connection</li>
+                </ol>
+            </div>
+
+            <h3>Step 2: Select Source Object</h3>
+            <div class="step">
+                <strong>Option 1: Direct CDS View (Recommended)</strong>
+                <ul>
+                    <li>Container: CDS_EXTRACTION or SLT_EXTRACTION</li>
+                    <li>Object Type: CDS View</li>
+                    <li>Object Name: <code>C_SALESDOCUMENTITEMDEX_1</code> (SAP standard)
+                        <br/>OR <code>ZC_VBAK_EXTRACT</code> (custom)</li>
+                </ul>
+
+                <strong>Option 2: SLT Table (If using SLT as source)</strong>
+                <ul>
+                    <li>Container: SLT_EXTRACTION</li>
+                    <li>Object Type: Table</li>
+                    <li>Object Name: VBAK (if replicated via SLT)</li>
+                </ul>
+            </div>
+
+            <h3>Step 3: Configure Load Strategy</h3>
+            <div class="step">
+                <strong>Initial Load Settings:</strong>
+                <ul>
+                    <li>Load Type: "Initial and Delta"</li>
+                    <li>Initial Load Mode: "Full Load"</li>
+                    <li>Transfer Size: 100,000 records per batch</li>
+                    <li>Parallel Processes: 4</li>
+                    <li>Commit Strategy: Every 50,000 records</li>
+                </ul>
+
+                <strong>Delta Load Settings:</strong>
+                <ul>
+                    <li>Enable: "Incremental Updates"</li>
+                    <li>Delta Mode: "Automatic CDC" (Resilient Data Buffer)</li>
+                    <li>Delta Frequency: Every 60 minutes (default, adjustable)</li>
+                    <li>Handle Deletes: Yes</li>
+                </ul>
+            </div>
+
+            <h3>Step 4: Configure Target & Deploy</h3>
+            <div class="step">
+                <strong>Target Selection:</strong>
+                <ol>
+                    <li>Target Container: e.g., "SALES_DATA" or "VBAK_TARGET"</li>
+                    <li>Create New Table: Yes</li>
+                    <li>Table Name: VBAK or C_VBAK_REPL</li>
+                    <li>Schema: Auto-mapped from source CDS view</li>
+                </ol>
+
+                <strong>Deployment:</strong>
+                <ol>
+                    <li>Click "Deploy" to validate flow</li>
+                    <li>Fix any validation errors</li>
+                    <li>Click "Run" to start replication</li>
+                </ol>
+            </div>
+
+            <h2>Datasphere Automatic Processes</h2>
+
+            <h3>Phase 1: Initial Load</h3>
+            <div class="step">
+                <ol>
+                    <li>Datasphere calls Cloud Connector</li>
+                    <li>Cloud Connector executes RFC to S/4HANA</li>
+                    <li>S/4HANA reads VBAK via CDS view (4 parallel jobs)</li>
+                    <li>Batch size: 100,000 records per package</li>
+                    <li>Data flows: S/4HANA → CDS View → RFC → Cloud Connector → Datasphere</li>
+                    <li>Datasphere creates target table automatically</li>
+                    <li>Adds system columns: operation_flag, recordstamp, is_deleted</li>
+                </ol>
+            </div>
+
+            <h3>Phase 2: Delta Replication (Every 60 minutes by default)</h3>
+            <div class="step">
+                <ol>
+                    <li>Database Triggers capture VBAK changes (I/U/D)</li>
+                    <li>Master Logging Table stores changes in S/4HANA</li>
+                    <li>Observer Job (/1DH/OBSERVE_LOGTAB) runs every 30 min</li>
+                    <li>Pushes changes to subscriber RDB buffers</li>
+                    <li>Replication Flow Delta Job calls RDB via RFC</li>
+                    <li>Retrieves changes from RDB buffer</li>
+                    <li>Datasphere applies changes:
+                        <ul>
+                            <li>INSERT: Add new row</li>
+                            <li>UPDATE: Merge into existing row</li>
+                            <li>DELETE: Mark with is_deleted=TRUE</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <h2>Target Destinations</h2>
+            <ul>
+                <li><strong>Datasphere Native:</strong> In-memory column-store tables</li>
+                <li><strong>SAP Cloud:</strong> SAP HANA Cloud, SAP Analytics Cloud</li>
+                <li><strong>Cloud Providers:</strong> Google BigQuery, Amazon S3/Redshift, Azure Data Lake/Synapse, Snowflake</li>
+                <li><strong>Operational Systems:</strong> SAP S/4HANA, SAP C4C (via outbound flows)</li>
+            </ul>
+
+            <h2>Datasphere Target Table Columns</h2>
+            <table>
+                <tr>
+                    <th>Column Type</th>
+                    <th>Details</th>
+                </tr>
+                <tr>
+                    <td>Original VBAK Fields</td>
+                    <td>VBELN, POSNR, KUNNR, ERDAT, NETWR, WAERK, ...</td>
+                </tr>
+                <tr>
+                    <td>operation_flag</td>
+                    <td>'I' (Insert), 'U' (Update), 'D' (Delete)</td>
+                </tr>
+                <tr>
+                    <td>recordstamp</td>
+                    <td>Timestamp of change - enables temporal queries</td>
+                </tr>
+                <tr>
+                    <td>is_deleted</td>
+                    <td>TRUE = soft delete, FALSE = active record</td>
+                </tr>
+            </table>
+
+            <h2>Monitoring Replication</h2>
+            <table>
+                <tr>
+                    <th>Monitor</th>
+                    <th>Location</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td>Execution Status</td>
+                    <td>Datasphere: Replication Flow → Executions tab</td>
+                    <td>Last run, records processed, duration, status</td>
+                </tr>
+                <tr>
+                    <td>Data Integration</td>
+                    <td>Datasphere: Data Integration Monitor</td>
+                    <td>All active flows, cumulative status, delta pipeline</td>
+                </tr>
+                <tr>
+                    <td>RDB Status</td>
+                    <td>S/4HANA: /1DH/RSDBMON</td>
+                    <td>Buffer sizes, pending changes, observer job status</td>
+                </tr>
+                <tr>
+                    <td>CDC Status</td>
+                    <td>S/4HANA: DHCDCMON</td>
+                    <td>Active streams, change rate, lag time</td>
+                </tr>
+            </table>
+
+            <h2>Quick Reference: Key Transactions</h2>
+            <ul>
+                <li><span class="transaction">/1DH/SETUP</span> - Resilient Data Buffer initialization</li>
+                <li><span class="transaction">/1DH/OBSERVE_LOGTAB</span> - Observer job for delta push</li>
+                <li><span class="transaction">/1DH/RSDBMON</span> - RDB buffer monitoring</li>
+                <li><span class="transaction">DHCDCMON</span> - Change Data Capture monitoring</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>SAP Datasphere How-To Guide | Cloud-Native Replication | Last Updated: April 23, 2026</p>
+            <p><a href="index.html" style="color: #56AB91; text-decoration: none;">Back to Main Navigation</a></p>
+        </footer>
+    </div>
+</body>
+</html>
