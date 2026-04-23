@@ -1,14 +1,11 @@
 {
   "nav": {
     "home": "Home",
-    "tables": "Tables",
+    "directory": "Directory",
     "walkthroughs": "Walkthroughs",
     "glossary": "Glossary",
     "articles": "Articles",
-    "directory": "Directory",
-    "roadmap": "Roadmap",
-    "about": "About",
-    "decide": "Decide"
+    "about": "About"
   },
   "cta": {
     "pickTable": "Pick a table",
