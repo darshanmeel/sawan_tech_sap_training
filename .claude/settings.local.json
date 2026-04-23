@@ -40,7 +40,8 @@
       "mcp__claude_ai_Excalidraw__export_to_excalidraw",
       "Bash(xargs -I {} gh run view {} --log)",
       "Bash(cd D:\\\\\\\\darshanmeel\\\\\\\\sawan_tech_sap_training\\\\\\\\sap-extract-academy\\\\\\\\content\\\\\\\\en\\\\\\\\articles)",
-      "Bash(sed -i 's/author: \"SAP Extract Academy\"/author: \"SAP Extract Guide\"/g' *.md)"
+      "Bash(sed -i 's/author: \"SAP Extract Academy\"/author: \"SAP Extract Guide\"/g' *.md)",
+      "Bash(gh workflow *)"
     ]
   }
 }

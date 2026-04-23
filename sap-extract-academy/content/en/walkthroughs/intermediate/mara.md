@@ -80,6 +80,74 @@ troubleshooting:
   - problem: "Z-field values are empty in extraction output but not in SE16N"
     solution: "The extension view may be pointing to the wrong table alias. In SE80, inspect I_Product's FROM clause to find the alias used for MARA rows. Use that alias in the extension view (e.g., if I_Product uses alias 'prod', use 'prod.ZZ_BRAND' not 'mara.ZZ_BRAND')."
 
+toolSteps:
+  - tool: custom
+    label: "Custom (Python / pyrfc) — full load with Z-fields"
+    steps:
+      - title: "Extract MARA with Z-fields via extension view"
+        explanation: "Use pyrfc to extract from ZPROD_ZFIELDS (the extension view you created in SAP-side step 03). The Z-fields ZZ_BRAND and ZZ_SUSTAINABILITY now appear in the extracted DataFrame."
+        code: |
+          import pyrfc
+          import pandas as pd
+          import boto3
+          from io import BytesIO
+          import pyarrow.parquet as pq
+          import pyarrow as pa
+          
+          conn = pyrfc.Connection(
+              ashost='sap-prod.company.com',
+              sysnr='00', client='100',
+              user='EXTRACT_MARA', passwd='<password>'
+          )
+          
+          # Full load extraction using extension view with Z-fields
+          result = conn.call(
+              'RODPS_REPL_ODP_EXTRACT',
+              SUBSCRIBER_NAME='PYTHON_MARA_FULL',
+              SUBSCRIBER_TYPE='2',
+              SUBSCRIBER_PROCESS='FULL_LOAD',
+              DATA_AREA='ABAP_CDS',
+              ENTITY_NAME='ZPROD_ZFIELDS',  # Extension view with Z-fields
+              MAX_RECORDS=100000,
+              FIELDS=[{'FIELDNAME': '*'}]  # All fields including ZZ_BRAND, ZZ_SUSTAINABILITY
+          )
+          
+          records = result.get('DATA', [])
+          df = pd.DataFrame(records)
+          
+          print(f"MARA: {len(df)} rows extracted")
+          print(f"Columns: {list(df.columns)}")
+          
+          # Verify Z-fields are present
+          assert 'ZZ_BRAND' in df.columns, "ZZ_BRAND missing from extraction"
+          assert 'ZZ_SUSTAINABILITY' in df.columns, "ZZ_SUSTAINABILITY missing from extraction"
+          
+          print(f"ZZ_BRAND sample values: {df['ZZ_BRAND'].value_counts().head()}")
+          print(f"ZZ_SUSTAINABILITY sample values: {df['ZZ_SUSTAINABILITY'].value_counts()}")
+          
+          # Write to S3 with Z-field validation
+          s3 = boto3.client('s3')
+          table = pa.Table.from_pandas(df)
+          buf = BytesIO()
+          pq.write_table(table, buf, compression='snappy')
+          buf.seek(0)
+          s3.put_object(
+              Bucket='my-sap-landing-bucket',
+              Key=f'sap/mara/full/mara_with_zfields.parquet',
+              Body=buf.getvalue()
+          )
+          
+          conn.close()
+        language: python
+        verify: "ZZ_BRAND and ZZ_SUSTAINABILITY columns appear in the extracted DataFrame. Z-field values match values from SE16N MARA for the same MATNR records."
+
+  - tool: adf
+    label: "Azure Data Factory — full load with extension view"
+    steps:
+      - title: "Configure source to use ZPROD_ZFIELDS extension view"
+        explanation: "In ADF Copy Activity, set the source OData service to point to ZPROD_ZFIELDS instead of the base I_Product. All fields including ZZ_BRAND and ZZ_SUSTAINABILITY are now available. Write directly to Azure Data Lake Storage or Synapse table."
+        verify: "Pipeline output includes MATNR, MTART, ZZ_BRAND, and ZZ_SUSTAINABILITY columns. Z-field values appear in the target dataset."
+
 nextSteps:
   - label: "Try MARA Expert — 20+ Z-fields, multi-table extraction"
     url: "/walkthrough/expert/mara/"

@@ -51,7 +51,7 @@ Confirm it is present and annotated in [SE80](https://help.sap.com/) before proc
 4. After the extraction runs, check [ODQMON](https://help.sap.com/) to confirm the subscription is registered and active.
 5. After the extraction completes, reconcile: SE16N count must match your target row count.
 
-**What your tool does:** Your extraction tool (ADF, Databricks, Fivetran, Airbyte, or custom) connects via ODP OData, registers a subscription, and fetches rows in batches. The SAP-side configuration above is what you control; the tool pipeline configuration is in your vendor's documentation.
+**What your tool does:** Your extraction tool (ADF, Databricks, Fivetran, or custom) connects via ODP OData, registers a subscription, and fetches rows in batches. The SAP-side configuration above is what you control; the tool pipeline configuration is in your vendor's documentation.
 
 **Constraints:** Below 100M rows this pattern is fast. Above 100M rows, ODP single-partition extraction may time out or exhaust memory on the SAP side. Move to Pattern 2.
 

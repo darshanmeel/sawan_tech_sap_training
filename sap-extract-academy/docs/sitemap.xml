@@ -523,6 +523,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://academy.example.com/walkthrough/slt-setup/</loc>
+    <lastmod>2026-04-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://academy.example.com/walkthrough/vbak/</loc>
     <lastmod>2026-04-23</lastmod>
     <changefreq>weekly</changefreq>

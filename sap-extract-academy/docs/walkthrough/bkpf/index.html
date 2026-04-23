@@ -708,7 +708,103 @@
       <div class="card section tool-steps-section" id="wt-panel-tool" role="tabpanel" aria-labelledby="wt-tab-tool" hidden>
         <h2>Tool <em>configuration</em></h2>
         <p style="color:var(--color-ink-soft);font-size:14px;margin-bottom:var(--space-5);">Pipeline code and config for your selected tool. Switch the <strong>Tool</strong> picker above to see a different variant.</p>
-        <p style="color:var(--color-ink-soft);font-size:14px;">No tool-specific steps for this walkthrough. See the SAP side tab for extraction steps.</p>
+        <div class="tool-steps-container" data-default-tool="custom">
+          <div data-tool-block="custom">
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Custom (Python &#x2F; pyrfc) — multi-partition extraction</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Extract BKPF for multiple fiscal years in parallel</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Use pyrfc to open multiple simultaneous connections (one per BUKRS+GJAHR partition). Each connection runs a full ODP extraction. Monitor SAP work processes (SM50) to ensure utilization stays below 80%.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">import pyrfc
+import pandas as pd
+import boto3
+from concurrent.futures import ThreadPoolExecutor
+from io import BytesIO
+import pyarrow.parquet as pq
+import pyarrow as pa
+
+# Define partitions: (company code, fiscal year)
+partitions &#x3D; [
+    (&#39;1000&#39;, &#39;2022&#39;),
+    (&#39;1000&#39;, &#39;2023&#39;),
+    (&#39;1000&#39;, &#39;2024&#39;),
+    (&#39;2000&#39;, &#39;2024&#39;),
+]
+
+def extract_partition(bukrs, gjahr):
+    &quot;&quot;&quot;Extract BKPF for one (BUKRS, GJAHR) partition.&quot;&quot;&quot;
+    conn &#x3D; pyrfc.Connection(
+        ashost&#x3D;&#39;sap-prod.company.com&#39;,
+        sysnr&#x3D;&#39;00&#39;, client&#x3D;&#39;100&#39;,
+        user&#x3D;&#39;EXTRACT_BKPF&#39;, passwd&#x3D;&#39;&lt;password&gt;&#39;
+    )
+    
+    result &#x3D; conn.call(
+        &#39;RODPS_REPL_ODP_EXTRACT&#39;,
+        SUBSCRIBER_NAME&#x3D;f&#39;PYTHON_BKPF_{bukrs}_{gjahr}&#39;,
+        SUBSCRIBER_TYPE&#x3D;&#39;2&#39;,
+        SUBSCRIBER_PROCESS&#x3D;&#39;FULL_LOAD&#39;,
+        DATA_AREA&#x3D;&#39;ABAP_CDS&#39;,
+        ENTITY_NAME&#x3D;&#39;I_AccountingDocument&#39;,
+        MAX_RECORDS&#x3D;500000,
+        FIELDS&#x3D;[{&#39;FIELDNAME&#39;: &#39;*&#39;}],
+        FILTERS&#x3D;[
+            {&#39;NAME&#39;: &#39;BUKRS&#39;, &#39;SIGN&#39;: &#39;I&#39;, &#39;OPTION&#39;: &#39;EQ&#39;, &#39;LOW&#39;: bukrs},
+            {&#39;NAME&#39;: &#39;GJAHR&#39;, &#39;SIGN&#39;: &#39;I&#39;, &#39;OPTION&#39;: &#39;EQ&#39;, &#39;LOW&#39;: gjahr}
+        ]
+    )
+    
+    records &#x3D; result.get(&#39;DATA&#39;, [])
+    df &#x3D; pd.DataFrame(records)
+    print(f&quot;Partition {bukrs}&#x2F;{gjahr}: {len(df)} rows&quot;)
+    
+    # Write to S3
+    s3 &#x3D; boto3.client(&#39;s3&#39;)
+    table &#x3D; pa.Table.from_pandas(df)
+    buf &#x3D; BytesIO()
+    pq.write_table(table, buf, compression&#x3D;&#39;snappy&#39;)
+    buf.seek(0)
+    s3.put_object(
+        Bucket&#x3D;&#39;my-sap-landing-bucket&#39;,
+        Key&#x3D;f&#39;sap&#x2F;bkpf&#x2F;{bukrs}&#x2F;{gjahr}&#x2F;bkpf.parquet&#39;,
+        Body&#x3D;buf.getvalue()
+    )
+    conn.close()
+    return len(df)
+
+# Run partitions in parallel (max 4 at a time)
+with ThreadPoolExecutor(max_workers&#x3D;4) as executor:
+    futures &#x3D; [executor.submit(extract_partition, bukrs, gjahr) 
+              for bukrs, gjahr in partitions]
+    total_rows &#x3D; sum(f.result() for f in futures)
+
+print(f&quot;Total extracted: {total_rows} rows across {len(partitions)} partitions&quot;)</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Each partition extracts successfully. Total row count matches SE16N counts summed across all (BUKRS, GJAHR) combinations.</p>
+              </li>
+            </ol>
+          </div>
+          <div data-tool-block="adf" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Azure Data Factory — multi-partition extraction</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Create parameterized Copy Activity for BUKRS and GJAHR</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">In ADF, create a pipeline with parameters for BUKRS and GJAHR. The Copy Activity source queries I_AccountingDocument with ODP, filtering on these parameters. Then create a ForEach loop that iterates through all (BUKRS, GJAHR) pairs, calling the parameterized Copy Activity for each.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Pipeline runs for all partitions. Row counts per partition visible in ADF monitoring. All data lands in Azure Data Lake Storage organized by BUKRS&#x2F;GJAHR folder structure.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
 
         <!-- Tool troubleshooting -->
         <details class="ts-section" style="margin-top:var(--space-6);border-top:1px solid var(--color-rule);padding-top:var(--space-5);">

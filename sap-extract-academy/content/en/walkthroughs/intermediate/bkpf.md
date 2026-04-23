@@ -68,6 +68,87 @@ troubleshooting:
   - problem: "One partition fails while others succeed"
     solution: "BKPF for a specific fiscal year may have unusual volume (e.g., a year-end closing run generated more documents than normal). Re-run the failed partition with a smaller sub-partition (e.g., add a BLART filter for document types). Check ODQMON for the specific subscription error message."
 
+toolSteps:
+  - tool: custom
+    label: "Custom (Python / pyrfc) — multi-partition extraction"
+    steps:
+      - title: "Extract BKPF for multiple fiscal years in parallel"
+        explanation: "Use pyrfc to open multiple simultaneous connections (one per BUKRS+GJAHR partition). Each connection runs a full ODP extraction. Monitor SAP work processes (SM50) to ensure utilization stays below 80%."
+        code: |
+          import pyrfc
+          import pandas as pd
+          import boto3
+          from concurrent.futures import ThreadPoolExecutor
+          from io import BytesIO
+          import pyarrow.parquet as pq
+          import pyarrow as pa
+          
+          # Define partitions: (company code, fiscal year)
+          partitions = [
+              ('1000', '2022'),
+              ('1000', '2023'),
+              ('1000', '2024'),
+              ('2000', '2024'),
+          ]
+          
+          def extract_partition(bukrs, gjahr):
+              """Extract BKPF for one (BUKRS, GJAHR) partition."""
+              conn = pyrfc.Connection(
+                  ashost='sap-prod.company.com',
+                  sysnr='00', client='100',
+                  user='EXTRACT_BKPF', passwd='<password>'
+              )
+              
+              result = conn.call(
+                  'RODPS_REPL_ODP_EXTRACT',
+                  SUBSCRIBER_NAME=f'PYTHON_BKPF_{bukrs}_{gjahr}',
+                  SUBSCRIBER_TYPE='2',
+                  SUBSCRIBER_PROCESS='FULL_LOAD',
+                  DATA_AREA='ABAP_CDS',
+                  ENTITY_NAME='I_AccountingDocument',
+                  MAX_RECORDS=500000,
+                  FIELDS=[{'FIELDNAME': '*'}],
+                  FILTERS=[
+                      {'NAME': 'BUKRS', 'SIGN': 'I', 'OPTION': 'EQ', 'LOW': bukrs},
+                      {'NAME': 'GJAHR', 'SIGN': 'I', 'OPTION': 'EQ', 'LOW': gjahr}
+                  ]
+              )
+              
+              records = result.get('DATA', [])
+              df = pd.DataFrame(records)
+              print(f"Partition {bukrs}/{gjahr}: {len(df)} rows")
+              
+              # Write to S3
+              s3 = boto3.client('s3')
+              table = pa.Table.from_pandas(df)
+              buf = BytesIO()
+              pq.write_table(table, buf, compression='snappy')
+              buf.seek(0)
+              s3.put_object(
+                  Bucket='my-sap-landing-bucket',
+                  Key=f'sap/bkpf/{bukrs}/{gjahr}/bkpf.parquet',
+                  Body=buf.getvalue()
+              )
+              conn.close()
+              return len(df)
+          
+          # Run partitions in parallel (max 4 at a time)
+          with ThreadPoolExecutor(max_workers=4) as executor:
+              futures = [executor.submit(extract_partition, bukrs, gjahr) 
+                        for bukrs, gjahr in partitions]
+              total_rows = sum(f.result() for f in futures)
+          
+          print(f"Total extracted: {total_rows} rows across {len(partitions)} partitions")
+        language: python
+        verify: "Each partition extracts successfully. Total row count matches SE16N counts summed across all (BUKRS, GJAHR) combinations."
+
+  - tool: adf
+    label: "Azure Data Factory — multi-partition extraction"
+    steps:
+      - title: "Create parameterized Copy Activity for BUKRS and GJAHR"
+        explanation: "In ADF, create a pipeline with parameters for BUKRS and GJAHR. The Copy Activity source queries I_AccountingDocument with ODP, filtering on these parameters. Then create a ForEach loop that iterates through all (BUKRS, GJAHR) pairs, calling the parameterized Copy Activity for each."
+        verify: "Pipeline runs for all partitions. Row counts per partition visible in ADF monitoring. All data lands in Azure Data Lake Storage organized by BUKRS/GJAHR folder structure."
+
 nextSteps:
   - label: "Try BKPF Expert — SLT parallel readers for enterprise scale"
     url: "/walkthrough/expert/bkpf/"

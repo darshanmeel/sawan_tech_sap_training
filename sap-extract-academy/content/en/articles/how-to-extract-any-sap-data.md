@@ -50,7 +50,7 @@ Three methods exist. Here's when to use each:
 
 | Method | Best For | Latency | License | Tools |
 |---|---|---|---|---|
-| **ODP** | Batch extractions, any volume with partitioning, scheduled loads | Hours | Runtime OK | Fivetran, ADF, Databricks, Python/pyrfc, Airbyte |
+| **ODP** | Batch extractions, any volume with partitioning, scheduled loads | Hours | Runtime OK | Fivetran, ADF, Databricks, Python/pyrfc |
 | **SLT** | Real-time delta, sub-5-minute latency, continuous streaming | Minutes | Full Use required | Kafka, Snowflake, Databricks, cloud storage (S3, ADLS) |
 | **RFC** | Legacy systems, rare new projects | Minutes | Runtime OK | Custom code only |
 
@@ -183,7 +183,6 @@ Don't have Databricks? No problem. Same logic, different tools:
 - **Azure Data Factory:** Use ODP connector + Azure Data Lake Storage
 - **Fivetran:** Preconfigured SAP ODP source, maps to Snowflake/Redshift/BigQuery
 - **Python (on-prem):** Use pyrfc library, write CSVs to S3
-- **Airbyte:** Open-source ODP connector, self-hosted or cloud
 
 ### What Comes Next
 

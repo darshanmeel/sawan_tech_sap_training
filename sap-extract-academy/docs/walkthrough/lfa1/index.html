@@ -708,7 +708,125 @@
       <div class="card section tool-steps-section" id="wt-panel-tool" role="tabpanel" aria-labelledby="wt-tab-tool" hidden>
         <h2>Tool <em>configuration</em></h2>
         <p style="color:var(--color-ink-soft);font-size:14px;margin-bottom:var(--space-5);">Pipeline code and config for your selected tool. Switch the <strong>Tool</strong> picker above to see a different variant.</p>
-        <p style="color:var(--color-ink-soft);font-size:14px;">No tool-specific steps for this walkthrough. See the SAP side tab for extraction steps.</p>
+        <div class="tool-steps-container" data-default-tool="custom">
+          <div data-tool-block="custom">
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Custom (Python &#x2F; pyrfc) — hourly delta extraction</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Run hourly delta extraction for LFA1</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Use pyrfc to call the ODP extraction module every hour. Each call retrieves only changed vendor records since the last delta extraction. Store the delta token to resume from the correct point on the next run.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">import pyrfc
+import json
+import pandas as pd
+import boto3
+from datetime import datetime
+from pathlib import Path
+
+STATE_FILE &#x3D; &#39;&#x2F;data&#x2F;lfa1_delta_state.json&#39;
+
+def load_delta_state():
+    &quot;&quot;&quot;Load the last delta token from previous run.&quot;&quot;&quot;
+    if Path(STATE_FILE).exists():
+        with open(STATE_FILE, &#39;r&#39;) as f:
+            return json.load(f)
+    return {&#39;delta_token&#39;: &#39;0&#39;, &#39;last_run&#39;: None}
+
+def save_delta_state(delta_token):
+    &quot;&quot;&quot;Save current delta token for next run.&quot;&quot;&quot;
+    state &#x3D; {
+        &#39;delta_token&#39;: delta_token,
+        &#39;last_run&#39;: datetime.utcnow().isoformat()
+    }
+    with open(STATE_FILE, &#39;w&#39;) as f:
+        json.dump(state, f)
+
+def extract_lfa1_delta():
+    &quot;&quot;&quot;Extract LFA1 delta changes.&quot;&quot;&quot;
+    conn &#x3D; pyrfc.Connection(
+        ashost&#x3D;&#39;sap-prod.company.com&#39;,
+        sysnr&#x3D;&#39;00&#39;, client&#x3D;&#39;100&#39;,
+        user&#x3D;&#39;EXTRACT_LFA1&#39;, passwd&#x3D;&#39;&lt;password&gt;&#39;
+    )
+    
+    state &#x3D; load_delta_state()
+    
+    result &#x3D; conn.call(
+        &#39;RODPS_REPL_ODP_EXTRACT&#39;,
+        SUBSCRIBER_NAME&#x3D;&#39;PYTHON_LFA1_DELTA&#39;,
+        SUBSCRIBER_TYPE&#x3D;&#39;2&#39;,
+        SUBSCRIBER_PROCESS&#x3D;&#39;DELTA_LOAD&#39;,
+        DATA_AREA&#x3D;&#39;ABAP_CDS&#39;,
+        ENTITY_NAME&#x3D;&#39;I_Supplier&#39;,
+        DELTA_TOKEN&#x3D;state[&#39;delta_token&#39;],
+        MAX_RECORDS&#x3D;10000,
+        FIELDS&#x3D;[{&#39;FIELDNAME&#39;: &#39;*&#39;}]
+    )
+    
+    records &#x3D; result.get(&#39;DATA&#39;, [])
+    df &#x3D; pd.DataFrame(records)
+    
+    new_delta_token &#x3D; result.get(&#39;DELTA_TOKEN&#39;, state[&#39;delta_token&#39;])
+    
+    print(f&quot;LFA1 Delta: {len(df)} changed records&quot;)
+    print(f&quot;Previous delta token: {state[&#39;delta_token&#39;]}&quot;)
+    print(f&quot;New delta token: {new_delta_token}&quot;)
+    
+    if len(df) &gt; 0:
+        # Write delta to S3 with timestamp
+        ts &#x3D; datetime.utcnow().strftime(&#39;%Y%m%d_%H%M%S&#39;)
+        s3 &#x3D; boto3.client(&#39;s3&#39;)
+        
+        # Convert to Parquet
+        import pyarrow as pa
+        import pyarrow.parquet as pq
+        from io import BytesIO
+        
+        table &#x3D; pa.Table.from_pandas(df)
+        buf &#x3D; BytesIO()
+        pq.write_table(table, buf, compression&#x3D;&#39;snappy&#39;)
+        buf.seek(0)
+        
+        s3.put_object(
+            Bucket&#x3D;&#39;my-sap-landing-bucket&#39;,
+            Key&#x3D;f&#39;sap&#x2F;lfa1&#x2F;delta&#x2F;{ts}&#x2F;lfa1_delta.parquet&#39;,
+            Body&#x3D;buf.getvalue()
+        )
+    
+    # Save new delta token for next run
+    save_delta_state(new_delta_token)
+    
+    conn.close()
+    return len(df)
+
+# Run extraction (call this hourly via cron or scheduler)
+rows_extracted &#x3D; extract_lfa1_delta()
+print(f&quot;Extraction complete: {rows_extracted} rows&quot;)</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> First run returns 0 (no changes since init). After manually changing a vendor in SAP (FK02), next run returns 1+ rows with the changed vendor.</p>
+              </li>
+            </ol>
+          </div>
+          <div data-tool-block="adf" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Azure Data Factory — hourly delta schedule</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Set up scheduled pipeline trigger for hourly delta</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">In ADF, create a pipeline with a Copy Activity pointing to I_Supplier with delta mode enabled. Attach a Scheduled Trigger set to run every hour. ADF automatically manages the delta token and incremental load state.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Pipeline runs hourly. Each run shows 0–N rows depending on vendor changes in SAP. ODQMON shows subscription status active and queue depth increasing&#x2F;decreasing with extraction frequency.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
 
         <!-- Tool troubleshooting -->
         <details class="ts-section" style="margin-top:var(--space-6);border-top:1px solid var(--color-rule);padding-top:var(--space-5);">

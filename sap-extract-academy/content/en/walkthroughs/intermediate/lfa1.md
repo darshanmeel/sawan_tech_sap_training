@@ -69,6 +69,109 @@ troubleshooting:
   - problem: "ODQMON shows subscription in ERROR state"
     solution: "The extraction process may have failed mid-run and left the subscription in a bad state. Reset the subscription in ODQMON (right-click → Reset). Re-run the extraction. If the error persists, review the extraction tool's connection logs and check SM21 (system log) for RFC errors."
 
+toolSteps:
+  - tool: custom
+    label: "Custom (Python / pyrfc) — hourly delta extraction"
+    steps:
+      - title: "Run hourly delta extraction for LFA1"
+        explanation: "Use pyrfc to call the ODP extraction module every hour. Each call retrieves only changed vendor records since the last delta extraction. Store the delta token to resume from the correct point on the next run."
+        code: |
+          import pyrfc
+          import json
+          import pandas as pd
+          import boto3
+          from datetime import datetime
+          from pathlib import Path
+          
+          STATE_FILE = '/data/lfa1_delta_state.json'
+          
+          def load_delta_state():
+              """Load the last delta token from previous run."""
+              if Path(STATE_FILE).exists():
+                  with open(STATE_FILE, 'r') as f:
+                      return json.load(f)
+              return {'delta_token': '0', 'last_run': None}
+          
+          def save_delta_state(delta_token):
+              """Save current delta token for next run."""
+              state = {
+                  'delta_token': delta_token,
+                  'last_run': datetime.utcnow().isoformat()
+              }
+              with open(STATE_FILE, 'w') as f:
+                  json.dump(state, f)
+          
+          def extract_lfa1_delta():
+              """Extract LFA1 delta changes."""
+              conn = pyrfc.Connection(
+                  ashost='sap-prod.company.com',
+                  sysnr='00', client='100',
+                  user='EXTRACT_LFA1', passwd='<password>'
+              )
+              
+              state = load_delta_state()
+              
+              result = conn.call(
+                  'RODPS_REPL_ODP_EXTRACT',
+                  SUBSCRIBER_NAME='PYTHON_LFA1_DELTA',
+                  SUBSCRIBER_TYPE='2',
+                  SUBSCRIBER_PROCESS='DELTA_LOAD',
+                  DATA_AREA='ABAP_CDS',
+                  ENTITY_NAME='I_Supplier',
+                  DELTA_TOKEN=state['delta_token'],
+                  MAX_RECORDS=10000,
+                  FIELDS=[{'FIELDNAME': '*'}]
+              )
+              
+              records = result.get('DATA', [])
+              df = pd.DataFrame(records)
+              
+              new_delta_token = result.get('DELTA_TOKEN', state['delta_token'])
+              
+              print(f"LFA1 Delta: {len(df)} changed records")
+              print(f"Previous delta token: {state['delta_token']}")
+              print(f"New delta token: {new_delta_token}")
+              
+              if len(df) > 0:
+                  # Write delta to S3 with timestamp
+                  ts = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
+                  s3 = boto3.client('s3')
+                  
+                  # Convert to Parquet
+                  import pyarrow as pa
+                  import pyarrow.parquet as pq
+                  from io import BytesIO
+                  
+                  table = pa.Table.from_pandas(df)
+                  buf = BytesIO()
+                  pq.write_table(table, buf, compression='snappy')
+                  buf.seek(0)
+                  
+                  s3.put_object(
+                      Bucket='my-sap-landing-bucket',
+                      Key=f'sap/lfa1/delta/{ts}/lfa1_delta.parquet',
+                      Body=buf.getvalue()
+                  )
+              
+              # Save new delta token for next run
+              save_delta_state(new_delta_token)
+              
+              conn.close()
+              return len(df)
+          
+          # Run extraction (call this hourly via cron or scheduler)
+          rows_extracted = extract_lfa1_delta()
+          print(f"Extraction complete: {rows_extracted} rows")
+        language: python
+        verify: "First run returns 0 (no changes since init). After manually changing a vendor in SAP (FK02), next run returns 1+ rows with the changed vendor."
+
+  - tool: adf
+    label: "Azure Data Factory — hourly delta schedule"
+    steps:
+      - title: "Set up scheduled pipeline trigger for hourly delta"
+        explanation: "In ADF, create a pipeline with a Copy Activity pointing to I_Supplier with delta mode enabled. Attach a Scheduled Trigger set to run every hour. ADF automatically manages the delta token and incremental load state."
+        verify: "Pipeline runs hourly. Each run shows 0–N rows depending on vendor changes in SAP. ODQMON shows subscription status active and queue depth increasing/decreasing with extraction frequency."
+
 nextSteps:
   - label: "Try LFA1 Expert — multi-table extraction with LFB1 and LFBK"
     url: "/walkthrough/expert/lfa1/"
