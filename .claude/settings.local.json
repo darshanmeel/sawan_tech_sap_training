@@ -30,7 +30,9 @@
       "Bash(git *)",
       "Bash(python *)",
       "Bash(grep -E \"\\\\.md$\")",
-      "mcp__notebooklm-mcp__notebook_query"
+      "mcp__notebooklm-mcp__notebook_query",
+      "mcp__notebooklm-mcp__notebook_add_text",
+      "mcp__notebooklm-mcp__infographic_create"
     ]
   }
 }
