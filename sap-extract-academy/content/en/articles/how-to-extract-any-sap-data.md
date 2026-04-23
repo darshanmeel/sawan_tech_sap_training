@@ -96,125 +96,232 @@ ACDOCA is the Universal Journal in SAP S/4HANA. It contains:
 
 ### Step-by-Step: Extract 2024 ACDOCA to Databricks + S3
 
-**Method:** ODP | **Tool:** Databricks | **Sink:** S3
+<div class="article-walkthrough" id="acdoca-databricks-s3">
 
-#### Prerequisites
+<div style="background:var(--color-bg-3);border:1px solid var(--color-rule);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-4);display:flex;gap:var(--space-5);flex-wrap:wrap;">
+  <div><span style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--color-ink-soft);">Method</span><br><strong>ODP</strong></div>
+  <div><span style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--color-ink-soft);">Tool</span><br><strong>Databricks</strong></div>
+  <div><span style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--color-ink-soft);">Sink</span><br><strong>S3</strong></div>
+  <div style="margin-left:auto;"><a href="/sawan_tech_sap_training/walkthrough/acdoca/?method=odp&amp;tool=databricks&amp;sink=s3" style="font-size:13px;">Open full walkthrough →</a></div>
+</div>
 
-- SAP source system with I_JournalEntryItem CDS view (S/4HANA 2020+)
-- Databricks workspace with Python runtime cluster
-- S3 bucket with write access
-- Extraction user credentials with S_ODP_READ authorization
+<nav class="wt-tab-bar" role="tablist" aria-label="Walkthrough sections" style="margin-bottom:0;">
+  <button class="wt-tab" role="tab" aria-selected="true" data-aw-tab="sap" aria-controls="aw-panel-sap" type="button">SAP Side</button>
+  <button class="wt-tab" role="tab" aria-selected="false" data-aw-tab="tool" aria-controls="aw-panel-tool" type="button">Tool</button>
+  <button class="wt-tab" role="tab" aria-selected="false" data-aw-tab="sink" aria-controls="aw-panel-sink" type="button">Sink</button>
+</nav>
 
-#### Step 1: SAP Enablement Check
+<div id="aw-panel-sap" role="tabpanel" style="background:var(--color-bg-2);border:1px solid var(--color-rule);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);padding:var(--space-5);">
 
-**Transaction SE80 (ABAP Repository):**
-1. Search for `I_JournalEntryItem`
-2. Confirm annotation `@Analytics.dataExtract: true` is present
-3. If missing, CDS views require upgrade
+<h4 style="margin-top:0;font-family:var(--font-display);font-size:22px;font-weight:600;">SAP <em style="color:var(--color-accent-2);font-style:italic;">side</em></h4>
+<p style="color:var(--color-ink-soft);font-size:14px;">Steps to complete in your SAP system before extraction starts.</p>
 
-**Transaction SE16N (Data Browser):**
-1. Open ACDOCA table
-2. Filter: `BUKRS='1000' AND GJAHR=2024`
-3. Count rows (this is your reconciliation target — example: 45M)
-4. Write down the count
+<ol style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
 
-**Transaction SU01 (User Management):**
-1. Create extraction user: `EXTRACT_USER` (system-type)
-2. Assign roles:
-   - `S_RFC` (for RFC access)
-   - `S_ODP_READ` with `ODPSOURCE=ABAP_CDS` (for ODP)
-3. Verify in PFCG: Authorization object `S_ODP_READ` assigned
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 1</span>
+<strong style="font-size:16px;">Verify CDS view in SE80</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Confirm the released CDS view <code>I_JournalEntryItem</code> is available and annotated for extraction.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>Transaction: SE80
+Search:      I_JournalEntryItem
+Check:       @Analytics.dataExtract: true</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Annotation present. If missing, upgrade CDS views.</p>
+</li>
 
-#### Step 2: Databricks Setup
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 2</span>
+<strong style="font-size:16px;">Count rows in SE16N — reconciliation target</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Record the row count for your partition filter. This is your reconciliation target.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>Transaction: SE16N
+Table:       ACDOCA
+Filter:      BUKRS = '1000' AND GJAHR = 2024
+Example:     ~45M rows</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Count > 0 and &lt; 500M. If higher, sub-partition further.</p>
+</li>
 
-**Create cluster:**
-1. Databricks workspace → Compute → Create cluster
-2. Runtime: Python (7.3 LTS or later)
-3. Install library: `pip install sap-odp-client`
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 3</span>
+<strong style="font-size:16px;">Create extraction user in SU01</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Create a dedicated system-type user for ODP access.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>Transaction: SU01
+User:        EXTRACT_USER (system-type)
+Roles:
+  - S_RFC
+  - S_ODP_READ (ODPSOURCE=ABAP_CDS)</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> PFCG shows S_ODP_READ assigned.</p>
+</li>
 
-**Configure S3 bucket:**
-```bash
-s3://company-datalake/raw/acdoca/2024/
-```
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 4</span>
+<strong style="font-size:16px;">Confirm ODP subscription in ODQMON</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">After first extraction attempt, verify the ODP subscription is active.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>Transaction: ODQMON
+Queue:       I_JournalEntryItem
+Subscriber:  DATABRICKS_EXTRACT
+Status:      Active</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Subscription visible with non-zero row count.</p>
+</li>
 
-**Environment variables (in cluster config):**
-```
-SAP_HOST=sap.company.com
-SAP_CLIENT=100
-SAP_USER=EXTRACT_USER
-SAP_PASSWORD=<secure password>
-```
+</ol>
 
-#### Step 3: Extract via ODP (Databricks Notebook)
+</div>
 
-```python
-from sap_odp_client import ODP
-import os
+<div id="aw-panel-tool" role="tabpanel" hidden style="background:var(--color-bg-2);border:1px solid var(--color-rule);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);padding:var(--space-5);">
 
-# Connect to SAP ODP
+<h4 style="margin-top:0;font-family:var(--font-display);font-size:22px;font-weight:600;">Tool <em style="color:var(--color-accent-2);font-style:italic;">configuration</em></h4>
+<p style="color:var(--color-ink-soft);font-size:14px;">Databricks Spark pipeline to read ACDOCA via the SAP ODP connector.</p>
+
+<ol style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 1</span>
+<strong style="font-size:16px;">Create Databricks cluster with SAP connector</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Provision a cluster and install the SAP ODP client library.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>Runtime:    DBR 13.3 LTS (Python 3.10)
+Node type:  i3.xlarge (4 workers recommended)
+Library:    pip install sap-odp-client pyrfc</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Cluster running; library shows "Installed" in Libraries tab.</p>
+</li>
+
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 2</span>
+<strong style="font-size:16px;">Store SAP credentials in Databricks secret scope</strong>
+</div>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>databricks secrets create-scope --scope sap-prod
+databricks secrets put --scope sap-prod --key host
+databricks secrets put --scope sap-prod --key user
+databricks secrets put --scope sap-prod --key password</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>dbutils.secrets.list("sap-prod")</code> returns all 3 keys.</p>
+</li>
+
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 3</span>
+<strong style="font-size:16px;">Extract 2024 ACDOCA via ODP subscription</strong>
+</div>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">from sap_odp_client import ODP
+
 odp = ODP(
-    host=os.getenv("SAP_HOST"),
-    client=os.getenv("SAP_CLIENT"),
-    user=os.getenv("SAP_USER"),
-    password=os.getenv("SAP_PASSWORD")
+    host=dbutils.secrets.get("sap-prod", "host"),
+    client="100",
+    user=dbutils.secrets.get("sap-prod", "user"),
+    password=dbutils.secrets.get("sap-prod", "password"),
 )
 
-# Subscribe to ACDOCA with partition filters
 subscription = odp.subscribe(
     source="I_JournalEntryItem",
-    filter={
-        "RBUKRS": "1000",      # Company code (partition key)
-        "RYEAR": 2024          # Fiscal year (partition key)
-    }
+    filter={"RBUKRS": "1000", "RYEAR": 2024},
 )
 
-# Extract in 100K-row batches
-batch_size = 100_000
-output_path = "s3://company-datalake/raw/acdoca/2024/"
-row_count = 0
+output = "s3://company-datalake/raw/acdoca/2024/"
+rows = 0
+for batch in subscription.fetch(batch_size=100_000):
+    spark.createDataFrame(batch) \
+        .write.mode("append").parquet(f"{output}part={rows}")
+    rows += len(batch)
 
-for batch in subscription.fetch(batch_size=batch_size):
-    df = spark.createDataFrame(batch)
-    df.write.mode("append").parquet(f"{output_path}/batch_{row_count}")
-    row_count += len(batch)
-    print(f"Extracted {row_count} rows...")
+print(f"Extracted {rows} rows")</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Row count matches SE16N target from SAP Side step 2.</p>
+</li>
 
-print(f"✓ Total: {row_count} rows extracted to {output_path}")
-```
+</ol>
 
-#### Step 4: S3 Sink Configuration
+</div>
 
-**Verify data in S3:**
-```python
-# Read back and validate
-df = spark.read.parquet("s3://company-datalake/raw/acdoca/2024/")
-print(f"Records in S3: {df.count()}")
-df.show(5)
-```
+<div id="aw-panel-sink" role="tabpanel" hidden style="background:var(--color-bg-2);border:1px solid var(--color-rule);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);padding:var(--space-5);">
 
-**S3 structure:**
-```
-s3://company-datalake/raw/acdoca/2024/
-├── batch_0/
-├── batch_100000/
-├── batch_200000/
-└── ...
-```
+<h4 style="margin-top:0;font-family:var(--font-display);font-size:22px;font-weight:600;">Sink <em style="color:var(--color-accent-2);font-style:italic;">setup</em></h4>
+<p style="color:var(--color-ink-soft);font-size:14px;">S3 landing zone configuration with Glue catalog registration.</p>
 
-#### Step 5: Verification
+<ol style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
 
-**Back in SAP, transaction SE16N:**
-1. Run same filter: `BUKRS='1000' AND GJAHR=2024`
-2. Confirm SAP count matches S3 record count
-3. If mismatch > 0.1%, investigate filters or delta delays
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 1</span>
+<strong style="font-size:16px;">Create S3 bucket with partition layout</strong>
+</div>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>aws s3 mb s3://company-datalake --region us-east-1
 
-**In Databricks:**
-```python
-# Quick validation
-extracted_count = spark.read.parquet("s3://company-datalake/raw/acdoca/2024/").count()
-print(f"✓ Extracted: {extracted_count} rows")
-# Should match SAP SE16N count
-```
+# Hive-style partitioning for Glue/Athena
+s3://company-datalake/raw/acdoca/rbukrs=1000/ryear=2024/</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>aws s3 ls s3://company-datalake/raw/acdoca/</code> returns the partition folders.</p>
+</li>
+
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 2</span>
+<strong style="font-size:16px;">Grant Databricks instance profile S3 access</strong>
+</div>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>{
+  "Effect": "Allow",
+  "Action": ["s3:PutObject", "s3:GetObject", "s3:ListBucket"],
+  "Resource": [
+    "arn:aws:s3:::company-datalake",
+    "arn:aws:s3:::company-datalake/raw/acdoca/*"
+  ]
+}</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>dbutils.fs.ls("s3://company-datalake/raw/")</code> succeeds from a Databricks notebook.</p>
+</li>
+
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 3</span>
+<strong style="font-size:16px;">Register Glue table &amp; reconcile row count</strong>
+</div>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">spark.sql("""
+CREATE TABLE IF NOT EXISTS sap_landing.raw.acdoca (
+  RBUKRS STRING, RYEAR INT, BELNR STRING, DOCLN STRING,
+  HSL DECIMAL(23,2), RACCT STRING, /* ... */
+)
+USING PARQUET
+PARTITIONED BY (rbukrs, ryear)
+LOCATION 's3://company-datalake/raw/acdoca/'
+""")
+
+spark.sql("MSCK REPAIR TABLE sap_landing.raw.acdoca")
+
+count = spark.sql("""
+  SELECT COUNT(*) FROM sap_landing.raw.acdoca
+  WHERE rbukrs='1000' AND ryear=2024
+""").collect()[0][0]
+
+print(f"S3 rows: {count}  (must match SE16N)")</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>count</code> matches SE16N reconciliation target within 0.1%.</p>
+</li>
+
+</ol>
+
+</div>
+
+</div>
+
+<script>
+(function(){
+  var root=document.getElementById('acdoca-databricks-s3');
+  if(!root)return;
+  var tabs=root.querySelectorAll('.wt-tab[data-aw-tab]');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click',function(){
+      var target=tab.getAttribute('data-aw-tab');
+      tabs.forEach(function(t){t.setAttribute('aria-selected',t===tab?'true':'false');});
+      root.querySelectorAll('[id^="aw-panel-"]').forEach(function(p){
+        if(p.id==='aw-panel-'+target){p.removeAttribute('hidden');}else{p.setAttribute('hidden','');}
+      });
+    });
+  });
+})();
+</script>
 
 #### Performance
 

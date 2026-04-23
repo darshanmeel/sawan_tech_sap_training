@@ -1018,10 +1018,17 @@ html.has-js .directory-page .filter-summary {
   flex-wrap: wrap;
 }
 
-.directory-card .tag--mode {
+.directory-card .tag--mode,
+.directory-card .tag--system {
   background: var(--color-bg-3);
-  color: var(--color-ink-soft);
+  color: var(--color-ink);
   border: var(--rule-weight) solid var(--color-rule);
+}
+
+.directory-card .tag--module {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  border: var(--rule-weight) solid var(--color-accent);
 }
 
 .directory-card-title {
