@@ -1217,26 +1217,17 @@ Commit Frequency:          Every 100,000 records
               <ul>
                 <li>Create a dedicated database (<code>SAP_LANDING</code>), schema (<code>RAW</code>), and warehouse (<code>SAP_LOAD_WH</code> — X-Small for bulk loads).</li>
                 <li>Create a Snowflake storage integration (not access keys) for your ADLS container or S3 bucket. Create an external stage pointing to the landing path where your tool drops Parquet files.</li>
-                <li>Create the target table. If you do not know all columns yet, use <code>COPY INTO</code> with <code>MATCH_BY_COLUMN_NAME</code> below to auto-map Parquet columns. If you need to create the table first, use SE11 to identify all columns and their data types:
-                  <pre style="margin:8px 0;font-size:12px;"><code>CREATE TABLE SAP_LANDING.RAW.slt-setup (
-          -- Add columns from SE11 here, e.g.:
-          -- MANDT VARCHAR(3),
-          -- RBUKRS VARCHAR(4),
-          -- GJAHR VARCHAR(4),
-          -- POPER VARCHAR(3),
-          -- BTYPE VARCHAR(1),
-          -- -- ... (get full column list from SE11 table definition)
-        );
-        
-        -- Or let Snowflake infer schema from Parquet on first COPY INTO</code></pre>
-                </li>
+                <li>Create the target table using the generated DDL below (derived from the table's column schema). Alternatively, let Snowflake auto-infer the schema via <code>MATCH_BY_COLUMN_NAME</code> on the first <code>COPY INTO</code>.</li>
               </ul>
+              <pre style="margin:var(--space-3) 0 0;font-size:12px;"><code class="language-sql">CREATE TABLE SAP_LANDING.RAW.slt-setup (
+          -- Add columns from SE11 (or let MATCH_BY_COLUMN_NAME infer schema on first COPY)
+        );</code></pre>
             </div>
         
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
-                <strong style="display:block;margin-bottom:6px;">1. Create table if not exists (one-time setup)</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">If you don't want to manually list all columns from SE11, Snowflake can auto-infer the schema from the first Parquet file. Run this once to create the table with inferred schema:</p>
+                <strong style="display:block;margin-bottom:6px;">1. Auto-create the target table on first load (optional)</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">If you skipped the explicit <code>CREATE TABLE</code> above, Snowflake can infer the schema from the first Parquet file. Run once with <code>VALIDATION_MODE</code> for a dry-run:</p>
                 <pre style="margin:0 0 6px;font-size:12px;"><code>COPY INTO SAP_LANDING.RAW.slt-setup
         FROM @your_stage/sap/slt-setup/
         PATTERN='.*parquet'
@@ -1244,15 +1235,15 @@ Commit Frequency:          Every 100,000 records
         MATCH_BY_COLUMN_NAME=CASE_INSENSITIVE
         ON_ERROR=SKIP_FILE
         VALIDATION_MODE=RETURN_ERRORS;</code></pre>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0;"><strong>Tip:</strong> The first COPY creates the table if it doesn't exist (when <code>MATCH_BY_COLUMN_NAME</code> is set). Use <code>VALIDATION_MODE=RETURN_ERRORS</code> for a dry-run without actually loading — confirms the Parquet schema before committing.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0;"><strong>Tip:</strong> <code>VALIDATION_MODE=RETURN_ERRORS</code> inspects the Parquet schema without committing rows — confirm column mapping before the real load.</p>
               </li>
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">2. Load from external stage — COPY INTO or Snowpipe</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>Batch (COPY INTO):</strong> Run <code>COPY INTO SAP_LANDING.RAW.slt-setup FROM @your_stage/sap/slt-setup/ PATTERN='.*parquet' FILE_FORMAT=(TYPE=PARQUET)</code>. Schedule via a Snowflake task or your orchestrator after each extraction.<br><br><strong>Continuous (Snowpipe):</strong> Create a pipe: <code>CREATE PIPE sap_slt-setup_pipe AS COPY INTO SAP_LANDING.RAW.slt-setup FROM @your_stage/sap/slt-setup/ FILE_FORMAT=(TYPE=PARQUET)</code>. Enable auto-ingest on the stage — Snowpipe fires automatically when a file lands. No scheduling required; ideal for near-real-time SLT feeds.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>Batch (COPY INTO):</strong> <code>COPY INTO SAP_LANDING.RAW.slt-setup FROM @your_stage/sap/slt-setup/ PATTERN='.*parquet' FILE_FORMAT=(TYPE=PARQUET)</code>. Schedule via a Snowflake task or your orchestrator after each extraction.<br><br><strong>Continuous (Snowpipe):</strong> <code>CREATE PIPE sap_slt-setup_pipe AS COPY INTO SAP_LANDING.RAW.slt-setup FROM @your_stage/sap/slt-setup/ FILE_FORMAT=(TYPE=PARQUET)</code>. Enable auto-ingest on the stage — Snowpipe fires automatically when a file lands. Ideal for near-real-time SLT feeds.</p>
                 <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>LIST @your_stage/sap/slt-setup/</code> shows landed files. COPY INTO or Snowpipe status shows zero skipped files.</p>
               </li>
               <li style="margin-bottom:var(--space-4);">
-                <strong style="display:block;margin-bottom:6px;">2. Validate row count after load</strong>
+                <strong style="display:block;margin-bottom:6px;">3. Validate row count after load</strong>
                 <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM SAP_LANDING.RAW.slt-setup</code>. Compare to SE16N row count from the SAP-side steps. Check <code>INFORMATION_SCHEMA.LOAD_HISTORY</code> for skipped or errored files if counts diverge.</p>
                 <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>SELECT COUNT(*)</code> matches SE16N. Zero error rows in load history.</p>
               </li>
@@ -1274,6 +1265,7 @@ Commit Frequency:          Every 100,000 records
               <ul>
                 <li>Create a BigQuery dataset (e.g., <code>sap_landing</code>) in the <strong>same region</strong> as your GCS bucket. Cross-region reads from GCS are not supported.</li>
                 <li>Grant your service account <strong>BigQuery Data Editor</strong> on the dataset and <strong>Storage Object Viewer</strong> on the GCS bucket (for external tables).</li>
+                <li>Create the managed table using the DDL below (for native BigQuery loads). Skip this if you prefer an external table over GCS.</li>
               </ul>
             </div>
         
@@ -1306,6 +1298,7 @@ Commit Frequency:          Every 100,000 records
               <ul>
                 <li>Create a Lakehouse in your Fabric workspace (e.g., <code>SAP_Landing</code>). Create a <code>Tables/slt-setup/</code> folder for Delta/Iceberg tables, or <code>Files/slt-setup/</code> for raw Parquet.</li>
                 <li>Decide your ingestion path before extracting: ADF Copy Activity, Databricks ADLS shortcut, or Parquet ADLS shortcut. Each wires up differently — agree with the analytics team first.</li>
+                <li>For the Fabric Warehouse path (not Lakehouse), create the managed table using the DDL below.</li>
               </ul>
             </div>
         
@@ -1339,6 +1332,7 @@ Commit Frequency:          Every 100,000 records
                 <li>Ensure Unity Catalog is enabled. Create a catalog (e.g., <code>sap_landing</code>) and schema (<code>raw</code>).</li>
                 <li>If Databricks is your extraction tool: the <code>saveAsTable</code> call in the Tool tab writes the table — no further sink setup needed.</li>
                 <li>If another tool writes Parquet to ADLS/S3: note the exact file path for registering as an external table.</li>
+                <li>To pre-create the managed Delta table with typed columns (recommended for schema enforcement), use the DDL below.</li>
               </ul>
             </div>
         

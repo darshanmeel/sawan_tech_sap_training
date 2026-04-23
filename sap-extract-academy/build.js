@@ -339,6 +339,37 @@ function buildPage(filePath, content) {
   const defaultMethod = data.method || 'odp';
   const stepsWithDisplay = stepsOdp;
 
+  // DDL generation for walkthrough sinks — pulled from directory YAML by slug.
+  // Walkthroughs can reference table columns via CREATE TABLE in Snowflake,
+  // Databricks, Fabric, and BigQuery sink sections.
+  let ddlSnowflake = '';
+  let ddlDatabricks = '';
+  let ddlFabric = '';
+  let ddlBigquery = '';
+  if (pageType === 'walkthrough' && tableSlug) {
+    const dirPath = path.join(__dirname, `content/en/directory/tables/${tableSlug}.md`);
+    if (fs.existsSync(dirPath)) {
+      try {
+        const { data: tableData } = matter(fs.readFileSync(dirPath, 'utf-8'));
+        const cols = Array.isArray(tableData.columns) ? tableData.columns : [];
+        if (cols.length > 0) {
+          const tableName = tableData.name || tableSlug.toUpperCase();
+          const moduleCode = tableData.module || '';
+          const pkeys = Array.isArray(tableData.partition_keys) && tableData.partition_keys.length
+            ? tableData.partition_keys
+            : cols.filter((c) => c.key).slice(0, 2).map((c) => c.name);
+          ddlSnowflake = generateDdl('snowflake', tableName, cols, pkeys, { module: moduleCode });
+          ddlDatabricks = generateDdl('databricks', tableName, cols, pkeys, { module: moduleCode });
+          ddlFabric = generateDdl('fabric', tableName, cols, pkeys, { module: moduleCode });
+          ddlBigquery = generateDdl('bigquery', tableName, cols, pkeys, { module: moduleCode });
+        }
+      } catch (e) {
+        console.warn(`⚠ DDL generation skipped for ${tableSlug}: ${e.message}`);
+      }
+    }
+  }
+  const hasDdl = !!(ddlSnowflake && ddlDatabricks && ddlFabric && ddlBigquery);
+
   // Tool-side steps: level YAML takes priority; fall back to shared/<slug>.yaml.
   const rawToolStepsFromLevel = Array.isArray(data.toolSteps) ? data.toolSteps : [];
   const rawToolSteps = rawToolStepsFromLevel.length > 0
@@ -413,7 +444,12 @@ function buildPage(filePath, content) {
     hasRelatedWalkthroughs: relatedWalkthroughs.length > 0,
     hasRelatedTerms: Array.isArray(data.relatedTerms) && data.relatedTerms.length > 0,
     hasWalkthrough: walkthroughsBySlug[tableSlug] !== undefined,
-    sections: sections
+    sections: sections,
+    ddlSnowflake,
+    ddlDatabricks,
+    ddlFabric,
+    ddlBigquery,
+    hasDdl
   };
 
   const pageTypeTemplate = pageTemplates[pageType];

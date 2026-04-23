@@ -2005,29 +2005,59 @@ legend {
   gap: var(--space-2);
   border-bottom: 2px solid var(--color-rule);
   margin-bottom: 0;
+  flex-wrap: wrap;
 }
 
 .wt-tab {
+  position: relative;
   background: var(--color-bg-3);
   border: var(--rule-weight) solid var(--color-rule);
   border-bottom: none;
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
   padding: var(--space-3) var(--space-5);
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-ink-soft);
   margin-bottom: -2px;
-  transition: color 0.15s, background 0.15s;
+  transition: color 0.2s, background 0.2s, transform 0.1s, box-shadow 0.2s;
   font-family: var(--font-mono);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 140px;
+  justify-content: center;
+}
+
+.wt-tab::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-rule);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+
+.wt-tab[data-wt-tab="sap"]::before {
+  background: #6aa17a;
+}
+
+.wt-tab[data-wt-tab="tool"]::before {
+  background: #d97706;
+}
+
+.wt-tab[data-wt-tab="sink"]::before {
+  background: #7c92d4;
 }
 
 .wt-tab:hover {
   color: var(--color-ink);
   background: var(--color-bg-2);
+  transform: translateY(-1px);
 }
 
 .wt-tab[aria-selected="true"] {
@@ -2035,7 +2065,18 @@ legend {
   color: var(--color-ink);
   border-color: var(--color-rule);
   border-bottom-color: var(--color-bg-2);
-  box-shadow: 0 -2px 0 var(--color-accent-2) inset;
+  box-shadow: 0 -3px 0 var(--color-accent) inset, 0 -4px 12px rgba(26, 77, 58, 0.08);
+  font-weight: 700;
+}
+
+.wt-tab[aria-selected="true"]::before {
+  transform: scale(1.4);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+}
+
+.wt-tab:focus-visible {
+  outline: 2px solid var(--color-accent-2);
+  outline-offset: 2px;
 }
 
 /* ===== Troubleshooting in-tab sections ===== */

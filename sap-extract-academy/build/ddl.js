@@ -90,6 +90,37 @@ const DATABRICKS_MAP = {
   TZNTSTMPL: () => 'TIMESTAMP'
 };
 
+const FALLBACK_BIGQUERY = () => 'STRING';
+
+const BIGQUERY_MAP = {
+  CHAR: () => 'STRING',
+  SSTR: () => 'STRING',
+  STRG: () => 'STRING',
+  STRING: () => 'STRING',
+  LCHR: () => 'STRING',
+  RAW: () => 'BYTES',
+  LRAW: () => 'BYTES',
+  CLNT: () => 'STRING',
+  CUKY: () => 'STRING',
+  UNIT: () => 'STRING',
+  LANG: () => 'STRING',
+  NUMC: (len) => (len && len <= 9 ? 'INT64' : 'INT64'),
+  INT1: () => 'INT64',
+  INT2: () => 'INT64',
+  INT4: () => 'INT64',
+  INT8: () => 'INT64',
+  DEC: (len, dec) => `NUMERIC(${len || 15}, ${dec || 2})`,
+  QUAN: (len, dec) => `NUMERIC(${len || 15}, ${dec || 3})`,
+  CURR: (len, dec) => `NUMERIC(${len || 15}, ${dec || 2})`,
+  FLTP: () => 'FLOAT64',
+  DATS: () => 'DATE',
+  TIMS: () => 'TIME',
+  TIMN: () => 'TIME',
+  TIMESTAMP: () => 'TIMESTAMP',
+  TZNTSTMPS: () => 'TIMESTAMP',
+  TZNTSTMPL: () => 'TIMESTAMP'
+};
+
 const FABRIC_MAP = {
   CHAR: (len) => `VARCHAR(${len || 1})`,
   SSTR: (len) => `VARCHAR(${len || 1})`,
@@ -127,7 +158,8 @@ const FABRIC_MAP = {
 const DIALECTS = {
   snowflake: { map: SNOWFLAKE_MAP, fallback: FALLBACK_SNOWFLAKE },
   databricks: { map: DATABRICKS_MAP, fallback: FALLBACK_DATABRICKS },
-  fabric: { map: FABRIC_MAP, fallback: FALLBACK_FABRIC }
+  fabric: { map: FABRIC_MAP, fallback: FALLBACK_FABRIC },
+  bigquery: { map: BIGQUERY_MAP, fallback: FALLBACK_BIGQUERY }
 };
 
 function normalizeType(t) {
@@ -248,10 +280,49 @@ function generateFabric(tableName, columns /* , partitionKeys, module */) {
   return lines.join('\n');
 }
 
+// ---------------------------------------------------------------------------
+// BigQuery — lowercase identifiers, sap_<module>.<table>, PARTITION BY + CLUSTER BY
+// ---------------------------------------------------------------------------
+function generateBigQuery(tableName, columns, partitionKeys, module) {
+  const table = String(tableName).toLowerCase();
+  const schema = `sap_${String(module || 'common').toLowerCase()}`;
+  const lines = [];
+  lines.push(`-- BigQuery · ${tableName.toUpperCase()}`);
+  lines.push(`CREATE TABLE IF NOT EXISTS ${schema}.${table} (`);
+
+  const nameWidth = Math.max(8, ...columns.map((c) => c.name.length)) + 2;
+  const body = columns.map((col) => {
+    const type = mapType('bigquery', col.type, col.length, col.decimals);
+    const notNull = col.key ? ' NOT NULL' : '';
+    return `  ${padRight(col.name.toLowerCase(), nameWidth)}${type}${notNull}`;
+  });
+  lines.push(body.join(',\n'));
+  lines.push(')');
+
+  const keys = (partitionKeys && partitionKeys.length
+    ? partitionKeys
+    : keyColumns(columns)
+  ).map((k) => k.toLowerCase());
+
+  // BigQuery: PARTITION BY accepts one column (prefer a date or int), CLUSTER BY up to 4.
+  const dateCol = columns.find((c) => ['DATS', 'TIMESTAMP'].includes(normalizeType(c.type)));
+  if (dateCol) {
+    lines.push(`PARTITION BY ${dateCol.name.toLowerCase()}`);
+  } else if (keys.length > 0) {
+    lines.push(`-- PARTITION BY requires DATE/TIMESTAMP/INT64 — consider adding extraction_date`);
+  }
+  if (keys.length > 0) {
+    lines.push(`CLUSTER BY ${keys.slice(0, 4).join(', ')};`);
+  } else {
+    lines.push(';');
+  }
+  return lines.join('\n');
+}
+
 /**
  * Generate paste-ready CREATE TABLE DDL for the given dialect.
  *
- * @param {'snowflake'|'databricks'|'fabric'} dialect
+ * @param {'snowflake'|'databricks'|'fabric'|'bigquery'} dialect
  * @param {string} tableName            e.g. 'ACDOCA'
  * @param {Array}  columns              each: { name, type, length, decimals?, key? }
  * @param {Array}  partitionKeys        column names for CLUSTER BY / PARTITIONED BY
@@ -279,6 +350,8 @@ export function generateDdl(
       return generateDatabricks(tableName, columns, keys, module);
     case 'fabric':
       return generateFabric(tableName, columns, keys, module);
+    case 'bigquery':
+      return generateBigQuery(tableName, columns, keys, module);
     default:
       throw new Error(`generateDdl: unknown dialect "${dialect}"`);
   }
