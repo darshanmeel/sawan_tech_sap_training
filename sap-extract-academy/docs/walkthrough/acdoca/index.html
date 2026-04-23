@@ -1176,8 +1176,11 @@ for rbukrs, gjahr in partitions:
               </li>
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">2. Validate row count from Synapse or Databricks</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run a count query directly against the landed files. Compare to the SE16N count from the SAP-side steps. This is your reconciliation checkpoint before handing data to analytics.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>SELECT COUNT(*) FROM parquet.&#x60;abfss://sap-landing@account.dfs.core.windows.net/sap/acdoca/...&#x60;</code> matches SE16N.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Run a count query directly against the landed files. Compare to the SE16N count from the SAP-side steps — this is your reconciliation checkpoint before handing data to analytics.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">-- Synapse serverless / Databricks SQL
+        SELECT COUNT(*) AS row_count
+        FROM parquet.`abfss://sap-landing@account.dfs.core.windows.net/sap/acdoca/`;</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>row_count</code> matches SE16N.</p>
               </li>
             </ol>
           </div>
@@ -1204,13 +1207,17 @@ for rbukrs, gjahr in partitions:
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Confirm files land and register in Glue</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">After extraction, confirm files appear at the S3 prefix. Register the prefix as a Glue table pointing to Parquet files so Athena and Spark can discover it. If the next layer is Snowflake, create an external stage on this bucket path.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>aws s3 ls s3://your-bucket/sap/acdoca/</code> shows landed files. Glue crawler ran and created the table.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">After extraction, confirm files appear at the S3 prefix. Register the prefix as a Glue table pointing to Parquet files so Athena and Spark can discover it. If the next layer is Snowflake, create an external stage on this bucket path.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-bash">aws s3 ls s3://your-bucket/sap/acdoca/ --recursive
+        aws glue start-crawler --name sap-acdoca-crawler</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> S3 listing returns non-zero bytes. Glue crawler status shows READY and created the table.</p>
               </li>
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">2. Validate row count in Athena</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM your_glue_table</code> in Athena. Compare to SE16N. Athena scans Parquet efficiently if partition columns match the Hive-style path used for landing.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Athena count matches SE16N. Downstream team can query the Glue table without moving files.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Run a count in Athena and compare to SE16N. Athena scans Parquet efficiently when partition columns match the Hive-style path used for landing.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">SELECT COUNT(*) AS row_count
+        FROM sap_landing.acdoca;</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Athena count matches SE16N. Downstream team can query the Glue table without moving files.</p>
               </li>
             </ol>
           </div>
@@ -1237,13 +1244,20 @@ for rbukrs, gjahr in partitions:
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Create BigQuery external table or load job</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">After landing files in GCS, create a BigQuery external table (zero-copy, always current) or run a load job (faster queries, persistent storage). For Iceberg landing, BigQuery supports Iceberg tables via GCS BigLake — gives full DML and snapshot history.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Table <code>sap_landing.acdoca</code> exists in BigQuery. Schema matches SE11.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">After landing files in GCS, create a BigQuery external table (zero-copy, always current) or run a load job (faster queries, persistent storage). For Iceberg landing, BigQuery supports Iceberg tables via GCS BigLake — gives full DML and snapshot history.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">CREATE OR REPLACE EXTERNAL TABLE sap_landing.acdoca
+        OPTIONS (
+          format = 'PARQUET',
+          uris = ['gs://your-bucket/sap/acdoca/*']
+        );</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Table <code>sap_landing.acdoca</code> exists in BigQuery. Schema matches SE11.</p>
               </li>
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">2. Validate row count</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM sap_landing.acdoca</code>. Compare to SE16N. Partition by posting date or extraction date to keep BigQuery query costs manageable at scale.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Count matches SE16N. Partition metadata visible in BigQuery console.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Compare to SE16N. Partition by posting date or extraction date to keep BigQuery query costs manageable at scale.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">SELECT COUNT(*) AS row_count
+        FROM sap_landing.acdoca;</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Count matches SE16N. Partition metadata visible in BigQuery console.</p>
               </li>
             </ol>
           </div>
@@ -1307,13 +1321,34 @@ CLUSTER BY (MANDT, RCLNT);</code></pre>
               </li>
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">2. Load from external stage — COPY INTO or Snowpipe</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>Batch (COPY INTO):</strong> <code>COPY INTO SAP_LANDING.RAW.acdoca FROM @your_stage/sap/acdoca/ PATTERN='.*parquet' FILE_FORMAT=(TYPE=PARQUET)</code>. Schedule via a Snowflake task or your orchestrator after each extraction.<br><br><strong>Continuous (Snowpipe):</strong> <code>CREATE PIPE sap_acdoca_pipe AS COPY INTO SAP_LANDING.RAW.acdoca FROM @your_stage/sap/acdoca/ FILE_FORMAT=(TYPE=PARQUET)</code>. Enable auto-ingest on the stage — Snowpipe fires automatically when a file lands. Ideal for near-real-time SLT feeds.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>LIST @your_stage/sap/acdoca/</code> shows landed files. COPY INTO or Snowpipe status shows zero skipped files.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Choose one of two loading patterns:</p>
+                <p style="font-size:13px;font-weight:600;margin:0 0 4px;">Batch (COPY INTO) — scheduled</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">COPY INTO SAP_LANDING.RAW.acdoca
+        FROM @your_stage/sap/acdoca/
+        PATTERN='.*parquet'
+        FILE_FORMAT=(TYPE=PARQUET);</code></pre>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Run this on a Snowflake task or from your orchestrator after each extraction.</p>
+                <p style="font-size:13px;font-weight:600;margin:0 0 4px;">Continuous (Snowpipe) — auto-ingest on file arrival</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">CREATE PIPE sap_acdoca_pipe AS
+        COPY INTO SAP_LANDING.RAW.acdoca
+        FROM @your_stage/sap/acdoca/
+        FILE_FORMAT=(TYPE=PARQUET);</code></pre>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Enable auto-ingest on the stage — Snowpipe fires automatically when a file lands. Ideal for near-real-time SLT feeds.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>LIST @your_stage/sap/acdoca/</code> shows landed files. COPY INTO or Snowpipe status shows zero skipped files.</p>
               </li>
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">3. Validate row count after load</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM SAP_LANDING.RAW.acdoca</code>. Compare to SE16N row count from the SAP-side steps. Check <code>INFORMATION_SCHEMA.LOAD_HISTORY</code> for skipped or errored files if counts diverge.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>SELECT COUNT(*)</code> matches SE16N. Zero error rows in load history.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Run a count against the loaded table and compare it to the SE16N count from the SAP-side steps:</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">SELECT COUNT(*) AS row_count
+        FROM SAP_LANDING.RAW.acdoca;
+        
+        -- If counts diverge, inspect load history
+        SELECT *
+        FROM INFORMATION_SCHEMA.LOAD_HISTORY
+        WHERE TABLE_NAME = 'acdoca'
+          AND ERROR_COUNT &gt; 0
+        ORDER BY LAST_LOAD_TIME DESC;</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>row_count</code> matches SE16N. Zero error rows in load history.</p>
               </li>
             </ol>
           </div>
@@ -1365,13 +1400,29 @@ CLUSTER BY mandt, rclnt;</code></pre>
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Create external table, Iceberg table, or use direct connector</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>Parquet path:</strong> <code>CREATE EXTERNAL TABLE sap_landing.acdoca OPTIONS (format='PARQUET', uris=['gs://your-bucket/sap/acdoca/*'])</code> — zero-copy, always current.<br><strong>Iceberg path:</strong> Register as a BigLake Iceberg table for full DML support and snapshot history.<br><strong>Direct connector (Fivetran/ADF):</strong> Writes a native BigQuery table directly — no staging or external table needed.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Table <code>sap_landing.acdoca</code> exists and schema matches SE11.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Three options depending on how your tool writes data:</p>
+                <p style="font-size:13px;font-weight:600;margin:0 0 4px;">Parquet external (zero-copy, always current)</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">CREATE OR REPLACE EXTERNAL TABLE sap_landing.acdoca
+        OPTIONS (
+          format = 'PARQUET',
+          uris = ['gs://your-bucket/sap/acdoca/*']
+        );</code></pre>
+                <p style="font-size:13px;font-weight:600;margin:0 0 4px;">BigLake Iceberg (full DML + snapshot history)</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">CREATE OR REPLACE EXTERNAL TABLE sap_landing.acdoca
+        WITH CONNECTION `project.region.biglake-conn`
+        OPTIONS (
+          format = 'ICEBERG',
+          uris = ['gs://your-bucket/sap/acdoca/metadata/v1.metadata.json']
+        );</code></pre>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);"><strong>Direct connector (Fivetran/ADF):</strong> writes a native BigQuery table — no staging or external table needed.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Table <code>sap_landing.acdoca</code> exists and schema matches SE11.</p>
               </li>
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">2. Validate row count</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM sap_landing.acdoca</code>. Compare to SE16N. Partition the table by posting date or extraction date to keep per-query costs manageable at scale.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Count matches SE16N. Partition metadata visible in BigQuery console.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Compare to SE16N. Partition the table by posting date or extraction date to keep per-query costs manageable at scale.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">SELECT COUNT(*) AS row_count
+        FROM sap_landing.acdoca;</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Count matches SE16N. Partition metadata visible in BigQuery console.</p>
               </li>
             </ol>
           </div>
@@ -1428,8 +1479,10 @@ CREATE TABLE dbo.ACDOCA (
               </li>
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">2. Validate in SQL endpoint</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Open the Lakehouse SQL endpoint in Fabric. Run <code>SELECT COUNT(*) FROM acdoca</code>. Fabric automatically registers Delta tables in the SQL endpoint — Parquet external tables appear under Files.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Row count matches SE16N. Table visible in Lakehouse explorer.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Open the Lakehouse SQL endpoint in Fabric. Fabric automatically registers Delta tables in the SQL endpoint — Parquet external tables appear under Files.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">SELECT COUNT(*) AS row_count
+        FROM acdoca;</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Row count matches SE16N. Table visible in Lakehouse explorer.</p>
               </li>
             </ol>
           </div>
@@ -1483,13 +1536,26 @@ TBLPROPERTIES (&#39;delta.autoOptimize.optimizeWrite&#39; &#x3D; &#39;true&#39;)
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Confirm Delta/Iceberg table or register Parquet</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>If Databricks was your tool:</strong> Run <code>SHOW TABLES IN sap_landing.raw</code> — the table should already exist.<br><strong>If tool wrote Parquet:</strong> Register as external: <code>CREATE TABLE sap_landing.raw.acdoca USING PARQUET LOCATION 'abfss://...'</code><br>Or convert zero-copy to Delta: <code>CONVERT TO DELTA parquet.&#x60;abfss://...&#x60;</code> — gives time-travel and ACID transactions on the existing files.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>SELECT COUNT(*) FROM sap_landing.raw.acdoca</code> returns the expected row count.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);"><strong>If Databricks was your tool:</strong> the table should already exist from the <code>saveAsTable</code> step:</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">SHOW TABLES IN sap_landing.raw;</code></pre>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);"><strong>If another tool wrote Parquet:</strong> register it as an external Delta table (zero-copy, with time travel + ACID):</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">-- Option A: external Parquet
+        CREATE TABLE sap_landing.raw.acdoca
+        USING PARQUET
+        LOCATION 'abfss://sap-landing@account.dfs.core.windows.net/sap/acdoca/';
+        
+        -- Option B: convert zero-copy to Delta (recommended)
+        CONVERT TO DELTA parquet.`abfss://sap-landing@account.dfs.core.windows.net/sap/acdoca/`;</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>SELECT COUNT(*) FROM sap_landing.raw.acdoca</code> returns the expected row count.</p>
               </li>
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">2. Validate count and grant downstream access</strong>
-                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Compare the row count to SE16N. Then grant SELECT to the analytics team: <code>GRANT SELECT ON TABLE sap_landing.raw.acdoca TO &#x60;analytics-group&#x60;</code>. Downstream users should not need extraction credentials.</p>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Row count matches SE16N. Downstream team can query the table.</p>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Compare to SE16N, then grant <code>SELECT</code> to the analytics team. Downstream users should not need extraction credentials.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">SELECT COUNT(*) AS row_count
+        FROM sap_landing.raw.acdoca;
+        
+        GRANT SELECT ON TABLE sap_landing.raw.acdoca TO `analytics-group`;</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Row count matches SE16N. Downstream team can query the table.</p>
               </li>
             </ol>
           </div>
