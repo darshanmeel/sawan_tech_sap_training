@@ -985,23 +985,6 @@ html.has-js .directory-page .filter-summary {
 }
 
 
-.directory-grid .directory-card:first-child .mini-meta dt {
-  color: rgba(246, 244, 239, 0.55);
-}
-
-.directory-grid .directory-card:first-child .mini-meta dd {
-  color: var(--color-bg);
-}
-
-.directory-grid .directory-card:first-child .directory-card-link {
-  color: var(--color-accent-2);
-}
-
-.directory-grid .directory-card:first-child .tag {
-  border-color: rgba(246, 244, 239, 0.2);
-  color: rgba(246, 244, 239, 0.65);
-  background: rgba(246, 244, 239, 0.08);
-}
 
 .directory-card[hidden] {
   display: none;
