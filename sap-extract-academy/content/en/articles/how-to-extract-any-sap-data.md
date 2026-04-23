@@ -250,6 +250,43 @@ This is critical. Many enterprises discover mid-implementation that they have a 
 1. During full-load, monitor active dialogs
 2. Keep utilization < 80% to avoid impacting sales transactions
 
+**In transaction SM59 (RFC Destination):**
+1. Create destination for your target (Kafka, Snowflake, S3, or Event Hub)
+2. SAP writes directly to your cloud infrastructure
+3. No intermediate servers needed
+
+#### SLT Direct-to-Cloud Options (Full Use License Only)
+
+**💡 Key Advantage:** With Full Use license, SAP pushes data **directly** to your cloud without Kafka:
+
+**Option A: Direct to Kafka** (most flexible for CDC logic)
+- SAP → Kafka topic
+- Databricks consumes for transformation
+- Best for: Complex change data capture, deduplication, multi-consumer scenarios
+
+**Option B: Direct to S3/Azure Data Lake** (serverless)
+- SAP → S3 bucket or ADLS directly
+- Databricks or Snowflake reads from cloud storage
+- Best for: Cost optimization, eventual consistency, event-driven architectures
+- Pay only for storage + compute, no intermediate infrastructure
+
+**Option C: Direct to Snowflake** (one-step ingestion)
+- SAP → Snowflake table directly
+- No staging required
+- Best for: Snowflake-native teams, simpler architecture
+- Note: Requires Snowflake connector configuration
+
+**Option D: Direct to Event Hubs / Pub/Sub** (managed streaming)
+- SLT → Azure Event Hubs or Google Pub/Sub
+- Your cloud provider handles scaling
+- Best for: Teams already using cloud-native event systems
+
+**Which path should you choose?**
+- **Complex CDC (capture deletes, schema evolution):** Use Kafka
+- **Simple streaming, no infrastructure management:** Direct to Snowflake or S3
+- **Cost-sensitive, eventual consistency OK:** Direct to S3
+- **Already using Kafka for other pipelines:** Direct to Kafka for consistency
+
 #### Kafka Setup (If Using Kafka as Intermediate)
 
 **On your Kafka cluster:**
