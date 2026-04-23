@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SM59: RFC Destination Configuration — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="SM59 configures RFC connections (destinations) for remote systems calling SAP. Required setup for Python&#x2F;pyrfc and ADF data extraction.">
+  <link rel="canonical" href="https://academy.example.com/glossary/sm59/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SM59: RFC Destination Configuration — Plain Explanation">
+  <meta property="og:description" content="SM59 configures RFC connections (destinations) for remote systems calling SAP. Required setup for Python&#x2F;pyrfc and ADF data extraction.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;sm59&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SM59: RFC Destination Configuration — Plain Explanation">
+  <meta name="twitter:description" content="SM59 configures RFC connections (destinations) for remote systems calling SAP. Required setup for Python&#x2F;pyrfc and ADF data extraction.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"RFC Destination Configuration","alternateName":"SM59","description":"SM59 is the SAP transaction for configuring RFC destinations (connections to external systems or remote SAP systems). You configure SM59 to enable RFC calls from Python, ADF, or other tools to extract data.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+      <li aria-current="page">SM59</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · RFC Destination Configuration</p>
+        <h1>SM59<em>.</em></h1>
+      </div>
+      <p>SM59 is the SAP transaction for configuring RFC destinations (connections to external systems or remote SAP systems). You configure SM59 to enable RFC calls from Python, ADF, or other tools to extract data.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/RFC/">RFC</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Remote Function Call/">Remote Function Call</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Python&#x2F;pyrfc/">Python&#x2F;pyrfc</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Integration/">Integration</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Connection/">Connection</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>SM59 is the SAP transaction for configuring RFC destinations (connections to external systems or remote SAP systems). You configure SM59 to enable RFC calls from Python, ADF, or other tools to extract data.</p>
+      </div>
+
+      <div class="glossary-prose">
+        <h3>What is SM59?</h3>
+<p><code>SM59</code> is the SAP transaction for <strong>RFC Destination Configuration</strong> — the administrative interface where connection parameters for remote systems are defined and stored. In SAP&#39;s RFC model, every external system that wants to call a function module on SAP (or every SAP system that wants to call another SAP system) is represented as a named <strong>destination</strong> in SM59. This destination acts as a logical alias: programs reference it by name, and SM59 resolves that name to the actual network address, port, credentials, and protocol settings of the remote system.</p>
+<p>For data extraction, SM59 is the foundational configuration layer for any RFC-based connection. Whether you are using Python with the <code>pyrfc</code> library, Azure Data Factory&#39;s SAP connector, Informatica, Talend, or a custom ABAP program making remote function calls, the connection parameters ultimately resolve through SM59 or its equivalent. Understanding SM59 — what it contains, how it is structured, and how to test it — is essential for troubleshooting connectivity problems, which are among the most common causes of extraction pipeline failures in the early stages of a project.</p>
+<h3>How it works</h3>
+<p>SM59 destinations are categorised by <strong>connection type</strong>, which determines the protocol used for communication. The most common types for data extraction are:</p>
+<ul>
+<li><strong>Type 3 (ABAP Connection)</strong>: SAP-to-SAP RFC connections, used when one SAP system calls function modules on another.</li>
+<li><strong>Type TCP/IP (T)</strong>: Used for connections to external non-SAP programs via the SAP RFC library. This is the type used by Python/pyrfc, SAP JCo (Java Connector), and most third-party extraction tools. The external program registers itself with the SAP gateway using the SAP RFC library, and SM59 defines how to reach it — or, in the extraction direction, defines the SAP system endpoint that external tools connect to.</li>
+<li><strong>Type H (HTTP)</strong>: HTTP-based connections, relevant when SAP calls external REST services. Distinct from SICF, which handles inbound HTTP to SAP.</li>
+</ul>
+<p>Within each destination, you configure the <strong>program ID</strong>, <strong>gateway host</strong>, <strong>gateway service</strong> (typically <code>sapgw00</code> for instance 00), <strong>target host</strong>, <strong>system number</strong>, <strong>client</strong>, and <strong>logon credentials</strong>. The credentials embedded in SM59 are often a technical user account with restricted authorizations — sufficient to call specific function modules but not to log into the SAP GUI or access sensitive financial reports. Administrators control what that technical user can do through the SAP authorization system.</p>
+<h3>Why it matters for data extraction</h3>
+<p>When a Python script using <code>pyrfc</code> fails to connect to SAP, the root cause is almost always one of three things: the SM59 destination does not exist, the destination exists but the network connection is blocked (firewall, wrong port), or the credentials are incorrect or the user is locked. SM59 is the first place to check in all three scenarios. The transaction provides a <strong>Connection Test</strong> button that executes a live test of the configured connection, reporting success or failure with an error code. This single button eliminates hours of trial-and-error network debugging.</p>
+<p>SM59 also matters for understanding the SAP system landscape. Large enterprises run multiple SAP systems — development, quality, and production, sometimes across multiple landscapes (ECC, S/4HANA, BW). Each has its own SM59 configuration, and destinations defined in a development system do not automatically exist in production. When a pipeline that works in development fails in production, missing or misconfigured SM59 destinations are a frequent culprit. Extraction pipeline documentation should always include the SM59 destination name and the minimum set of authorizations required for the extraction user, so that basis administrators can replicate the configuration across environments.</p>
+<h3>Common pitfalls</h3>
+<p>The most frequent SM59-related extraction problem is <strong>credential expiry</strong>. SAP user accounts configured in SM59 have password expiration policies like any other SAP user. When the password expires, all RFC calls from external tools fail with an authorization error that is not always clearly labeled as a password expiry. The fix is simple — reset the password and update SM59 — but the diagnosis requires knowing where to look. Production extractions should use service accounts with <code>Password change not required</code> flag enabled, and password changes should be coordinated with the teams managing SM59 destinations.</p>
+<p>Another pitfall is the <strong>SAP message server vs. application server confusion</strong>. Some extraction tools support load-balanced connections through the SAP message server (which distributes connections across application server instances), while others require a direct connection to a specific application server. Configuring an SM59 destination with the wrong address type can cause intermittent connectivity — the pipeline works when it hits the right application server and fails when load balancing sends it to a server without the necessary RFC gateway configuration. Always confirm with the basis team whether to use message server or application server addressing.</p>
+<h3>In practice</h3>
+<p>A data engineering team is setting up a Python/pyrfc pipeline to extract <code>VBAK</code> and <code>VBAP</code> from a production SAP ECC system. They have written and tested the Python code against the development system using destination name <code>SAP_DEV</code>. When they try to run the same code against production (<code>SAP_PROD</code>), connection fails immediately. They open SM59 on the production system and find that <code>SAP_PROD</code> does not exist — the basis team created the destination in development but did not transport it to production (SM59 destinations are not transported via the standard change management system; they must be manually recreated or exported/imported). The basis team creates the destination in production, runs the Connection Test in SM59 (success), and the Python pipeline connects immediately. The data engineering team adds SM59 destination verification to their pre-go-live checklist for all future environment migrations.</p>
+
+      </div>
+
+      <p class="glossary-doc-link">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

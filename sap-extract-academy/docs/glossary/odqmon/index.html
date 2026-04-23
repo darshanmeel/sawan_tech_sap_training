@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ODQMON: ODP Queue Monitor in SAP — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="ODQMON monitors ODP delta queues, showing extraction lag, status, and errors. Essential for troubleshooting slow or stuck delta extractions.">
+  <link rel="canonical" href="https://academy.example.com/glossary/odqmon/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ODQMON: ODP Queue Monitor in SAP — Plain Explanation">
+  <meta property="og:description" content="ODQMON monitors ODP delta queues, showing extraction lag, status, and errors. Essential for troubleshooting slow or stuck delta extractions.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;odqmon&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ODQMON: ODP Queue Monitor in SAP — Plain Explanation">
+  <meta name="twitter:description" content="ODQMON monitors ODP delta queues, showing extraction lag, status, and errors. Essential for troubleshooting slow or stuck delta extractions.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"ODP Queue Monitor","alternateName":"ODQMON","description":"ODQMON is the SAP transaction for monitoring ODP delta queues. Shows extraction status, delta lag, queue depth, and any errors. Essential for troubleshooting slow delta extractions or queue buildup.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+      <li aria-current="page">ODQMON</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · ODP Queue Monitor</p>
+        <h1>ODQMON<em>.</em></h1>
+      </div>
+      <p>ODQMON is the SAP transaction for monitoring ODP delta queues. Shows extraction status, delta lag, queue depth, and any errors. Essential for troubleshooting slow delta extractions or queue buildup.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/ODP/">ODP</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Delta/">Delta</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Operational Data Provisioning/">Operational Data Provisioning</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Extractor/">Extractor</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/SM50/">SM50</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>ODQMON is the SAP transaction for monitoring ODP delta queues. Shows extraction status, delta lag, queue depth, and any errors. Essential for troubleshooting slow delta extractions or queue buildup.</p>
+      </div>
+
+      <div class="glossary-prose">
+        <h3>What is ODQMON?</h3>
+<p><strong>ODQMON</strong> is the SAP transaction code for the <strong>ODP Queue Monitor</strong>, the central operational console for inspecting and managing ODP (Operational Data Provisioning) delta queues. When any extraction tool — Python via <code>pyrfc</code>, Azure Data Factory, Fivetran, or SLT — registers a delta subscription against an ODP provider, SAP creates a persistent queue that tracks which data changes have been captured and which have been delivered to the consumer. ODQMON gives you a real-time view into every active queue: which providers have subscribers, how many unread change records are queued, when the last successful extraction completed, and whether any errors have interrupted delivery.</p>
+<p>ODQMON is accessible to Basis administrators and data engineers who have been granted the appropriate S/4HANA authorisation object. It is the first tool you open when a delta extraction falls behind, stops delivering data, or behaves unexpectedly. Understanding ODQMON is non-negotiable for anyone operating a production ODP delta pipeline.</p>
+<h3>How it works</h3>
+<p>The ODQMON screen is organised hierarchically. At the top level you see <strong>providers</strong> — the tables or CDS views that have been configured as ODP sources. Expanding a provider shows its <strong>subscriptions</strong>: one entry per extraction tool or pipeline that has registered against that provider. Each subscription row displays the subscription name (set by the consuming tool), the current <strong>queue depth</strong> (number of unread change records waiting to be fetched), the <strong>last read timestamp</strong>, and the <strong>status</strong> (active, paused, or in error).</p>
+<p>Inside a subscription, you can drill into individual <strong>data packets</strong> — the batches of change records that ODP has queued since the last extraction. Each packet has a sequence number, a creation timestamp, and a size in rows. This granularity lets you pinpoint exactly when a queue started building up and how fast it is growing relative to how fast your consumer is reading. ODQMON also exposes management actions: you can <strong>reset a subscription</strong> (delete the watermark and force a re-extraction from scratch), <strong>delete a subscription</strong> (remove the queue entirely — use with caution), or <strong>manually unlock</strong> a queue that is stuck in a locked state due to a failed extraction run.</p>
+<p>The underlying queue data is stored in SAP database tables in the <code>ODQ*</code> namespace (for example, <code>ODQDATA</code>, <code>ODQMON</code>, <code>ODQSUBSCR</code>). Basis teams sometimes monitor the size of these tables directly via <code>SE16N</code> when investigating database growth caused by accumulated queue data.</p>
+<h3>Why it matters for data extraction</h3>
+<p>In a delta extraction architecture, queue depth is your primary health metric. If your pipeline is healthy, queue depth should hover near zero between scheduled extraction windows — SAP posts changes, ODP queues them, and your extractor reads and clears them within minutes. If queue depth is growing monotonically across multiple extraction cycles, you have a <strong>lag problem</strong>: SAP is posting data faster than your consumer can read and acknowledge it. ODQMON quantifies this gap precisely, letting you distinguish between a slow consumer (your pipeline&#39;s throughput is insufficient) and a blocked consumer (the extraction is failing and not advancing the watermark at all).</p>
+<p>ODQMON is also essential for <strong>subscription hygiene</strong>. Commercial tools and ad-hoc Python scripts often create new subscriptions without cleaning up old ones. Over weeks this accumulates hundreds of zombie subscriptions, each holding a copy of queued data that will never be read. This wastes HANA database space and can slow down ODP queue writes. A regular review of ODQMON — deleting any subscription that has been inactive for more than a defined retention period — is part of ongoing pipeline operations.</p>
+<p>For SLT-based pipelines, ODQMON is the complement to <code>LTRC</code>. SLT writes its replicated changes into ODP delta queues, which downstream consumers (Kafka connectors, BW extractors) then read via ODP. Monitoring ODQMON ensures that the full chain — from SLT capture to ODP queue to consumer delivery — is flowing without bottlenecks at the queue layer.</p>
+<h3>Common pitfalls</h3>
+<p>A common mistake is resetting a subscription without understanding the downstream impact. When you reset a subscription in ODQMON, the watermark is deleted and ODP will re-deliver all historical data from the beginning on the next extraction run. If your consumer pipeline performs upserts, this is recoverable but wastes time and resources. If it performs appends, you will get duplicate records in the target. Always coordinate subscription resets with your pipeline team and verify that the consumer handles re-delivery correctly.</p>
+<p>Another pitfall is ignoring the <strong>error status</strong> column. ODQMON will flag a subscription with a red error status when an extraction failed partway through. Until the error is acknowledged and the queue is unlocked, subsequent extraction attempts may silently do nothing. Developers who do not check ODQMON will see zero rows returned from <code>RFC_ODP_READ</code> delta calls and incorrectly conclude that no data has changed, when in fact the queue is locked and full of unread changes.</p>
+<h3>In practice</h3>
+<p>In the expert ACDOCA walkthrough, after configuring SLT to replicate journal entries to Kafka in real time, you open ODQMON and navigate to the <code>I_JournalEntryItem</code> provider subscription. During the business day you should see queue depth stay below a few thousand rows at peak posting times, clearing to near zero within the extraction polling interval. If queue depth reaches 500,000 and is still climbing, the bottleneck is either the Kafka connector throughput or a network issue between the ODP consumer host and the SAP system. ODQMON tells you the queue is the symptom; <code>SM50</code> (work process monitor) and network traces tell you the cause.</p>
+
+      </div>
+
+      <p class="glossary-doc-link">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

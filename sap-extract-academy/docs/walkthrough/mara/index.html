@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract MARA with Z-Fields via CDS Extension — SAP-Side Intermediate — SAP Extract Academy</title>
+  <meta name="description" content="SAP-side intermediate guide for MARA Z-field extraction. SE11 Append Structure identification, CDS extension view creation in SE80, Z-field validation with SE16N.">
+  <link rel="canonical" href="https://academy.example.com/walkthrough/mara/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract MARA with Z-Fields via CDS Extension — SAP-Side Intermediate">
+  <meta property="og:description" content="SAP-side intermediate guide for MARA Z-field extraction. SE11 Append Structure identification, CDS extension view creation in SE80, Z-field validation with SE16N.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;mara&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract MARA with Z-Fields via CDS Extension — SAP-Side Intermediate">
+  <meta name="twitter:description" content="SAP-side intermediate guide for MARA Z-field extraction. SE11 Append Structure identification, CDS extension view creation in SE80, Z-field validation with SE16N.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract MARA with Z-Fields via CDS Extension (Intermediate)","description":"SAP-side intermediate guide for MARA extraction with custom Z-fields. Covers identifying Z-fields in SE11 Append Structures, creating a CDS extension view in SE80, confirming the extension view activates cleanly, and verifying Z-field values with SE16N.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Identify Z-fields in MARA via SE11","text":"Your MARA table carries custom Z-fields added through Append Structures. Open <a href=\"https://help.sap.com/\">SE11</a>, display the MARA table definition, and scroll to the field list. Append Structure fields are grouped separately. In this walkthrough, the target Z-fields are ZZ_BRAND (20-char) and ZZ_SUSTAINABILITY (1-char).","url":"https://academy.example.com/walkthrough/mara/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Check that the Append Structure has data","text":"Use <a href=\"https://help.sap.com/\">SE16N</a> to browse MARA rows and confirm that ZZ_BRAND contains expected values. If all values are empty (initial), the Z-field may not yet be populated from the upstream business process. Extracting empty Z-fields is harmless but produces no analytical value.","url":"https://academy.example.com/walkthrough/mara/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Create a CDS extension view to expose Z-fields","text":"In <a href=\"https://help.sap.com/\">SE80</a> or ABAP Development Tools (ADT), create an extension view that adds ZZ_BRAND and ZZ_SUSTAINABILITY to I_Product. The extension view must carry <code>@AccessControl.authorizationCheck: #CHECK</code> — without it, unauthorized users can read the Z-fields. Activate the view and verify it has no syntax errors.","url":"https://academy.example.com/walkthrough/mara/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Verify the extension view returns Z-field data","text":"From <a href=\"https://help.sap.com/\">SE80</a>, run a data preview on ZPROD_ZFIELDS and confirm ZZ_BRAND and ZZ_SUSTAINABILITY values appear alongside standard MARA fields.","url":"https://academy.example.com/walkthrough/mara/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Cross-check Z-field values with SE16N after extraction","text":"After extraction, pick a sample of MATNR values and compare ZZ_BRAND values in your target system against the SE16N MARA values for the same material numbers.","url":"https://academy.example.com/walkthrough/mara/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"MARA","item":"https://academy.example.com/tables/mara/"},{"@type":"ListItem","position":4,"name":"Extract MARA with Z-Fields via CDS Extension (Intermediate)"}]}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Walkthrough detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <!-- Picker (3-axis: method/tool/sink) — wrapped in card.section -->
+  <div class="card section" style="margin-bottom:var(--space-4);">
+    <div class="picker" aria-label="Extraction method, tool, and sink selector">
+      <fieldset class="picker-axis" id="picker-method">
+        <legend>Extraction method</legend>
+        <div class="picker-pills">
+          <label class="picker-pill">
+            <input type="radio" name="method" value="odp" class="picker-radio">
+            <span>ODP</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="method" value="slt" class="picker-radio">
+            <span>SLT</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="method" value="rfc" class="picker-radio">
+            <span>RFC direct</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="method" value="ref" class="picker-radio">
+            <span>Reference only</span>
+          </label>
+        </div>
+      </fieldset>
+    
+      <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
+        <legend>Tool</legend>
+        <div class="picker-pills">
+          <label class="picker-pill">
+            <input type="radio" name="tool" value="adf" class="picker-radio">
+            <span>ADF</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="tool" value="databricks" class="picker-radio">
+            <span>Databricks</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="tool" value="fivetran" class="picker-radio">
+            <span>Fivetran</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="tool" value="airbyte" class="picker-radio">
+            <span>Airbyte</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="tool" value="custom" class="picker-radio">
+            <span>Custom</span>
+          </label>
+        </div>
+      </fieldset>
+    
+      <fieldset class="picker-axis" id="picker-sink">
+        <legend>Sink</legend>
+        <div class="picker-pills">
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="adls" class="picker-radio">
+            <span>ADLS</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="s3" class="picker-radio">
+            <span>S3</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="gcs" class="picker-radio">
+            <span>GCS</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="snowflake" class="picker-radio">
+            <span>Snowflake</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="bigquery" class="picker-radio">
+            <span>BigQuery</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="fabric" class="picker-radio">
+            <span>Fabric</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="databricks" class="picker-radio">
+            <span>Databricks</span>
+          </label>
+          <label class="picker-pill">
+            <input type="radio" name="sink" value="other" class="picker-radio">
+            <span>Other</span>
+          </label>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/mara/">MARA</a></li>
+      <li aria-current="page">Walkthrough</li>
+    </ol>
+  </nav>
+
+  <article class="walkthrough" data-walkthrough-id="intermediate-mara" data-page-slug="intermediate-mara">
+    <div class="grid">
+
+      <!-- Hero card: walkthrough title -->
+      <div class="card hero walkthrough-hero">
+        <div>
+          <p class="eyebrow"><span class="dot"></span>MARA · Walkthrough</p>
+          <h1>Extract MARA with Z-Fields via CDS Extension (Intermediate)<em>.</em></h1>
+        </div>
+        <p>SAP-side intermediate guide for MARA extraction with custom Z-fields. Covers identifying Z-fields in SE11 Append Structures, creating a CDS extension view in SE80, confirming the extension view activates cleanly, and verifying Z-field values with SE16N.</p>
+      </div>
+
+      <!-- Side card: est. time / method -->
+      <div class="card side">
+        <h3>At a glance</h3>
+        <p class="big">60 <em style="font-style:italic;color:var(--color-accent-2)">min</em></p>
+        <p>Generic destinations supported.</p>
+      </div>
+
+      <!-- Meta cards -->
+      <div class="card meta"><dl><dt>Estimated time</dt><dd>60 min</dd></dl></div>
+      <div class="card meta"><dl><dt>Destinations</dt><dd>Generic</dd></dl></div>
+      <div class="card meta"><dl><dt>Extractors</dt><dd>ODP</dd></dl></div>
+      <div class="card meta"><dl><dt>Steps</dt><dd>5</dd></dl></div>
+
+      <!-- Overview / intro -->
+      <div class="card section">
+        <h2>Over<em>view</em></h2>
+        <div class="prose">
+          <h2>Scenario</h2>
+<p>Your company extended MARA with Z-fields for brand and sustainability tracking. You need these fields in the data warehouse without modifying the released CDS view.</p>
+<p>This walkthrough covers the SAP-side work: identifying Z-fields in SE11, creating a CDS extension view, and verifying the Z-field data is correctly exposed. Your tool team points the extraction at the extension view instead of the base I_Product view.</p>
+<hr>
+<h2>What you have confirmed</h2>
+<p>You have created and activated a CDS extension view that exposes MARA Z-fields, confirmed the Z-field values look correct in SE80 data preview, and cross-checked against SE16N. The data warehouse now includes brand and sustainability dimensions in the next extraction run.</p>
+
+        </div>
+      </div>
+
+      <!-- Before you start: license check + SAP preflight + system prerequisites -->
+      <div class="card section">
+        <h2>Before you <em>start</em></h2>
+        <section class="callout callout-warning license-check">
+          <h3>License check</h3>
+        
+          <p>All licenses. CDS extension views are application-layer. License trap: Runtime vs Full Use →</p>
+        
+        
+          <div class="license-check-detail" id="license-check-detail">
+            <!--
+              JS-controlled variants — picker.js shows/hides the relevant block
+              based on ?method= in the URL. All four variants are rendered; only
+              the active one is visible at runtime.
+            -->
+            <div class="license-variant" data-method="odp">
+              <p>
+                <strong>ODP (Operational Data Provisioning)</strong> is permitted
+                under both Runtime and Full Use SAP licenses when you access data
+                through published CDS views via the OData API.
+              </p>
+              <p class="license-check-warning">
+                <strong>SAP Note 3255746 (Feb 2024):</strong> Third-party tools that
+                call ODP via RFC (ADF SAP CDC, Qlik, Fivetran ODP, Informatica ODP,
+                etc.) are no longer permitted. Use ODP via OData, or switch to SLT.
+                Verify with your licensing contact.
+                <a href="https://support.sap.com/notes/3255746" target="_blank"
+                  rel="noopener noreferrer">Full note (SAP login required)</a>.
+              </p>
+            </div>
+        
+            <div class="license-variant" data-method="slt" hidden>
+              <p>
+                <strong>SLT (SAP Landscape Transformation)</strong> requires a
+                <strong>Full Use SAP license</strong>. It is not permitted under
+                Runtime licenses. Verify in
+                <a href="https://help.sap.com/"
+                  target="_blank" rel="noopener noreferrer">SLICENSE</a>
+                that "SLT Landscape Transformation" is listed as Active, Type = Full
+                Use before you configure anything in
+                <a href="https://help.sap.com/"
+                  target="_blank" rel="noopener noreferrer">LTCO</a>.
+              </p>
+              <p>
+                License trap: Runtime vs Full Use
+                <a href="/articles/runtime-vs-full-use/">→</a>
+              </p>
+            </div>
+        
+            <div class="license-variant" data-method="rfc" hidden>
+              <p>
+                <strong>Direct RFC</strong> extraction (e.g., RFC_READ_TABLE) is
+                generally permitted for read-only access under Runtime and Full Use
+                licenses, but is not recommended for production use — it bypasses
+                authorization checks that released CDS views enforce and is subject
+                to SAP Note 3255746 restrictions when wrapped by third-party ODP
+                connectors.
+              </p>
+              <p>
+                License trap: Runtime vs Full Use
+                <a href="/articles/runtime-vs-full-use/">→</a>
+              </p>
+            </div>
+        
+            <div class="license-variant" data-method="ref" hidden>
+              <p>
+                <strong>Reference mode:</strong> you are reviewing this walkthrough
+                for SAP-side context only. No tool-specific pipeline steps are shown.
+                Check your license before selecting a tool.
+              </p>
+              <p>
+                License trap: Runtime vs Full Use
+                <a href="/articles/runtime-vs-full-use/">→</a>
+              </p>
+            </div>
+          </div>
+        </section>
+        
+        <script>
+        // Inline snippet: switch visible license-variant on picker change.
+        // Runs immediately so no flash-of-wrong-content.
+        (function () {
+          function showMethod(method) {
+            var variants = document.querySelectorAll('.license-variant');
+            variants.forEach(function (el) {
+              if (el.getAttribute('data-method') === method) {
+                el.removeAttribute('hidden');
+              } else {
+                el.setAttribute('hidden', '');
+              }
+            });
+          }
+        
+          function readMethod() {
+            var params = new URLSearchParams(window.location.search);
+            return params.get('method') || 'odp';
+          }
+        
+          // Apply on load.
+          showMethod(readMethod());
+        
+          // Re-apply when picker radios change (picker.js fires change events).
+          document.addEventListener('change', function (e) {
+            if (e.target && e.target.name === 'method') {
+              showMethod(e.target.value);
+            }
+          });
+        })();
+        </script>
+        <section class="sap-preflight" aria-labelledby="sap-preflight-title">
+          <h3 id="sap-preflight-title">SAP prerequisites</h3>
+          <p class="sap-preflight-lede">These steps are <strong>one-time per SAP system</strong> (not repeated per table). Once your RFC user, authorizations, and RFC destination are set up, every table extraction reuses the same connection. The checks below, in order, are the difference between a smooth extraction and a multi-day incident.</p>
+        
+          <ol class="preflight-grid">
+            <li class="preflight-card" data-preflight="license">
+              <span class="preflight-eyebrow">01 · Licence</span>
+              <p class="preflight-summary">Confirm your extraction method is covered by your installed SAP licence before anyone designs anything.</p>
+              <details class="preflight-detail">
+                <summary>How to check</summary>
+                <p>
+                  Runtime licences cover ODP through OData. SLT replication requires a
+                  Full Use licence. Ask your SAP licensing contact; do not assume.
+                  See the dedicated article on
+                  <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a>,
+                  and note that
+                  <a href="https://support.sap.com/notes/3255746" target="_blank" rel="noopener noreferrer">SAP Note 3255746</a>
+                  prohibits third-party tools from using ODP via RFC — compliant
+                  paths are ODP over OData or SLT.
+                </p>
+              </details>
+            </li>
+        
+            <li class="preflight-card" data-preflight="cds">
+              <span class="preflight-eyebrow">02 · Released CDS view</span>
+              <p class="preflight-summary">Every table covered here has an extraction-safe released CDS view; confirm it exists before building.</p>
+              <details class="preflight-detail">
+                <summary>How to check</summary>
+                <p>
+                  Open the view in
+                  <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE80</a>
+                  (or in ADT) and confirm the header annotation
+                  <code>@Analytics.dataExtract: true</code> is present. If it is
+                  missing, the view is not extractable — raw-table reads are not
+                  the fix.
+                </p>
+              </details>
+            </li>
+        
+            <li class="preflight-card" data-preflight="auth">
+              <span class="preflight-eyebrow">03 · Authorisations</span>
+              <p class="preflight-summary">A System-type technical user with the minimum authorisation objects for your chosen method — no named users, no wildcards.</p>
+              <details class="preflight-detail">
+                <summary>How to check</summary>
+                <p>
+                  Create a System user via
+                  <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SU01</a>
+                  and assign a role via
+                  <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">PFCG</a>.
+                  For ODP: <code>S_RFC</code> (RFC_TYPE=FUNC) and
+                  <code>S_ODP_READ</code> (ODPSOURCE=ABAP_CDS). For SLT your Basis
+                  team also needs authorisation in LTCO and LTRS. For RFC direct
+                  add <code>S_TABU_DIS</code> scoped to the table's authorisation
+                  group — never wildcard it.
+                </p>
+              </details>
+            </li>
+        
+            <li class="preflight-card" data-preflight="rowcount">
+              <span class="preflight-eyebrow">04 · Row-count baseline</span>
+              <p class="preflight-summary">Use SE16N to measure the intended partition before extraction — you cannot reconcile without this number.</p>
+              <details class="preflight-detail">
+                <summary>How to check</summary>
+                <p>
+                  Open
+                  <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE16N</a>,
+                  apply the same filter your extraction will use, and record the
+                  count. Under 100M rows is usually safe for a single ODP partition;
+                  larger volumes need further splitting or SLT. A count in the
+                  billions means the filter is misconfigured — rethink the
+                  partition before running anything.
+                </p>
+              </details>
+            </li>
+          </ol>
+        </section>
+        <div style="margin-top:var(--space-5);">
+          <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Also confirm</h3>
+          <ul class="prerequisites-list">
+            <li>SE80 familiarity — you can open and read a CDS view</li>
+            <li>Access to SE11 to inspect table field lists</li>
+            <li>Technical extraction user (System type) created in SU01 with S_RFC and S_ODP_READ authorizations</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ── Tab bar ────────────────────────────────────────────────── -->
+      <div class="card section" style="padding-bottom:var(--space-4);">
+        <nav class="wt-tab-bar" role="tablist" aria-label="Walkthrough sections">
+          <button class="wt-tab" role="tab" aria-selected="true" data-wt-tab="sap" aria-controls="wt-panel-sap">SAP side</button>
+          <button class="wt-tab" role="tab" aria-selected="false" data-wt-tab="tool" aria-controls="wt-panel-tool">Tool</button>
+          <button class="wt-tab" role="tab" aria-selected="false" data-wt-tab="sink" aria-controls="wt-panel-sink">Sink</button>
+        </nav>
+      </div>
+
+      <!-- ── PANEL 1: SAP side ───────────────────────────────────────── -->
+      <div class="card section" id="wt-panel-sap" role="tabpanel" aria-labelledby="wt-tab-sap">
+        <h2>SAP <em>side</em></h2>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin-bottom:var(--space-5);">Steps to complete in your SAP system. Use the <strong>Method</strong> picker above to switch between ODP, SLT, and RFC approaches.</p>
+
+        <aside class="walkthrough-progress" aria-label="Walkthrough progress">
+          <div role="status" aria-live="polite" class="progress-indicator">
+            <span id="progress-count">0</span> of 5 steps complete
+          </div>
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+          </div>
+        </aside>
+
+        <div class="steps-container" data-default-method="odp">
+          <ol class="steps-list" data-method="odp">
+<li>
+  <article class="walkthrough-step" id="step-step-01" data-step-id="step-01">
+    <header class="step-header">
+      <div class="step-number">Step 1</div>
+      <h2 class="step-title">Identify Z-fields in MARA via SE11</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-01"
+          aria-label="Mark Identify Z-fields in MARA via SE11 as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Your MARA table carries custom Z-fields added through Append Structures. Open <a href="https://help.sap.com/">SE11</a>, display the MARA table definition, and scroll to the field list. Append Structure fields are grouped separately. In this walkthrough, the target Z-fields are ZZ_BRAND (20-char) and ZZ_SUSTAINABILITY (1-char).</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE11
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Data Dictionary → Database Tables → MARA → Display → Fields → Find Z*</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">ZZ_BRAND (CHAR 20) and ZZ_SUSTAINABILITY (CHAR 1) appear in the MARA field list under an Append Structure entry.</div>
+      </div>
+
+      <details class="step-why">
+        <summary>Why this matters</summary>
+        <p>Z-fields in Append Structures are part of the physical table but are not visible in the standard released CDS view. You must expose them explicitly. Knowing the exact field names and data types before creating the extension view prevents activation errors.</p>
+      </details>
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-02" data-step-id="step-02">
+    <header class="step-header">
+      <div class="step-number">Step 2</div>
+      <h2 class="step-title">Check that the Append Structure has data</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-02"
+          aria-label="Mark Check that the Append Structure has data as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">Use <a href="https://help.sap.com/">SE16N</a> to browse MARA rows and confirm that ZZ_BRAND contains expected values. If all values are empty (initial), the Z-field may not yet be populated from the upstream business process. Extracting empty Z-fields is harmless but produces no analytical value.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → MARA → Add column ZZ_BRAND → Browse sample rows</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">ZZ_BRAND contains non-initial values for at least a subset of materials. You know what expected values look like (e.g., &#39;PREMIUM&#39;, &#39;STANDARD&#39;).</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-03" data-step-id="step-03">
+    <header class="step-header">
+      <div class="step-number">Step 3</div>
+      <h2 class="step-title">Create a CDS extension view to expose Z-fields</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-03"
+          aria-label="Mark Create a CDS extension view to expose Z-fields as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">In <a href="https://help.sap.com/">SE80</a> or ABAP Development Tools (ADT), create an extension view that adds ZZ_BRAND and ZZ_SUSTAINABILITY to I_Product. The extension view must carry <code>@AccessControl.authorizationCheck: #CHECK</code> — without it, unauthorized users can read the Z-fields. Activate the view and verify it has no syntax errors.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE80
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Repository Browser → Create → CDS View Extension</em>.
+          <figure class="code-block">
+            <figcaption>Reference: CDS extension view for MARA Z-fields — adjust names to match your system</figcaption>
+            <pre><code class="language-abap">@AccessControl.authorizationCheck: #CHECK
+@Analytics.dataExtract: true
+extend view I_Product with ZPROD_ZFIELDS {
+  mara.ZZ_BRAND,
+  mara.ZZ_SUSTAINABILITY
+}
+</code></pre>
+          </figure>
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">ZPROD_ZFIELDS is active in SE80. Activation log shows no errors. The base view I_Product is not modified.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-04" data-step-id="step-04">
+    <header class="step-header">
+      <div class="step-number">Step 4</div>
+      <h2 class="step-title">Verify the extension view returns Z-field data</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-04"
+          aria-label="Mark Verify the extension view returns Z-field data as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">From <a href="https://help.sap.com/">SE80</a>, run a data preview on ZPROD_ZFIELDS and confirm ZZ_BRAND and ZZ_SUSTAINABILITY values appear alongside standard MARA fields.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE80
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>ZPROD_ZFIELDS → Data Preview</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">Preview shows MATNR, MTART, ZZ_BRAND, ZZ_SUSTAINABILITY columns with expected values.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+<li>
+  <article class="walkthrough-step" id="step-step-05" data-step-id="step-05">
+    <header class="step-header">
+      <div class="step-number">Step 5</div>
+      <h2 class="step-title">Cross-check Z-field values with SE16N after extraction</h2>
+      <label class="step-check">
+        <input
+          type="checkbox"
+          class="step-checkbox"
+          data-step-id="step-05"
+          aria-label="Mark Cross-check Z-field values with SE16N after extraction as complete"
+        >
+        <span class="step-check-label">Mark complete</span>
+      </label>
+    </header>
+
+    <div class="step-body">
+      <p class="step-intro">After extraction, pick a sample of MATNR values and compare ZZ_BRAND values in your target system against the SE16N MARA values for the same material numbers.</p>
+
+      <div class="step-action step-action--sap">
+        <div class="step-action-label">Do this in SAP</div>
+        <div class="step-action-body">
+          Open transaction
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SE16N
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+          and navigate to <em>Execute → MARA → Show ZZ_BRAND for sample MATNR</em>.
+        </div>
+      </div>
+
+
+      <div class="step-action step-action--verify">
+        <div class="step-action-label">Verify</div>
+        <div class="step-action-body">ZZ_BRAND values in target match ZZ_BRAND values in SE16N for the same MATNR records.</div>
+      </div>
+
+    </div>
+  </article>
+</li>
+          </ol>
+
+
+
+        </div>
+
+        <!-- Method-specific troubleshooting inside SAP panel -->
+        <details class="ts-section" style="margin-top:var(--space-6);border-top:1px solid var(--color-rule);padding-top:var(--space-5);">
+          <summary class="ts-summary">Troubleshooting</summary>
+          <dl class="troubleshooting-list" style="margin-top:var(--space-4);">
+            <div class="troubleshooting-item" data-ts-method="odp">
+              <dt>CDS extension view activation fails with syntax error</dt>
+              <dd>
+                <p>Check the exact syntax against your ABAP CDS documentation. Common issues: missing @AccessControl annotation, incorrect field name (must match SE11 exactly), using MARA. prefix when the table alias is different in I_Product. Check the activation log in SE80 for the specific error message.</p>
+                
+              </dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-method="odp">
+              <dt>Z-field values are empty in extraction output but not in SE16N</dt>
+              <dd>
+                <p>The extension view may be pointing to the wrong table alias. In SE80, inspect I_Product&#39;s FROM clause to find the alias used for MARA rows. Use that alias in the extension view (e.g., if I_Product uses alias &#39;prod&#39;, use &#39;prod.ZZ_BRAND&#39; not &#39;mara.ZZ_BRAND&#39;).</p>
+                
+              </dd>
+            </div>
+          </dl>
+        </details>
+
+        <!-- Z-column handling — method-filtered collapsible -->
+        <details class="z-columns-section" style="margin-top:var(--space-6);border-top:1px solid var(--color-rule);padding-top:var(--space-5);">
+          <summary style="font-size:16px;font-weight:500;cursor:pointer;list-style:none;display:flex;align-items:center;gap:var(--space-3);">
+            <span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:var(--color-bg-3);border:1px solid var(--color-rule);text-align:center;line-height:20px;font-size:11px;font-family:var(--font-mono);">+</span>
+            Handling custom Z columns
+          </summary>
+
+          <!-- ODP: EXTEND VIEW ENTITY -->
+          <div class="troubleshooting-item" data-ts-method="odp" style="margin-top:var(--space-5);">
+            <h4 style="font-size:15px;font-weight:500;margin:0 0 var(--space-3);">ODP — Extending a CDS view with ABAP Developer</h4>
+            <p style="font-size:14px;color:var(--color-ink-soft);margin:0 0 var(--space-3);">Use <code>EXTEND VIEW ENTITY</code> in ABAP Development Tools (Eclipse/ADT) to add Z columns without modifying the original view. The base view must carry the header annotation <code>@AbapCatalog.viewEnhancementCategory: [#PROJECTION_LIST]</code> — if the owner restricted data sources, only tables listed under <code>@AbapCatalog.extensibility.dataSources</code> can be joined.</p>
+            <ol style="padding-left:var(--space-6);margin:0 0 var(--space-3);font-size:14px;line-height:1.8;">
+              <li>Open ADT (Eclipse). In the Project Explorer, locate the data definition of the CDS entity you want to extend.</li>
+              <li>Right-click the data definition → <strong>New Data Definition</strong>. Choose your package, enter a name (e.g., <code>Z_EXT_MY_VIEW</code>), and add a description.</li>
+              <li>Click Next, select your transport request, then choose the <strong>Extend View Entity</strong> template.</li>
+              <li>Define your custom Z fields in the element list — pull from the underlying table alias or define a new association.</li>
+              <li>Activate the view extension (<strong>Ctrl + F3</strong>). The base view now includes your custom elements.</li>
+            </ol>
+            <pre style="margin:0 0 var(--space-3);"><code>extend view entity C_BaseStandardView with Z_Ext_My_View
+{
+  BaseTable.zz_custom_field    as ZZCustomField,
+  _NewZTableAssoc
+}</code></pre>
+            <p style="font-size:13px;color:var(--color-ink-soft);margin:0;background:var(--color-bg-2);border-left:3px solid var(--color-accent-2);padding:var(--space-3) var(--space-4);border-radius:var(--radius-sm);">Because the ODP framework generates a <em>TransientProvider</em> at runtime from CDS metadata, Z columns added via <code>EXTEND VIEW ENTITY</code> automatically appear in the ODP delta queue. Refresh the schema in your tool (ADF, Databricks) to see new fields. Test locally with ABAP program <code>RODPS_REPL_TEST</code>.</p>
+          </div>
+
+          <!-- SLT: LTRS Rule Assignment -->
+          <div class="troubleshooting-item" data-ts-method="slt" style="margin-top:var(--space-5);">
+            <h4 style="font-size:15px;font-weight:500;margin:0 0 var(--space-3);">SLT — Adding Z columns via LTRS Rule Assignment</h4>
+            <p style="font-size:14px;color:var(--color-ink-soft);margin:0 0 var(--space-3);">In SLT you add and populate Z columns through Advanced Replication Settings in transaction <code>LTRS</code>.</p>
+            <ol style="padding-left:var(--space-6);margin:0 0 var(--space-3);font-size:14px;line-height:1.8;">
+              <li>In your SLT system, run transaction <strong>LTRS</strong>.</li>
+              <li>Under <em>Table Settings</em>, you can define the target table structure. To add a Z column that doesn't exist in the source, append it to the target structure here.</li>
+              <li>Go to the <em>Rule Assignment</em> section → right-click → <strong>Add Table</strong> to add your replication table.</li>
+              <li>Click the <em>Create</em> icon and choose either a <strong>Field-Related Rule</strong> (to populate a specific field) or an <strong>Event-Related Rule</strong> (to manipulate the whole record).</li>
+              <li>Write ABAP in the <em>Line of Code</em> section to populate your Z column. For event-related rules use <code>&lt;wa_s_table&gt;-columnname</code>. For field-related rules use the <code>E_</code> prefix: <code>E_columnname</code>.</li>
+            </ol>
+          </div>
+
+          <!-- RFC: SE11 Append Structure -->
+          <div class="troubleshooting-item" data-ts-method="rfc" style="margin-top:var(--space-5);">
+            <h4 style="font-size:15px;font-weight:500;margin:0 0 var(--space-3);">RFC — Exposing Z columns via SE11 Append Structure</h4>
+            <p style="font-size:14px;color:var(--color-ink-soft);margin:0 0 var(--space-3);">When extracting via RFC, Z columns added to a SAP transparent table through an <em>Append Structure</em> in transaction <code>SE11</code> are immediately available — the RFC functions query the ABAP data dictionary dynamically.</p>
+            <ol style="padding-left:var(--space-6);margin:0 0 var(--space-3);font-size:14px;line-height:1.8;">
+              <li>In <strong>SE11</strong>, open the transparent table, go to <em>Extras → Append Structure</em>, and add your Z field. Activate — the underlying database table is updated automatically.</li>
+              <li>Standard RFC functions (<code>RFC_READ_TABLE</code>, <code>/SAPDS/RFC_READ_TABLE2</code>) will return the column dynamically.</li>
+              <li>Explicitly request the new Z column in the <strong>FIELDS</strong> parameter of your RFC call — it is not returned unless listed there.</li>
+              <li>If using a <em>custom Function Module</em>, update the Export table structure in the FM to include the new columns — it does not auto-discover.</li>
+            </ol>
+          </div>
+        </details>
+      </div>
+
+      <!-- ── PANEL 2: Tool configuration ────────────────────────────── -->
+      <div class="card section tool-steps-section" id="wt-panel-tool" role="tabpanel" aria-labelledby="wt-tab-tool" hidden>
+        <h2>Tool <em>configuration</em></h2>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin-bottom:var(--space-5);">Pipeline code and config for your selected tool. Switch the <strong>Tool</strong> picker above to see a different variant.</p>
+        <p style="color:var(--color-ink-soft);font-size:14px;">No tool-specific steps for this walkthrough. See the SAP side tab for extraction steps.</p>
+
+        <!-- Tool troubleshooting -->
+        <details class="ts-section" style="margin-top:var(--space-6);border-top:1px solid var(--color-rule);padding-top:var(--space-5);">
+          <summary class="ts-summary">Troubleshooting</summary>
+          <dl class="troubleshooting-list" style="margin-top:var(--space-4);">
+            <div class="troubleshooting-item" data-ts-tool="adf">
+              <dt>ADF pipeline runs but no data arrives in sink</dt>
+              <dd><p>Check that the Integration Runtime can reach both the SAP host and the sink. Confirm the source ODP dataset has a valid subscription key — open ODQMON on the SAP side and verify a subscription for your OData consumer appears. Also confirm the pipeline activity timeout is at least 4 hours for heavyweight tables.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-tool="databricks" hidden>
+              <dt>Databricks JDBC read hangs or times out</dt>
+              <dd><p>RFC_READ_TABLE via JDBC is limited to ~500 MB result sets per call by default. For large tables, enable partition mode in the JDBC options (<code>partitionColumn</code>, <code>lowerBound</code>, <code>upperBound</code>, <code>numPartitions</code>) to split the read across parallel ABAP work processes. Check SM50 on the SAP side for stuck RFC work processes.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-tool="fivetran" hidden>
+              <dt>Fivetran sync paused with "schema drift" error</dt>
+              <dd><p>Fivetran detects column changes automatically but pauses the sync to avoid data loss. Go to the connector settings, review the new/removed columns, and resume. If the column was added to a custom Append Structure, confirm it appears in SE11 before resuming — Fivetran re-reads the schema from ABAP.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-tool="airbyte" hidden>
+              <dt>Airbyte stream returns 0 records on first sync</dt>
+              <dd><p>The ODP provider may require an init-delta run before returning data. In the Airbyte connection settings, trigger a full refresh for the first run. After the init completes, subsequent incremental syncs will return changes correctly. Confirm the ODP subscription appears in ODQMON after the first run.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-tool="custom" hidden>
+              <dt>Custom RFC call returns truncated rows</dt>
+              <dd><p>RFC_READ_TABLE row limit is 512 bytes per row by default. Columns with long text fields overflow. Switch to <code>/SAPDS/RFC_READ_TABLE2</code> or a custom BAPI that returns the full row width. Alternatively, select fewer columns per call and join results in your pipeline.</p></dd>
+            </div>
+          </dl>
+        </details>
+      </div>
+
+      <!-- ── PANEL 3: Sink setup ─────────────────────────────────────── -->
+      <div class="card section sink-steps-section" id="wt-panel-sink" role="tabpanel" aria-labelledby="wt-tab-sink" hidden>
+        <h2>Sink <em>setup</em></h2>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin-bottom:var(--space-5);">Landing zone configuration for your selected sink. Switch the <strong>Sink</strong> picker above to see a different destination.</p>
+        <div class="sink-steps-container" data-default-sink="adls">
+
+          <!-- ── ADLS ─────────────────────────────────────────────────────────── -->
+          <div data-sink-block="adls">
+            <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Azure Data Lake Storage Gen2</h3>
+            <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">ADLS is your landing zone — your tool writes Parquet, Delta, or Iceberg files here. Downstream engines (Synapse, Databricks, Power BI) read directly from these files.</p>
+
+            <div class="sink-before" style="margin-bottom:var(--space-4);">
+              <h4>Native SAP connector option</h4>
+              <p style="margin:0 0 8px;font-size:14px;">If your organisation has an <strong>ADF SAP connector</strong> license (SAP connector for Azure Data Factory), ADF writes directly to ADLS from SAP — no intermediate tool pipeline code needed. Confirm connector licensing with your Azure team before setting up the manual pipeline below.</p>
+            </div>
+
+            <div class="sink-before">
+              <h4>Before your first extraction</h4>
+              <ul>
+                <li>Create an ADLS Gen2 storage account and container (e.g., <code>sap-landing</code>).</li>
+                <li>Register an Entra ID (Azure AD) app. Grant it <strong>Storage Blob Data Contributor</strong> on the container. Store tenant ID, client ID, and secret in your pipeline's secrets manager.</li>
+                <li>Agree on a partition path convention: <code>sap/mara/rbukrs=1000/year=2024/</code>. Partition columns must match the filter dimensions used in the SAP extraction.</li>
+              </ul>
+            </div>
+
+            <ol class="steps-list" style="padding-left:0;list-style:none;">
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">1. Confirm the file landed after extraction</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">After your tool runs, confirm the Parquet (or Delta/Iceberg) file lands in the container at the correct partition path. Use Azure Storage Explorer or the Azure portal. Prefer Parquet with Snappy compression; use Delta or Iceberg if your tool supports table formats.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> File visible at <code>sap/mara/rbukrs=1000/year=2024/</code> in the container.</p>
+              </li>
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">2. Validate row count from Synapse or Databricks</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run a count query directly against the landed files. Compare to the SE16N count from the SAP-side steps. This is your reconciliation checkpoint before handing data to analytics.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>SELECT COUNT(*) FROM parquet.&#x60;abfss://sap-landing@account.dfs.core.windows.net/sap/mara/...&#x60;</code> matches SE16N.</p>
+              </li>
+            </ol>
+          </div>
+
+          <!-- ── S3 ────────────────────────────────────────────────────────────── -->
+          <div data-sink-block="s3" hidden>
+            <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Amazon S3</h3>
+            <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">S3 is your landing zone — your tool writes Parquet files here. Downstream engines (Athena, Redshift Spectrum, Databricks on AWS) read directly from S3, or you COPY INTO Snowflake/Redshift from here.</p>
+
+            <div class="sink-before" style="margin-bottom:var(--space-4);">
+              <h4>Native SAP connector option</h4>
+              <p style="margin:0 0 8px;font-size:14px;">If your organisation has <strong>AWS AppFlow with SAP OData connector</strong> or a licensed SAP Integration Suite adapter, AppFlow can land data directly in S3 without tool pipeline code. Check your AWS and SAP BTP licensing before building the pipeline below.</p>
+            </div>
+
+            <div class="sink-before">
+              <h4>Before your first extraction</h4>
+              <ul>
+                <li>Create an S3 bucket in your preferred region. Enable server-side encryption (SSE-S3 minimum) and block all public access.</li>
+                <li>Create an IAM role with <code>s3:PutObject</code> and <code>s3:GetObject</code> on the specific bucket/prefix ARN. Use instance profiles or IRSA — avoid long-lived access keys.</li>
+                <li>Agree on a landing prefix convention: <code>sap/mara/rbukrs=1000/year=2024/</code>.</li>
+              </ul>
+            </div>
+
+            <ol class="steps-list" style="padding-left:0;list-style:none;">
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">1. Confirm files land and register in Glue</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">After extraction, confirm files appear at the S3 prefix. Register the prefix as a Glue table pointing to Parquet files so Athena and Spark can discover it. If the next layer is Snowflake, create an external stage on this bucket path.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>aws s3 ls s3://your-bucket/sap/mara/</code> shows landed files. Glue crawler ran and created the table.</p>
+              </li>
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">2. Validate row count in Athena</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM your_glue_table</code> in Athena. Compare to SE16N. Athena scans Parquet efficiently if partition columns match the Hive-style path used for landing.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Athena count matches SE16N. Downstream team can query the Glue table without moving files.</p>
+              </li>
+            </ol>
+          </div>
+
+          <!-- ── GCS ───────────────────────────────────────────────────────────── -->
+          <div data-sink-block="gcs" hidden>
+            <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Google Cloud Storage (GCS)</h3>
+            <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">GCS is your landing zone — your tool writes Parquet or Iceberg files here. BigQuery reads them directly as an external table or via a load job. No intermediate copy needed.</p>
+
+            <div class="sink-before" style="margin-bottom:var(--space-4);">
+              <h4>Native SAP connector option</h4>
+              <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Google Cloud BigQuery Connector for SAP</strong> (available via SAP BTP / SAP LT Replication Server), it streams data directly from SAP ABAP tables into BigQuery without any intermediate GCS files or pipeline code. Confirm with your SAP Basis and GCP teams whether this connector is licensed before building the file-based pipeline below.</p>
+            </div>
+
+            <div class="sink-before">
+              <h4>Before your first extraction</h4>
+              <ul>
+                <li>Create a GCS bucket in your preferred region. Enable uniform bucket-level access and Object Versioning.</li>
+                <li>Create a GCP service account. Grant it <strong>Storage Object Admin</strong> on the bucket. Store the JSON key in Secret Manager.</li>
+                <li>Set a landing prefix: <code>sap/mara/rbukrs=1000/year=2024/</code>.</li>
+              </ul>
+            </div>
+
+            <ol class="steps-list" style="padding-left:0;list-style:none;">
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">1. Create BigQuery external table or load job</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">After landing files in GCS, create a BigQuery external table (zero-copy, always current) or run a load job (faster queries, persistent storage). For Iceberg landing, BigQuery supports Iceberg tables via GCS BigLake — gives full DML and snapshot history.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Table <code>sap_landing.mara</code> exists in BigQuery. Schema matches SE11.</p>
+              </li>
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">2. Validate row count</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM sap_landing.mara</code>. Compare to SE16N. Partition by posting date or extraction date to keep BigQuery query costs manageable at scale.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Count matches SE16N. Partition metadata visible in BigQuery console.</p>
+              </li>
+            </ol>
+          </div>
+
+          <!-- ── Snowflake ─────────────────────────────────────────────────────── -->
+          <div data-sink-block="snowflake" hidden>
+            <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Snowflake</h3>
+            <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">Snowflake reads Parquet files your tool landed in ADLS or S3. Two loading patterns: <strong>COPY INTO</strong> (batch, scheduled) or <strong>Snowpipe</strong> (continuous, file-triggered — runs automatically when a file lands, no scheduling needed).</p>
+
+            <div class="sink-before" style="margin-bottom:var(--space-4);">
+              <h4>Native SAP connector option — skip the steps below if licensed</h4>
+              <p style="margin:0 0 8px;font-size:14px;">If your organisation has a <strong>Snowflake Native SAP BDC Connector</strong> license, Snowflake connects directly to SAP — no tool pipeline code, no external stage, and no Parquet files needed. The connector extracts and loads natively. If this applies to you, configure the connector in Snowflake Partner Connect with your SAP RFC credentials and skip the COPY INTO / Snowpipe steps below.</p>
+            </div>
+
+            <div class="sink-before">
+              <h4>Before your first extraction (file-based approach)</h4>
+              <ul>
+                <li>Create a dedicated database (<code>SAP_LANDING</code>), schema (<code>RAW</code>), and warehouse (<code>SAP_LOAD_WH</code> — X-Small for bulk loads).</li>
+                <li>Create a Snowflake storage integration (not access keys) for your ADLS container or S3 bucket. Create an external stage pointing to the landing path where your tool drops Parquet files.</li>
+                <li>Create the target table: <code>CREATE TABLE SAP_LANDING.RAW.mara ...</code> with columns matching SE11. Or use <code>COPY INTO</code> with <code>MATCH_BY_COLUMN_NAME</code> to auto-map Parquet columns.</li>
+              </ul>
+            </div>
+
+            <ol class="steps-list" style="padding-left:0;list-style:none;">
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">1. Load from external stage — COPY INTO or Snowpipe</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>Batch (COPY INTO):</strong> Run <code>COPY INTO SAP_LANDING.RAW.mara FROM @your_stage/sap/mara/ PATTERN='.*parquet' FILE_FORMAT=(TYPE=PARQUET)</code>. Schedule via a Snowflake task or your orchestrator after each extraction.<br><br><strong>Continuous (Snowpipe):</strong> Create a pipe: <code>CREATE PIPE sap_mara_pipe AS COPY INTO SAP_LANDING.RAW.mara FROM @your_stage/sap/mara/ FILE_FORMAT=(TYPE=PARQUET)</code>. Enable auto-ingest on the stage — Snowpipe fires automatically when a file lands. No scheduling required; ideal for near-real-time SLT feeds.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>LIST @your_stage/sap/mara/</code> shows landed files. COPY INTO or Snowpipe status shows zero skipped files.</p>
+              </li>
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">2. Validate row count after load</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM SAP_LANDING.RAW.mara</code>. Compare to SE16N row count from the SAP-side steps. Check <code>INFORMATION_SCHEMA.LOAD_HISTORY</code> for skipped or errored files if counts diverge.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>SELECT COUNT(*)</code> matches SE16N. Zero error rows in load history.</p>
+              </li>
+            </ol>
+          </div>
+
+          <!-- ── BigQuery ──────────────────────────────────────────────────────── -->
+          <div data-sink-block="bigquery" hidden>
+            <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">BigQuery</h3>
+            <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">BigQuery reads Parquet or Iceberg files from GCS, or accepts direct writes from Fivetran and ADF. If your tool wrote to GCS as Parquet, create an external table — no copy needed.</p>
+
+            <div class="sink-before" style="margin-bottom:var(--space-4);">
+              <h4>Native SAP connector option — skip the steps below if licensed</h4>
+              <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Google Cloud BigQuery Connector for SAP</strong> (part of SAP LT Replication Server or SAP Integration Suite), it streams data directly from SAP into BigQuery tables — no GCS files, no tool pipeline code, no staging needed. Confirm with your SAP Basis team. If licensed, skip the file-based steps below.</p>
+            </div>
+
+            <div class="sink-before">
+              <h4>Before your first extraction (file-based approach)</h4>
+              <ul>
+                <li>Create a BigQuery dataset (e.g., <code>sap_landing</code>) in the <strong>same region</strong> as your GCS bucket. Cross-region reads from GCS are not supported.</li>
+                <li>Grant your service account <strong>BigQuery Data Editor</strong> on the dataset and <strong>Storage Object Viewer</strong> on the GCS bucket (for external tables).</li>
+              </ul>
+            </div>
+
+            <ol class="steps-list" style="padding-left:0;list-style:none;">
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">1. Create external table, Iceberg table, or use direct connector</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>Parquet path:</strong> <code>CREATE EXTERNAL TABLE sap_landing.mara OPTIONS (format='PARQUET', uris=['gs://your-bucket/sap/mara/*'])</code> — zero-copy, always current.<br><strong>Iceberg path:</strong> Register as a BigLake Iceberg table for full DML support and snapshot history.<br><strong>Direct connector (Fivetran/ADF):</strong> Writes a native BigQuery table directly — no staging or external table needed.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Table <code>sap_landing.mara</code> exists and schema matches SE11.</p>
+              </li>
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">2. Validate row count</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM sap_landing.mara</code>. Compare to SE16N. Partition the table by posting date or extraction date to keep per-query costs manageable at scale.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Count matches SE16N. Partition metadata visible in BigQuery console.</p>
+              </li>
+            </ol>
+          </div>
+
+          <!-- ── Fabric ────────────────────────────────────────────────────────── -->
+          <div data-sink-block="fabric" hidden>
+            <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Microsoft Fabric / OneLake</h3>
+            <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">Fabric has three file-based paths: (1) ADF writes to Lakehouse via Copy Activity, (2) Databricks writes Delta/Iceberg to ADLS and Fabric shortcuts it, (3) your tool lands Parquet in ADLS and Fabric shortcuts the folder as an external table.</p>
+
+            <div class="sink-before" style="margin-bottom:var(--space-4);">
+              <h4>Native SAP connector option — skip the steps below if licensed</h4>
+              <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Microsoft Fabric SAP CDC connector</strong> or an SAP integration via Azure Logic Apps with native Fabric write support, data flows directly from SAP into OneLake without any intermediate files or tool pipeline code. Confirm with your Microsoft and SAP teams. If licensed, skip the file-based steps below.</p>
+            </div>
+
+            <div class="sink-before">
+              <h4>Before your first extraction (file-based approach)</h4>
+              <ul>
+                <li>Create a Lakehouse in your Fabric workspace (e.g., <code>SAP_Landing</code>). Create a <code>Tables/mara/</code> folder for Delta/Iceberg tables, or <code>Files/mara/</code> for raw Parquet.</li>
+                <li>Decide your ingestion path before extracting: ADF Copy Activity, Databricks ADLS shortcut, or Parquet ADLS shortcut. Each wires up differently — agree with the analytics team first.</li>
+              </ul>
+            </div>
+
+            <ol class="steps-list" style="padding-left:0;list-style:none;">
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">1. Set up your ingestion path</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>ADF pipeline:</strong> Copy Activity to Lakehouse sink writes directly — no intermediate files needed.<br><strong>Databricks Delta/Iceberg:</strong> Create an OneLake shortcut pointing to the ADLS path where Databricks wrote. Fabric auto-registers as a Delta table in the SQL endpoint.<br><strong>Parquet from any tool:</strong> Create an OneLake shortcut to the ADLS Parquet folder. Register as an external table in the Lakehouse.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Data appears in the Lakehouse explorer after a test extraction run.</p>
+              </li>
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">2. Validate in SQL endpoint</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Open the Lakehouse SQL endpoint in Fabric. Run <code>SELECT COUNT(*) FROM mara</code>. Fabric automatically registers Delta tables in the SQL endpoint — Parquet external tables appear under Files.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Row count matches SE16N. Table visible in Lakehouse explorer.</p>
+              </li>
+            </ol>
+          </div>
+
+          <!-- ── Databricks ────────────────────────────────────────────────────── -->
+          <div data-sink-block="databricks" hidden>
+            <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Databricks Lakehouse</h3>
+            <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">If your tool was Databricks, the Delta or Iceberg table is already written — querying it IS the sink step. If another tool wrote Parquet to ADLS/S3, register it as an external Delta or Iceberg table in Unity Catalog.</p>
+
+            <div class="sink-before" style="margin-bottom:var(--space-4);">
+              <h4>Native SAP connector option — skip the steps below if licensed</h4>
+              <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Databricks SAP Connector</strong> (SAP LT Replication + Databricks native integration), it writes SAP change data directly to a Delta table in real time — no tool pipeline code or external files needed. Confirm with your SAP Basis and Databricks teams. If licensed, skip the file-based steps below.</p>
+            </div>
+
+            <div class="sink-before">
+              <h4>Before your first extraction (file-based approach)</h4>
+              <ul>
+                <li>Ensure Unity Catalog is enabled. Create a catalog (e.g., <code>sap_landing</code>) and schema (<code>raw</code>).</li>
+                <li>If Databricks is your extraction tool: the <code>saveAsTable</code> call in the Tool tab writes the table — no further sink setup needed.</li>
+                <li>If another tool writes Parquet to ADLS/S3: note the exact file path for registering as an external table.</li>
+              </ul>
+            </div>
+
+            <ol class="steps-list" style="padding-left:0;list-style:none;">
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">1. Confirm Delta/Iceberg table or register Parquet</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>If Databricks was your tool:</strong> Run <code>SHOW TABLES IN sap_landing.raw</code> — the table should already exist.<br><strong>If tool wrote Parquet:</strong> Register as external: <code>CREATE TABLE sap_landing.raw.mara USING PARQUET LOCATION 'abfss://...'</code><br>Or convert zero-copy to Delta: <code>CONVERT TO DELTA parquet.&#x60;abfss://...&#x60;</code> — gives time-travel and ACID transactions on the existing files.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>SELECT COUNT(*) FROM sap_landing.raw.mara</code> returns the expected row count.</p>
+              </li>
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">2. Validate count and grant downstream access</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Compare the row count to SE16N. Then grant SELECT to the analytics team: <code>GRANT SELECT ON TABLE sap_landing.raw.mara TO &#x60;analytics-group&#x60;</code>. Downstream users should not need extraction credentials.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Row count matches SE16N. Downstream team can query the table.</p>
+              </li>
+            </ol>
+          </div>
+
+          <!-- ── Other ─────────────────────────────────────────────────────────── -->
+          <div data-sink-block="other" hidden>
+            <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Other landing zone</h3>
+            <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">Whatever your sink: it receives Parquet, Delta, or Iceberg files from your tool. Ensure your downstream system can read one of these formats efficiently before landing data in it.</p>
+
+            <div class="sink-before">
+              <h4>Before your first extraction</h4>
+              <ul>
+                <li>Confirm your sink can read Parquet (most portable), Delta, or Iceberg. Avoid CSV for tables over 10M rows.</li>
+                <li>Agree on a partitioned path convention with the analytics team: <code>sap/mara/rbukrs=1000/year=2024/run=TIMESTAMP/</code>.</li>
+                <li>Test a small write to your sink before running a full extraction — confirm schema mapping, encoding, and permissions.</li>
+              </ul>
+            </div>
+
+            <ol class="steps-list" style="padding-left:0;list-style:none;">
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">1. Confirm file lands at the correct path</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">After extraction, verify the file appears at the agreed partition path. Check file size is reasonable for the expected row count (Parquet with Snappy is typically 100–300 bytes per row for journal data).</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> File is present and non-zero. Schema is readable by your downstream tool.</p>
+              </li>
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">2. Row-count reconciliation is mandatory</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Always compare the row count from your sink against the SE16N count from the SAP-side steps. A mismatch means the extraction dropped rows or the filter scopes differ — investigate before handing data to analytics. Automate this check in your pipeline so it fails the run on divergence.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Your pipeline has an automated row-count check that fails the run if counts diverge beyond a tolerance threshold.</p>
+              </li>
+            </ol>
+          </div>
+
+        </div>
+
+        <!-- Sink troubleshooting -->
+        <details class="ts-section" style="margin-top:var(--space-6);border-top:1px solid var(--color-rule);padding-top:var(--space-5);">
+          <summary class="ts-summary">Troubleshooting</summary>
+          <dl class="troubleshooting-list" style="margin-top:var(--space-4);">
+            <div class="troubleshooting-item" data-ts-sink="adls">
+              <dt>Files land in ADLS but Synapse/Databricks can't read them</dt>
+              <dd><p>Confirm the storage account has Hierarchical Namespace (HNS) enabled — standard ADLS Blob storage doesn't support ABFSS URIs. Check that the service principal has Storage Blob Data Reader on the container, not just Contributor on the storage account. Verify the Parquet file isn't corrupted by running a quick count from Azure Storage Explorer's preview.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="s3" hidden>
+              <dt>S3 upload succeeds but Glue crawler shows 0 records</dt>
+              <dd><p>The Parquet file may be in a nested folder that doesn't match the Glue partition pattern. Confirm the S3 prefix uses Hive-style partitions (e.g., <code>rbukrs=1000/year=2024/</code>). Run <code>MSCK REPAIR TABLE your_table</code> in Athena after re-crawling to register new partitions. Check that the Glue IAM role has <code>s3:GetObject</code> on the exact bucket ARN, not just the bucket root.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="snowflake" hidden>
+              <dt>COPY INTO shows 0 rows loaded or "file format mismatch"</dt>
+              <dd><p>Confirm the external stage points to the correct S3/ADLS prefix — run <code>LIST @your_stage/sap/slug/</code> and verify files appear. If using MATCH_BY_COLUMN_NAME, the Parquet column names must exactly match the table column names (case-sensitive). For Snowpipe, check pipe status with <code>SELECT SYSTEM$PIPE_STATUS('your_pipe')</code> and inspect the error log table.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="bigquery" hidden>
+              <dt>BigQuery external table returns stale or missing data</dt>
+              <dd><p>External tables in BigQuery always reflect the current state of the underlying GCS files — if new files were added after the external table was created, they are automatically included (no refresh needed). If data appears stale, confirm the GCS bucket path in the external table definition matches where your tool is writing. For persistent tables loaded via a load job, re-run the load after each extraction.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="fabric" hidden>
+              <dt>Fabric Lakehouse shortcut shows empty or stale data</dt>
+              <dd><p>OneLake shortcuts reflect ADLS in near-real time but may cache metadata. Click "Refresh" on the Lakehouse table in the Fabric UI. If the Delta table shows stale data, run <code>DESCRIBE HISTORY your_table</code> in a Fabric notebook to confirm the latest Delta commit was written. For Parquet shortcuts, the file must be at exactly the path the shortcut points to — a new subfolder will not be automatically included.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="databricks" hidden>
+              <dt>Databricks row count doesn't match SE16N after writing</dt>
+              <dd><p>Check for concurrent writes — if another pipeline wrote to the same Delta table path during the extraction, rows may be duplicated or the table may be in an inconsistent state. Run <code>DESCRIBE HISTORY sap_landing.raw.slug</code> to see all commits. Use <code>VACUUM</code> followed by <code>RESTORE</code> if you need to roll back. For initial loads, use <code>OVERWRITE</code> mode to ensure idempotency.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="gcs" hidden>
+              <dt>BigQuery external table on GCS returns permission denied</dt>
+              <dd><p>The BigQuery service account needs Storage Object Viewer on the GCS bucket — not on the project. Add the IAM binding at the bucket level, not the project level. If using a BigLake Iceberg table, the service account also needs BigLake connection permissions. Run <code>bq show --format=prettyjson your_dataset.your_table</code> to confirm the external table's connection is active.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="other" hidden>
+              <dt>Row count in target doesn't match SE16N</dt>
+              <dd><p>A mismatch typically means the filter scope differs between SAP and your sink query. Confirm the same RBUKRS, RYEAR (and POPER if applicable) filters are used in both SE16N and the count query against your sink. Also check for type conversion issues — NUMC fields stored as integers in the target may not match the string representation in SE16N's filter.</p></dd>
+            </div>
+          </dl>
+        </details>
+      </div>
+
+      <!-- You've built / summary -->
+      <div class="card accent">
+        <span class="chip">Complete</span>
+        <p>You've finished the walkthrough for MARA. 5 steps done — you understand the key extraction considerations for this table.</p>
+      </div>
+
+      <!-- Next steps -->
+      <div class="card section">
+        <h2>What&#39;s next</h2>
+        <ul style="list-style:disc;padding-left:var(--space-6);">
+          <li style="margin-bottom:var(--space-2);"><a href="&#x2F;walkthrough&#x2F;expert&#x2F;mara&#x2F;">Try MARA Expert — 20+ Z-fields, multi-table extraction</a></li>
+          <li style="margin-bottom:var(--space-2);"><a href="&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;">License trap: Runtime vs Full Use</a></li>
+        </ul>
+      </div>
+
+    </div><!-- /.grid -->
+
+    <footer class="walkthrough-footer">
+      <button type="button" class="btn btn-primary" id="download-pdf" hidden>Download PDF checklist</button>
+      <button type="button" class="btn-link" id="reset-progress" hidden>Reset progress</button>
+    </footer>
+  </article>
+
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

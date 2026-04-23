@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BAdI: Business Add-In in SAP — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="BAdI is SAP&#39;s plug-in architecture for custom code hooks into standard business processes without modifying source, used for post-processing and extensions.">
+  <link rel="canonical" href="https://academy.example.com/glossary/badi/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="BAdI: Business Add-In in SAP — Plain Explanation">
+  <meta property="og:description" content="BAdI is SAP&#39;s plug-in architecture for custom code hooks into standard business processes without modifying source, used for post-processing and extensions.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;badi&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="BAdI: Business Add-In in SAP — Plain Explanation">
+  <meta name="twitter:description" content="BAdI is SAP&#39;s plug-in architecture for custom code hooks into standard business processes without modifying source, used for post-processing and extensions.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Business Add-In","alternateName":"BAdI","description":"A BAdI is SAP's plug-in architecture that allows custom code to hook into standard business logic without modifying source code. Used for post-processing, filtering, or extending transactions and batch jobs.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+      <li aria-current="page">BAdI</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · Business Add-In</p>
+        <h1>BAdI<em>.</em></h1>
+      </div>
+      <p>A BAdI is SAP&#39;s plug-in architecture that allows custom code to hook into standard business logic without modifying source code. Used for post-processing, filtering, or extending transactions and batch jobs.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/ABAP/">ABAP</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Transport Request/">Transport Request</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/SE38/">SE38</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Enhancement Framework/">Enhancement Framework</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>A BAdI is SAP&#39;s plug-in architecture that allows custom code to hook into standard business logic without modifying source code. Used for post-processing, filtering, or extending transactions and batch jobs.</p>
+      </div>
+
+      <div class="glossary-prose">
+        <h3>What is a BAdI?</h3>
+<p>A Business Add-In (BAdI) is SAP&#39;s object-oriented plug-in architecture for injecting custom ABAP logic into standard SAP business processes without modifying standard source code. SAP engineers predefined hundreds of BAdI <strong>definition points</strong> throughout the standard codebase — specific locations in transactions, batch jobs, and application programs where custom behavior can be inserted. An organization then creates a BAdI <strong>implementation</strong>: an ABAP class that implements the BAdI interface and contains the custom logic. SAP calls the implementation automatically at runtime whenever execution reaches the BAdI definition point.</p>
+<p>The design goal is clean extensibility without modification. Modifying standard SAP source code directly (so-called <strong>&quot;mod-pool&quot; modifications</strong>) breaks support contracts, creates upgrade risk, and makes system maintenance unpredictable. BAdIs solve this by providing explicit, documented, and upgrade-stable extension points. When SAP releases a support pack or upgrade, it updates the standard code and preserves the BAdI interface, meaning custom implementations continue to work. This is why BAdIs have become the dominant pattern for SAP customization across the last two decades.</p>
+<h3>How it works</h3>
+<p>BAdIs are managed through transaction <code>SE19</code> (classic BAdIs) or the <strong>Enhancement Framework</strong> in <code>SE18</code> (new-style BAdIs, the current standard). The lifecycle has three parts. First, a BAdI <strong>definition</strong> — created by SAP — declares the interface methods that custom code can implement. For example, the BAdI <code>MD_ADD_COL_PLANT</code> in materials management declares a method <code>ADD_COLUMN</code> that fires during MRP list display. Second, a BAdI <strong>implementation</strong> — created by the customer — is an ABAP class that implements the interface and contains the custom business logic. Third, at runtime, SAP&#39;s standard code calls the BAdI using a standard dispatch mechanism (<code>GET BADI</code> / <code>CALL BADI</code> in classic syntax, or the newer <code>cl_badi_manager</code> approach), and the custom implementation is invoked.</p>
+<p>A critical detail: BAdIs can be <strong>single-use</strong> (only one active implementation allowed) or <strong>multi-use</strong> (multiple implementations can coexist and are all called in sequence). In multi-use BAdIs, the order in which implementations are called is not guaranteed unless explicitly configured through a filter or sorting mechanism. This matters for data extraction because if two implementations both modify the same field, the final value depends on call order, which may vary.</p>
+<p>BAdIs execute in the same ABAP work process and database transaction as the standard code that called them. This means a BAdI can read and write to the database, call function modules, update internal tables, and raise exceptions — all with the same access and risk profile as standard SAP code.</p>
+<h3>Why it matters for data extraction</h3>
+<p>BAdIs matter for data extraction in two distinct scenarios. The first is <strong>data enrichment at write time</strong>. Many organizations use BAdIs to populate custom fields on standard objects as they are created or changed. For example, a BAdI on the material master (<code>BADI_MATERIAL_REL_CHECK</code>) might populate a custom append structure field <code>ZZMARA_LIFECYCLE_STAGE</code> based on business rules that aren&#39;t exposed in any standard UI. The field is populated correctly in the database, but only because the BAdI fires during the save operation. If you extract <code>MARA</code> raw, you get the correct value. But if you&#39;re trying to reproduce or validate the logic in your warehouse, you need to understand the BAdI implementation to replicate the calculation.</p>
+<p>The second scenario is <strong>discrepancy diagnosis</strong>. Data architects frequently encounter a gap between &quot;what the user sees in SAP&quot; and &quot;what&#39;s in the database table.&quot; A user opens a purchase order in <code>ME23N</code> and sees a calculated field — an approved amount, a risk classification, a compliance flag — that doesn&#39;t exist in <code>EKKO</code> or <code>EKPO</code>. The explanation is almost always a BAdI that computes the field at display time and presents it in the UI without persisting it to a database column. This type of field is fundamentally not extractable from a table scan — you either need to replicate the logic in your warehouse or call a Function Module or BAPI that executes the same BAdI.</p>
+<h3>Common pitfalls</h3>
+<p>The most common pitfall is <strong>assuming database tables are the authoritative source</strong> for all business data. In organizations with heavy BAdI customization, some fields displayed in the SAP UI are computed at runtime by BAdI implementations and never written to the database. Extracting the underlying table will give you the raw database value, which may be blank, a placeholder, or a stale default. Always ask the functional consultant: &quot;Is this field stored in the database, or computed by custom code?&quot;</p>
+<p>A related issue is <strong>BAdI implementations that have side effects on timestamps</strong>. Delta extraction typically relies on change timestamps (<code>AEDAT</code>, <code>LAEDA</code>, <code>UDATE</code>) to identify records modified since the last extraction. Some BAdI implementations update records without updating the change timestamp — either intentionally (to avoid triggering downstream events) or accidentally. If your delta extraction is missing records that have clearly been changed in production, inspect the BAdI implementations for the relevant object type to see if any bypass the standard timestamp update mechanism.</p>
+<p>Finally, watch for <strong>inactive BAdI implementations</strong>. An implementation exists in the system but may be set to inactive through a feature toggle or filter condition. A BAdI that is active in production but inactive in the development system (or vice versa) creates data inconsistency that is extremely difficult to trace without specifically checking the BAdI activation status in each client.</p>
+<h3>In practice</h3>
+<p>A practical example: you&#39;re extracting <code>KNA1</code> (customer master general data) and notice that a field <code>ZZCREDIT_BAND</code> is populated with values like <code>A</code>, <code>B</code>, <code>C</code> in production but is blank in your development extraction. You check the field in <code>SE11</code> — it&#39;s in an append structure, correctly defined. You check <code>SE16N</code> in production — values are there. You check <code>SE16N</code> in development — blank. A Basis developer points you to <code>SE19</code> and shows you a BAdI implementation <code>ZFI_CREDIT_BAND_POPULATE</code> that fires during customer master save events. The implementation is active in production but was never activated in development because the credit scoring API it calls isn&#39;t available there. Now you know: the field is correctly populated in production via BAdI, your extraction is fine, and the development discrepancy is an environment issue — not an extraction bug.</p>
+
+      </div>
+
+      <p class="glossary-doc-link">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

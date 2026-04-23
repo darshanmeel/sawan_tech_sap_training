@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Append Structure: Extending SAP Tables — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="Append structures are SAP&#39;s mechanism for adding custom Z-fields to standard tables without direct modification. Multiple structures can stack on one table.">
+  <link rel="canonical" href="https://academy.example.com/glossary/append-structure/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Append Structure: Extending SAP Tables — Plain Explanation">
+  <meta property="og:description" content="Append structures are SAP&#39;s mechanism for adding custom Z-fields to standard tables without direct modification. Multiple structures can stack on one table.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;append-structure&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Append Structure: Extending SAP Tables — Plain Explanation">
+  <meta name="twitter:description" content="Append structures are SAP&#39;s mechanism for adding custom Z-fields to standard tables without direct modification. Multiple structures can stack on one table.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Append Structure","alternateName":"Append Structure","description":"An append structure is a SAP table extension mechanism that allows customers to add custom fields (Z-fields) to a standard SAP table without modifying the table directly. Multiple append structures can be stacked on one table.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+      <li aria-current="page">Append Structure</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · Append Structure</p>
+        <h1>Append Structure<em>.</em></h1>
+      </div>
+      <p>An append structure is a SAP table extension mechanism that allows customers to add custom fields (Z-fields) to a standard SAP table without modifying the table directly. Multiple append structures can be stacked on one table.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Z-field/">Z-field</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/SE11/">SE11</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/MARA/">MARA</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Data Dictionary/">Data Dictionary</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>An append structure is a SAP table extension mechanism that allows customers to add custom fields (Z-fields) to a standard SAP table without modifying the table directly. Multiple append structures can be stacked on one table.</p>
+      </div>
+
+      <div class="glossary-prose">
+        <h3>What is an Append Structure?</h3>
+<p>An append structure is SAP&#39;s approved mechanism for extending standard database tables with customer-specific fields. When a business needs a field that SAP doesn&#39;t deliver — a custom product classification, a regional cost center, a proprietary compliance flag — the correct approach is not to alter the standard table definition directly. That would make the table &quot;customer-modified&quot; and risk being overwritten or broken during SAP upgrades and support pack imports. Instead, a developer creates an <strong>append structure</strong> in transaction <code>SE11</code> (ABAP Data Dictionary): a separate structure object that is linked to the target table and whose fields are transparently appended to the physical table at the database level.</p>
+<p>From the database&#39;s perspective, the fields in an append structure are indistinguishable from standard SAP fields — they occupy columns in the same table, are returned by <code>SELECT *</code>, and participate in indexes if so configured. From SAP&#39;s perspective, the append structure is a distinct object with its own transport history, meaning it can be upgraded independently of the standard table. Multiple append structures can coexist on a single table, each contributed by a different development team or project.</p>
+<h3>How it works</h3>
+<p>In <code>SE11</code>, you open the target table (e.g., <code>MARA</code>) and navigate to the <strong>Append Structures</strong> tab. Each append structure listed there is a separate Dictionary object, typically named with a <code>Z</code> or <code>Y</code> prefix (e.g., <code>ZMARA_CUSTOM</code>, <code>YEXT_MARA_FIELDS</code>). The structure definition lists its fields with their data types, lengths, and domain references — the same metadata you see for standard fields.</p>
+<p>At the database level, the fields from all append structures are physically stored as additional columns in the same table. When ABAP code runs <code>SELECT * FROM MARA INTO TABLE lt_mara</code>, the result includes all append structure fields automatically, with no additional JOIN or special syntax required. The fields simply appear after the last standard field in the field catalog. This transparency is what makes append structures so powerful — existing ABAP code that processes <code>MARA</code> continues to work, and new code can access both standard and custom fields with identical syntax.</p>
+<p>The <strong>field naming convention</strong> for append structures enforces that all custom field names begin with <code>ZZ</code> (two Z&#39;s) at minimum — for example, <code>ZZREGION_CODE</code>, <code>ZZCUSTOMER_TIER</code>, <code>ZZINTEGRATION_KEY</code>. This convention prevents naming collisions with future SAP standard fields and makes custom fields immediately identifiable in <code>SE16N</code> or extraction schemas. When you see a field starting with <code>ZZ</code> in a table, you are looking at a customer-added field from an append structure.</p>
+<h3>Why it matters for data extraction</h3>
+<p>Append structures are one of the most frequently missed aspects of SAP data extraction planning, and missing them causes silent data loss. If your extraction tool or query only selects standard fields, you will completely omit all custom business logic that lives in <code>ZZ</code> fields. In heavily customized industries — retail, manufacturing, utilities — append structure fields on <code>MARA</code>, <code>VBAK</code>, <code>BKPF</code>, <code>EKKO</code>, and <code>KNA1</code> often encode the most domain-specific and analytically valuable data in the system.</p>
+<p>The practical impact: a retailer might store product hierarchy codes in <code>ZZMARA_HIER1</code> and <code>ZZMARA_HIER2</code> on <code>MARA</code>. Without these fields, category-level reporting in the warehouse is impossible, because SAP&#39;s standard <code>MARA</code> fields don&#39;t encode the retailer&#39;s internal hierarchy. A data architect who builds a Snowflake data model using only the SAP standard column list will produce a schema that&#39;s technically populated but analytically broken for the business teams who depend on those custom fields.</p>
+<p>Modern managed extraction tools like Fivetran discover append structures automatically by introspecting the Data Dictionary metadata at sync time, including all <code>ZZ</code> fields in the extracted schema. Legacy hand-rolled extractors — Python scripts using <code>RFC_READ_TABLE</code>, hand-written SQL queries against the SAP schema — frequently miss append structure fields because the developer built the field list from documentation rather than live <code>SE11</code> inspection.</p>
+<h3>Common pitfalls</h3>
+<p>The most dangerous pitfall is building your extraction field list from SAP documentation, data model diagrams, or schema exports that were created before append structures were added. These sources reflect a point-in-time snapshot and go stale the moment a developer adds a new append structure. Always validate your field list against the live <code>SE11</code> definition in the source system immediately before finalizing extraction design.</p>
+<p>A second issue is <strong>field type assumptions</strong>. Append structure fields use the same SAP data types as standard fields: <code>CHAR</code>, <code>NUMC</code>, <code>DATS</code>, <code>TIMS</code>, <code>CURR</code>, <code>QUAN</code>, <code>DEC</code>, etc. But custom developers sometimes make non-standard choices — a date stored as <code>CHAR(8)</code> instead of <code>DATS</code>, or an amount stored as <code>CHAR</code> to avoid currency pairing requirements. When you extract these fields, the downstream type mapping may be incorrect. Always check the domain and data element of each append structure field in <code>SE11</code>, not just its technical type.</p>
+<p>Finally, watch for <strong>transport lag</strong>. Append structures are transported from development to quality to production via the standard transport system (<code>STMS</code>). A field that exists in development may not yet be in production, or vice versa. If your extraction runs against production but your schema was designed from development, a field that appears in <code>SE11</code> in development may not exist in the production table yet. Always verify append structure contents in the production system.</p>
+<h3>In practice</h3>
+<p>Consider extracting <code>BKPF</code> (accounting document header) for a financial reporting project. You open <code>SE11</code> in production and find <code>BKPF</code> has two append structures: <code>ZZBKPF_COMPLIANCE</code> (three fields: <code>ZZAPPROVAL_USER</code>, <code>ZZAPPROVAL_DATE</code>, <code>ZZRISK_SCORE</code>) and <code>ZZBKPF_REGION</code> (one field: <code>ZZREGION_CLUSTER</code>). These four fields don&#39;t appear in any SAP standard documentation. They were added during compliance and regional rollout projects over the past five years. Without them, your data warehouse GL table is missing the approval workflow fields that the internal audit team uses for SOX reporting. The lesson: always open <code>SE11</code> on the actual production system and review the Append Structures tab before writing the extraction field spec.</p>
+
+      </div>
+
+      <p class="glossary-doc-link">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

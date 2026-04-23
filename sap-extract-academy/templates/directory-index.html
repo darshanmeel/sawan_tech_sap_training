@@ -1,0 +1,75 @@
+<!-- Directory · Tables index (Bento card grid + filter chips) -->
+<!-- Class names / data-attrs align with docs/design/directory-final.html so -->
+<!-- Worker C's JS and Worker D's CSS wire up without modification. -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+<div class="directory-index" data-directory-index>
+
+  <header class="title-block">
+    <div>
+      <p class="eyebrow">Directory · Tables</p>
+      <h1>Tables<em>.</em></h1>
+      <p class="subtitle">Reference-grade directory of the SAP tables most commonly extracted in data-engineering projects. Pick a table for columns, DDL, extraction methods, and release notes.</p>
+    </div>
+    <dl class="meta">
+      <div><dt>Tables</dt><dd data-visible-count>{{itemCount}}</dd></div>
+      <div><dt>Modules</dt><dd>{{moduleCount}}</dd></div>
+    </dl>
+  </header>
+
+  <div class="body-grid directory-index-grid">
+    <main>
+
+      <section class="directory-filters" data-directory-filters>
+        <div class="filter-row">
+          <p class="group-label">Module</p>
+          <div class="toolbar-chips" role="group" aria-label="Filter by module" data-filter-group="module">
+            <button type="button" class="chip chip--active" data-filter="all" aria-pressed="true">All</button>
+            {{#moduleChips}}
+            <button type="button" class="chip" data-filter="{{code}}" aria-pressed="false">{{label}}</button>
+            {{/moduleChips}}
+          </div>
+        </div>
+        <div class="filter-row">
+          <p class="group-label">Availability</p>
+          <div class="toolbar-chips" role="group" aria-label="Filter by mode availability" data-filter-group="mode">
+            <button type="button" class="chip chip--active" data-filter="all" aria-pressed="true">All</button>
+            <button type="button" class="chip" data-filter="both" aria-pressed="false">S/4 &amp; ECC</button>
+            <button type="button" class="chip" data-filter="s4-only" aria-pressed="false">S/4-only</button>
+            <button type="button" class="chip" data-filter="ecc-only" aria-pressed="false">ECC-only</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="directory-grid" data-directory-grid>
+        {{#items}}
+        <article class="directory-card" data-module="{{module}}" data-mode="{{mode}}" data-slug="{{slug}}">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">{{module}}</span>
+              <span class="tag tag--mode" data-mode-tag>{{modeLabel}}</span>
+            </div>
+            <h2 class="directory-card-title"><a href="{{basePath}}{{url}}">{{name}}</a></h2>
+            {{#title}}<p class="directory-card-subtitle">{{title}}</p>{{/title}}
+          </header>
+          {{#descriptionOneLiner}}<p class="directory-card-description">{{descriptionOneLiner}}</p>{{/descriptionOneLiner}}
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              {{#typicalRows}}<div><dt>Rows</dt><dd>{{typicalRows}}</dd></div>{{/typicalRows}}
+              {{#volumeClass}}<div><dt>Class</dt><dd>{{volumeClass}}</dd></div>{{/volumeClass}}
+            </dl>
+            <a class="directory-card-link" href="{{basePath}}{{url}}">Open →</a>
+          </footer>
+        </article>
+        {{/items}}
+      </section>
+
+      <p class="directory-grid-empty" data-empty-state hidden>
+        No tables match these filters.
+      </p>
+
+    </main>
+  </div>
+</div>
+</div>
+

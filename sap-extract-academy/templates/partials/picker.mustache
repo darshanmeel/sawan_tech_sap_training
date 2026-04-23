@@ -1,0 +1,87 @@
+<div class="picker" aria-label="Extraction method, tool, and sink selector">
+  <fieldset class="picker-axis" id="picker-method">
+    <legend>Extraction method</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="method" value="odp" class="picker-radio">
+        <span>ODP</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="slt" class="picker-radio">
+        <span>SLT</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="rfc" class="picker-radio">
+        <span>RFC direct</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="method" value="ref" class="picker-radio">
+        <span>Reference only</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis picker-axis--tool" id="picker-tool">
+    <legend>Tool</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="adf" class="picker-radio">
+        <span>ADF</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="databricks" class="picker-radio">
+        <span>Databricks</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="fivetran" class="picker-radio">
+        <span>Fivetran</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="airbyte" class="picker-radio">
+        <span>Airbyte</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="tool" value="custom" class="picker-radio">
+        <span>Custom</span>
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset class="picker-axis" id="picker-sink">
+    <legend>Sink</legend>
+    <div class="picker-pills">
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="adls" class="picker-radio">
+        <span>ADLS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="s3" class="picker-radio">
+        <span>S3</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="gcs" class="picker-radio">
+        <span>GCS</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="snowflake" class="picker-radio">
+        <span>Snowflake</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="bigquery" class="picker-radio">
+        <span>BigQuery</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="fabric" class="picker-radio">
+        <span>Fabric</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="databricks" class="picker-radio">
+        <span>Databricks</span>
+      </label>
+      <label class="picker-pill">
+        <input type="radio" name="sink" value="other" class="picker-radio">
+        <span>Other</span>
+      </label>
+    </div>
+  </fieldset>
+</div>

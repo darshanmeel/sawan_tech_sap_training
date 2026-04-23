@@ -1,0 +1,26 @@
+<div class="method"
+     data-method="{{id}}"
+     data-license="{{license}}"
+     data-latency="{{latency}}"
+     data-volume="{{volume}}">
+  <div class="recommend-badge">Recommended</div>
+  <div class="blocked-badge">Blocked</div>
+  <h3>
+    <span class="num">{{number}}</span>{{name}}{{#flavor}} <em>· {{flavor}}</em>{{/flavor}}
+  </h3>
+  {{#tagline}}<p class="tagline">{{tagline}}</p>{{/tagline}}
+  <div class="attrs">
+    <span class="attr">License: <strong>{{licenseLabel}}</strong></span>
+    <span class="attr">Latency: <strong>{{latencyLabel}}</strong></span>
+    <span class="attr">Volume: <strong>{{volumeLabel}}</strong></span>
+  </div>
+  {{#why}}<div class="why" data-why-{{id}}>{{why}}</div>{{/why}}
+  <div class="body">
+    {{{bodyHtml}}}
+    <p>
+      {{#walkthroughSlug}}<a href="{{basePath}}/walkthrough/{{walkthroughSlug}}/?method={{pickerMethod}}">Full walkthrough →</a>{{/walkthroughSlug}}
+      {{#hasLinksSeparator}} &nbsp;·&nbsp; {{/hasLinksSeparator}}
+      {{#licenseArticleUrl}}<a href="{{basePath}}{{licenseArticleUrl}}">{{licenseArticleLabel}}</a>{{/licenseArticleUrl}}
+    </p>
+  </div>
+</div>

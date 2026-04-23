@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(gh repo *)",
+      "Bash(gh api *)",
+      "Bash(gh run *)",
+      "Bash(git commit *)",
+      "Bash(BASE_PATH=/sawan_tech_sap_training npm run build)",
+      "Bash(xargs grep *)",
+      "Bash(grep -v '^\\\\.$')",
+      "Bash(cat)",
+      "Bash(chmod +x /tmp/comprehensive_link_check.sh)",
+      "Bash(/tmp/comprehensive_link_check.sh)",
+      "Read(//tmp/**)",
+      "Bash(grep -v '^$')",
+      "Bash(BASE_PATH=/sawan_tech_sap_training node build.js)",
+      "Bash(git -C D:/darshanmeel/sawan_tech_sap_training diff --stat HEAD -- sap-extract-academy/docs/)",
+      "Bash(git -C D:/darshanmeel/sawan_tech_sap_training show HEAD:sap-extract-academy/docs/tables/bkpf/index.html)",
+      "Bash(git -C D:/darshanmeel/sawan_tech_sap_training checkout HEAD -- sap-extract-academy/docs/)",
+      "Bash(node build.js)",
+      "Bash(git -C D:/darshanmeel/sawan_tech_sap_training status --short)",
+      "Bash(git -C D:/darshanmeel/sawan_tech_sap_training add sap-extract-academy/build.js sap-extract-academy/templates/table-detail.html sap-extract-academy/docs/assets/css/main.css sap-extract-academy/content/en/walkthroughs/beginner/acdoca.md sap-extract-academy/docs/walkthrough/beginner/acdoca/ sap-extract-academy/docs/walkthrough/intermediate/acdoca/ sap-extract-academy/docs/walkthrough/expert/acdoca/ sap-extract-academy/docs/tables/acdoca/index.html sap-extract-academy/docs/tables/bkpf/index.html sap-extract-academy/docs/tables/lfa1/index.html sap-extract-academy/docs/tables/mara/index.html sap-extract-academy/docs/tables/vbak/index.html)",
+      "Bash(git -C D:/darshanmeel/sawan_tech_sap_training diff sap-extract-academy/docs/glossary/abap/index.html)",
+      "Bash(git -C D:/darshanmeel/sawan_tech_sap_training add sap-extract-academy/docs/ sap-extract-academy/docs/walkthrough/s4hana/)",
+      "Bash(git *)",
+      "Bash(python *)",
+      "Bash(grep -E \"\\\\.md$\")"
+    ]
+  }
+}

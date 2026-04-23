@@ -1,0 +1,30 @@
+{
+  "ci": {
+    "collect": {
+      "numberOfRuns": 1,
+      "url": [
+        "http://localhost:8000/",
+        "http://localhost:8000/tables/",
+        "http://localhost:8000/glossary/",
+        "http://localhost:8000/articles/",
+        "http://localhost:8000/walkthrough/beginner/vbak/",
+        "http://localhost:8000/walkthrough/intermediate/acdoca/",
+        "http://localhost:8000/walkthrough/expert/acdoca/"
+      ],
+      "staticDistDir": "./sap-extract-academy/docs",
+      "startServerCommand": "npx local-web-server --spa index.html --directory ./sap-extract-academy/docs"
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    },
+    "assert": {
+      "preset": "lighthouse:recommended",
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.85 }],
+        "categories:accessibility": ["error", { "minScore": 0.95 }],
+        "categories:best-practices": ["error", { "minScore": 0.90 }],
+        "categories:seo": ["error", { "minScore": 0.95 }]
+      }
+    }
+  }
+}

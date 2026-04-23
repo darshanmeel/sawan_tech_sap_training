@@ -1,0 +1,138 @@
+---
+# Shared tool steps for VBAK — used by all levels unless overridden.
+toolSteps:
+  - tool: custom
+    label: "Custom (Python / pyrfc)"
+    steps:
+      - title: "Install dependencies"
+        explanation: "Install pyrfc (SAP RFC bindings) and boto3 (AWS) or the appropriate sink library. pyrfc requires the SAP NW RFC SDK."
+        code: |
+          pip install pyrfc boto3 pandas
+
+          # pyrfc also requires the SAP NetWeaver RFC SDK (download from SAP Service Marketplace)
+          # export SAPNWRFC_HOME=/path/to/nwrfcsdk   (Linux/Mac)
+          # set SAPNWRFC_HOME=C:\nwrfcsdk            (Windows)
+        language: bash
+        verify: "python -c 'import pyrfc; import boto3; print(\"OK\")' prints OK with no errors."
+
+      - title: "Connect to SAP via RFC and extract VBAK"
+        explanation: "Use pyrfc to call the ODP extraction function module. Replace connection parameters with your SAP system details and the EXTRACT_VBAK user credentials."
+        code: |
+          import pyrfc
+          import pandas as pd
+
+          conn = pyrfc.Connection(
+              ashost='sap-prod.company.com',
+              sysnr='00', client='100',
+              user='EXTRACT_VBAK',
+              passwd='<password>'
+          )
+
+          result = conn.call(
+              'RODPS_REPL_ODP_EXTRACT',
+              SUBSCRIBER_NAME='PYTHON_VBAK_FULL',
+              SUBSCRIBER_TYPE='2',
+              SUBSCRIBER_PROCESS='FULL_LOAD',
+              DATA_AREA='ABAP_CDS',
+              ENTITY_NAME='I_SalesDocument',
+              MAX_RECORDS=500000,
+              FIELDS=[{'FIELDNAME': '*'}]
+          )
+
+          records = result.get('DATA', [])
+          df = pd.DataFrame(records)
+          print(f"Extracted {len(df)} rows from VBAK (I_SalesDocument)")
+        language: python
+        verify: "Script prints row count. Compare against SE16N count from SAP-side step 02."
+
+      - title: "Write to S3 or your sink"
+        explanation: "After extracting into a DataFrame, write to your landing zone. Swap the boto3 block for ADLS, GCS, or Snowflake as needed."
+        code: |
+          import boto3
+          from io import StringIO
+
+          s3 = boto3.client('s3', region_name='eu-west-1')
+          csv_buffer = StringIO()
+          df.to_csv(csv_buffer, index=False)
+          s3.put_object(
+              Bucket='my-sap-landing-bucket',
+              Key='sap/vbak/vbak_full_load.csv',
+              Body=csv_buffer.getvalue()
+          )
+          print(f"Loaded {len(df)} rows to s3://my-sap-landing-bucket/sap/vbak/")
+        language: python
+        verify: "File appears in sink. Row count matches SE16N. Column names match I_SalesDocument field names."
+
+  - tool: adf
+    label: "Azure Data Factory (ADF)"
+    steps:
+      - title: "Create a SAP ODP Linked Service"
+        explanation: "In ADF Studio, go to Manage → Linked Services → New → SAP ODP. Fill in your SAP host, system number, client, and EXTRACT_VBAK credentials. Use the self-hosted Integration Runtime if SAP is on-premise."
+        verify: "Test Connection in ADF returns green."
+
+      - title: "Create a Source Dataset (I_SalesDocument)"
+        explanation: "New Dataset → SAP ODP → select your linked service. Set Object Name to I_SalesDocument and Context to ABAP_CDS. Preview data to confirm fields resolve correctly."
+        verify: "Dataset preview shows VBELN, ERDAT, AUART, VKORG columns. No authorization errors."
+
+      - title: "Create a Sink Dataset (ADLS / Blob / Synapse)"
+        explanation: "New Dataset → Azure Data Lake Storage Gen2 (or your target). Set the container and file path. Use Parquet format for efficient downstream processing."
+        verify: "Sink dataset is linked to your storage account. No connection errors."
+
+      - title: "Create a Copy Activity and run"
+        explanation: "In a Pipeline, add a Copy Activity. Source = I_SalesDocument dataset. Sink = your ADLS/Synapse dataset. In Source settings, set Extraction Mode to Full. Run the pipeline and monitor in ADF Monitor."
+        verify: "Pipeline run shows Succeeded. Row count in ADF output matches SE16N row count."
+
+  - tool: databricks
+    label: "Databricks (PySpark / SAP connector)"
+    steps:
+      - title: "Install pyrfc on your Databricks cluster"
+        explanation: "pyrfc requires the SAP NetWeaver RFC SDK. Upload the SDK to DBFS or a volume, then install pyrfc on the cluster. Alternatively, use the Databricks SAP CDC connector if available in your workspace."
+        code: |
+          # Install pyrfc on the cluster (init script or cluster library)
+          pip install pyrfc pandas
+
+          # Mount SAP NW RFC SDK to DBFS first:
+          # dbutils.fs.cp("dbfs:/mnt/tools/nwrfcsdk.tar.gz", "/tmp/nwrfcsdk.tar.gz")
+        language: bash
+        verify: "Cluster restarts with pyrfc importable. Confirm with: python -c 'import pyrfc'."
+
+      - title: "Extract VBAK and write to Delta table"
+        explanation: "Extract via pyrfc (same as Custom Python variant) and write to a Delta table in Databricks Unity Catalog or DBFS."
+        code: |
+          import pyrfc, pandas as pd
+          from pyspark.sql import SparkSession
+
+          spark = SparkSession.builder.getOrCreate()
+
+          conn = pyrfc.Connection(
+              ashost='sap-prod.company.com',
+              sysnr='00', client='100',
+              user='EXTRACT_VBAK', passwd='<password>'
+          )
+          result = conn.call(
+              'RODPS_REPL_ODP_EXTRACT',
+              SUBSCRIBER_NAME='DBX_VBAK_FULL',
+              SUBSCRIBER_TYPE='2', SUBSCRIBER_PROCESS='FULL_LOAD',
+              DATA_AREA='ABAP_CDS', ENTITY_NAME='I_SalesDocument',
+              MAX_RECORDS=500000, FIELDS=[{'FIELDNAME': '*'}]
+          )
+          df = spark.createDataFrame(pd.DataFrame(result.get('DATA', [])))
+          df.write.format('delta').mode('overwrite').saveAsTable('sap_landing.raw.vbak')
+        language: python
+        verify: "Delta table sap_landing.raw.vbak exists. SELECT COUNT(*) matches SE16N."
+
+  - tool: fivetran
+    label: "Fivetran"
+    steps:
+      - title: "Add a Fivetran SAP S/4HANA connector"
+        explanation: "In the Fivetran dashboard, add a new connector. Search for SAP S/4HANA. Enter your SAP host, system number, client, and EXTRACT_VBAK credentials. Fivetran connects via OData — no RFC SDK needed."
+        verify: "Connector test passes. Fivetran shows the SAP system as reachable."
+
+      - title: "Select I_SalesDocument as the source object"
+        explanation: "In the connector schema settings, find I_SalesDocument under the ABAP_CDS context. Enable it. Disable raw VBAK if it appears — only the released CDS view is extraction-safe."
+        verify: "I_SalesDocument appears in schema browser as enabled. VBAK (raw) is disabled."
+
+      - title: "Configure destination and run initial sync"
+        explanation: "Set your Fivetran destination (Snowflake, BigQuery, Redshift, ADLS). Run the initial sync. Fivetran will extract all rows on the first run and switch to incremental mode automatically."
+        verify: "Initial sync shows row count matching SE16N. Destination table sap_vbak (or equivalent) exists with data."
+---

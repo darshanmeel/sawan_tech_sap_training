@@ -1,0 +1,55 @@
+<!-- Generic list/index page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+  <div class="grid">
+
+    <!-- Hero card at top with page title -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>SAP Extract Academy</p>
+        <h1>{{pageTitle}}</h1>
+      </div>
+      {{#pageIntro}}
+      <p>{{pageIntro}}</p>
+      {{/pageIntro}}
+    </div>
+
+    <!-- Section card containing list items -->
+    <div class="card section">
+      {{#breadcrumb}}
+      <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-5);">
+        <ol>
+          <li><a href="{{basePath}}/">Home</a></li>
+          <li aria-current="page">{{pageTitle}}</li>
+        </ol>
+      </nav>
+      {{/breadcrumb}}
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:var(--space-5);">
+        {{#items}}
+        <article style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-3);">
+          <h2 style="font-size:22px;font-weight:500;letter-spacing:-0.01em;font-family:var(--font-body);margin:0;">
+            <a href="{{basePath}}{{url}}" style="color:var(--color-ink);border:none;text-decoration:none;">{{title}}</a>
+          </h2>
+          {{#subtitle}}
+          <p style="font-size:13px;color:var(--color-ink-soft);margin:0;font-family:var(--font-mono);">{{subtitle}}</p>
+          {{/subtitle}}
+          {{#description}}
+          <p style="font-size:15px;color:var(--color-ink);margin:0;flex:1;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{description}}</p>
+          {{/description}}
+          <a href="{{basePath}}{{url}}" class="btn btn-primary" style="align-self:flex-start;">{{label}} →</a>
+        </article>
+        {{/items}}
+      </div>
+    </div>
+
+    <!-- CTA accent card -->
+    {{#callToAction}}
+    <div class="card accent">
+      <span class="chip">{{callToAction.heading}}</span>
+      <p>{{callToAction.description}}</p>
+    </div>
+    {{/callToAction}}
+
+  </div>
+</div>

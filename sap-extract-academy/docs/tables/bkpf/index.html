@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extract BKPF from SAP S&#x2F;4HANA — Complete Guide — SAP Extract Academy</title>
+  <meta name="description" content="BKPF is the accounting document header table in S&#x2F;4HANA. Learn to extract G&#x2F;L documents with company code, fiscal year, and reversal handling.">
+  <link rel="canonical" href="https://academy.example.com/tables/bkpf/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extract BKPF from SAP S&#x2F;4HANA — Complete Guide">
+  <meta property="og:description" content="BKPF is the accounting document header table in S&#x2F;4HANA. Learn to extract G&#x2F;L documents with company code, fiscal year, and reversal handling.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;tables&#x2F;bkpf&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extract BKPF from SAP S&#x2F;4HANA — Complete Guide">
+  <meta name="twitter:description" content="BKPF is the accounting document header table in S&#x2F;4HANA. Learn to extract G&#x2F;L documents with company code, fiscal year, and reversal handling.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Accounting Document Header","description":"BKPF is the accounting document header table in S/4HANA. Learn to extract G/L documents with company code, fiscal year, and reversal handling.","url":"https://academy.example.com/tables/bkpf/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Tables","item":"https://academy.example.com/tables/"},{"@type":"ListItem","position":3,"name":"BKPF"}]}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Table detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/tables/">Tables</a></li>
+      <li aria-current="page">BKPF</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: table code + module eyebrow -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>FI · Accounting Document Header</p>
+        <h1>BKPF<em>.</em></h1>
+      </div>
+      <p>Accounting document header (all G&#x2F;L, A&#x2F;P, A&#x2F;R documents). One row per accounting document, with posting date, document type, company code, fiscal year.</p>
+    </div>
+
+    <!-- Side card: typical volume -->
+    <div class="card side">
+      <h3>Typical volume</h3>
+      <p class="big">50M-500M</p>
+      <p>medium table. Plan your partitioning and licensing before anything else.</p>
+    </div>
+
+    <!-- Meta cards: 4 × span 3 -->
+    <div class="card meta"><dl><dt>Released CDS</dt><dd>I_AccountingDocument</dd></dl></div>
+    <div class="card meta"><dl><dt>Volume class</dt><dd>medium</dd></dl></div>
+    <div class="card meta"><dl><dt>Source system</dt><dd>S/4HANA</dd></dl></div>
+    <div class="card meta"><dl><dt>Module</dt><dd>FI</dd></dl></div>
+
+    <!-- Accent card: scope lock -->
+    <div class="card accent">
+      <span class="chip">Scope lock</span>
+      <p>Understand the partitioning and licensing requirements for BKPF before building any pipeline. Every other rule is downstream of this one.</p>
+    </div>
+
+    <!-- Section: What this table is -->
+    <div class="card section">
+      <h2>What this <em>is</em></h2>
+      <p class="subhead">Accounting document header (all G&#x2F;L, A&#x2F;P, A&#x2F;R documents). One row per accounting document, with posting date, document type, company code, fiscal year.</p>
+      <div class="prose">
+        <p>BKPF is the accounting document header table in the Financial Accounting (FI) module, storing metadata for all posted and parked accounting entries: posting dates, document types, company codes, fiscal years, amounts, and approval status. Each accounting document has one BKPF record (identified by BUKRS, GJAHR, BELNR — company code, fiscal year, document number).</p>
+<p>Extracting BKPF is central to financial analytics and audit trails. The table is large (tens to hundreds of millions of documents annually in large enterprises) and requires careful partitioning by fiscal year and company code to avoid extraction timeouts.</p>
+<p><a href="https://help.sap.com/">SAP S/4HANA Accounting Document overview</a> documents the structure. Note that BKPF is header-only (no monetary amounts broken down by account). For account-level details, join to BSEG (line items). Most data warehouse fact tables combine BKPF header context with BSEG line detail.</p>
+
+      </div>
+    </div>
+
+    <!-- Section: Key fields -->
+    <div class="card section">
+      <h2>Key fields</h2>
+      <table class="fields">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Role</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="k">MANDT</td>
+            <td>Key</td>
+            <td>Client (always filter to current client, never extract all)</td>
+          </tr>
+          <tr>
+            <td class="k">BUKRS</td>
+            <td>Key</td>
+            <td>Company Code (4-char, primary partition key)</td>
+          </tr>
+          <tr>
+            <td class="k">GJAHR</td>
+            <td>Key</td>
+            <td>Fiscal Year (partition key; most extractions slice by year)</td>
+          </tr>
+          <tr>
+            <td class="k">BELNR</td>
+            <td>Key</td>
+            <td>Accounting Document Number (10-char, unique within BUKRS+GJAHR)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Section: Extraction gotchas -->
+    <div class="card section">
+      <h2>Extraction gotchas</h2>
+      <div class="gotcha">
+        <span class="icon">!</span>
+        <p>
+          <strong>BKPF includes posted and parked documents. Filter BUKRS (company code) and GJAHR (fiscal year) early to reduce volume. Most extractions partition by fiscal year.</strong>
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SAP Note <span aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span>
+          </a>
+        </p>
+      </div>
+      <div class="gotcha">
+        <span class="icon">!</span>
+        <p>
+          <strong>Line items live in BSEG, not BKPF. BKPF is header only (amounts, posting date, approver). Join to BSEG for account-level details.</strong>
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SAP Note <span aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span>
+          </a>
+        </p>
+      </div>
+      <div class="gotcha">
+        <span class="icon">!</span>
+        <p>
+          <strong>Accounting documents can be reversed. Check AUGBL (reversal reference) and STORNOMON (reversal flag) to understand reversals vs. new postings.</strong>
+          <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+            SAP Note <span aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span>
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Section: Walkthroughs available -->
+    <div class="card section">
+      <h2>Walkthroughs <em>available</em></h2>
+      <p class="subhead">Pick your skill level and start learning how to extract BKPF.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--space-4);margin-top:var(--space-5);">
+        <a href="&#x2F;sawan_tech_sap_training/walkthrough/beginner/bkpf/" style="display:block;background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);text-decoration:none;border:none;transition:box-shadow 0.15s;">
+          <p class="eyebrow" style="margin-bottom:var(--space-2);">beginner</p>
+          <div style="font-family:var(--font-display);font-size:24px;letter-spacing:-0.02em;color:var(--color-ink);margin-bottom:var(--space-2);">Beginner</div>
+          <p style="font-size:14px;color:var(--color-ink-soft);margin:0;">Step-by-step guide</p>
+        </a>
+        <a href="&#x2F;sawan_tech_sap_training/walkthrough/intermediate/bkpf/" style="display:block;background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);text-decoration:none;border:none;transition:box-shadow 0.15s;">
+          <p class="eyebrow" style="margin-bottom:var(--space-2);">intermediate</p>
+          <div style="font-family:var(--font-display);font-size:24px;letter-spacing:-0.02em;color:var(--color-ink);margin-bottom:var(--space-2);">Intermediate</div>
+          <p style="font-size:14px;color:var(--color-ink-soft);margin:0;">Step-by-step guide</p>
+        </a>
+        <a href="&#x2F;sawan_tech_sap_training/walkthrough/expert/bkpf/" style="display:block;background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);text-decoration:none;border:none;transition:box-shadow 0.15s;">
+          <p class="eyebrow" style="margin-bottom:var(--space-2);">expert</p>
+          <div style="font-family:var(--font-display);font-size:24px;letter-spacing:-0.02em;color:var(--color-ink);margin-bottom:var(--space-2);">Expert</div>
+          <p style="font-size:14px;color:var(--color-ink-soft);margin:0;">Step-by-step guide</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- Section: External references -->
+    <div class="card section external-refs">
+      <h2>External <em>references</em></h2>
+      <ul class="refs-list">
+        <li><a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">SAP Help Portal — BKPF</a></li>
+        <li><a href="https://www.leanx.eu/en/sap/table/bkpf.html" target="_blank" rel="noopener noreferrer">leanx.eu — BKPF field list</a></li>
+        <li><a href="https://www.saptables.net/table/bkpf" target="_blank" rel="noopener noreferrer">saptables.net — BKPF</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

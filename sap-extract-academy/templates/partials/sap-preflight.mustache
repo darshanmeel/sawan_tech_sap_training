@@ -1,0 +1,76 @@
+<section class="sap-preflight" aria-labelledby="sap-preflight-title">
+  <h3 id="sap-preflight-title">SAP prerequisites</h3>
+  <p class="sap-preflight-lede">These steps are <strong>one-time per SAP system</strong> (not repeated per table). Once your RFC user, authorizations, and RFC destination are set up, every table extraction reuses the same connection. The checks below, in order, are the difference between a smooth extraction and a multi-day incident.</p>
+
+  <ol class="preflight-grid">
+    <li class="preflight-card" data-preflight="license">
+      <span class="preflight-eyebrow">01 · Licence</span>
+      <p class="preflight-summary">Confirm your extraction method is covered by your installed SAP licence before anyone designs anything.</p>
+      <details class="preflight-detail">
+        <summary>How to check</summary>
+        <p>
+          Runtime licences cover ODP through OData. SLT replication requires a
+          Full Use licence. Ask your SAP licensing contact; do not assume.
+          See the dedicated article on
+          <a href="/articles/runtime-vs-full-use/">Runtime vs Full Use</a>,
+          and note that
+          <a href="https://support.sap.com/notes/3255746" target="_blank" rel="noopener noreferrer">SAP Note 3255746</a>
+          prohibits third-party tools from using ODP via RFC — compliant
+          paths are ODP over OData or SLT.
+        </p>
+      </details>
+    </li>
+
+    <li class="preflight-card" data-preflight="cds">
+      <span class="preflight-eyebrow">02 · Released CDS view</span>
+      <p class="preflight-summary">Every table covered here has an extraction-safe released CDS view; confirm it exists before building.</p>
+      <details class="preflight-detail">
+        <summary>How to check</summary>
+        <p>
+          Open the view in
+          <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE80</a>
+          (or in ADT) and confirm the header annotation
+          <code>@Analytics.dataExtract: true</code> is present. If it is
+          missing, the view is not extractable — raw-table reads are not
+          the fix.
+        </p>
+      </details>
+    </li>
+
+    <li class="preflight-card" data-preflight="auth">
+      <span class="preflight-eyebrow">03 · Authorisations</span>
+      <p class="preflight-summary">A System-type technical user with the minimum authorisation objects for your chosen method — no named users, no wildcards.</p>
+      <details class="preflight-detail">
+        <summary>How to check</summary>
+        <p>
+          Create a System user via
+          <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SU01</a>
+          and assign a role via
+          <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">PFCG</a>.
+          For ODP: <code>S_RFC</code> (RFC_TYPE=FUNC) and
+          <code>S_ODP_READ</code> (ODPSOURCE=ABAP_CDS). For SLT your Basis
+          team also needs authorisation in LTCO and LTRS. For RFC direct
+          add <code>S_TABU_DIS</code> scoped to the table's authorisation
+          group — never wildcard it.
+        </p>
+      </details>
+    </li>
+
+    <li class="preflight-card" data-preflight="rowcount">
+      <span class="preflight-eyebrow">04 · Row-count baseline</span>
+      <p class="preflight-summary">Use SE16N to measure the intended partition before extraction — you cannot reconcile without this number.</p>
+      <details class="preflight-detail">
+        <summary>How to check</summary>
+        <p>
+          Open
+          <a href="https://help.sap.com/" target="_blank" rel="noopener noreferrer">SE16N</a>,
+          apply the same filter your extraction will use, and record the
+          count. Under 100M rows is usually safe for a single ODP partition;
+          larger volumes need further splitting or SLT. A count in the
+          billions means the filter is misconfigured — rethink the
+          partition before running anything.
+        </p>
+      </details>
+    </li>
+  </ol>
+</section>

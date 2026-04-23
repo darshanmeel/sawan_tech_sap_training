@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ODP: Operational Data Provisioning in SAP — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="ODP is SAP&#39;s extraction framework for real-time table data. Supports full-load, delta, authorization, and CDS integration. The modern extraction standard.">
+  <link rel="canonical" href="https://academy.example.com/glossary/odp/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ODP: Operational Data Provisioning in SAP — Plain Explanation">
+  <meta property="og:description" content="ODP is SAP&#39;s extraction framework for real-time table data. Supports full-load, delta, authorization, and CDS integration. The modern extraction standard.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;odp&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ODP: Operational Data Provisioning in SAP — Plain Explanation">
+  <meta name="twitter:description" content="ODP is SAP&#39;s extraction framework for real-time table data. Supports full-load, delta, authorization, and CDS integration. The modern extraction standard.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Operational Data Provisioning","alternateName":"ODP","description":"ODP is SAP's extraction framework for exposing table and view data for real-time extraction. ODP handles authorization, supports full-load and delta, and integrates with CDS views. The modern alternative to legacy BW extractors.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+      <li aria-current="page">ODP</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · Operational Data Provisioning</p>
+        <h1>ODP<em>.</em></h1>
+      </div>
+      <p>ODP is SAP&#39;s extraction framework for exposing table and view data for real-time extraction. ODP handles authorization, supports full-load and delta, and integrates with CDS views. The modern alternative to legacy BW extractors.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Operational Data Provisioning/">Operational Data Provisioning</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Delta/">Delta</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Released CDS View/">Released CDS View</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/ODQMON/">ODQMON</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Extractor/">Extractor</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>ODP is SAP&#39;s extraction framework for exposing table and view data for real-time extraction. ODP handles authorization, supports full-load and delta, and integrates with CDS views. The modern alternative to legacy BW extractors.</p>
+      </div>
+
+      <div class="glossary-prose">
+        <h3>What is ODP?</h3>
+<p><strong>Operational Data Provisioning (ODP)</strong> is SAP&#39;s unified extraction framework introduced with SAP NetWeaver 7.4 and made the standard in S/4HANA. ODP replaces a fragmented landscape of legacy BW extractors, DataSources, and custom RFC function modules with a single, consistent API for exposing SAP data to external consumers. Any table, CDS view, or DataSource that is registered as an ODP provider becomes immediately available for extraction via the <code>RFC_ODP_READ</code> function module — the same call whether you are pulling <code>ACDOCA</code>, a released CDS view like <code>I_JournalEntryItem</code>, or a custom Z-table.</p>
+<p>ODP operates on a provider-consumer model. The <strong>ODP provider</strong> is the SAP object that publishes data — a transparent table, a CDS view with the <code>@OData.publish: true</code> annotation, or a legacy BW DataSource. The <strong>ODP consumer</strong> is whatever external tool connects via RFC to read from that provider. Python scripts using <code>pyrfc</code>, Azure Data Factory&#39;s SAP ODP connector, Informatica PowerCenter, and commercial extractors like Fivetran all act as ODP consumers. The provider handles authorization enforcement, field projection, and filter pushdown; the consumer simply specifies what it wants and receives pages of data.</p>
+<h3>How it works</h3>
+<p>When an ODP consumer initiates an extraction, it registers a <strong>subscription</strong> against the provider. This subscription is the persistent identity that ODP uses to track what data the consumer has already seen. For a <strong>full-load</strong> extraction the subscription is used only to scope the current request — all rows are returned and no delta state is maintained. For <strong>delta extraction</strong>, the subscription becomes critical: ODP records a watermark after each successful extraction, and subsequent calls return only rows that changed since that watermark. The delta queue is stored in SAP database tables and is visible in the transaction <code>ODQMON</code>.</p>
+<p>Delta tracking in ODP works differently depending on the provider type. For CDS views with <code>@Analytics.dataExtract.enabled: true</code>, SAP uses change document logs or database triggers to populate the delta queue. For transparent tables exposed directly, ODP relies on change pointers or timestamp fields. When your extraction tool calls <code>RFC_ODP_READ</code> with <code>READ_MODE = &#39;D&#39;</code> (delta), SAP returns the queued changes and advances the watermark. If the extraction fails mid-way, the watermark is not advanced, so the next run retries the same delta — providing at-least-once delivery semantics. Your pipeline must handle deduplication in the target layer.</p>
+<p>ODP also enforces <strong>authorization objects</strong> at the field and row level. If your RFC user does not have the necessary S/4HANA authorization objects (typically <code>S_TABU_DIS</code> for tables or specific CDS view authorization objects), ODP will either return no rows or raise an authorization error. This is more secure than direct <code>SE16N</code> table browsing but requires careful user setup in <code>SU01</code> before extraction begins.</p>
+<h3>Why it matters for data extraction</h3>
+<p>ODP is the central API that makes modern SAP extraction tractable without direct database access. Without ODP, extracting from an SAP system required either ABAP development of custom RFC function modules, direct database connections (rarely permitted for cloud SAP systems), or purchasing expensive middleware. ODP exposes the SAP data model through a documented, supported interface that SAP commits to maintaining across releases. When SAP restructures internal tables in a new S/4HANA release, released CDS views exposed via ODP maintain backward compatibility — your extraction pipeline does not break.</p>
+<p>For delta extraction at scale, ODP&#39;s queue-based approach is efficient because it avoids full table scans. Instead of extracting all 500 million rows of <code>ACDOCA</code> nightly and computing what changed in the warehouse, ODP delivers only the delta — perhaps 50,000 journal entries posted during business hours. This reduces network traffic, SAP system load, and warehouse compute costs. At high volumes, the bottleneck moves from SAP to your ingestion infrastructure, which is the point at which you graduate from ODP to SLT replication.</p>
+<h3>Common pitfalls</h3>
+<p>The most common ODP mistake is not cleaning up stale subscriptions. Every time an extraction tool registers a new subscription name, ODP creates a persistent delta queue in SAP&#39;s database. If your tool creates a new subscription on every run (common in poorly configured ADF pipelines or ad-hoc Python scripts), the SAP system accumulates thousands of abandoned queues that consume database space and slow <code>ODQMON</code>. Always reuse a stable subscription name per pipeline and explicitly delete subscriptions when decommissioning a pipeline using <code>ODQMON</code>.</p>
+<p>A second frequent issue is misunderstanding full-load versus delta mode. Developers sometimes configure delta mode for initial load of a large table, expecting ODP to batch efficiently. In delta mode without a prior watermark, ODP does perform a full scan — but it also writes the entire dataset to the delta queue first, doubling the I/O on SAP&#39;s database. For initial loads of large tables, always use full-load mode with parallel partitioning (by <code>GJAHR</code>, <code>BUKRS</code>, or another selective field), then switch to delta mode for subsequent incremental runs.</p>
+<h3>In practice</h3>
+<p>A typical beginner ODP pipeline for extracting <code>VBAK</code> (sales order headers) in Python uses <code>pyrfc</code> to call <code>RFC_ODP_READ</code> with the provider name <code>VBAK</code>, a full-load <code>READ_MODE</code>, a page size of 100,000 rows, and filters for a specific <code>VKORG</code> (sales organisation). The script loops through pages, writes each to Parquet, and uploads to S3. An intermediate pipeline adds delta mode: after the initial load, daily runs call <code>RFC_ODP_READ</code> with <code>READ_MODE = &#39;D&#39;</code> using the same subscription name, receiving only changed headers and merging them into the target table using a <code>MERGE</code> statement in Snowflake. Monitor queue health in <code>ODQMON</code> throughout.</p>
+
+      </div>
+
+      <p class="glossary-doc-link">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

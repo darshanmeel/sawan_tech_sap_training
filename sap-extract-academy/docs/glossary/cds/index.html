@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>CDS: Core Data Services in SAP — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="CDS is SAP&#39;s language for defining data views. CDS views enforce authorization and apply transformations, making them the safe, supported way to extract SAP data.">
+  <link rel="canonical" href="https://academy.example.com/glossary/cds/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CDS: Core Data Services in SAP — Plain Explanation">
+  <meta property="og:description" content="CDS is SAP&#39;s language for defining data views. CDS views enforce authorization and apply transformations, making them the safe, supported way to extract SAP data.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;cds&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CDS: Core Data Services in SAP — Plain Explanation">
+  <meta name="twitter:description" content="CDS is SAP&#39;s language for defining data views. CDS views enforce authorization and apply transformations, making them the safe, supported way to extract SAP data.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Core Data Services","alternateName":"CDS","description":"CDS is SAP's declarative language for defining data models and views. CDS views are the modern, supported way to expose SAP data; they enforce authorization, apply currency conversion, and avoid raw table queries.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+      <li aria-current="page">CDS</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · Core Data Services</p>
+        <h1>CDS<em>.</em></h1>
+      </div>
+      <p>CDS is SAP&#39;s declarative language for defining data models and views. CDS views are the modern, supported way to expose SAP data; they enforce authorization, apply currency conversion, and avoid raw table queries.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/ODP/">ODP</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Released CDS View/">Released CDS View</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/I_SalesDocument/">I_SalesDocument</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/I_JournalEntryItem/">I_JournalEntryItem</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/ABAP/">ABAP</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>CDS is SAP&#39;s declarative language for defining data models and views. CDS views are the modern, supported way to expose SAP data; they enforce authorization, apply currency conversion, and avoid raw table queries.</p>
+      </div>
+
+      <div class="glossary-prose">
+        <h3>What is CDS?</h3>
+<p>Core Data Services (CDS) is SAP&#39;s declarative framework for defining data models, views, associations, and calculations directly at the database layer. A CDS view is conceptually similar to a SQL view — it defines a named query over one or more tables — but it adds SAP-specific capabilities that SQL alone cannot provide: <strong>authorization checks</strong> enforced at the data layer, <strong>currency and unit conversion</strong> annotations, <strong>associations</strong> that define relationships between entities without requiring explicit JOINs in consumer code, and <strong>annotations</strong> that drive UI generation, OData exposure, and ODP extraction behavior.</p>
+<p>CDS was introduced as part of SAP HANA&#39;s strategy to push computation from the application server down to the database layer. Instead of fetching raw data into ABAP and transforming it in memory, CDS views execute transformations as close to the data as possible. For S/4HANA systems running on HANA, this means CDS views can leverage HANA&#39;s columnar storage and in-memory processing for dramatically better performance than equivalent ABAP SELECT statements.</p>
+<p>The practical significance for data extraction is that SAP has made CDS views the <strong>official, published interface</strong> for accessing SAP data. Raw table extraction — <code>SELECT * FROM BKPF</code> — is unsupported, unstable across upgrades, and potentially dangerous on HANA (where a full table scan of <code>ACDOCA</code> with hundreds of millions of rows can exhaust memory and crash the system). CDS views are the supported path.</p>
+<h3>How it works</h3>
+<p>CDS views are written in a dialect of SQL extended with SAP-specific syntax, authored in ADT (ABAP Development Tools), and transported like any other ABAP object. A minimal CDS view looks similar to a SQL <code>CREATE VIEW</code> statement, but adds an <code>@</code> annotation prefix for metadata. SAP delivers two categories of CDS views: <strong>private views</strong> (no prefix or <code>P_</code> prefix) used internally within the SAP application layer, and <strong>released views</strong> (prefixed <code>I_</code> for interface views, <code>C_</code> for consumption views, <code>A_</code> for API views in RAP) that are explicitly published for external use and governed by SAP&#39;s compatibility promise.</p>
+<p>The <strong><code>I_</code> (interface) CDS views</strong> are the ones relevant to extraction. <code>I_JournalEntryItem</code> wraps <code>ACDOCA</code>, <code>I_SalesDocument</code> wraps <code>VBAK</code>/<code>VBAP</code>, <code>I_Product</code> wraps <code>MARA</code>, <code>I_PurchasingDocument</code> wraps <code>EKKO</code>/<code>EKPO</code>. These views join the raw tables, apply access control via <strong>DCLS (Access Control objects)</strong>, compute derived fields, handle multi-currency amounts, and present a stable field surface that SAP maintains across releases. When SAP restructures the underlying tables (as happened extensively in the move from ECC to S/4HANA with <code>BSEG</code> to <code>ACDOCA</code>), the <code>I_</code> views absorb the change and maintain backward compatibility.</p>
+<p>For ODP extraction, CDS views must carry the annotation <code>@Analytics.dataExtract: true</code> (or the equivalent depending on the SAP release) to be registered as ODP providers under the <code>ABAP_CDS</code> extraction context. You can inspect which CDS views are ODP-enabled in transaction <code>ODQMON</code> by browsing the <code>ABAP_CDS</code> context, or by searching for the annotation in ADT.</p>
+<h3>Why it matters for data extraction</h3>
+<p>CDS views are the correct and safe extraction surface for SAP data, and understanding them at depth is non-negotiable for anyone building serious extraction pipelines. The three concrete reasons are authorization, stability, and delta support.</p>
+<p><strong>Authorization</strong>: CDS views with DCLS (Data Control Language Statements) enforce row-level and field-level security automatically, based on the calling user&#39;s SAP authorizations. This means an extraction running under a correctly authorized RFC user will automatically receive only the data that user is permitted to see — which is exactly what you want for production extraction. Raw table access via <code>RFC_READ_TABLE</code> bypasses this entirely, which is both a security risk and a compliance problem in regulated industries.</p>
+<p><strong>Stability</strong>: SAP&#39;s upgrade compatibility promise applies to released <code>I_</code> CDS views. If SAP restructures the underlying tables in a future release, the <code>I_</code> view interface remains stable. An extraction built on <code>I_JournalEntryItem</code> continues to work after an SAP upgrade; an extraction built directly on <code>ACDOCA</code> may break if SAP adds, removes, or renames columns — which happens with support packages and upgrade bundles.</p>
+<p><strong>Delta support</strong>: ODP-enabled CDS views provide delta extraction out of the box. The delta mechanism is managed by the ODP framework using the view&#39;s change tracking metadata. For <code>I_JournalEntryItem</code>, delta captures new journal entry postings since the last extraction. This is far more reliable than timestamp-based delta on <code>ACDOCA</code> directly, because ODP manages sequence tracking and handles resets.</p>
+<h3>Common pitfalls</h3>
+<p>The most critical pitfall is using <strong>private or unreleased CDS views</strong> for extraction. Views without the <code>I_</code> prefix or an explicit SAP release annotation are internal implementation details. SAP can change, rename, or delete them in any support pack without notice. An extraction pipeline built on an unreleased view will break silently after an upgrade — often without an error, just with missing or incorrect data.</p>
+<p>A second pitfall is <strong>ignoring access control annotations</strong>. A CDS view annotated with <code>@AccessControl.authorizationCheck: #CHECK</code> will apply DCLS rules and silently return zero rows for an RFC user who lacks the required authorizations — no error, just an empty result. If your extraction returns fewer rows than expected, check the view&#39;s access control annotation in ADT before investigating extraction logic. Setting up the RFC user&#39;s authorizations correctly (company codes, plant ranges, controlling areas) is a Basis task, but identifying the need for it is an extraction engineer&#39;s responsibility.</p>
+<p>Finally, watch for <strong>currency and unit fields in CDS views</strong>. CDS views often apply currency conversion annotations that produce computed currency fields different from the raw database values. If you extract <code>I_JournalEntryItem</code> and compare <code>AmountInCompanyCodeCurrency</code> to the raw <code>ACDOCA-HSL</code> field, you may see differences where the view has applied a conversion rule. Always trace the CDS view&#39;s annotations in ADT to understand what transformations are applied to each field before assuming the extracted value equals the raw stored value.</p>
+<h3>In practice</h3>
+<p>A practical extraction design: you need to build a general ledger fact table in Snowflake from an S/4HANA system. The wrong approach is <code>SELECT * FROM ACDOCA</code> via <code>RFC_READ_TABLE</code> — ACDOCA has over 300 columns, no authorization enforcement, and will likely time out or crash for any meaningful date range. The right approach is to subscribe to <code>I_JournalEntryItem</code> via ODP in the <code>ABAP_CDS</code> context, which delivers a curated field set of ~80 columns, enforces authorization, and provides delta extraction keyed to the document posting sequence. You configure the extraction in your tool (Fivetran, ADF, pyrfc with ODP calls), run an initial load scoped to the last three fiscal years, and then activate delta to capture ongoing postings. This approach is stable across SAP upgrades, auditable, and scalable to billions of rows with proper ODP subscriber management.</p>
+
+      </div>
+
+      <p class="glossary-doc-link">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

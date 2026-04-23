@@ -1,0 +1,143 @@
+---
+# Shared tool steps for ACDOCA — used by all levels unless overridden.
+toolSteps:
+  - tool: custom
+    label: "Custom (Python / pyrfc)"
+    steps:
+      - title: "Install dependencies"
+        explanation: "pyrfc requires the SAP NetWeaver RFC SDK. Install it alongside the Python packages."
+        code: |
+          pip install pyrfc boto3 pandas
+
+          # Set SDK path before importing pyrfc:
+          # export SAPNWRFC_HOME=/path/to/nwrfcsdk  (Linux/Mac)
+          # set SAPNWRFC_HOME=C:\nwrfcsdk           (Windows)
+        language: bash
+        verify: "python -c 'import pyrfc' prints no errors."
+
+      - title: "Extract ACDOCA — one company code, one fiscal year"
+        explanation: "Always partition ACDOCA by RBUKRS (company code) and RYEAR (fiscal year). A full table read without partition crashes SAP. This example extracts company code 1000, year 2024."
+        code: |
+          import pyrfc
+          import pandas as pd
+
+          conn = pyrfc.Connection(
+              ashost='sap-prod.company.com',
+              sysnr='00', client='100',
+              user='EXTRACT_ACDOCA', passwd='<password>'
+          )
+
+          # Extract via I_JournalEntryItem — never raw ACDOCA
+          result = conn.call(
+              'RODPS_REPL_ODP_EXTRACT',
+              SUBSCRIBER_NAME='PYTHON_ACDOCA_2024_1000',
+              SUBSCRIBER_TYPE='2',
+              SUBSCRIBER_PROCESS='FULL_LOAD',
+              DATA_AREA='ABAP_CDS',
+              ENTITY_NAME='I_JournalEntryItem',
+              MAX_RECORDS=1000000,
+              FIELDS=[{'FIELDNAME': '*'}],
+              SELECTION=[
+                  {'FIELDNAME': 'RBUKRS', 'SIGN': 'I', 'OPTION': 'EQ', 'LOW': '1000'},
+                  {'FIELDNAME': 'RYEAR',  'SIGN': 'I', 'OPTION': 'EQ', 'LOW': '2024'}
+              ]
+          )
+
+          records = result.get('DATA', [])
+          df = pd.DataFrame(records)
+          print(f"Extracted {len(df)} rows — ACDOCA RBUKRS=1000, RYEAR=2024")
+        language: python
+        verify: "Row count matches SE16N for RBUKRS=1000, RYEAR=2024. Never run without the RBUKRS+RYEAR filter."
+
+      - title: "Write to S3 as Parquet"
+        explanation: "Use Parquet, not CSV, for ACDOCA. At 5–50M rows per partition, CSV is too slow to load downstream. Parquet with snappy compression reduces size by 70–80%."
+        code: |
+          import boto3
+          import pyarrow as pa
+          import pyarrow.parquet as pq
+          from io import BytesIO
+
+          s3 = boto3.client('s3', region_name='eu-west-1')
+          table = pa.Table.from_pandas(df)
+          buf = BytesIO()
+          pq.write_table(table, buf, compression='snappy')
+          buf.seek(0)
+          s3.put_object(
+              Bucket='my-sap-landing-bucket',
+              Key='sap/acdoca/rbukrs=1000/ryear=2024/acdoca.parquet',
+              Body=buf.getvalue()
+          )
+          print(f"Loaded {len(df)} rows to S3 as Parquet")
+        language: python
+        verify: "Parquet file appears in S3. Row count matches extraction count."
+
+  - tool: adf
+    label: "Azure Data Factory (ADF)"
+    steps:
+      - title: "Create SAP ODP Linked Service"
+        explanation: "In ADF Studio, Manage → Linked Services → New → SAP ODP. Use the EXTRACT_ACDOCA system user. Connect via self-hosted Integration Runtime for on-premise SAP."
+        verify: "Test Connection returns green."
+
+      - title: "Dataset: I_JournalEntryItem with RBUKRS+RYEAR filter"
+        explanation: "Source dataset uses I_JournalEntryItem (not raw ACDOCA). In Copy Activity source settings, add a Selection filter: RBUKRS EQ '1000', RYEAR EQ '2024'. Without this filter ADF will attempt a full-table read and crash SAP."
+        verify: "Dataset preview shows journal entry columns. Row count preview matches SE16N for the filtered partition."
+
+      - title: "Sink: ADLS Gen2 in Parquet format"
+        explanation: "Sink dataset points to ADLS Gen2. Use Parquet format with Snappy compression. Partition your storage path: sap/acdoca/rbukrs=1000/ryear=2024/. This enables partition pruning in Synapse and Databricks."
+        verify: "Pipeline run completes. Parquet file visible in ADLS. Row count matches SE16N."
+
+  - tool: databricks
+    label: "Databricks (PySpark / pyrfc)"
+    steps:
+      - title: "Extract via pyrfc into a Spark DataFrame"
+        explanation: "Extract from I_JournalEntryItem via ODP. ACDOCA must be partitioned by RBUKRS and RYEAR — always include both filter parameters."
+        code: |
+          import pyrfc, pandas as pd
+          from pyspark.sql import SparkSession
+
+          spark = SparkSession.builder.getOrCreate()
+
+          conn = pyrfc.Connection(
+              ashost='sap-prod.company.com',
+              sysnr='00', client='100',
+              user='EXTRACT_ACDOCA', passwd='<password>'
+          )
+          result = conn.call(
+              'RODPS_REPL_ODP_EXTRACT',
+              SUBSCRIBER_NAME='DBX_ACDOCA_2024_1000',
+              SUBSCRIBER_TYPE='2', SUBSCRIBER_PROCESS='FULL_LOAD',
+              DATA_AREA='ABAP_CDS', ENTITY_NAME='I_JournalEntryItem',
+              MAX_RECORDS=1000000, FIELDS=[{'FIELDNAME': '*'}],
+              SELECTION=[
+                  {'FIELDNAME': 'RBUKRS', 'SIGN': 'I', 'OPTION': 'EQ', 'LOW': '1000'},
+                  {'FIELDNAME': 'RYEAR',  'SIGN': 'I', 'OPTION': 'EQ', 'LOW': '2024'}
+              ]
+          )
+          df = spark.createDataFrame(pd.DataFrame(result.get('DATA', [])))
+          print(f"Extracted {df.count()} rows — RBUKRS=1000, RYEAR=2024")
+        language: python
+        verify: "Row count matches SE16N for RBUKRS=1000, RYEAR=2024."
+
+      - title: "Write as Delta table (recommended), Iceberg table, or Parquet files"
+        explanation: "Choose your write format based on your downstream sink. Delta is the default for Databricks-to-Databricks flows. Iceberg is the best choice when downstream consumers include BigQuery, Athena, or non-Databricks engines — it is an open standard. Parquet files are the most portable option for any sink that reads from ADLS or S3."
+        code: |
+          # ── Option 1: Delta table (default — best for Databricks lakehouse) ──
+          df.write.format('delta').mode('overwrite') \
+              .partitionBy('RBUKRS', 'RYEAR') \
+              .option('replaceWhere', "RBUKRS='1000' AND RYEAR='2024'") \
+              .saveAsTable('sap_landing.raw.acdoca')
+
+          # ── Option 2: Iceberg table (best for cross-engine / open lake) ──
+          # df.write.format('iceberg').mode('overwrite') \
+          #     .partitionBy('RBUKRS', 'RYEAR') \
+          #     .saveAsTable('sap_landing.raw.acdoca')
+
+          # ── Option 3: Parquet files to ADLS / S3 (most portable) ──
+          # df.write.format('parquet').mode('overwrite') \
+          #     .partitionBy('RBUKRS', 'RYEAR') \
+          #     .option('compression', 'snappy') \
+          #     .save('abfss://sap-landing@account.dfs.core.windows.net/acdoca/')
+          #   # or for S3: .save('s3://my-bucket/sap/acdoca/')
+        language: python
+        verify: "Delta: sap_landing.raw.acdoca exists with partition RBUKRS=1000/RYEAR=2024. Iceberg: same table path in Iceberg catalog. Parquet: files visible in ADLS/S3 landing path."
+---

@@ -1,0 +1,826 @@
+# Core SAP Data Extraction Guide Implementation Plan
+
+> **For agentic workers:** Use superpowers:subagent-driven-development or superpowers:executing-plans to implement this plan task-by-task.
+
+**Goal:** Create a comprehensive core article explaining how to extract any SAP table using ACDOCA (ODP) and VBAK (SLT) examples, replace the Decide button with notification signup, and create a LinkedIn post.
+
+**Architecture:** 
+- New article file in `sap-extract-academy/content/en/articles/how-to-extract-any-sap-data.md` 
+- LinkedIn post saved to `sap-extract-academy/content/en/linkedin/core-extraction-guide-post.md`
+- Remove `/content/en/decide.md` and `/docs/assets/js/decide.js`
+- Update landing page (`index.md`) to replace Decide button with notification signup in emailSignup config
+- Remove navigation link to Decide page
+
+**Tech Stack:** Markdown (content), YAML frontmatter (metadata), static site builder
+
+---
+
+## File Structure
+
+**Files to create:**
+- `sap-extract-academy/content/en/articles/how-to-extract-any-sap-data.md` — Core article (2500+ words)
+- `sap-extract-academy/content/en/linkedin/core-extraction-guide-post.md` — LinkedIn post content
+
+**Files to modify:**
+- `sap-extract-academy/content/en/index.md` — Update emailSignup config, remove Decide CTA
+
+**Files to delete:**
+- `sap-extract-academy/content/en/decide.md`
+- `sap-extract-academy/docs/assets/js/decide.js`
+
+---
+
+## Tasks
+
+### Task 1: Create Core Extraction Guide Article
+
+**Files:**
+- Create: `sap-extract-academy/content/en/articles/how-to-extract-any-sap-data.md`
+
+**Step 1: Create article file with frontmatter**
+
+Create `sap-extract-academy/content/en/articles/how-to-extract-any-sap-data.md`:
+
+```markdown
+---
+title: "How to Extract Any SAP Data — The Complete Guide"
+slug: how-to-extract-any-sap-data
+publishDate: 2026-04-23
+readingTimeMinutes: 12
+author: "SAP Extract Academy"
+summary: "Master SAP data extraction with ACDOCA (GL) and VBAK (Sales Orders) examples. Learn which method to use, how to avoid licensing traps, and build your first extraction pipeline."
+relatedWalkthroughs:
+  - slug: acdoca
+    level: beginner
+  - slug: acdoca
+    level: intermediate
+  - slug: acdoca
+    level: expert
+  - slug: vbak
+    level: beginner
+  - slug: vbak
+    level: intermediate
+  - slug: vbak
+    level: expert
+seoTitle: "How to Extract Any SAP Data — Complete Guide with Examples"
+seoDescription: "Master SAP data extraction: ACDOCA (GL) via ODP, VBAK (Sales) via SLT. Databricks + S3 examples. No licensing surprises. Step-by-step guide for data engineers."
+updatedAt: 2026-04-23
+---
+
+## What This Guide Teaches
+
+You're about to extract SAP data to your cloud warehouse. Here's what you need to know:
+
+**What we cover:**
+- How to extract SAP data to any target system (S3, Snowflake, Databricks, etc.)
+- Three proven extraction methods: ODP (batch), SLT (real-time), RFC (legacy)
+- Patterns from beginner (one-time extract) to enterprise (billions of rows, sub-minute latency)
+- Tool-agnostic guidance that works with ADF, Python, Fivetran, and custom pipelines
+- Licensing constraints and how to avoid $100k+ in retroactive costs
+
+**What we don't cover:**
+- Post-extraction data modeling or transformations (that's your responsibility)
+- Custom connectors or non-standard extraction methods
+- SAP Analytics Cloud or embedded analytics
+- ECC-only tables (we focus on S/4HANA, with ECC addendums when critical)
+
+The key insight: **80% of extraction decisions are made in the first hour.** Choose your method, understand licensing, then execute.
+
+---
+
+## How to Choose Your Extraction Method
+
+Three methods exist. Here's when to use each:
+
+| Method | Best For | Latency | License | Tools |
+|---|---|---|---|---|
+| **ODP** | Batch extractions, any volume with partitioning, scheduled loads | Hours | Runtime OK | Fivetran, ADF, Databricks, Python/pyrfc, Airbyte |
+| **SLT** | Real-time delta, sub-5-minute latency, continuous streaming | Minutes | Full Use required | Kafka, Snowflake, Databricks, cloud storage (S3, ADLS) |
+| **RFC** | Legacy systems, rare new projects | Minutes | Runtime OK | Custom code only |
+
+**Decision framework:**
+1. Do you need real-time (< 5 minutes)? → **Use SLT** (but verify Full Use license first)
+2. Do you need batch updates? → **Use ODP** (simpler, no special license)
+3. Do you need custom integration? → **Use RFC** (rarely recommended, complex)
+
+---
+
+## Example 1: ACDOCA Extraction via ODP (Batch GL Data)
+
+**Scenario:** You're a financial analyst at a Fortune 500 company. You need to extract 2 years of GL postings (ACDOCA) to Databricks for reporting. You have 500M rows per fiscal year.
+
+### Why ACDOCA?
+
+ACDOCA is the Universal Journal in SAP S/4HANA. It contains:
+- Every GL posting (debit/credit entry)
+- Cost allocations and controlling entries
+- Currency conversions
+- Audit trail for finance
+
+**The challenge:** ACDOCA is massive. On a large enterprise system, it's 5–20 billion rows. A raw, unfiltered extraction will:
+- Exhaust SAP application server memory within minutes
+- Lock GL posting for finance users (bad: blocks month-end close)
+- Fail silently with a TSLIB short dump
+
+**The solution:** Always partition ACDOCA. Always.
+
+### The ODP Approach
+
+**Why ODP?**
+- Operational Data Provisioning is SAP's standard extraction framework
+- Requires only Runtime license (no special licensing cost)
+- Scales to 500M+ rows per partition with proper strategy
+- Works with 6+ different tools (ADF, Fivetran, Databricks, Python, etc.)
+
+**How ODP works:**
+1. SAP exposes ACDOCA via a released CDS view: `I_JournalEntryItem`
+2. You register an extraction subscription (via ODP)
+3. Your tool connects and reads in batches
+4. Delta queues capture changes for incremental loads
+
+### Step-by-Step: Extract 2024 ACDOCA to Databricks + S3
+
+#### SAP-Side Preparation
+
+**In transaction SE80 (ABAP Repository):**
+1. Search for `I_JournalEntryItem`
+2. Confirm it has the annotation `@Analytics.dataExtract: true`
+3. If missing, your SAP version is too old; upgrade CDS views
+
+**In transaction SE16N (Data Browser):**
+1. Open ACDOCA table
+2. Filter: `BUKRS='1000' AND GJAHR=2024` (company code 1000, fiscal year 2024)
+3. Count rows (example: 45M rows)
+4. Write down this number—it's your reconciliation target
+
+**In transaction SU01 (User Management):**
+1. Create a system-type extraction user (e.g., `EXTRACT_USER`)
+2. Assign roles:
+   - `S_RFC` (for RFC access)
+   - `S_ODP_READ` with `ODPSOURCE=ABAP_CDS` (for ODP access)
+3. Confirm in PFCG: Authorization object `S_ODP_READ` is assigned
+
+#### Databricks-Side Setup
+
+**In Databricks Workspace:**
+1. Create a cluster with Python runtime
+2. Install SAP ODP connector (pip install sap-odp-client or use Fivetran/ADF equivalents)
+3. Configure connection to SAP:
+   ```
+   sap_host = "sap.company.com"
+   sap_client = "100"
+   sap_user = "EXTRACT_USER"
+   sap_password = "password"
+   ```
+4. Create an S3 bucket: `s3://company-datalake/raw/acdoca/2024/`
+
+**In Python (Databricks Notebook):**
+```python
+from sap_odp_client import ODP
+
+# Connect to SAP ODP
+odp = ODP(
+    host="sap.company.com",
+    client="100",
+    user="EXTRACT_USER",
+    password="password"
+)
+
+# Register subscription for ACDOCA
+subscription = odp.subscribe(
+    source="I_JournalEntryItem",
+    filter={
+        "RBUKRS": "1000",  # Company code
+        "RYEAR": 2024       # Fiscal year
+    }
+)
+
+# Extract in 100K-row batches
+batch_size = 100_000
+output_path = "s3://company-datalake/raw/acdoca/2024/"
+row_count = 0
+
+for batch in subscription.fetch(batch_size=batch_size):
+    df = spark.createDataFrame(batch)
+    df.write.mode("append").parquet(f"{output_path}/parquet/")
+    row_count += len(batch)
+    print(f"Extracted {row_count} rows...")
+
+print(f"Total: {row_count} rows extracted to {output_path}")
+```
+
+#### Verification
+
+**Back in SAP, transaction SE16N:**
+1. Run the same count query: `BUKRS='1000' AND GJAHR=2024`
+2. Confirm row count matches your extraction
+3. If mismatch > 0.1%, investigate: missing filters, delta not captured, or extract timeout
+
+#### Timeline
+- **100M rows:** ~4 hours (Databricks pulls ~7M rows/min with 8 parallel partitions)
+- **500M rows:** ~12 hours (scales linearly with partitioning)
+
+### Alternative Tools
+
+Don't have Databricks? No problem. Same logic, different tools:
+
+- **Azure Data Factory:** Use ODP connector + Azure Data Lake Storage
+- **Fivetran:** Preconfigured SAP ODP source, maps to Snowflake/Redshift/BigQuery
+- **Python (on-prem):** Use pyrfc library, write CSVs to S3
+- **Airbyte:** Open-source ODP connector, self-hosted or cloud
+
+### What Comes Next
+
+Now that you've extracted ACDOCA:
+1. **Deep dive:** See the full [ACDOCA walkthrough](/walkthrough/beginner/acdoca/) for single-partition loads
+2. **Scale up:** Read [ACDOCA intermediate](/walkthrough/intermediate/acdoca/) for multi-partition parallel extraction
+3. **Go real-time:** Check [ACDOCA expert](/walkthrough/expert/acdoca/) for SLT real-time streaming
+4. **Avoid mistakes:** Read [Runtime vs. Full Use licensing](/articles/sap-runtime-license-trap/)
+
+---
+
+## Example 2: VBAK Extraction via SLT (Real-Time Sales Orders)
+
+**Scenario:** You're a supply chain analyst. Sales orders (VBAK) change constantly. You need real-time visibility into order-to-cash metrics in your analytics platform. Updates must land within 5 minutes.
+
+### Why VBAK?
+
+VBAK is the Sales Order header table in SAP. It contains:
+- Every sales order (customer, sales org, document date)
+- Order value and status (open, partially delivered, closed)
+- Shipping/payment terms
+
+Sales orders drive revenue analytics, order aging reports, and customer dashboards. For real-time insights, VBAK must be streamed continuously.
+
+**The challenge:** Batch extractions (once/day) are too slow. You need delta queues that capture every order change within minutes.
+
+**The solution:** SLT (SAP Landscape Transformation) with real-time replication.
+
+### The SLT Approach
+
+**Why SLT?**
+- Real-time delta replication with sub-5-minute latency
+- Automatic full-load + continuous delta (no manual scripting)
+- Streams to Kafka, Snowflake, S3, or cloud storage
+- Requires Full Use license (this is the hard constraint)
+
+**How SLT works:**
+1. You define a replication object in SAP (LTCO transaction)
+2. SLT performs a full-load of VBAK
+3. SLT monitors the database log for changes
+4. Every change (insert/update/delete) flows to your target in real-time
+5. Your tool (Kafka, Snowflake) captures the stream
+
+### Step-by-Step: Stream VBAK to Databricks + S3 with Sub-5-Minute Lag
+
+#### Pre-Flight Check: Licensing
+
+**In transaction SLICENSE:**
+1. Check license type: Is it "Full Use" or "Runtime"?
+2. If Runtime: **STOP.** SLT is not permitted. Go back to ODP (Example 1).
+3. If Full Use: Confirm in writing with SAP licensing team before proceeding
+
+This is critical. Many enterprises discover mid-implementation that they have a Runtime license. The cost of retrofitting can be $100k+.
+
+#### SAP-Side Setup
+
+**In transaction LTCO (SLT Configuration):**
+1. Create replication object for VBAK
+2. Partition key: `VKORG` (Sales Org) + `VTWEG` (Distribution Channel)
+3. Example partitions: VKORG='1000'/VTWEG='01', VKORG='1000'/VTWEG='02', etc.
+4. Set parallel readers: 4–8 (coordinate with Basis to avoid overloading)
+
+**In transaction SM50 (Work Processes):**
+1. During full-load, monitor active dialogs
+2. Keep utilization < 80% to avoid impacting sales transactions
+
+#### Kafka Setup (If Using Kafka as Intermediate)
+
+**On your Kafka cluster:**
+1. Create topic: `sap-vbak-cdc` (change data capture)
+2. Partitions: one per SLT replication partition
+3. Retention: 7 days (allows for late subscribers)
+4. Configure SLT RFC destination to push to Kafka
+
+**Kafka message format (example):**
+```json
+{
+  "op": "I",  // Insert
+  "table": "VBAK",
+  "key": {"VBELN": "0000100001"},
+  "data": {
+    "VBELN": "0000100001",
+    "KUNNR": "0001234",
+    "VKORG": "1000",
+    "VTWEG": "01",
+    "NETWR": "50000.00",
+    "WAERK": "USD"
+  },
+  "timestamp": 1713871234
+}
+```
+
+#### Databricks Streaming
+
+**In Databricks Notebook:**
+```python
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import from_json, col
+from pyspark.sql.types import StructType, StructField, StringType, DoubleType
+
+spark = SparkSession.builder.appName("SAP_VBAK_Stream").getOrCreate()
+
+# Define schema for Kafka messages
+schema = StructType([
+    StructField("op", StringType()),
+    StructField("table", StringType()),
+    StructField("key", StringType()),
+    StructField("data", StringType()),
+    StructField("timestamp", StringType())
+])
+
+# Read from Kafka topic
+kafka_df = spark.readStream \
+    .format("kafka") \
+    .option("kafka.bootstrap.servers", "kafka:9092") \
+    .option("subscribe", "sap-vbak-cdc") \
+    .option("startingOffsets", "earliest") \
+    .load()
+
+# Parse JSON
+parsed_df = kafka_df.select(
+    from_json(col("value").cast("string"), schema).alias("value")
+).select("value.*")
+
+# Bronze layer: Raw CDC
+parsed_df.writeStream \
+    .format("parquet") \
+    .option("path", "s3://company-datalake/bronze/vbak-cdc/") \
+    .option("checkpointLocation", "s3://company-datalake/checkpoints/bronze-vbak/") \
+    .partitionBy("timestamp") \
+    .start()
+
+# Silver layer: Deduplicated (latest version of each order)
+parsed_df.createOrReplaceTempView("vbak_cdc")
+
+silver_query = """
+WITH latest_changes AS (
+  SELECT
+    key,
+    data,
+    timestamp,
+    ROW_NUMBER() OVER (PARTITION BY key ORDER BY timestamp DESC) as rn
+  FROM vbak_cdc
+)
+SELECT * FROM latest_changes WHERE rn = 1
+"""
+
+spark.sql(silver_query).writeStream \
+    .format("parquet") \
+    .option("path", "s3://company-datalake/silver/vbak-current/") \
+    .option("checkpointLocation", "s3://company-datalake/checkpoints/silver-vbak/") \
+    .outputMode("update") \
+    .start()
+
+spark.awaitAnyStreamingQuery()
+```
+
+#### S3 Architecture
+
+```
+s3://company-datalake/
+├── bronze/
+│   └── vbak-cdc/          # Raw CDC events (insert/update/delete)
+│       ├── 2026-04-23/
+│       └── 2026-04-24/
+├── silver/
+│   └── vbak-current/      # Latest version of each order (deduplicated)
+├── gold/
+│   └── vbak-business/     # Business-ready (joins with KNA1, etc.)
+└── checkpoints/           # Spark streaming checkpoints (don't delete!)
+```
+
+#### Verification
+
+**In SAP, transaction ODQMON:**
+1. Find replication object for VBAK
+2. Check status: "DELTA" means replication is active
+3. Monitor lag: should be < 5 minutes
+
+**In Databricks:**
+```python
+# Check latest record
+df = spark.read.parquet("s3://company-datalake/silver/vbak-current/")
+latest = df.orderBy(col("timestamp").desc()).limit(1).select("data", "timestamp").show()
+# Should be within 5 minutes of now
+```
+
+#### Timeline
+- **Full load:** 2–4 hours (50M orders across all partitions)
+- **Delta lag:** < 5 minutes (Databricks processes Kafka within 1–2 minutes)
+
+### Alternative Tools
+
+Don't want Kafka + Databricks? Other paths:
+
+- **Snowflake:** SLT → Snowflake Kafka connector directly (no Kafka needed)
+- **Azure ADLS:** SLT → Event Hubs → Azure Synapse Analytics
+- **Google Cloud:** SLT → Pub/Sub → BigQuery
+- **Custom Kafka consumers:** Write Go/Python/Rust apps to consume Kafka and push to your warehouse
+
+### What Comes Next
+
+Now that you're streaming VBAK:
+1. **Deep dive:** See the full [VBAK walkthrough](/walkthrough/beginner/vbak/) for one-time loads
+2. **Real-time:** Check [VBAK expert](/walkthrough/expert/vbak/) for SLT streaming details
+3. **Avoid licensing trap:** Read [Full Use vs. Runtime licensing](/articles/sap-runtime-license-trap/)
+4. **Monitor health:** Read [reconciliation and data quality for streaming](/articles/streaming-reconciliation/)
+
+---
+
+## Licensing & Common Pitfalls: How to Avoid $100k+ Mistakes
+
+### Licensing Trap #1: Designing Before Confirming License
+
+**What happens:**
+- You design an extraction architecture using SLT (real-time replication)
+- 3 months after go-live, audit discovers your license is Runtime, not Full Use
+- SAP licensing team demands retroactive licensing costs: $50k–$200k
+- You must redesign the entire architecture or pay
+
+**How to avoid:**
+1. **Before day 1 of design:** Check SLICENSE transaction in your SAP system
+2. **Get it in writing:** Request written confirmation from SAP licensing team
+3. **If Runtime license:** Use ODP instead of SLT (no special license required)
+4. **If Full Use:** Document it for audit trail
+
+### Licensing Trap #2: ACDOCA Without Partitioning
+
+**What happens:**
+- You extract ACDOCA without filtering by BUKRS + GJAHR
+- SAP application server tries to load 5 billion rows into memory
+- Application server crashes with TSLIB short dump
+- Finance users can't post GL entries for 2 hours
+- Your CIO gets a call
+
+**How to avoid:**
+1. **Always filter ACDOCA** by at least BUKRS (company code) and GJAHR (fiscal year)
+2. **Count before extracting** in SE16N
+3. **Reconcile after extracting:** SE16N count must match your target count
+
+### Licensing Trap #3: Raw ACDOCA Extract (Authorization Issues)
+
+**What happens:**
+- You extract raw ACDOCA table (not via CDS view)
+- Authorization restrictions aren't enforced
+- You extract GL entries for restricted profit centers
+- Audit finds sensitive financial data in your cloud warehouse
+- Compliance incident
+
+**How to avoid:**
+1. **Always use released CDS views** (e.g., `I_JournalEntryItem` for ACDOCA)
+2. CDS views enforce SAP authorization
+3. CDS views apply currency conversion automatically
+4. CDS views are SAP's standard for analytics extraction
+
+### Licensing Trap #4: No Reconciliation
+
+**What happens:**
+- You extract 500M rows of ACDOCA
+- An hour later, you discover you only got 499M rows
+- Silent data quality issue—no error was thrown
+- Finance reports are wrong, and you don't know for how long
+
+**How to avoid:**
+1. **After every extract:** Count rows in your target
+2. **Compare to SAP:** Run SE16N count query with same filters
+3. **If mismatch > 0.1%:** Investigate before declaring success
+4. **Automate it:** Build a reconciliation check into every pipeline
+
+---
+
+## Summary: Three Methods, Three Decisions
+
+| Scenario | Method | Example | License | Tools |
+|---|---|---|---|---|
+| Extract GL data (ACDOCA), batch, scheduled | ODP | 500M rows/year → S3 monthly | Runtime OK | Databricks, ADF, Fivetran |
+| Stream sales orders (VBAK) in real-time | SLT | Every order change → Kafka → analytics | Full Use required | Kafka, Snowflake, Databricks |
+| Legacy system, custom integration | RFC | Rare, not recommended | Runtime OK | Custom code only |
+
+**Your next step:**
+1. **Pick your table:** ACDOCA (GL), VBAK (Sales), or another
+2. **Pick your method:** ODP (batch) or SLT (real-time)
+3. **Pick your destination:** S3, Snowflake, Databricks, or cloud storage
+4. **Validate licensing:** Check SLICENSE before you design
+5. **Start with a walkthrough:** Use the full [beginner walkthrough](/walkthrough/) for step-by-step guidance
+
+---
+
+## Get Notified of New Walkthroughs
+
+We publish new extraction patterns every 2 weeks. Stay updated with intermediate and expert patterns for ACDOCA, BKPF, MARA, and more.
+
+**[Sign up for notifications →](/)**
+```
+
+- [ ] **Step 2: Commit article**
+
+```bash
+cd sap-extract-academy
+git add content/en/articles/how-to-extract-any-sap-data.md
+git commit -m "feat: Add core extraction guide article with ACDOCA ODP and VBAK SLT examples"
+git push origin main
+```
+
+---
+
+### Task 2: Create LinkedIn Post Content
+
+**Files:**
+- Create: `sap-extract-academy/content/en/linkedin/core-extraction-guide-post.md`
+
+- [ ] **Step 1: Create LinkedIn post file**
+
+Create `sap-extract-academy/content/en/linkedin/core-extraction-guide-post.md`:
+
+```markdown
+---
+title: "LinkedIn Post: Core SAP Extraction Guide"
+publishDate: 2026-04-23
+author: "SAP Extract Academy"
+format: carousel
+slides: 5
+linkedArticle: "/articles/how-to-extract-any-sap-data/"
+---
+
+## Carousel Post (5 Slides)
+
+### Slide 1: Hook
+Extracting SAP data is 80% decision-making, 20% execution. Know which method before you start 🎯
+
+### Slide 2: The Problem
+Most teams design their extraction architecture AFTER confirming their license.
+→ Costs $100k+ in retroactive licensing.
+
+### Slide 3: The Solution
+Three extraction methods. Five decision points. Pick the right one on day one.
+ODP for batch. SLT for real-time. Know the licensing trap.
+
+### Slide 4: Examples
+ACDOCA (GL): ODP → Databricks/S3 (no special license, 12 hours for 500M rows)
+VBAK (Sales): SLT → Kafka/S3 (real-time, requires Full Use license)
+
+### Slide 5: CTA
+Master any SAP extraction with our free guide.
+Link in comments 👇 sawan-tech.com/extract
+
+---
+
+## Single Post Format (Long-Form)
+
+Extracting SAP data is 80% decision-making, 20% execution.
+
+The problem: Most teams design their extraction architecture AFTER confirming their license. Cost? $100k+ in retroactive licensing.
+
+Here's what you need to know:
+
+🔹 **ODP** for batch extraction (ACDOCA, BKPF, VBAK)
+- No special license required (Runtime OK)
+- 100M-500M rows per partition
+- 4-12 hours to cloud warehouse
+
+🔹 **SLT** for real-time replication
+- Full Use license required (⚠️ check first)
+- Sub-5-minute latency
+- Streaming to Kafka, Snowflake, cloud storage
+
+🔹 **Avoid the trap**
+- ACDOCA without partitioning = memory exhaustion
+- SLT without Full Use license = audit findings
+- No reconciliation = silent data quality issues
+
+The examples: Extract 500M ACDOCA rows to Databricks/S3 via ODP. Or stream VBAK sales orders to Kafka in real-time via SLT.
+
+Master any SAP extraction with our free guide → [link in comments]
+```
+
+- [ ] **Step 2: Commit LinkedIn post**
+
+```bash
+git add content/en/linkedin/core-extraction-guide-post.md
+git commit -m "content: Add LinkedIn post for core extraction guide"
+git push origin main
+```
+
+---
+
+### Task 3: Delete Decide Page
+
+**Files:**
+- Delete: `sap-extract-academy/content/en/decide.md`
+
+- [ ] **Step 1: Remove decide.md**
+
+```bash
+rm sap-extract-academy/content/en/decide.md
+```
+
+- [ ] **Step 2: Commit deletion**
+
+```bash
+git add sap-extract-academy/content/en/decide.md
+git commit -m "feat: Remove Decide interactive page (replaced with notification signup)"
+git push origin main
+```
+
+---
+
+### Task 4: Delete Decide JavaScript
+
+**Files:**
+- Delete: `sap-extract-academy/docs/assets/js/decide.js`
+
+- [ ] **Step 1: Remove decide.js**
+
+```bash
+rm sap-extract-academy/docs/assets/js/decide.js
+```
+
+- [ ] **Step 2: Commit deletion**
+
+```bash
+git add sap-extract-academy/docs/assets/js/decide.js
+git commit -m "feat: Remove decide.js script (no longer needed)"
+git push origin main
+```
+
+---
+
+### Task 5: Update Landing Page to Add Notification Signup CTA
+
+**Files:**
+- Modify: `sap-extract-academy/content/en/index.md`
+
+- [ ] **Step 1: Update landing page frontmatter**
+
+In `sap-extract-academy/content/en/index.md`, find the section with:
+
+```yaml
+ctaPrimary:
+  label: "Start Learning"
+  url: "/walkthrough/beginner/vbak/"
+ctaSecondary:
+  label: "See All Walkthroughs"
+  url: "/walkthrough/"
+```
+
+Replace with:
+
+```yaml
+ctaPrimary:
+  label: "Read the Core Guide"
+  url: "/articles/how-to-extract-any-sap-data/"
+ctaSecondary:
+  label: "See All Walkthroughs"
+  url: "/walkthrough/"
+```
+
+- [ ] **Step 2: Update emailSignup section**
+
+Find:
+
+```yaml
+emailSignup:
+  title: "Get new walkthroughs first"
+  description: "Launches every 2 weeks. Expert-level extraction patterns."
+  placeholder: "you@company.com"
+```
+
+Replace with:
+
+```yaml
+emailSignup:
+  title: "Get new extraction walkthroughs every 2 weeks"
+  description: "Master ACDOCA, BKPF, VBAK, and more. New intermediate & expert patterns released bi-weekly."
+  placeholder: "you@company.com"
+  buttonLabel: "Get Notified"
+  confirmationMessage: "Thanks! You'll hear from us with new walkthroughs every 2 weeks."
+```
+
+- [ ] **Step 3: Commit landing page update**
+
+```bash
+git add sap-extract-academy/content/en/index.md
+git commit -m "feat: Update landing page with core guide CTA and enhanced notification signup"
+git push origin main
+```
+
+---
+
+### Task 6: Remove Decide Navigation Link
+
+**Files:**
+- Check: `sap-extract-academy/templates/` files for navigation references
+
+- [ ] **Step 1: Search for Decide link in templates**
+
+Run:
+```bash
+grep -r "decide" sap-extract-academy/templates/ sap-extract-academy/content/
+```
+
+Expected matches: navigation links to `/decide/`
+
+- [ ] **Step 2: Update navigation template (if exists)**
+
+If a navigation menu includes `/decide/`, remove it. Exact file/line depends on template structure (check results from grep).
+
+Common location: `sap-extract-academy/templates/page.html` or similar.
+
+- [ ] **Step 3: Commit navigation update**
+
+```bash
+git add sap-extract-academy/templates/
+git commit -m "feat: Remove Decide link from navigation"
+git push origin main
+```
+
+---
+
+### Task 7: Test Article Links
+
+**Files:**
+- Validate: `sap-extract-academy/content/en/articles/how-to-extract-any-sap-data.md`
+
+- [ ] **Step 1: Verify all internal links exist**
+
+Links in article should point to:
+- `/articles/sap-runtime-license-trap/` (licensing article)
+- `/walkthrough/beginner/acdoca/`, `/walkthrough/intermediate/acdoca/`, `/walkthrough/expert/acdoca/`
+- `/walkthrough/beginner/vbak/`, `/walkthrough/intermediate/vbak/`, `/walkthrough/expert/vbak/`
+- `/` (back to home for notification signup)
+
+Check these paths exist:
+
+```bash
+ls sap-extract-academy/content/en/articles/ | grep "sap-runtime-license-trap"
+ls sap-extract-academy/content/en/walkthroughs/ | grep "acdoca"
+ls sap-extract-academy/content/en/walkthroughs/ | grep "vbak"
+```
+
+If any missing, note for user to create or update article links.
+
+- [ ] **Step 2: Verify markdown syntax**
+
+Run:
+```bash
+grep -E "^\[.*\]\(/" sap-extract-academy/content/en/articles/how-to-extract-any-sap-data.md
+```
+
+Expected: List of markdown links. Should be valid format `[text](/path/)`.
+
+- [ ] **Step 3: Commit link validation (no changes needed if all pass)**
+
+No commit needed if all links are valid. If broken links found, note for user.
+
+---
+
+### Task 8: Final Build and Push
+
+**Files:**
+- Verify: All changes committed and pushed
+
+- [ ] **Step 1: Check git status**
+
+```bash
+git status
+```
+
+Expected: `nothing to commit, working tree clean`
+
+- [ ] **Step 2: Verify all commits pushed**
+
+```bash
+git log --oneline -n 10 | head -10
+```
+
+Expected: Recent commits with messages like "Add core extraction guide article", "Remove Decide page", etc.
+
+- [ ] **Step 3: Push if any remaining changes**
+
+```bash
+git push origin main
+```
+
+---
+
+## Summary
+
+✅ Core article created with ACDOCA (ODP) and VBAK (SLT) examples  
+✅ LinkedIn post created (carousel + single post format)  
+✅ Decide page removed (`/decide.md`)  
+✅ Decide JavaScript removed (`decide.js`)  
+✅ Landing page updated with core guide CTA + enhanced notification signup  
+✅ Navigation links updated (Decide removed)  
+✅ All internal article links validated  
+✅ All changes committed and pushed to main

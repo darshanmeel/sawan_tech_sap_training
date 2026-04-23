@@ -1,0 +1,24 @@
+<div class="view active" data-for="cv-human" data-column-view="human">
+  <table class="col-table">
+    <thead>
+      <tr>
+        <th>Field</th>
+        <th>Type</th>
+        <th>Key</th>
+        <th>Description</th>
+        <th>Source</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#columns}}
+      <tr>
+        <td class="k">{{name}}</td>
+        <td>{{typeDisplay}}</td>
+        <td class="key-flag">{{#key}}◆{{/key}}{{^key}}{{/key}}</td>
+        <td class="sans">{{description}}</td>
+        <td class="sans">{{#source}}{{source}}{{/source}}{{^source}}—{{/source}}</td>
+      </tr>
+      {{/columns}}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,7 @@
+<div class="view{{#active}} active{{/active}}" data-for="dv-{{shortId}}" data-ddl-dialect="{{dialect}}">
+<pre><code class="sql">{{ddl}}</code></pre>
+  <div class="ingestion-prose" data-ingestion-dialect="{{dialect}}">
+    {{{ingestionHtml}}}
+    {{#docsUrl}}<p><a href="{{docsUrl}}" target="_blank" rel="noopener">{{dialectLabel}} SAP ingestion docs →</a></p>{{/docsUrl}}
+  </div>
+</div>

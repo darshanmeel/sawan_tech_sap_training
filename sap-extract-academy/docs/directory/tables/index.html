@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SAP Table Directory — SAP Extract Academy</title>
+  <meta name="description" content="Reference directory of the SAP tables most commonly extracted in data-engineering projects. Columns, DDL, extraction methods, release notes.">
+  <link rel="canonical" href="https://academy.example.com/directory/tables/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SAP Table Directory">
+  <meta property="og:description" content="Reference directory of the SAP tables most commonly extracted in data-engineering projects. Columns, DDL, extraction methods, release notes.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;directory&#x2F;tables&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SAP Table Directory">
+  <meta name="twitter:description" content="Reference directory of the SAP tables most commonly extracted in data-engineering projects. Columns, DDL, extraction methods, release notes.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"SAP Table Directory","description":"Reference directory of SAP tables.","url":"https://academy.example.com/directory/tables/"}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Directory · Tables index (Bento card grid + filter chips) -->
+<!-- Class names / data-attrs align with docs/design/directory-final.html so -->
+<!-- Worker C's JS and Worker D's CSS wire up without modification. -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+<div class="directory-index" data-directory-index>
+
+  <header class="title-block">
+    <div>
+      <p class="eyebrow">Directory · Tables</p>
+      <h1>Tables<em>.</em></h1>
+      <p class="subtitle">Reference-grade directory of the SAP tables most commonly extracted in data-engineering projects. Pick a table for columns, DDL, extraction methods, and release notes.</p>
+    </div>
+    <dl class="meta">
+      <div><dt>Tables</dt><dd data-visible-count>12</dd></div>
+      <div><dt>Modules</dt><dd>4</dd></div>
+    </dl>
+  </header>
+
+  <div class="body-grid directory-index-grid">
+    <main>
+
+      <section class="directory-filters" data-directory-filters>
+        <div class="filter-row">
+          <p class="group-label">Module</p>
+          <div class="toolbar-chips" role="group" aria-label="Filter by module" data-filter-group="module">
+            <button type="button" class="chip chip--active" data-filter="all" aria-pressed="true">All</button>
+            <button type="button" class="chip" data-filter="CO" aria-pressed="false">Controlling</button>
+            <button type="button" class="chip" data-filter="FI" aria-pressed="false">Finance</button>
+            <button type="button" class="chip" data-filter="MM" aria-pressed="false">Materials</button>
+            <button type="button" class="chip" data-filter="SD" aria-pressed="false">Sales</button>
+          </div>
+        </div>
+        <div class="filter-row">
+          <p class="group-label">Availability</p>
+          <div class="toolbar-chips" role="group" aria-label="Filter by mode availability" data-filter-group="mode">
+            <button type="button" class="chip chip--active" data-filter="all" aria-pressed="true">All</button>
+            <button type="button" class="chip" data-filter="both" aria-pressed="false">S/4 &amp; ECC</button>
+            <button type="button" class="chip" data-filter="s4-only" aria-pressed="false">S/4-only</button>
+            <button type="button" class="chip" data-filter="ecc-only" aria-pressed="false">ECC-only</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="directory-grid" data-directory-grid>
+        <article class="directory-card" data-module="FI" data-mode="s4-only" data-slug="acdoca">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">FI</span>
+              <span class="tag tag--mode" data-mode-tag>S&#x2F;4-only</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;acdoca&#x2F;">ACDOCA</a></h2>
+            <p class="directory-card-subtitle">ACDOCA — Universal Journal</p>
+          </header>
+          <p class="directory-card-description">Universal Journal — the consolidated line-item accounting table in S&#x2F;4HANA, covering G&#x2F;L, A&#x2F;P, A&#x2F;R, costing, and profitability in one source of truth.
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              <div><dt>Rows</dt><dd>1B – 100B</dd></div>
+              <div><dt>Class</dt><dd>heavyweight</dd></div>
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;acdoca&#x2F;">Open →</a>
+          </footer>
+        </article>
+        <article class="directory-card" data-module="FI" data-mode="both" data-slug="bkpf">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">FI</span>
+              <span class="tag tag--mode" data-mode-tag>S&#x2F;4HANA &amp; ECC</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;bkpf&#x2F;">BKPF</a></h2>
+            <p class="directory-card-subtitle">BKPF — Accounting Document Header</p>
+          </header>
+          <p class="directory-card-description">Accounting document header — one row per posted document, with posting date, reference, currency, and the pointers into BSEG for line items.
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              <div><dt>Rows</dt><dd>50M – 500M</dd></div>
+              <div><dt>Class</dt><dd>medium</dd></div>
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;bkpf&#x2F;">Open →</a>
+          </footer>
+        </article>
+        <article class="directory-card" data-module="FI" data-mode="both" data-slug="bseg">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">FI</span>
+              <span class="tag tag--mode" data-mode-tag>S&#x2F;4HANA &amp; ECC</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;bseg&#x2F;">BSEG</a></h2>
+            <p class="directory-card-subtitle">BSEG — Accounting Document Line Items</p>
+          </header>
+          <p class="directory-card-description">Accounting document line items — the detail rows joined to BKPF by (MANDT, BUKRS, BELNR, GJAHR). In S&#x2F;4HANA, a compatibility view over ACDOCA.
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              <div><dt>Rows</dt><dd>500M – 10B</dd></div>
+              <div><dt>Class</dt><dd>heavyweight</dd></div>
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;bseg&#x2F;">Open →</a>
+          </footer>
+        </article>
+        <article class="directory-card" data-module="CO" data-mode="ecc-only" data-slug="coep">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">CO</span>
+              <span class="tag tag--mode" data-mode-tag>ECC-only</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;coep&#x2F;">COEP</a></h2>
+            <p class="directory-card-subtitle">COEP — CO Object Line Items (Periodic)</p>
+          </header>
+          <p class="directory-card-description">CO object line-item table in ECC — primary costs by CO object (cost center, order, WBS). Consolidated into ACDOCA in S&#x2F;4HANA.
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              
+              
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;coep&#x2F;">Open →</a>
+          </footer>
+        </article>
+        <article class="directory-card" data-module="MM" data-mode="both" data-slug="ekko">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">MM</span>
+              <span class="tag tag--mode" data-mode-tag>S&#x2F;4HANA &amp; ECC</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;ekko&#x2F;">EKKO</a></h2>
+            <p class="directory-card-subtitle">EKKO — Purchasing Document Header</p>
+          </header>
+          <p class="directory-card-description">Purchasing document header — one row per PO, RFQ, or contract; pointer into EKPO for line-item detail.
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              <div><dt>Rows</dt><dd>5M – 100M</dd></div>
+              <div><dt>Class</dt><dd>medium</dd></div>
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;ekko&#x2F;">Open →</a>
+          </footer>
+        </article>
+        <article class="directory-card" data-module="MM" data-mode="both" data-slug="ekpo">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">MM</span>
+              <span class="tag tag--mode" data-mode-tag>S&#x2F;4HANA &amp; ECC</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;ekpo&#x2F;">EKPO</a></h2>
+            <p class="directory-card-subtitle">EKPO — Purchasing Document Items</p>
+          </header>
+          <p class="directory-card-description">Purchasing document line items — one row per PO position, joined to EKKO via (MANDT, EBELN) and carrying material, plant, quantity, and account assignments.
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              <div><dt>Rows</dt><dd>50M – 500M</dd></div>
+              <div><dt>Class</dt><dd>heavyweight</dd></div>
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;ekpo&#x2F;">Open →</a>
+          </footer>
+        </article>
+        <article class="directory-card" data-module="FI" data-mode="ecc-only" data-slug="glt0">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">FI</span>
+              <span class="tag tag--mode" data-mode-tag>ECC-only</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;glt0&#x2F;">GLT0</a></h2>
+            <p class="directory-card-subtitle">GLT0 — General Ledger Totals (ECC)</p>
+          </header>
+          <p class="directory-card-description">Classic general-ledger totals table in ECC — aggregated balances by account, company code, and fiscal period. Replaced by ACDOCA in S&#x2F;4HANA.
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              
+              
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;glt0&#x2F;">Open →</a>
+          </footer>
+        </article>
+        <article class="directory-card" data-module="SD" data-mode="both" data-slug="kna1">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">SD</span>
+              <span class="tag tag--mode" data-mode-tag>S&#x2F;4HANA &amp; ECC</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;kna1&#x2F;">KNA1</a></h2>
+            <p class="directory-card-subtitle">KNA1 — Customer Master (General Data)</p>
+          </header>
+          <p class="directory-card-description">Customer master general data — one row per customer (KUNNR), with name, address, country, industry. In S&#x2F;4HANA, a business-partner shadow.
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              <div><dt>Rows</dt><dd>50K – 10M</dd></div>
+              <div><dt>Class</dt><dd>small</dd></div>
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;kna1&#x2F;">Open →</a>
+          </footer>
+        </article>
+        <article class="directory-card" data-module="MM" data-mode="both" data-slug="lfa1">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">MM</span>
+              <span class="tag tag--mode" data-mode-tag>S&#x2F;4HANA &amp; ECC</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;lfa1&#x2F;">LFA1</a></h2>
+            <p class="directory-card-subtitle">LFA1 — Vendor Master (General Data)</p>
+          </header>
+          <p class="directory-card-description">Vendor master general data — one row per vendor (LIFNR), name, address pointer, country, tax categories. In S&#x2F;4HANA, usually read through the business-partner model (BUT000 &#x2F; BUT020).
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              <div><dt>Rows</dt><dd>50K – 5M</dd></div>
+              <div><dt>Class</dt><dd>small</dd></div>
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;lfa1&#x2F;">Open →</a>
+          </footer>
+        </article>
+        <article class="directory-card" data-module="MM" data-mode="both" data-slug="mara">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">MM</span>
+              <span class="tag tag--mode" data-mode-tag>S&#x2F;4HANA &amp; ECC</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;mara&#x2F;">MARA</a></h2>
+            <p class="directory-card-subtitle">MARA — Material Master (General Data)</p>
+          </header>
+          <p class="directory-card-description">Material master general data — one row per material (MATNR), with type, group, units of measure, and the anchor row for plant&#x2F;sales&#x2F;storage views.
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              <div><dt>Rows</dt><dd>100K – 10M</dd></div>
+              <div><dt>Class</dt><dd>small</dd></div>
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;mara&#x2F;">Open →</a>
+          </footer>
+        </article>
+        <article class="directory-card" data-module="SD" data-mode="both" data-slug="vbak">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">SD</span>
+              <span class="tag tag--mode" data-mode-tag>S&#x2F;4HANA &amp; ECC</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;vbak&#x2F;">VBAK</a></h2>
+            <p class="directory-card-subtitle">VBAK — Sales Document Header</p>
+          </header>
+          <p class="directory-card-description">Sales document header — one row per sales order, quotation, contract, or inquiry; pointer into VBAP for item-level detail.
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              <div><dt>Rows</dt><dd>10M – 200M</dd></div>
+              <div><dt>Class</dt><dd>medium</dd></div>
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;vbak&#x2F;">Open →</a>
+          </footer>
+        </article>
+        <article class="directory-card" data-module="SD" data-mode="both" data-slug="vbap">
+          <header class="directory-card-head">
+            <div class="tags">
+              <span class="tag tag--module">SD</span>
+              <span class="tag tag--mode" data-mode-tag>S&#x2F;4HANA &amp; ECC</span>
+            </div>
+            <h2 class="directory-card-title"><a href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;vbap&#x2F;">VBAP</a></h2>
+            <p class="directory-card-subtitle">VBAP — Sales Document Items</p>
+          </header>
+          <p class="directory-card-description">Sales document line items — one row per order position, joined to VBAK via (MANDT, VBELN) and carrying material, quantity, price, schedule pointers.
+</p>
+          <footer class="directory-card-foot">
+            <dl class="mini-meta">
+              <div><dt>Rows</dt><dd>50M – 1B</dd></div>
+              <div><dt>Class</dt><dd>heavyweight</dd></div>
+            </dl>
+            <a class="directory-card-link" href="&#x2F;sawan_tech_sap_training&#x2F;directory&#x2F;tables&#x2F;vbap&#x2F;">Open →</a>
+          </footer>
+        </article>
+      </section>
+
+      <p class="directory-grid-empty" data-empty-state hidden>
+        No tables match these filters.
+      </p>
+
+    </main>
+  </div>
+</div>
+</div>
+
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

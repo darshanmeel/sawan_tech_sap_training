@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dialog Work Process: SAP Server Process — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="Dialog work processes handle interactive user sessions. Extraction should use batch processes to avoid blocking users. Monitor in SM50.">
+  <link rel="canonical" href="https://academy.example.com/glossary/dialog-work-process/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Dialog Work Process: SAP Server Process — Plain Explanation">
+  <meta property="og:description" content="Dialog work processes handle interactive user sessions. Extraction should use batch processes to avoid blocking users. Monitor in SM50.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;dialog-work-process&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Dialog Work Process: SAP Server Process — Plain Explanation">
+  <meta name="twitter:description" content="Dialog work processes handle interactive user sessions. Extraction should use batch processes to avoid blocking users. Monitor in SM50.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Dialog Work Process","alternateName":"Dialog Work Process","description":"A dialog work process is an SAP application server process that handles interactive user sessions (SE16N, MM01, FBL3N). When you slow down extraction, you risk blocking dialog users; use non-dialog processes (batch) for heavy extraction work.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+      <li aria-current="page">Dialog Work Process</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · Dialog Work Process</p>
+        <h1>Dialog Work Process<em>.</em></h1>
+      </div>
+      <p>A dialog work process is an SAP application server process that handles interactive user sessions (SE16N, MM01, FBL3N). When you slow down extraction, you risk blocking dialog users; use non-dialog processes (batch) for heavy extraction work.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/SM50/">SM50</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/SM59/">SM59</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Background Job/">Background Job</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/SAP Application Server/">SAP Application Server</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Lock Contention/">Lock Contention</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>A dialog work process is an SAP application server process that handles interactive user sessions (SE16N, MM01, FBL3N). When you slow down extraction, you risk blocking dialog users; use non-dialog processes (batch) for heavy extraction work.</p>
+      </div>
+
+      <div class="glossary-prose">
+        <h3>What is a Dialog Work Process?</h3>
+<p>An SAP application server is a multi-process system. At any given moment it is running several distinct categories of <strong>work processes</strong>: dialog, background (batch), update, enqueue, spool, and message. A <strong>dialog work process</strong> is the category responsible for serving interactive user sessions. When an accountant opens <code>FBL3N</code> to review line items, when a buyer opens <code>ME23N</code> to review a purchase order, or when a developer runs <code>SE16N</code> to query <code>ACDOCA</code>, each of those interactions is dispatched to a dialog work process. The process executes the ABAP program, waits for the user&#39;s next input, and then becomes available for another session.</p>
+<p>The number of dialog work processes on an application server is fixed at configuration time — typically between 10 and 40 per server instance, depending on hardware. This is a hard ceiling. When all dialog work processes are occupied, new logon attempts and interactive requests queue up or fail with a &quot;no more work processes&quot; error. This is not a soft limit that scales automatically; it is a bounded resource that must be shared across all concurrent users and any extraction activities that mistakenly consume dialog capacity.</p>
+<h3>How it works</h3>
+<p>SAP&#39;s work process dispatcher routes incoming requests to available work processes by type. An RFC call made with a dialog connection type (<code>Type 3</code> in <code>SM59</code>) uses a dialog work process on the target system. This is significant for extraction: if your extraction tool opens RFC connections of dialog type and runs large open SQL queries — iterating through millions of rows of <code>VBAK</code> or <code>EKKO</code> — it occupies one or more dialog work processes for the entire duration of that query. A query that runs for 20 minutes holds a dialog work process for 20 minutes.</p>
+<p>Transaction <code>SM50</code> shows the current state of all work processes on an application server in real time. Each row is one work process: its type (DIA for dialog, BTC for batch, UPD for update), its current status (waiting, running, stopped), the program it is executing, and how long it has been running. During a heavy extraction, <code>SM50</code> is your primary instrument for assessing impact. If you see 8 out of 10 dialog work processes occupied by your extraction RFC sessions, you know that interactive users have only 2 slots available — a serious production risk.</p>
+<h3>Why it matters for data extraction</h3>
+<p>The core rule of SAP extraction is: <strong>heavy extraction work must not compete with dialog users.</strong> This means extraction pipelines should use background (batch) RFC connections where possible, schedule large jobs during off-peak hours, and monitor <code>SM50</code> continuously when running any extraction that touches large tables. An extraction team that ignores dialog work process utilization risks causing a partial system outage during business hours — something that will immediately generate an incident and erode trust in the data engineering function.</p>
+<p>SLT parallel reader processes are particularly relevant here. Each LTRS parallel reader consumes a work process on the SAP source system. If you configure 10 parallel readers and the application server has 12 dialog work processes, you have effectively monopolized the system. The SLT walkthrough in this academy specifically covers reducing parallel reader counts when <code>SM50</code> shows dialog contention, and establishing reader count limits during business hours versus maintenance windows. The right configuration is not the maximum that the system can technically run — it is the maximum that leaves adequate dialog capacity for users.</p>
+<h3>Common pitfalls</h3>
+<p><strong>Using dialog RFC connection type for extraction</strong> is the most common mistake. Some extraction tools default to dialog connections because they are the most general-purpose. Always check the RFC destination type in <code>SM59</code> and configure extraction connections as background (type B) where the tool supports it. Background connections use background work processes (BTC), which are a separate pool from dialog and do not affect interactive users.</p>
+<p><strong>Running extraction during peak business hours</strong> without monitoring is the second most common problem. A full-load extraction of <code>BKPF</code> that ran fine on a Sunday afternoon may cause a P1 incident if the same job runs on a Monday morning during period-end close. Establish extraction schedules that are time-of-day aware, and build alerting that fires when dialog process utilization on the SAP system exceeds a threshold — typically 70% — during any scheduled extraction window.</p>
+<p><strong>Ignoring lock contention</strong> compounds the dialog work process problem. Heavy table scans can generate database locks that force other work processes — dialog and background alike — to wait. <code>SM50</code> shows locks as &quot;priv&quot; status on a work process. If you see many processes in &quot;priv&quot; state during an extraction, the extraction is generating lock pressure that cascades across the system beyond just the dialog work process count.</p>
+<h3>In practice</h3>
+<p>A data engineering team at a retail company scheduled a full-load extraction of <code>VBAK</code> and <code>VBAP</code> (sales orders) using an RFC-based Python script. The script ran 4 parallel threads, each holding a dialog RFC connection and iterating through 50 million rows. On a Sunday test run, it completed in 6 hours without issue. When the same script ran on a Tuesday afternoon, all dialog work processes were consumed within 10 minutes. Order entry clerks could not post new sales orders. The incident was resolved by rescheduling the extraction to a maintenance window, reducing thread count to 2, and switching the RFC connection type to background. Monitoring <code>SM50</code> during the next extraction run confirmed dialog processes remained free throughout.</p>
+
+      </div>
+
+      <p class="glossary-doc-link">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

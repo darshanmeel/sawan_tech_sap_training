@@ -1,0 +1,260 @@
+<div class="sink-steps-container" data-default-sink="adls">
+
+  <!-- ── ADLS ─────────────────────────────────────────────────────────── -->
+  <div data-sink-block="adls">
+    <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Azure Data Lake Storage Gen2</h3>
+    <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">ADLS is your landing zone — your tool writes Parquet, Delta, or Iceberg files here. Downstream engines (Synapse, Databricks, Power BI) read directly from these files.</p>
+
+    <div class="sink-before" style="margin-bottom:var(--space-4);">
+      <h4>Native SAP connector option</h4>
+      <p style="margin:0 0 8px;font-size:14px;">If your organisation has an <strong>ADF SAP connector</strong> license (SAP connector for Azure Data Factory), ADF writes directly to ADLS from SAP — no intermediate tool pipeline code needed. Confirm connector licensing with your Azure team before setting up the manual pipeline below.</p>
+    </div>
+
+    <div class="sink-before">
+      <h4>Before your first extraction</h4>
+      <ul>
+        <li>Create an ADLS Gen2 storage account and container (e.g., <code>sap-landing</code>).</li>
+        <li>Register an Entra ID (Azure AD) app. Grant it <strong>Storage Blob Data Contributor</strong> on the container. Store tenant ID, client ID, and secret in your pipeline's secrets manager.</li>
+        <li>Agree on a partition path convention: <code>sap/{{slug}}/rbukrs=1000/year=2024/</code>. Partition columns must match the filter dimensions used in the SAP extraction.</li>
+      </ul>
+    </div>
+
+    <ol class="steps-list" style="padding-left:0;list-style:none;">
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">1. Confirm the file landed after extraction</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">After your tool runs, confirm the Parquet (or Delta/Iceberg) file lands in the container at the correct partition path. Use Azure Storage Explorer or the Azure portal. Prefer Parquet with Snappy compression; use Delta or Iceberg if your tool supports table formats.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> File visible at <code>sap/{{slug}}/rbukrs=1000/year=2024/</code> in the container.</p>
+      </li>
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">2. Validate row count from Synapse or Databricks</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run a count query directly against the landed files. Compare to the SE16N count from the SAP-side steps. This is your reconciliation checkpoint before handing data to analytics.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>SELECT COUNT(*) FROM parquet.&#x60;abfss://sap-landing@account.dfs.core.windows.net/sap/{{slug}}/...&#x60;</code> matches SE16N.</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ── S3 ────────────────────────────────────────────────────────────── -->
+  <div data-sink-block="s3" hidden>
+    <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Amazon S3</h3>
+    <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">S3 is your landing zone — your tool writes Parquet files here. Downstream engines (Athena, Redshift Spectrum, Databricks on AWS) read directly from S3, or you COPY INTO Snowflake/Redshift from here.</p>
+
+    <div class="sink-before" style="margin-bottom:var(--space-4);">
+      <h4>Native SAP connector option</h4>
+      <p style="margin:0 0 8px;font-size:14px;">If your organisation has <strong>AWS AppFlow with SAP OData connector</strong> or a licensed SAP Integration Suite adapter, AppFlow can land data directly in S3 without tool pipeline code. Check your AWS and SAP BTP licensing before building the pipeline below.</p>
+    </div>
+
+    <div class="sink-before">
+      <h4>Before your first extraction</h4>
+      <ul>
+        <li>Create an S3 bucket in your preferred region. Enable server-side encryption (SSE-S3 minimum) and block all public access.</li>
+        <li>Create an IAM role with <code>s3:PutObject</code> and <code>s3:GetObject</code> on the specific bucket/prefix ARN. Use instance profiles or IRSA — avoid long-lived access keys.</li>
+        <li>Agree on a landing prefix convention: <code>sap/{{slug}}/rbukrs=1000/year=2024/</code>.</li>
+      </ul>
+    </div>
+
+    <ol class="steps-list" style="padding-left:0;list-style:none;">
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">1. Confirm files land and register in Glue</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">After extraction, confirm files appear at the S3 prefix. Register the prefix as a Glue table pointing to Parquet files so Athena and Spark can discover it. If the next layer is Snowflake, create an external stage on this bucket path.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>aws s3 ls s3://your-bucket/sap/{{slug}}/</code> shows landed files. Glue crawler ran and created the table.</p>
+      </li>
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">2. Validate row count in Athena</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM your_glue_table</code> in Athena. Compare to SE16N. Athena scans Parquet efficiently if partition columns match the Hive-style path used for landing.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Athena count matches SE16N. Downstream team can query the Glue table without moving files.</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ── GCS ───────────────────────────────────────────────────────────── -->
+  <div data-sink-block="gcs" hidden>
+    <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Google Cloud Storage (GCS)</h3>
+    <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">GCS is your landing zone — your tool writes Parquet or Iceberg files here. BigQuery reads them directly as an external table or via a load job. No intermediate copy needed.</p>
+
+    <div class="sink-before" style="margin-bottom:var(--space-4);">
+      <h4>Native SAP connector option</h4>
+      <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Google Cloud BigQuery Connector for SAP</strong> (available via SAP BTP / SAP LT Replication Server), it streams data directly from SAP ABAP tables into BigQuery without any intermediate GCS files or pipeline code. Confirm with your SAP Basis and GCP teams whether this connector is licensed before building the file-based pipeline below.</p>
+    </div>
+
+    <div class="sink-before">
+      <h4>Before your first extraction</h4>
+      <ul>
+        <li>Create a GCS bucket in your preferred region. Enable uniform bucket-level access and Object Versioning.</li>
+        <li>Create a GCP service account. Grant it <strong>Storage Object Admin</strong> on the bucket. Store the JSON key in Secret Manager.</li>
+        <li>Set a landing prefix: <code>sap/{{slug}}/rbukrs=1000/year=2024/</code>.</li>
+      </ul>
+    </div>
+
+    <ol class="steps-list" style="padding-left:0;list-style:none;">
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">1. Create BigQuery external table or load job</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">After landing files in GCS, create a BigQuery external table (zero-copy, always current) or run a load job (faster queries, persistent storage). For Iceberg landing, BigQuery supports Iceberg tables via GCS BigLake — gives full DML and snapshot history.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Table <code>sap_landing.{{slug}}</code> exists in BigQuery. Schema matches SE11.</p>
+      </li>
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">2. Validate row count</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM sap_landing.{{slug}}</code>. Compare to SE16N. Partition by posting date or extraction date to keep BigQuery query costs manageable at scale.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Count matches SE16N. Partition metadata visible in BigQuery console.</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ── Snowflake ─────────────────────────────────────────────────────── -->
+  <div data-sink-block="snowflake" hidden>
+    <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Snowflake</h3>
+    <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">Snowflake reads Parquet files your tool landed in ADLS or S3. Two loading patterns: <strong>COPY INTO</strong> (batch, scheduled) or <strong>Snowpipe</strong> (continuous, file-triggered — runs automatically when a file lands, no scheduling needed).</p>
+
+    <div class="sink-before" style="margin-bottom:var(--space-4);">
+      <h4>Native SAP connector option — skip the steps below if licensed</h4>
+      <p style="margin:0 0 8px;font-size:14px;">If your organisation has a <strong>Snowflake Native SAP BDC Connector</strong> license, Snowflake connects directly to SAP — no tool pipeline code, no external stage, and no Parquet files needed. The connector extracts and loads natively. If this applies to you, configure the connector in Snowflake Partner Connect with your SAP RFC credentials and skip the COPY INTO / Snowpipe steps below.</p>
+    </div>
+
+    <div class="sink-before">
+      <h4>Before your first extraction (file-based approach)</h4>
+      <ul>
+        <li>Create a dedicated database (<code>SAP_LANDING</code>), schema (<code>RAW</code>), and warehouse (<code>SAP_LOAD_WH</code> — X-Small for bulk loads).</li>
+        <li>Create a Snowflake storage integration (not access keys) for your ADLS container or S3 bucket. Create an external stage pointing to the landing path where your tool drops Parquet files.</li>
+        <li>Create the target table: <code>CREATE TABLE SAP_LANDING.RAW.{{slug}} ...</code> with columns matching SE11. Or use <code>COPY INTO</code> with <code>MATCH_BY_COLUMN_NAME</code> to auto-map Parquet columns.</li>
+      </ul>
+    </div>
+
+    <ol class="steps-list" style="padding-left:0;list-style:none;">
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">1. Load from external stage — COPY INTO or Snowpipe</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>Batch (COPY INTO):</strong> Run <code>COPY INTO SAP_LANDING.RAW.{{slug}} FROM @your_stage/sap/{{slug}}/ PATTERN='.*parquet' FILE_FORMAT=(TYPE=PARQUET)</code>. Schedule via a Snowflake task or your orchestrator after each extraction.<br><br><strong>Continuous (Snowpipe):</strong> Create a pipe: <code>CREATE PIPE sap_{{slug}}_pipe AS COPY INTO SAP_LANDING.RAW.{{slug}} FROM @your_stage/sap/{{slug}}/ FILE_FORMAT=(TYPE=PARQUET)</code>. Enable auto-ingest on the stage — Snowpipe fires automatically when a file lands. No scheduling required; ideal for near-real-time SLT feeds.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>LIST @your_stage/sap/{{slug}}/</code> shows landed files. COPY INTO or Snowpipe status shows zero skipped files.</p>
+      </li>
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">2. Validate row count after load</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM SAP_LANDING.RAW.{{slug}}</code>. Compare to SE16N row count from the SAP-side steps. Check <code>INFORMATION_SCHEMA.LOAD_HISTORY</code> for skipped or errored files if counts diverge.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>SELECT COUNT(*)</code> matches SE16N. Zero error rows in load history.</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ── BigQuery ──────────────────────────────────────────────────────── -->
+  <div data-sink-block="bigquery" hidden>
+    <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">BigQuery</h3>
+    <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">BigQuery reads Parquet or Iceberg files from GCS, or accepts direct writes from Fivetran and ADF. If your tool wrote to GCS as Parquet, create an external table — no copy needed.</p>
+
+    <div class="sink-before" style="margin-bottom:var(--space-4);">
+      <h4>Native SAP connector option — skip the steps below if licensed</h4>
+      <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Google Cloud BigQuery Connector for SAP</strong> (part of SAP LT Replication Server or SAP Integration Suite), it streams data directly from SAP into BigQuery tables — no GCS files, no tool pipeline code, no staging needed. Confirm with your SAP Basis team. If licensed, skip the file-based steps below.</p>
+    </div>
+
+    <div class="sink-before">
+      <h4>Before your first extraction (file-based approach)</h4>
+      <ul>
+        <li>Create a BigQuery dataset (e.g., <code>sap_landing</code>) in the <strong>same region</strong> as your GCS bucket. Cross-region reads from GCS are not supported.</li>
+        <li>Grant your service account <strong>BigQuery Data Editor</strong> on the dataset and <strong>Storage Object Viewer</strong> on the GCS bucket (for external tables).</li>
+      </ul>
+    </div>
+
+    <ol class="steps-list" style="padding-left:0;list-style:none;">
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">1. Create external table, Iceberg table, or use direct connector</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>Parquet path:</strong> <code>CREATE EXTERNAL TABLE sap_landing.{{slug}} OPTIONS (format='PARQUET', uris=['gs://your-bucket/sap/{{slug}}/*'])</code> — zero-copy, always current.<br><strong>Iceberg path:</strong> Register as a BigLake Iceberg table for full DML support and snapshot history.<br><strong>Direct connector (Fivetran/ADF):</strong> Writes a native BigQuery table directly — no staging or external table needed.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Table <code>sap_landing.{{slug}}</code> exists and schema matches SE11.</p>
+      </li>
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">2. Validate row count</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Run <code>SELECT COUNT(*) FROM sap_landing.{{slug}}</code>. Compare to SE16N. Partition the table by posting date or extraction date to keep per-query costs manageable at scale.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Count matches SE16N. Partition metadata visible in BigQuery console.</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ── Fabric ────────────────────────────────────────────────────────── -->
+  <div data-sink-block="fabric" hidden>
+    <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Microsoft Fabric / OneLake</h3>
+    <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">Fabric has three file-based paths: (1) ADF writes to Lakehouse via Copy Activity, (2) Databricks writes Delta/Iceberg to ADLS and Fabric shortcuts it, (3) your tool lands Parquet in ADLS and Fabric shortcuts the folder as an external table.</p>
+
+    <div class="sink-before" style="margin-bottom:var(--space-4);">
+      <h4>Native SAP connector option — skip the steps below if licensed</h4>
+      <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Microsoft Fabric SAP CDC connector</strong> or an SAP integration via Azure Logic Apps with native Fabric write support, data flows directly from SAP into OneLake without any intermediate files or tool pipeline code. Confirm with your Microsoft and SAP teams. If licensed, skip the file-based steps below.</p>
+    </div>
+
+    <div class="sink-before">
+      <h4>Before your first extraction (file-based approach)</h4>
+      <ul>
+        <li>Create a Lakehouse in your Fabric workspace (e.g., <code>SAP_Landing</code>). Create a <code>Tables/{{slug}}/</code> folder for Delta/Iceberg tables, or <code>Files/{{slug}}/</code> for raw Parquet.</li>
+        <li>Decide your ingestion path before extracting: ADF Copy Activity, Databricks ADLS shortcut, or Parquet ADLS shortcut. Each wires up differently — agree with the analytics team first.</li>
+      </ul>
+    </div>
+
+    <ol class="steps-list" style="padding-left:0;list-style:none;">
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">1. Set up your ingestion path</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>ADF pipeline:</strong> Copy Activity to Lakehouse sink writes directly — no intermediate files needed.<br><strong>Databricks Delta/Iceberg:</strong> Create an OneLake shortcut pointing to the ADLS path where Databricks wrote. Fabric auto-registers as a Delta table in the SQL endpoint.<br><strong>Parquet from any tool:</strong> Create an OneLake shortcut to the ADLS Parquet folder. Register as an external table in the Lakehouse.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Data appears in the Lakehouse explorer after a test extraction run.</p>
+      </li>
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">2. Validate in SQL endpoint</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Open the Lakehouse SQL endpoint in Fabric. Run <code>SELECT COUNT(*) FROM {{slug}}</code>. Fabric automatically registers Delta tables in the SQL endpoint — Parquet external tables appear under Files.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Row count matches SE16N. Table visible in Lakehouse explorer.</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ── Databricks ────────────────────────────────────────────────────── -->
+  <div data-sink-block="databricks" hidden>
+    <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Databricks Lakehouse</h3>
+    <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">If your tool was Databricks, the Delta or Iceberg table is already written — querying it IS the sink step. If another tool wrote Parquet to ADLS/S3, register it as an external Delta or Iceberg table in Unity Catalog.</p>
+
+    <div class="sink-before" style="margin-bottom:var(--space-4);">
+      <h4>Native SAP connector option — skip the steps below if licensed</h4>
+      <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Databricks SAP Connector</strong> (SAP LT Replication + Databricks native integration), it writes SAP change data directly to a Delta table in real time — no tool pipeline code or external files needed. Confirm with your SAP Basis and Databricks teams. If licensed, skip the file-based steps below.</p>
+    </div>
+
+    <div class="sink-before">
+      <h4>Before your first extraction (file-based approach)</h4>
+      <ul>
+        <li>Ensure Unity Catalog is enabled. Create a catalog (e.g., <code>sap_landing</code>) and schema (<code>raw</code>).</li>
+        <li>If Databricks is your extraction tool: the <code>saveAsTable</code> call in the Tool tab writes the table — no further sink setup needed.</li>
+        <li>If another tool writes Parquet to ADLS/S3: note the exact file path for registering as an external table.</li>
+      </ul>
+    </div>
+
+    <ol class="steps-list" style="padding-left:0;list-style:none;">
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">1. Confirm Delta/Iceberg table or register Parquet</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>If Databricks was your tool:</strong> Run <code>SHOW TABLES IN sap_landing.raw</code> — the table should already exist.<br><strong>If tool wrote Parquet:</strong> Register as external: <code>CREATE TABLE sap_landing.raw.{{slug}} USING PARQUET LOCATION 'abfss://...'</code><br>Or convert zero-copy to Delta: <code>CONVERT TO DELTA parquet.&#x60;abfss://...&#x60;</code> — gives time-travel and ACID transactions on the existing files.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>SELECT COUNT(*) FROM sap_landing.raw.{{slug}}</code> returns the expected row count.</p>
+      </li>
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">2. Validate count and grant downstream access</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Compare the row count to SE16N. Then grant SELECT to the analytics team: <code>GRANT SELECT ON TABLE sap_landing.raw.{{slug}} TO &#x60;analytics-group&#x60;</code>. Downstream users should not need extraction credentials.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Row count matches SE16N. Downstream team can query the table.</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ── Other ─────────────────────────────────────────────────────────── -->
+  <div data-sink-block="other" hidden>
+    <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Other landing zone</h3>
+    <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">Whatever your sink: it receives Parquet, Delta, or Iceberg files from your tool. Ensure your downstream system can read one of these formats efficiently before landing data in it.</p>
+
+    <div class="sink-before">
+      <h4>Before your first extraction</h4>
+      <ul>
+        <li>Confirm your sink can read Parquet (most portable), Delta, or Iceberg. Avoid CSV for tables over 10M rows.</li>
+        <li>Agree on a partitioned path convention with the analytics team: <code>sap/{{slug}}/rbukrs=1000/year=2024/run=TIMESTAMP/</code>.</li>
+        <li>Test a small write to your sink before running a full extraction — confirm schema mapping, encoding, and permissions.</li>
+      </ul>
+    </div>
+
+    <ol class="steps-list" style="padding-left:0;list-style:none;">
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">1. Confirm file lands at the correct path</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">After extraction, verify the file appears at the agreed partition path. Check file size is reasonable for the expected row count (Parquet with Snappy is typically 100–300 bytes per row for journal data).</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> File is present and non-zero. Schema is readable by your downstream tool.</p>
+      </li>
+      <li style="margin-bottom:var(--space-4);">
+        <strong style="display:block;margin-bottom:6px;">2. Row-count reconciliation is mandatory</strong>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">Always compare the row count from your sink against the SE16N count from the SAP-side steps. A mismatch means the extraction dropped rows or the filter scopes differ — investigate before handing data to analytics. Automate this check in your pipeline so it fails the run on divergence.</p>
+        <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> Your pipeline has an automated row-count check that fails the run if counts diverge beyond a tolerance threshold.</p>
+      </li>
+    </ol>
+  </div>
+
+</div>

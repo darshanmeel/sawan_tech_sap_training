@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ACDOCA — SAP Table Directory — SAP Extract Academy</title>
+  <meta name="description" content="Universal Journal — the consolidated line-item accounting table in S&#x2F;4HANA, covering G&#x2F;L, A&#x2F;P, A&#x2F;R, costing, and profitability in one source of truth.
+">
+  <link rel="canonical" href="https://academy.example.com/directory/tables/acdoca/s4/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ACDOCA — SAP Table Directory">
+  <meta property="og:description" content="Universal Journal — the consolidated line-item accounting table in S&#x2F;4HANA, covering G&#x2F;L, A&#x2F;P, A&#x2F;R, costing, and profitability in one source of truth.
+">
+  <meta property="og:url" content="https://academy.example.com&#x2F;directory&#x2F;tables&#x2F;acdoca&#x2F;s4&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ACDOCA — SAP Table Directory">
+  <meta name="twitter:description" content="Universal Journal — the consolidated line-item accounting table in S&#x2F;4HANA, covering G&#x2F;L, A&#x2F;P, A&#x2F;R, costing, and profitability in one source of truth.
+">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"ACDOCA","description":"Universal Journal — the consolidated line-item accounting table in S/4HANA, covering G/L, A/P, A/R, costing, and profitability in one source of truth.\n","url":"https://academy.example.com/directory/tables/acdoca/s4/"}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Directory · Table detail page -->
+<!-- DOM structure matches docs/design/directory-final.html; class names and -->
+<!-- data-* attrs are the contract with Worker C (JS) and Worker D (CSS). -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+<div class="directory-page" data-directory-page data-table-slug="acdoca" data-mode="s4">
+
+  <header class="title-block">
+    <div>
+      <p class="eyebrow">FI · Finance · S&#x2F;4HANA</p>
+      <h1>ACDOCA<em>.</em></h1>
+      <p class="subtitle">Universal Journal — the consolidated line-item accounting table in S&#x2F;4HANA, covering G&#x2F;L, A&#x2F;P, A&#x2F;R, costing, and profitability in one source of truth.
+</p>
+    </div>
+    <dl class="meta">
+      <div><dt>Rows</dt><dd>1B – 100B</dd></div>
+      <div><dt>Class</dt><dd>heavyweight</dd></div>
+      <div><dt>CDS view</dt><dd>I_JournalEntryItem</dd></div>
+      <div><dt>Module</dt><dd>FI</dd></div>
+    </dl>
+
+    <form class="directory-mode-form" method="get" action="&#x2F;sawan_tech_sap_training/directory/tables/acdoca/" data-directory-mode-form>
+      <label for="directory-mode-acdoca" class="sr-only">Mode</label>
+      <select id="directory-mode-acdoca" name="mode" data-directory-mode-select>
+        <option value="s4" selected>S/4HANA</option>
+        <option value="ecc" >ECC</option>
+      </select>
+      <noscript><button type="submit">Switch mode</button></noscript>
+    </form>
+  </header>
+
+  <div class="body-grid">
+    <aside class="sidenav" data-directory-sidenav>
+      <h4>On this page</h4>
+      <ul>
+        <li><a href="#overview" class="active" data-sidenav-link="overview">Overview</a></li>
+        <li><a href="#columns" data-sidenav-link="columns">Columns · 17</a></li>
+        <li><a href="#ddl" data-sidenav-link="ddl">DDL</a></li>
+        <li><a href="#extract" data-sidenav-link="extract">How to extract</a></li>
+        <li><a href="#notes" data-sidenav-link="notes">Notes · 2</a></li>
+        <li><a href="#articles" data-sidenav-link="articles">Articles</a></li>
+      </ul>
+      <div class="footer">
+        Source metadata from <a href="https://help.sap.com" target="_blank" rel="noopener">SAP Help</a>.
+      </div>
+    </aside>
+
+    <main>
+
+      <!-- 1 · OVERVIEW -->
+      <section id="overview" data-section="overview">
+        <h2>What this <em>is</em></h2>
+        <p class="sub">Universal Journal — the consolidated line-item accounting table in S&#x2F;4HANA, covering G&#x2F;L, A&#x2F;P, A&#x2F;R, costing, and profitability in one source of truth.
+</p>
+        <div class="prose">
+          <p>ACDOCA is the Universal Journal in SAP S/4HANA. It consolidates what ECC spread
+across BKPF + BSEG + COEP + GLT0 and related tables into a single line-item
+ledger, with every posting carrying its full dimensional context (G/L account,
+profit center, segment, cost center, profitability dimensions, extension
+ledger). For data engineers, this is the table that makes S/4 financial
+reporting tractable — and the table most likely to blow up an extract pipeline
+if approached naively.</p>
+<p>The critical thing is scale. A mid-sized S/4HANA tenant will have tens of
+billions of rows in ACDOCA after a few years of postings. A <code>SELECT *</code> against
+the raw table will crash a SAP dialog work process within seconds; even a
+properly-hinted SQL query rarely finishes without partitioning on reporting
+year and posting period. The released CDS view <code>I_JournalEntryItem</code> is the
+supported extraction contract — it applies authorization, handles currency
+conversion consistently, and protects against accidental full-table scans via
+its consumption annotations.</p>
+
+        </div>
+        <div class="scope-lock" data-scope-lock>
+          <span class="chip">Scope lock</span>
+          <p>Partition by RYEAR and POPER from the first line of code. Every other rule is downstream of this one.
+</p>
+        </div>
+      </section>
+
+      <!-- 2 · COLUMNS -->
+      <section id="columns" data-section="columns">
+        <h2>Columns <em>· 17 fields</em></h2>
+        <p class="sub">Reference for what each field means. Use <kbd>Cmd+F</kbd> / <kbd>Ctrl+F</kbd> to filter. Switch to JSON to paste into your schema tooling.</p>
+        <div class="toolbar">
+          <div class="pill-picker" data-column-picker>
+            <input type="radio" name="col-view" id="cv-human" checked><label for="cv-human">Human</label>
+            <input type="radio" name="col-view" id="cv-json"><label for="cv-json">JSON</label>
+          </div>
+          <div class="actions"><button class="copy-btn" data-copy-target="columns">Copy</button></div>
+        </div>
+
+        <div class="view active" data-for="cv-human" data-column-view="human">
+          <table class="col-table">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Key</th>
+                <th>Description</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="k">MANDT</td>
+                <td>CLNT(3)</td>
+                <td class="key-flag">◆</td>
+                <td class="sans">Client identifier — filter to your operating client before anything else.</td>
+                <td class="sans">T000</td>
+              </tr>
+              <tr>
+                <td class="k">RCLNT</td>
+                <td>CLNT(3)</td>
+                <td class="key-flag">◆</td>
+                <td class="sans">Record client; matches MANDT in single-client systems, distinct in cross-client replication.</td>
+                <td class="sans">T000</td>
+              </tr>
+              <tr>
+                <td class="k">RLDNR</td>
+                <td>CHAR(2)</td>
+                <td class="key-flag">◆</td>
+                <td class="sans">Ledger identifier — leading ledger is usually 0L; extension ledgers get their own codes.</td>
+                <td class="sans">T881</td>
+              </tr>
+              <tr>
+                <td class="k">RBUKRS</td>
+                <td>CHAR(4)</td>
+                <td class="key-flag">◆</td>
+                <td class="sans">Company code; the natural high-level partition axis for parallel extracts.</td>
+                <td class="sans">T001</td>
+              </tr>
+              <tr>
+                <td class="k">GJAHR</td>
+                <td>NUMC(4)</td>
+                <td class="key-flag">◆</td>
+                <td class="sans">Fiscal year; paired with RYEAR it determines the accounting period bucket.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">BELNR</td>
+                <td>CHAR(10)</td>
+                <td class="key-flag">◆</td>
+                <td class="sans">Accounting document number within the company code and fiscal year.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">DOCLN</td>
+                <td>CHAR(6)</td>
+                <td class="key-flag">◆</td>
+                <td class="sans">Six-character zero-padded line item number within the document.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">RYEAR</td>
+                <td>NUMC(4)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Reporting year; primary partition key for time-sliced extraction.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">POPER</td>
+                <td>NUMC(3)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Posting period 001–016; secondary partition key for sub-year slicing.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">RACCT</td>
+                <td>CHAR(10)</td>
+                <td class="key-flag"></td>
+                <td class="sans">G&#x2F;L account; resolve against SKA1&#x2F;SKAT for readable account names.</td>
+                <td class="sans">SKA1</td>
+              </tr>
+              <tr>
+                <td class="k">HSL</td>
+                <td>CURR(23)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Amount in company-code currency; paired with RHCUR for the currency code.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">WSL</td>
+                <td>CURR(23)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Amount in transaction currency; paired with RWCUR.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">RHCUR</td>
+                <td>CUKY(5)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Company-code currency ISO code; join to TCURC for descriptive name.</td>
+                <td class="sans">TCURC</td>
+              </tr>
+              <tr>
+                <td class="k">RWCUR</td>
+                <td>CUKY(5)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Transaction currency ISO code.</td>
+                <td class="sans">TCURC</td>
+              </tr>
+              <tr>
+                <td class="k">KOKRS</td>
+                <td>CHAR(4)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Controlling area; drives CO reporting aggregation.</td>
+                <td class="sans">TKA01</td>
+              </tr>
+              <tr>
+                <td class="k">BUDAT</td>
+                <td>DATS(8)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Posting date; frequently used for time-series filtering on top of RYEAR&#x2F;POPER.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">KTOSL</td>
+                <td>CHAR(3)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Transaction key — useful for distinguishing postings by technical origin.</td>
+                <td class="sans">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="view" data-for="cv-json" data-column-view="json">
+        <pre><code class="json">{
+  <span class="s">"table"</span>: <span class="s">"ACDOCA"</span>,
+  <span class="s">"module"</span>: <span class="s">"FI"</span>,
+  <span class="s">"released_cds"</span>: <span class="s">"I_JournalEntryItem"</span>,
+  <span class="s">"source"</span>: <span class="s">"help.sap.com"</span>,
+  <span class="s">"columns"</span>: [
+    {
+      <span class="s">"name"</span>: <span class="s">"MANDT"</span>,
+      <span class="s">"type"</span>: <span class="s">"CLNT"</span>,
+      <span class="s">"length"</span>: <span class="n">3</span>,
+      <span class="s">"key"</span>: <span class="k">true</span>,
+      <span class="s">"source"</span>: <span class="s">"T000"</span>,
+      <span class="s">"description"</span>: <span class="s">"Client identifier — filter to your operating client before anything else."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"RCLNT"</span>,
+      <span class="s">"type"</span>: <span class="s">"CLNT"</span>,
+      <span class="s">"length"</span>: <span class="n">3</span>,
+      <span class="s">"key"</span>: <span class="k">true</span>,
+      <span class="s">"source"</span>: <span class="s">"T000"</span>,
+      <span class="s">"description"</span>: <span class="s">"Record client; matches MANDT in single-client systems, distinct in cross-client replication."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"RLDNR"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">2</span>,
+      <span class="s">"key"</span>: <span class="k">true</span>,
+      <span class="s">"source"</span>: <span class="s">"T881"</span>,
+      <span class="s">"description"</span>: <span class="s">"Ledger identifier — leading ledger is usually 0L; extension ledgers get their own codes."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"RBUKRS"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">4</span>,
+      <span class="s">"key"</span>: <span class="k">true</span>,
+      <span class="s">"source"</span>: <span class="s">"T001"</span>,
+      <span class="s">"description"</span>: <span class="s">"Company code; the natural high-level partition axis for parallel extracts."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"GJAHR"</span>,
+      <span class="s">"type"</span>: <span class="s">"NUMC"</span>,
+      <span class="s">"length"</span>: <span class="n">4</span>,
+      <span class="s">"key"</span>: <span class="k">true</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Fiscal year; paired with RYEAR it determines the accounting period bucket."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"BELNR"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">10</span>,
+      <span class="s">"key"</span>: <span class="k">true</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Accounting document number within the company code and fiscal year."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"DOCLN"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">6</span>,
+      <span class="s">"key"</span>: <span class="k">true</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Six-character zero-padded line item number within the document."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"RYEAR"</span>,
+      <span class="s">"type"</span>: <span class="s">"NUMC"</span>,
+      <span class="s">"length"</span>: <span class="n">4</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Reporting year; primary partition key for time-sliced extraction."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"POPER"</span>,
+      <span class="s">"type"</span>: <span class="s">"NUMC"</span>,
+      <span class="s">"length"</span>: <span class="n">3</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Posting period 001–016; secondary partition key for sub-year slicing."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"RACCT"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">10</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="s">"SKA1"</span>,
+      <span class="s">"description"</span>: <span class="s">"G/L account; resolve against SKA1/SKAT for readable account names."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"HSL"</span>,
+      <span class="s">"type"</span>: <span class="s">"CURR"</span>,
+      <span class="s">"length"</span>: <span class="n">23</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Amount in company-code currency; paired with RHCUR for the currency code."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"WSL"</span>,
+      <span class="s">"type"</span>: <span class="s">"CURR"</span>,
+      <span class="s">"length"</span>: <span class="n">23</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Amount in transaction currency; paired with RWCUR."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"RHCUR"</span>,
+      <span class="s">"type"</span>: <span class="s">"CUKY"</span>,
+      <span class="s">"length"</span>: <span class="n">5</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="s">"TCURC"</span>,
+      <span class="s">"description"</span>: <span class="s">"Company-code currency ISO code; join to TCURC for descriptive name."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"RWCUR"</span>,
+      <span class="s">"type"</span>: <span class="s">"CUKY"</span>,
+      <span class="s">"length"</span>: <span class="n">5</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="s">"TCURC"</span>,
+      <span class="s">"description"</span>: <span class="s">"Transaction currency ISO code."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"KOKRS"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">4</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="s">"TKA01"</span>,
+      <span class="s">"description"</span>: <span class="s">"Controlling area; drives CO reporting aggregation."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"BUDAT"</span>,
+      <span class="s">"type"</span>: <span class="s">"DATS"</span>,
+      <span class="s">"length"</span>: <span class="n">8</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Posting date; frequently used for time-series filtering on top of RYEAR/POPER."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"KTOSL"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">3</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Transaction key — useful for distinguishing postings by technical origin."</span>
+    }
+  ]
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- 3 · DDL -->
+      <section id="ddl" data-section="ddl">
+        <h2>DDL <em>· paste-ready</em></h2>
+        <p class="sub">Generated from the column schema, adjusted for each warehouse's type system and partitioning model. Dialect quirks noted inline.</p>
+        <div class="toolbar">
+          <div class="pill-picker" data-ddl-picker>
+            <input type="radio" name="ddl-view" id="dv-snow" checked><label for="dv-snow">Snowflake</label>
+            <input type="radio" name="ddl-view" id="dv-dbx"><label for="dv-dbx">Databricks</label>
+            <input type="radio" name="ddl-view" id="dv-fab"><label for="dv-fab">Fabric</label>
+          </div>
+          <div class="actions"><button class="copy-btn" data-copy-target="ddl">Copy DDL</button></div>
+        </div>
+
+        <div class="view active" data-for="dv-snow" data-ddl-dialect="snowflake">
+        <pre><code class="sql">-- Snowflake · ACDOCA · generated from column schema
+CREATE OR REPLACE TABLE SAP_FI.ACDOCA (
+  MANDT     VARCHAR(3) NOT NULL,
+  RCLNT     VARCHAR(3) NOT NULL,
+  RLDNR     VARCHAR(2) NOT NULL,
+  RBUKRS    VARCHAR(4) NOT NULL,
+  GJAHR     NUMBER(4) NOT NULL,
+  BELNR     VARCHAR(10) NOT NULL,
+  DOCLN     VARCHAR(6) NOT NULL,
+  RYEAR     NUMBER(4),
+  POPER     NUMBER(3),
+  RACCT     VARCHAR(10),
+  HSL       NUMBER(23, 2),
+  WSL       NUMBER(23, 2),
+  RHCUR     VARCHAR(5),
+  RWCUR     VARCHAR(5),
+  KOKRS     VARCHAR(4),
+  BUDAT     DATE,
+  KTOSL     VARCHAR(3),
+  CONSTRAINT PK_ACDOCA PRIMARY KEY (MANDT, RCLNT, RLDNR, RBUKRS, GJAHR, BELNR, DOCLN)
+)
+CLUSTER BY (MANDT, RCLNT);</code></pre>
+          <div class="ingestion-prose" data-ingestion-dialect="snowflake">
+            <p><strong>Snowflake ingestion.</strong> Most teams land ACDOCA via Snowpipe from an ADLS
+or S3 stage (continuous, file-triggered) or via scheduled <code>COPY INTO</code> for
+batch. Snowflake&#39;s Kafka Connector is the third option when you&#39;re
+streaming from SLT via Kafka. Partition the external stage by RYEAR/POPER
+so Snowpipe and downstream queries stay cheap.</p>
+
+            <p><a href="https:&#x2F;&#x2F;docs.snowflake.com&#x2F;en&#x2F;user-guide&#x2F;data-load-overview" target="_blank" rel="noopener">Snowflake SAP ingestion docs →</a></p>
+          </div>
+        </div>
+        <div class="view" data-for="dv-dbx" data-ddl-dialect="databricks">
+        <pre><code class="sql">-- Databricks · ACDOCA · Delta Lake
+CREATE OR REPLACE TABLE sap_fi.acdoca (
+  mandt     STRING NOT NULL,
+  rclnt     STRING NOT NULL,
+  rldnr     STRING NOT NULL,
+  rbukrs    STRING NOT NULL,
+  gjahr     INT NOT NULL,
+  belnr     STRING NOT NULL,
+  docln     STRING NOT NULL,
+  ryear     INT,
+  poper     INT,
+  racct     STRING,
+  hsl       DECIMAL(23, 2),
+  wsl       DECIMAL(23, 2),
+  rhcur     STRING,
+  rwcur     STRING,
+  kokrs     STRING,
+  budat     DATE,
+  ktosl     STRING
+)
+USING DELTA
+PARTITIONED BY (mandt, rclnt)
+TBLPROPERTIES (&#39;delta.autoOptimize.optimizeWrite&#39; &#x3D; &#39;true&#39;);</code></pre>
+          <div class="ingestion-prose" data-ingestion-dialect="databricks">
+            <p><strong>Databricks ingestion.</strong> Auto Loader against a cloud stage is the default
+— it handles schema evolution and incremental file detection without a
+metastore hack. Delta Live Tables wraps Auto Loader with expectations and
+orchestration when you want a managed pipeline. Lakehouse Federation is
+the escape hatch for federated reads without physical replication.</p>
+
+            <p><a href="https:&#x2F;&#x2F;docs.databricks.com&#x2F;aws&#x2F;en&#x2F;ingestion&#x2F;" target="_blank" rel="noopener">Databricks SAP ingestion docs →</a></p>
+          </div>
+        </div>
+        <div class="view" data-for="dv-fab" data-ddl-dialect="fabric">
+        <pre><code class="sql">-- Microsoft Fabric Warehouse · ACDOCA
+-- Note: Fabric Warehouse uses clustered columnstore by default.
+CREATE TABLE dbo.ACDOCA (
+  MANDT     VARCHAR(3) NOT NULL,
+  RCLNT     VARCHAR(3) NOT NULL,
+  RLDNR     VARCHAR(2) NOT NULL,
+  RBUKRS    VARCHAR(4) NOT NULL,
+  GJAHR     SMALLINT NOT NULL,
+  BELNR     VARCHAR(10) NOT NULL,
+  DOCLN     VARCHAR(6) NOT NULL,
+  RYEAR     SMALLINT,
+  POPER     SMALLINT,
+  RACCT     VARCHAR(10),
+  HSL       DECIMAL(23, 2),
+  WSL       DECIMAL(23, 2),
+  RHCUR     VARCHAR(5),
+  RWCUR     VARCHAR(5),
+  KOKRS     VARCHAR(4),
+  BUDAT     DATE,
+  KTOSL     VARCHAR(3)
+);
+-- Primary key is informational in Fabric Warehouse; enforce at pipeline layer.</code></pre>
+          <div class="ingestion-prose" data-ingestion-dialect="fabric">
+            <p><strong>Fabric ingestion.</strong> Mirroring (via Datasphere) keeps a live replica in
+OneLake with no pipeline code. Dataflow Gen2 is the classic ETL path when
+you need transformations in-flight. OneLake shortcuts are the zero-copy
+option when your landing zone already holds ACDOCA extracts in Delta.</p>
+
+            <p><a href="https:&#x2F;&#x2F;learn.microsoft.com&#x2F;en-us&#x2F;fabric&#x2F;mirroring&#x2F;overview" target="_blank" rel="noopener">Fabric SAP ingestion docs →</a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 · EXTRACT (the interactive one) -->
+      <section id="extract" data-section="extract">
+        <h2>How to <em>extract</em></h2>
+        <p class="sub">5 methods exist for ACDOCA. Tell us your constraints and we'll highlight the fit. Methods you can't use are dimmed but still readable — you should understand what you're ruling out.</p>
+
+        <div class="extract-filters" data-extract-filters>
+          <div class="group">
+            <p class="group-label">License</p>
+            <div class="pill-picker">
+              <input type="radio" name="f-license" id="fl-any" checked><label for="fl-any">Any</label>
+              <input type="radio" name="f-license" id="fl-full"><label for="fl-full">Full use</label>
+              <input type="radio" name="f-license" id="fl-runtime"><label for="fl-runtime">Runtime</label>
+            </div>
+          </div>
+          <div class="group">
+            <p class="group-label">Latency need</p>
+            <div class="pill-picker">
+              <input type="radio" name="f-latency" id="flat-any" checked><label for="flat-any">Any</label>
+              <input type="radio" name="f-latency" id="flat-realtime"><label for="flat-realtime">Real-time</label>
+              <input type="radio" name="f-latency" id="flat-batch"><label for="flat-batch">Batch OK</label>
+            </div>
+          </div>
+          <div class="group">
+            <p class="group-label">Volume</p>
+            <div class="pill-picker">
+              <input type="radio" name="f-volume" id="fv-any" checked><label for="fv-any">Any</label>
+              <input type="radio" name="f-volume" id="fv-small"><label for="fv-small">&lt; 500M</label>
+              <input type="radio" name="f-volume" id="fv-big"><label for="fv-big">&gt; 500M</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-summary" id="filter-summary" data-filter-summary>
+          <strong>For your setup:</strong>
+          <span class="recommend-name" id="recommend-name" data-recommend-name>ODP via CDS view · I_JournalEntryItem</span>
+          — <span id="recommend-why" data-recommend-why></span>
+        </div>
+
+        <div class="methods" data-methods>
+          <div class="method"
+               data-method="odp-cds"
+               data-license="runtime"
+               data-latency="batch"
+               data-volume="any">
+            <div class="recommend-badge">Recommended</div>
+            <div class="blocked-badge">Blocked</div>
+            <h3>
+              <span class="num">01</span>ODP via CDS view <em>· I_JournalEntryItem</em>
+            </h3>
+            <p class="tagline">The default, safe path. Runtime-license compatible, works at any scale with partitioning.</p>
+            <div class="attrs">
+              <span class="attr">License: <strong>Runtime OK</strong></span>
+              <span class="attr">Latency: <strong>Batch</strong></span>
+              <span class="attr">Volume: <strong>Any</strong></span>
+            </div>
+            
+            <div class="body">
+              <p>Consume <code>I_JournalEntryItem</code> via the ODP context <code>ABAP_CDS</code>. Partition
+parallel extraction jobs by <code>RYEAR</code> and <code>RBUKRS</code> so no single worker ever
+scans the full table. The view applies authorization, currency handling,
+and released-contract guarantees — three things a raw SELECT can&#39;t give
+you. This is the SAP-recommended path for S/4HANA extraction.</p>
+
+              <p>
+                <a href="&#x2F;sawan_tech_sap_training/walkthrough/acdoca/?method=odp">Full walkthrough →</a>
+                
+                
+              </p>
+            </div>
+          </div>
+          <div class="method"
+               data-method="slt"
+               data-license="full"
+               data-latency="realtime"
+               data-volume="any">
+            <div class="recommend-badge">Recommended</div>
+            <div class="blocked-badge">Blocked</div>
+            <h3>
+              <span class="num">02</span>SLT replication
+            </h3>
+            <p class="tagline">Real-time replication when latency matters more than license cost.</p>
+            <div class="attrs">
+              <span class="attr">License: <strong>Full Use required</strong></span>
+              <span class="attr">Latency: <strong>Real-time</strong></span>
+              <span class="attr">Volume: <strong>Any</strong></span>
+            </div>
+            
+            <div class="body">
+              <p>SAP LT Replication Server streams row-level changes from ACDOCA to a
+target system (Kafka, HANA, another database) in near real-time. Needs a
+Full Use license because SLT reads the source table directly. Useful when
+downstream reporting requires sub-minute freshness; expensive otherwise.</p>
+
+              <p>
+                <a href="&#x2F;sawan_tech_sap_training/walkthrough/acdoca/?method=slt">Full walkthrough →</a>
+                
+                
+              </p>
+            </div>
+          </div>
+          <div class="method"
+               data-method="cds-direct"
+               data-license="runtime"
+               data-latency="batch"
+               data-volume="small">
+            <div class="recommend-badge">Recommended</div>
+            <div class="blocked-badge">Blocked</div>
+            <h3>
+              <span class="num">03</span>CDS view via OData <em>· I_JournalEntryItem</em>
+            </h3>
+            <p class="tagline">Browser- or pipeline-friendly REST access to the same released view.</p>
+            <div class="attrs">
+              <span class="attr">License: <strong>Runtime OK</strong></span>
+              <span class="attr">Latency: <strong>Batch</strong></span>
+              <span class="attr">Volume: <strong>Under 500M rows</strong></span>
+            </div>
+            
+            <div class="body">
+              <p>The released view is also exposed as an OData service. Pull pages with
+<code>$top</code>/<code>$skip</code>/<code>$filter</code> from any HTTP client. Fine for small extracts or
+ad-hoc reconciliation; page-size limits make it unworkable past a few
+hundred million rows.</p>
+
+              <p>
+                <a href="&#x2F;sawan_tech_sap_training/walkthrough/acdoca/?method=odp">Full walkthrough →</a>
+                
+                
+              </p>
+            </div>
+          </div>
+          <div class="method"
+               data-method="rfc"
+               data-license="runtime"
+               data-latency="batch"
+               data-volume="small">
+            <div class="recommend-badge">Recommended</div>
+            <div class="blocked-badge">Blocked</div>
+            <h3>
+              <span class="num">04</span>Direct RFC read <em>· RFC_READ_TABLE &#x2F; custom function module</em>
+            </h3>
+            <p class="tagline">Escape hatch when ODP and SLT are both unavailable.</p>
+            <div class="attrs">
+              <span class="attr">License: <strong>Runtime OK</strong></span>
+              <span class="attr">Latency: <strong>Batch</strong></span>
+              <span class="attr">Volume: <strong>Under 500M rows</strong></span>
+            </div>
+            
+            <div class="body">
+              <p>Calls <code>RFC_READ_TABLE</code> (or a customer function module) to pull rows in
+chunks. Bypasses the CDS view, so you inherit none of its authorization
+or currency logic. Acceptable for low-volume, short-lived jobs; never the
+right choice for a production warehouse pipeline on ACDOCA.</p>
+
+              <p>
+                <a href="&#x2F;sawan_tech_sap_training/walkthrough/acdoca/?method=rfc">Full walkthrough →</a>
+                
+                
+              </p>
+            </div>
+          </div>
+          <div class="method"
+               data-method="bw-bridge"
+               data-license="bw-bridge"
+               data-latency="batch"
+               data-volume="any">
+            <div class="recommend-badge">Recommended</div>
+            <div class="blocked-badge">Blocked</div>
+            <h3>
+              <span class="num">05</span>BW Bridge
+            </h3>
+            <p class="tagline">Datasphere&#39;s managed bridge when you already own the SAP BW&#x2F;4HANA licensing.</p>
+            <div class="attrs">
+              <span class="attr">License: <strong>BW Bridge + Datasphere</strong></span>
+              <span class="attr">Latency: <strong>Batch</strong></span>
+              <span class="attr">Volume: <strong>Any</strong></span>
+            </div>
+            
+            <div class="body">
+              <p>BW Bridge surfaces ABAP CDS content inside SAP Datasphere as managed
+artifacts. Sensible when your org has already standardized on BW/4HANA or
+Datasphere; otherwise adds a license and an operational layer for no new
+data-engineering benefit.</p>
+
+              <p>
+                <a href="&#x2F;sawan_tech_sap_training/walkthrough/acdoca/?method=ref">Full walkthrough →</a>
+                
+                
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 · NOTES -->
+      <section id="notes" data-section="notes">
+        <h2>Notes <em>· recent changes</em></h2>
+        <div class="toolbar" style="margin-bottom:14px">
+          <span class="source-chip"><span></span>Curated from SAP Help release notes · 2025 onwards</span>
+        </div>
+        <div class="note" data-note>
+          <time>2026-03</time>
+          <div class="body">
+            <p><strong>Extension ledger fields formalized in I_JournalEntryItem</strong> The released CDS view added explicit fields for extension ledger
+attribution. Extracts that relied on positional slicing should re-pull
+the schema before the next run.
+</p>
+            
+          </div>
+        </div>
+        <div class="note" data-note>
+          <time>2025-10</time>
+          <div class="body">
+            <p><strong>I_JournalEntryItem metadata refresh (S&#x2F;4HANA 2023 FPS02)</strong> The 2023 FPS02 shipment refreshed the Finance CDS catalog. Confirm your
+pipeline&#39;s view version still matches the S/4 release you&#39;re extracting
+from — older ABAP clients can silently serve cached metadata.
+</p>
+            <p><a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_CLOUD&#x2F;0fa84c9d9c634132b7c4abb9ffdd8f06&#x2F;ca03bbfc892d4474be69934d6f5c783d.html" target="_blank" rel="noopener">SAP Note  →</a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 · RELATED ARTICLES -->
+      <section id="articles" data-section="articles">
+        <h2>Related <em>articles</em></h2>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--space-3);">
+          <li>
+            <a href="&#x2F;sawan_tech_sap_training/articles/acdoca-complete-walkthrough/" style="font-size:16px;font-weight:500;color:var(--color-ink);border-bottom:1px solid var(--color-accent);padding-bottom:1px;">ACDOCA Extraction: Three Patterns from Beginner to Enterprise</a>
+          </li>
+          <li>
+            <a href="&#x2F;sawan_tech_sap_training/articles/why-acdoca-breaks-sap/" style="font-size:16px;font-weight:500;color:var(--color-ink);border-bottom:1px solid var(--color-accent);padding-bottom:1px;">Why Reading ACDOCA Directly Breaks Your SAP System</a>
+          </li>
+          <li>
+            <a href="&#x2F;sawan_tech_sap_training/articles/runtime-vs-full-use/" style="font-size:16px;font-weight:500;color:var(--color-ink);border-bottom:1px solid var(--color-accent);padding-bottom:1px;">Runtime vs Full Use SAP License: The Extraction Architect&#39;s Guide</a>
+          </li>
+          <li>
+            <a href="&#x2F;sawan_tech_sap_training/articles/sap-runtime-license-trap/" style="font-size:16px;font-weight:500;color:var(--color-ink);border-bottom:1px solid var(--color-accent);padding-bottom:1px;">The SAP Runtime License Trap: Why SLT Replication Costs More Than You Think</a>
+          </li>
+        </ul>
+      </section>
+
+    </main>
+  </div>
+</div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

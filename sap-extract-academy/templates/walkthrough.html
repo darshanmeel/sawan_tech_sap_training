@@ -1,0 +1,328 @@
+<!-- Walkthrough detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <!-- Picker (3-axis: method/tool/sink) — wrapped in card.section -->
+  <div class="card section" style="margin-bottom:var(--space-4);">
+    {{> picker }}
+  </div>
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="{{basePath}}/">Home</a></li>
+      <li><a href="{{basePath}}/directory/tables/">Directory</a></li>
+      <li><a href="{{basePath}}/directory/tables/{{slug}}/">{{table}}</a></li>
+      <li aria-current="page">Walkthrough</li>
+    </ol>
+  </nav>
+
+  <article class="walkthrough" data-walkthrough-id="{{level}}-{{slug}}" data-page-slug="{{level}}-{{slug}}">
+    <div class="grid">
+
+      <!-- Hero card: walkthrough title -->
+      <div class="card hero walkthrough-hero">
+        <div>
+          <p class="eyebrow"><span class="dot"></span>{{table}} · Walkthrough</p>
+          <h1>{{title}}<em>.</em></h1>
+        </div>
+        <p>{{summary}}</p>
+      </div>
+
+      <!-- Side card: est. time / method -->
+      <div class="card side">
+        <h3>At a glance</h3>
+        <p class="big">{{estimatedMinutes}} <em style="font-style:italic;color:var(--color-accent-2)">min</em></p>
+        <p>{{destinations}} destinations supported.</p>
+      </div>
+
+      <!-- Meta cards -->
+      <div class="card meta"><dl><dt>{{strings.walkthrough.estimatedTime}}</dt><dd>{{estimatedMinutes}} min</dd></dl></div>
+      {{#destinations}}
+      <div class="card meta"><dl><dt>Destinations</dt><dd>{{destinations}}</dd></dl></div>
+      {{/destinations}}
+      {{#extractors}}
+      <div class="card meta"><dl><dt>Extractors</dt><dd>{{extractors}}</dd></dl></div>
+      {{/extractors}}
+      <div class="card meta"><dl><dt>Steps</dt><dd>{{stepCount}}</dd></dl></div>
+
+      <!-- Overview / intro -->
+      {{#body}}
+      <div class="card section">
+        <h2>Over<em>view</em></h2>
+        <div class="prose">
+          {{{body}}}
+        </div>
+      </div>
+      {{/body}}
+
+      <!-- Before you start: license check + SAP preflight + system prerequisites -->
+      <div class="card section">
+        <h2>Before you <em>start</em></h2>
+        {{> license-check }}
+        {{> sap-preflight }}
+        {{#hasPrerequisites}}
+        <div style="margin-top:var(--space-5);">
+          <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Also confirm</h3>
+          <ul class="prerequisites-list">
+            {{#prerequisites}}
+            <li>{{.}}</li>
+            {{/prerequisites}}
+          </ul>
+        </div>
+        {{/hasPrerequisites}}
+      </div>
+
+      <!-- ── Tab bar ────────────────────────────────────────────────── -->
+      <div class="card section" style="padding-bottom:var(--space-4);">
+        <nav class="wt-tab-bar" role="tablist" aria-label="Walkthrough sections">
+          <button class="wt-tab" role="tab" aria-selected="true" data-wt-tab="sap" aria-controls="wt-panel-sap">SAP side</button>
+          <button class="wt-tab" role="tab" aria-selected="false" data-wt-tab="tool" aria-controls="wt-panel-tool">Tool</button>
+          <button class="wt-tab" role="tab" aria-selected="false" data-wt-tab="sink" aria-controls="wt-panel-sink">Sink</button>
+        </nav>
+      </div>
+
+      <!-- ── PANEL 1: SAP side ───────────────────────────────────────── -->
+      <div class="card section" id="wt-panel-sap" role="tabpanel" aria-labelledby="wt-tab-sap">
+        <h2>SAP <em>side</em></h2>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin-bottom:var(--space-5);">Steps to complete in your SAP system. Use the <strong>Method</strong> picker above to switch between ODP, SLT, and RFC approaches.</p>
+
+        <aside class="walkthrough-progress" aria-label="Walkthrough progress">
+          <div role="status" aria-live="polite" class="progress-indicator">
+            <span id="progress-count">0</span> of {{stepCount}} steps complete
+          </div>
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+          </div>
+        </aside>
+
+        <div class="steps-container" data-default-method="{{defaultMethod}}">
+          <ol class="steps-list" data-method="odp">
+            {{#stepsOdp}}{{> walkthrough-step}}{{/stepsOdp}}
+            {{^stepsOdp}}
+            {{#steps}}{{> walkthrough-step}}{{/steps}}
+            {{/stepsOdp}}
+          </ol>
+
+          {{#hasStepsSlt}}
+          <ol class="steps-list" data-method="slt" hidden>
+            {{#stepsSlt}}{{> walkthrough-step}}{{/stepsSlt}}
+          </ol>
+          {{/hasStepsSlt}}
+
+          {{#hasStepsRfc}}
+          <ol class="steps-list" data-method="rfc" hidden>
+            {{#stepsRfc}}{{> walkthrough-step}}{{/stepsRfc}}
+          </ol>
+          {{/hasStepsRfc}}
+
+          {{#hasStepsRef}}
+          <ol class="steps-list" data-method="ref" hidden>
+            {{#stepsRef}}{{> walkthrough-step}}{{/stepsRef}}
+          </ol>
+          {{/hasStepsRef}}
+        </div>
+
+        <!-- Method-specific troubleshooting inside SAP panel -->
+        {{#hasTroubleshooting}}
+        <details class="ts-section" style="margin-top:var(--space-6);border-top:1px solid var(--color-rule);padding-top:var(--space-5);">
+          <summary class="ts-summary">Troubleshooting</summary>
+          <dl class="troubleshooting-list" style="margin-top:var(--space-4);">
+            {{#troubleshooting}}
+            <div class="troubleshooting-item"{{#method}} data-ts-method="{{method}}"{{/method}}>
+              <dt>{{problem}}</dt>
+              <dd>
+                <p>{{solution}}</p>
+                {{#sapNoteUrl}}<p><a href="{{.}}" target="_blank" rel="noopener noreferrer">Related SAP Note <span class="sr-only">(opens in new tab)</span></a></p>{{/sapNoteUrl}}
+              </dd>
+            </div>
+            {{/troubleshooting}}
+          </dl>
+        </details>
+        {{/hasTroubleshooting}}
+
+        <!-- Z-column handling — method-filtered collapsible -->
+        <details class="z-columns-section" style="margin-top:var(--space-6);border-top:1px solid var(--color-rule);padding-top:var(--space-5);">
+          <summary style="font-size:16px;font-weight:500;cursor:pointer;list-style:none;display:flex;align-items:center;gap:var(--space-3);">
+            <span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:var(--color-bg-3);border:1px solid var(--color-rule);text-align:center;line-height:20px;font-size:11px;font-family:var(--font-mono);">+</span>
+            Handling custom Z columns
+          </summary>
+
+          <!-- ODP: EXTEND VIEW ENTITY -->
+          <div class="troubleshooting-item" data-ts-method="odp" style="margin-top:var(--space-5);">
+            <h4 style="font-size:15px;font-weight:500;margin:0 0 var(--space-3);">ODP — Extending a CDS view with ABAP Developer</h4>
+            <p style="font-size:14px;color:var(--color-ink-soft);margin:0 0 var(--space-3);">Use <code>EXTEND VIEW ENTITY</code> in ABAP Development Tools (Eclipse/ADT) to add Z columns without modifying the original view. The base view must carry the header annotation <code>@AbapCatalog.viewEnhancementCategory: [#PROJECTION_LIST]</code> — if the owner restricted data sources, only tables listed under <code>@AbapCatalog.extensibility.dataSources</code> can be joined.</p>
+            <ol style="padding-left:var(--space-6);margin:0 0 var(--space-3);font-size:14px;line-height:1.8;">
+              <li>Open ADT (Eclipse). In the Project Explorer, locate the data definition of the CDS entity you want to extend.</li>
+              <li>Right-click the data definition → <strong>New Data Definition</strong>. Choose your package, enter a name (e.g., <code>Z_EXT_MY_VIEW</code>), and add a description.</li>
+              <li>Click Next, select your transport request, then choose the <strong>Extend View Entity</strong> template.</li>
+              <li>Define your custom Z fields in the element list — pull from the underlying table alias or define a new association.</li>
+              <li>Activate the view extension (<strong>Ctrl + F3</strong>). The base view now includes your custom elements.</li>
+            </ol>
+            <pre style="margin:0 0 var(--space-3);"><code>extend view entity C_BaseStandardView with Z_Ext_My_View
+{
+  BaseTable.zz_custom_field    as ZZCustomField,
+  _NewZTableAssoc
+}</code></pre>
+            <p style="font-size:13px;color:var(--color-ink-soft);margin:0;background:var(--color-bg-2);border-left:3px solid var(--color-accent-2);padding:var(--space-3) var(--space-4);border-radius:var(--radius-sm);">Because the ODP framework generates a <em>TransientProvider</em> at runtime from CDS metadata, Z columns added via <code>EXTEND VIEW ENTITY</code> automatically appear in the ODP delta queue. Refresh the schema in your tool (ADF, Databricks) to see new fields. Test locally with ABAP program <code>RODPS_REPL_TEST</code>.</p>
+          </div>
+
+          <!-- SLT: LTRS Rule Assignment -->
+          <div class="troubleshooting-item" data-ts-method="slt" style="margin-top:var(--space-5);">
+            <h4 style="font-size:15px;font-weight:500;margin:0 0 var(--space-3);">SLT — Adding Z columns via LTRS Rule Assignment</h4>
+            <p style="font-size:14px;color:var(--color-ink-soft);margin:0 0 var(--space-3);">In SLT you add and populate Z columns through Advanced Replication Settings in transaction <code>LTRS</code>.</p>
+            <ol style="padding-left:var(--space-6);margin:0 0 var(--space-3);font-size:14px;line-height:1.8;">
+              <li>In your SLT system, run transaction <strong>LTRS</strong>.</li>
+              <li>Under <em>Table Settings</em>, you can define the target table structure. To add a Z column that doesn't exist in the source, append it to the target structure here.</li>
+              <li>Go to the <em>Rule Assignment</em> section → right-click → <strong>Add Table</strong> to add your replication table.</li>
+              <li>Click the <em>Create</em> icon and choose either a <strong>Field-Related Rule</strong> (to populate a specific field) or an <strong>Event-Related Rule</strong> (to manipulate the whole record).</li>
+              <li>Write ABAP in the <em>Line of Code</em> section to populate your Z column. For event-related rules use <code>&lt;wa_s_table&gt;-columnname</code>. For field-related rules use the <code>E_</code> prefix: <code>E_columnname</code>.</li>
+            </ol>
+          </div>
+
+          <!-- RFC: SE11 Append Structure -->
+          <div class="troubleshooting-item" data-ts-method="rfc" style="margin-top:var(--space-5);">
+            <h4 style="font-size:15px;font-weight:500;margin:0 0 var(--space-3);">RFC — Exposing Z columns via SE11 Append Structure</h4>
+            <p style="font-size:14px;color:var(--color-ink-soft);margin:0 0 var(--space-3);">When extracting via RFC, Z columns added to a SAP transparent table through an <em>Append Structure</em> in transaction <code>SE11</code> are immediately available — the RFC functions query the ABAP data dictionary dynamically.</p>
+            <ol style="padding-left:var(--space-6);margin:0 0 var(--space-3);font-size:14px;line-height:1.8;">
+              <li>In <strong>SE11</strong>, open the transparent table, go to <em>Extras → Append Structure</em>, and add your Z field. Activate — the underlying database table is updated automatically.</li>
+              <li>Standard RFC functions (<code>RFC_READ_TABLE</code>, <code>/SAPDS/RFC_READ_TABLE2</code>) will return the column dynamically.</li>
+              <li>Explicitly request the new Z column in the <strong>FIELDS</strong> parameter of your RFC call — it is not returned unless listed there.</li>
+              <li>If using a <em>custom Function Module</em>, update the Export table structure in the FM to include the new columns — it does not auto-discover.</li>
+            </ol>
+          </div>
+        </details>
+      </div>
+
+      <!-- ── PANEL 2: Tool configuration ────────────────────────────── -->
+      <div class="card section tool-steps-section" id="wt-panel-tool" role="tabpanel" aria-labelledby="wt-tab-tool" hidden>
+        <h2>Tool <em>configuration</em></h2>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin-bottom:var(--space-5);">Pipeline code and config for your selected tool. Switch the <strong>Tool</strong> picker above to see a different variant.</p>
+        {{#hasToolSteps}}
+        <div class="tool-steps-container" data-default-tool="{{defaultTool}}">
+          {{#toolSteps}}
+          <div data-tool-block="{{tool}}"{{^active}} hidden{{/active}}>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">{{label}}</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              {{#steps}}
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step {{displayNumber}}</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">{{title}}</strong>
+                </div>
+                {{#explanation}}<p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">{{{explanation}}}</p>{{/explanation}}
+                {{#hasCode}}<pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-{{codeLanguage}}">{{code}}</code></pre>{{/hasCode}}
+                {{#verify}}<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> {{verify}}</p>{{/verify}}
+              </li>
+              {{/steps}}
+            </ol>
+          </div>
+          {{/toolSteps}}
+        </div>
+        {{/hasToolSteps}}
+        {{^hasToolSteps}}
+        <p style="color:var(--color-ink-soft);font-size:14px;">No tool-specific steps for this walkthrough. See the SAP side tab for extraction steps.</p>
+        {{/hasToolSteps}}
+
+        <!-- Tool troubleshooting -->
+        <details class="ts-section" style="margin-top:var(--space-6);border-top:1px solid var(--color-rule);padding-top:var(--space-5);">
+          <summary class="ts-summary">Troubleshooting</summary>
+          <dl class="troubleshooting-list" style="margin-top:var(--space-4);">
+            <div class="troubleshooting-item" data-ts-tool="adf">
+              <dt>ADF pipeline runs but no data arrives in sink</dt>
+              <dd><p>Check that the Integration Runtime can reach both the SAP host and the sink. Confirm the source ODP dataset has a valid subscription key — open ODQMON on the SAP side and verify a subscription for your OData consumer appears. Also confirm the pipeline activity timeout is at least 4 hours for heavyweight tables.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-tool="databricks" hidden>
+              <dt>Databricks JDBC read hangs or times out</dt>
+              <dd><p>RFC_READ_TABLE via JDBC is limited to ~500 MB result sets per call by default. For large tables, enable partition mode in the JDBC options (<code>partitionColumn</code>, <code>lowerBound</code>, <code>upperBound</code>, <code>numPartitions</code>) to split the read across parallel ABAP work processes. Check SM50 on the SAP side for stuck RFC work processes.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-tool="fivetran" hidden>
+              <dt>Fivetran sync paused with "schema drift" error</dt>
+              <dd><p>Fivetran detects column changes automatically but pauses the sync to avoid data loss. Go to the connector settings, review the new/removed columns, and resume. If the column was added to a custom Append Structure, confirm it appears in SE11 before resuming — Fivetran re-reads the schema from ABAP.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-tool="airbyte" hidden>
+              <dt>Airbyte stream returns 0 records on first sync</dt>
+              <dd><p>The ODP provider may require an init-delta run before returning data. In the Airbyte connection settings, trigger a full refresh for the first run. After the init completes, subsequent incremental syncs will return changes correctly. Confirm the ODP subscription appears in ODQMON after the first run.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-tool="custom" hidden>
+              <dt>Custom RFC call returns truncated rows</dt>
+              <dd><p>RFC_READ_TABLE row limit is 512 bytes per row by default. Columns with long text fields overflow. Switch to <code>/SAPDS/RFC_READ_TABLE2</code> or a custom BAPI that returns the full row width. Alternatively, select fewer columns per call and join results in your pipeline.</p></dd>
+            </div>
+          </dl>
+        </details>
+      </div>
+
+      <!-- ── PANEL 3: Sink setup ─────────────────────────────────────── -->
+      <div class="card section sink-steps-section" id="wt-panel-sink" role="tabpanel" aria-labelledby="wt-tab-sink" hidden>
+        <h2>Sink <em>setup</em></h2>
+        <p style="color:var(--color-ink-soft);font-size:14px;margin-bottom:var(--space-5);">Landing zone configuration for your selected sink. Switch the <strong>Sink</strong> picker above to see a different destination.</p>
+        {{> sink-steps }}
+
+        <!-- Sink troubleshooting -->
+        <details class="ts-section" style="margin-top:var(--space-6);border-top:1px solid var(--color-rule);padding-top:var(--space-5);">
+          <summary class="ts-summary">Troubleshooting</summary>
+          <dl class="troubleshooting-list" style="margin-top:var(--space-4);">
+            <div class="troubleshooting-item" data-ts-sink="adls">
+              <dt>Files land in ADLS but Synapse/Databricks can't read them</dt>
+              <dd><p>Confirm the storage account has Hierarchical Namespace (HNS) enabled — standard ADLS Blob storage doesn't support ABFSS URIs. Check that the service principal has Storage Blob Data Reader on the container, not just Contributor on the storage account. Verify the Parquet file isn't corrupted by running a quick count from Azure Storage Explorer's preview.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="s3" hidden>
+              <dt>S3 upload succeeds but Glue crawler shows 0 records</dt>
+              <dd><p>The Parquet file may be in a nested folder that doesn't match the Glue partition pattern. Confirm the S3 prefix uses Hive-style partitions (e.g., <code>rbukrs=1000/year=2024/</code>). Run <code>MSCK REPAIR TABLE your_table</code> in Athena after re-crawling to register new partitions. Check that the Glue IAM role has <code>s3:GetObject</code> on the exact bucket ARN, not just the bucket root.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="snowflake" hidden>
+              <dt>COPY INTO shows 0 rows loaded or "file format mismatch"</dt>
+              <dd><p>Confirm the external stage points to the correct S3/ADLS prefix — run <code>LIST @your_stage/sap/slug/</code> and verify files appear. If using MATCH_BY_COLUMN_NAME, the Parquet column names must exactly match the table column names (case-sensitive). For Snowpipe, check pipe status with <code>SELECT SYSTEM$PIPE_STATUS('your_pipe')</code> and inspect the error log table.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="bigquery" hidden>
+              <dt>BigQuery external table returns stale or missing data</dt>
+              <dd><p>External tables in BigQuery always reflect the current state of the underlying GCS files — if new files were added after the external table was created, they are automatically included (no refresh needed). If data appears stale, confirm the GCS bucket path in the external table definition matches where your tool is writing. For persistent tables loaded via a load job, re-run the load after each extraction.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="fabric" hidden>
+              <dt>Fabric Lakehouse shortcut shows empty or stale data</dt>
+              <dd><p>OneLake shortcuts reflect ADLS in near-real time but may cache metadata. Click "Refresh" on the Lakehouse table in the Fabric UI. If the Delta table shows stale data, run <code>DESCRIBE HISTORY your_table</code> in a Fabric notebook to confirm the latest Delta commit was written. For Parquet shortcuts, the file must be at exactly the path the shortcut points to — a new subfolder will not be automatically included.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="databricks" hidden>
+              <dt>Databricks row count doesn't match SE16N after writing</dt>
+              <dd><p>Check for concurrent writes — if another pipeline wrote to the same Delta table path during the extraction, rows may be duplicated or the table may be in an inconsistent state. Run <code>DESCRIBE HISTORY sap_landing.raw.slug</code> to see all commits. Use <code>VACUUM</code> followed by <code>RESTORE</code> if you need to roll back. For initial loads, use <code>OVERWRITE</code> mode to ensure idempotency.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="gcs" hidden>
+              <dt>BigQuery external table on GCS returns permission denied</dt>
+              <dd><p>The BigQuery service account needs Storage Object Viewer on the GCS bucket — not on the project. Add the IAM binding at the bucket level, not the project level. If using a BigLake Iceberg table, the service account also needs BigLake connection permissions. Run <code>bq show --format=prettyjson your_dataset.your_table</code> to confirm the external table's connection is active.</p></dd>
+            </div>
+            <div class="troubleshooting-item" data-ts-sink="other" hidden>
+              <dt>Row count in target doesn't match SE16N</dt>
+              <dd><p>A mismatch typically means the filter scope differs between SAP and your sink query. Confirm the same RBUKRS, RYEAR (and POPER if applicable) filters are used in both SE16N and the count query against your sink. Also check for type conversion issues — NUMC fields stored as integers in the target may not match the string representation in SE16N's filter.</p></dd>
+            </div>
+          </dl>
+        </details>
+      </div>
+
+      <!-- You've built / summary -->
+      <div class="card accent">
+        <span class="chip">Complete</span>
+        <p>You've finished the walkthrough for {{table}}. {{stepCount}} steps done — you understand the key extraction considerations for this table.</p>
+      </div>
+
+      <!-- Next steps -->
+      {{#hasNextSteps}}
+      <div class="card section">
+        <h2>{{strings.walkthrough.nextStepsHeading}}</h2>
+        <ul style="list-style:disc;padding-left:var(--space-6);">
+          {{#nextSteps}}
+          <li style="margin-bottom:var(--space-2);"><a href="{{url}}">{{label}}</a></li>
+          {{/nextSteps}}
+        </ul>
+      </div>
+      {{/hasNextSteps}}
+
+    </div><!-- /.grid -->
+
+    <footer class="walkthrough-footer">
+      <button type="button" class="btn btn-primary" id="download-pdf" hidden>{{strings.cta.downloadPdf}}</button>
+      <button type="button" class="btn-link" id="reset-progress" hidden>{{strings.cta.resetProgress}}</button>
+    </footer>
+  </article>
+
+</div>

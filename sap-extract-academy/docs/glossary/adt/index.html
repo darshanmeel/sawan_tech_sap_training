@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ADT: ABAP Development Tools in SAP — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="ADT is the modern Eclipse-based IDE for ABAP development, replacing classic SAP GUI tools with syntax highlighting, refactoring, and Git support.">
+  <link rel="canonical" href="https://academy.example.com/glossary/adt/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ADT: ABAP Development Tools in SAP — Plain Explanation">
+  <meta property="og:description" content="ADT is the modern Eclipse-based IDE for ABAP development, replacing classic SAP GUI tools with syntax highlighting, refactoring, and Git support.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;adt&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ADT: ABAP Development Tools in SAP — Plain Explanation">
+  <meta name="twitter:description" content="ADT is the modern Eclipse-based IDE for ABAP development, replacing classic SAP GUI tools with syntax highlighting, refactoring, and Git support.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"ABAP Development Tools","alternateName":"ADT","description":"ADT is the modern IDE for ABAP development, built on Eclipse. It replaces the classic SAP GUI-based development tools (SE38, SE11) with a native IDE offering syntax highlighting, refactoring, debugging, and Git integration.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+      <li aria-current="page">ADT</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · ABAP Development Tools</p>
+        <h1>ADT<em>.</em></h1>
+      </div>
+      <p>ADT is the modern IDE for ABAP development, built on Eclipse. It replaces the classic SAP GUI-based development tools (SE38, SE11) with a native IDE offering syntax highlighting, refactoring, debugging, and Git integration.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/ABAP/">ABAP</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/SE38/">SE38</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/SE11/">SE11</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Transport Request/">Transport Request</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>ADT is the modern IDE for ABAP development, built on Eclipse. It replaces the classic SAP GUI-based development tools (SE38, SE11) with a native IDE offering syntax highlighting, refactoring, debugging, and Git integration.</p>
+      </div>
+
+      <div class="glossary-prose">
+        <h3>What is ADT?</h3>
+<p>ABAP Development Tools (ADT) is the modern integrated development environment for writing, debugging, and managing ABAP code. It runs as a plugin on top of Eclipse, the open-source Java IDE, and connects directly to the SAP backend via a REST-based protocol called <strong>ABAP RESTful Application Programming Model (RAP)</strong> or, for older systems, the ADT backend services. ADT replaced the classic SAP GUI-based toolchain — <code>SE38</code> for program editing, <code>SE11</code> for Data Dictionary — and brings ABAP development into line with what developers expect from a modern IDE: syntax highlighting, code completion, inline error markers, refactoring tools, integrated unit testing, and Git-based version control via <strong>abapGit</strong>.</p>
+<p>For anyone who has worked with VS Code, IntelliJ, or Eclipse for Java development, ADT feels immediately familiar. The learning curve is about navigating SAP&#39;s object types and project structure, not the IDE mechanics themselves. ADT is the required environment for all S/4HANA on-premise development and the only supported tool for <strong>ABAP Cloud</strong> development on BTP.</p>
+<h3>How it works</h3>
+<p>ADT connects to one or more SAP systems through an <strong>ABAP Project</strong> configured in Eclipse&#39;s Project Explorer. Each project maps to a specific system/client combination, authenticated via your SAP logon credentials. Once connected, the IDE fetches object metadata from the backend in real time — when you open a class or function module, ADT retrieves the source from the SAP system, not from a local copy. Edits are sent back to the system on save, which means ADT is always working against the live system, not a local file system. This is a key conceptual difference from traditional software development.</p>
+<p>Navigation is object-centric: you open an ABAP class, a function group, a CDS view, or a database table by name, and ADT resolves it from the connected system. <strong>F3</strong> navigates to the definition of any symbol under the cursor — a function module call, a table field reference, a type definition — which makes tracing logic through deep call stacks much faster than in classic SAP GUI tools where you had to manually find and open each object.</p>
+<p>For CDS views specifically, ADT is the only practical editing environment. CDS source files (<code>.cds</code> or <code>.ddls</code>) are authored in ADT with CDS-aware syntax checking, annotation completion, and a built-in <strong>Data Preview</strong> that lets you run the view and inspect results directly in the IDE without switching to another transaction.</p>
+<h3>Why it matters for data extraction</h3>
+<p>For data architects and extraction engineers, ADT is most valuable as a <strong>read and debug tool</strong> rather than an authoring environment. When you need to understand why a CDS view is returning unexpected results, ADT lets you open the view source, inspect its annotations (especially <code>@Analytics.dataCategory</code> and <code>@OData.publish</code>), and run a data preview with filter conditions — all without leaving the IDE.</p>
+<p>ADT&#39;s <strong>ABAP Debugger</strong> is significantly more capable than the classic GUI debugger. You can set <strong>watchpoints</strong> (break when a variable changes value), <strong>external breakpoints</strong> (triggered by a specific user&#39;s session), and <strong>exception breakpoints</strong> (break whenever an exception of a given class is raised). When an ODP extraction fails with a cryptic short dump, attaching the ADT debugger to a test extraction run and stepping through the extractor class logic is the fastest path to root cause — faster than reading <code>ST22</code> dumps after the fact.</p>
+<p>If your organization is building <strong>custom CDS extraction views</strong> — views created specifically to expose data for external consumers, often annotated with <code>@Analytics.dataExtract: true</code> — ADT is where those views are developed, tested, and transported. Understanding how to navigate ADT&#39;s CDS editor, run a data preview, and read the dependency hierarchy of a CDS view stack is a practical skill for any extraction engineer working in S/4HANA environments.</p>
+<h3>Common pitfalls</h3>
+<p>The most common issue is <strong>connectivity</strong>. ADT requires that the SAP system exposes the ADT backend services (ICF path <code>/sap/bc/adt</code>) and that the network allows HTTP/HTTPS traffic on the SAP ICM port (typically 443 or 8443). In highly locked-down enterprise environments, developers often find that SAP GUI (which uses the proprietary DIAG protocol on port 3200+) works fine but ADT is blocked by the corporate firewall. Confirm ICF activation with your Basis team before investing time in ADT setup.</p>
+<p>A second pitfall is <strong>authorization</strong>. ADT requires the <code>S_ADT_RES</code> authorization object in addition to standard development authorizations. In organizations that strictly control developer access, read-only ADT access (for inspection without the ability to create or change objects) requires a specific role configuration that many Basis teams haven&#39;t pre-built. Request this proactively if you need ADT for extraction auditing without a full developer license.</p>
+<p>Finally, ADT&#39;s <strong>local history</strong> and <strong>Git integration via abapGit</strong> are powerful but require organizational buy-in. Many teams still transport ABAP objects using the classic <code>SE10</code>/<code>STMS</code> transport chain without Git, which means ADT&#39;s version history features don&#39;t reflect the full change history unless the team has explicitly connected abapGit. Don&#39;t assume Git history in ADT is complete unless you&#39;ve confirmed abapGit is active on the system.</p>
+<h3>In practice</h3>
+<p>A concrete scenario: you&#39;re building an extraction pipeline for a custom CDS view called <code>ZI_VENDOR_INVOICE_EXTRACT</code> that a developer created to expose <code>RBKP</code> and <code>RSEG</code> data. The data preview in ADT shows 10,000 rows for last month but your warehouse is only receiving 8,000 via ODP. You open the view in ADT and notice it has an annotation <code>@AccessControl.authorizationCheck: #CHECK</code> — meaning row-level access control is applied based on the calling user&#39;s authorizations. The RFC user your extraction tool runs as doesn&#39;t have the same company code authorizations as the developer who built the view. You either add the missing authorizations to the RFC user or change the annotation to <code>#NOT_REQUIRED</code> (after confirming with security). Without ADT, you&#39;d have spent days debugging the ODP subscription before finding the authorization annotation.</p>
+
+      </div>
+
+      <p class="glossary-doc-link">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

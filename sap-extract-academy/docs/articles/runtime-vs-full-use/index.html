@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Runtime vs Full Use SAP License — Extraction Architecture Guide — SAP Extract Academy</title>
+  <meta name="description" content="SAP Runtime License forbids SLT replication. Full Use License required. Learn what each license permits for data extraction, how to validate, and how to avoid costly surprises.">
+  <link rel="canonical" href="https://academy.example.com/articles/runtime-vs-full-use/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Runtime vs Full Use SAP License — Extraction Architecture Guide">
+  <meta property="og:description" content="SAP Runtime License forbids SLT replication. Full Use License required. Learn what each license permits for data extraction, how to validate, and how to avoid costly surprises.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;articles&#x2F;runtime-vs-full-use&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Runtime vs Full Use SAP License — Extraction Architecture Guide">
+  <meta name="twitter:description" content="SAP Runtime License forbids SLT replication. Full Use License required. Learn what each license permits for data extraction, how to validate, and how to avoid costly surprises.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Runtime vs Full Use SAP License: The Extraction Architect's Guide","description":"SAP Runtime License forbids SLT replication. Full Use License required. Learn what each license permits for data extraction, how to validate, and how to avoid costly surprises.","author":{"@type":"Organization","name":"SAP Extract Academy"},"publisher":{"@type":"Organization","name":"SAP Extract Academy"},"datePublished":"2026-04-22T00:00:00.000Z","dateModified":"2026-04-22T00:00:00.000Z","mainEntityOfPage":"https://academy.example.com/articles/runtime-vs-full-use/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://academy.example.com/articles/"},{"@type":"ListItem","position":3,"name":"Runtime vs Full Use SAP License: The Extraction Architect's Guide"}]}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Article detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+      <li aria-current="page">Runtime vs Full Use SAP License: The Extraction Architect&#39;s Guide</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: article title + eyebrow with date and reading time -->
+    <div class="card hero article-hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>22 Apr 2026 · 10 min</p>
+        <h1>Runtime vs Full Use SAP License: The Extraction Architect&#39;s Guide<em>.</em></h1>
+      </div>
+      <p>SAP Runtime licenses forbid SLT replication. Many organizations discover this during or after implementation and face expensive license upgrades or architecture redesigns. Understand the license boundary, what it means for extraction design, and how to avoid the trap.</p>
+    </div>
+
+    <!-- Side card: author + tags -->
+    <div class="card side">
+      <h3>Author</h3>
+      <p class="big" style="font-size:22px;">SAP Extract Academy</p>
+      <p>10 minute read</p>
+    </div>
+
+    <!-- Section card: article body prose (max-width 780px per reference) -->
+    <div class="card section">
+      <div class="prose" style="max-width:780px;">
+        <p>You have designed your extraction architecture. ACDOCA to your data warehouse via SLT — parallel readers, real-time delta, billions of rows streaming continuously. The architecture is sound and your Basis team is ready to configure LTRC.</p>
+<p>Two days before go-live, your licensing manager calls: &quot;We&#39;re on a Runtime License. SLT is not permitted.&quot;</p>
+<p>Your entire extraction strategy may be invalid. This article explains why, what the license boundary means for extraction design, and how to avoid this situation.</p>
+<h2>The Two License Types That Matter for Extraction</h2>
+<p>SAP licenses for S/4HANA come in several tiers. Two matter most for data extraction architecture:</p>
+<p><strong>Full Use License</strong> — The premium tier. Covers all extraction methods: ODP (both OData and RFC paths), SLT replication, OData APIs, standard BW extractors, direct table access, custom ABAP extractors, and certified third-party connector tools. If you have a Full Use license, all extraction methods described in this Academy are available to you.</p>
+<p><strong>Runtime License</strong> — The value tier. Designed for organizations that want to reduce licensing costs after migrating to S/4HANA. Runtime covers standard transaction execution and ODP extraction via published CDS views through the OData API. It does <strong>not</strong> cover: SLT replication, classic BW extraction (InfoProviders, OpenHub), custom ABAP extraction programs, and some advanced analytics tools.</p>
+<p>The cost difference between Runtime and Full Use is typically 30–40% of total SAP licensing cost. For large enterprises, that is a substantial saving — and the reason many organizations choose Runtime without fully understanding the extraction restrictions.</p>
+<h2>What Runtime Explicitly Restricts for Extraction</h2>
+<p>Under a Runtime License, the following extraction methods are not permitted:</p>
+<ul>
+<li><strong>SLT (SAP Landscape Transformation Replication Server):</strong> Any use of SLT — LTRC configuration, LTRS subscriptions, replication objects — is prohibited. This includes SLT pushing to Kafka, databases, data lakes, or any other target.</li>
+<li><strong>Direct RFC extraction without ODP:</strong> Custom ABAP programs or function modules that read tables directly via RFC for extraction purposes are not permitted.</li>
+<li><strong>Classic BW extraction paths:</strong> InfoProviders, OpenHub destinations, and BW DataSource-based extraction are not included in Runtime.</li>
+<li><strong>Some third-party connectors:</strong> Third-party tools that use ODP via RFC (rather than OData) may violate Note 3255746 regardless of license type. On Runtime, there is no path for RFC-based extraction to be compliant.</li>
+</ul>
+<p><strong>What Runtime does permit:</strong></p>
+<ul>
+<li>ODP via the OData API, when accessing published CDS views (I_JournalEntryItem, I_SalesDocument, etc.)</li>
+<li>OData API access to released CDS views directly (without ODP subscription model)</li>
+<li>Standard transaction access by business users</li>
+</ul>
+<h2>Why Organizations Fall Into the Trap</h2>
+<p>SAP does not enforce license boundaries technically. LTRC will configure and run under a Runtime License — the system does not check. You can run SLT for weeks or months on a Runtime License without any error. Enforcement happens through audits, not system blocks.</p>
+<p>This creates four conditions for the trap:</p>
+<p><strong>Condition 1 — Sales and licensing are different teams.</strong> The SAP sales team that sold you a Runtime License may not have flagged extraction architecture restrictions. The licensing team that enforces compliance is separate. The gap between what was promised and what is permitted goes unresolved until an audit.</p>
+<p><strong>Condition 2 — Architecture is designed before license validation.</strong> Extraction architecture is designed by data engineers or architects who may not know the license tier. When licensing review happens late — or not at all — the architecture reaches go-live with an unlicensed component.</p>
+<p><strong>Condition 3 — Legacy mindset.</strong> Organizations migrating from ECC to S/4HANA have used SLT (or its predecessor, Landscape Transformation) for years. They assume SLT carries over as a standard capability. In S/4HANA, it is a separately licensed Full Use feature.</p>
+<p><strong>Condition 4 — Gray-area interpretation.</strong> The boundary between &quot;ODP with published CDS views via OData&quot; (permitted on Runtime) and &quot;ODP via RFC or custom ABAP wrappers&quot; (not permitted) is not always clear. Legal and licensing teams interpret this differently.</p>
+<h2>SAP Note 3255746 — An Additional Constraint</h2>
+<p><a href="https://support.sap.com/notes/3255746">SAP Note 3255746</a> (February 2024) adds a constraint that applies regardless of license type: use of ODP via RFC function modules by third-party tools is no longer permitted. This affects Azure Data Factory&#39;s SAP CDC connector, Qlik Replicate, Fivetran&#39;s ODP connector, Informatica ODP, and others that call ODP internally via RFC.</p>
+<p>The compliant alternatives are ODP via OData, or SLT replication. On a Runtime License, SLT is not available — so the only compliant path for third-party tools is ODP via OData.</p>
+<h2>How to Avoid the Trap</h2>
+<p><strong>Step 1: Validate your license before designing extraction architecture.</strong> Before any extraction design work, schedule a meeting with your SAP licensing manager. Share the extraction strategy (which tables, which extraction methods). Ask explicitly: &quot;Does our license permit SLT?&quot; and &quot;Does our license permit our tool&#39;s ODP connector?&quot;</p>
+<p><strong>Step 2: Get confirmation in writing.</strong> An email from SAP licensing confirming that your architecture is compliant is a meaningful protection in an audit. Verbal confirmations from sales or account teams are not sufficient.</p>
+<p><strong>Step 3: Know the boundary for Runtime.</strong> If you are on Runtime:</p>
+<ul>
+<li>ODP via OData API with published CDS views — permitted</li>
+<li>SLT replication — not permitted</li>
+<li>Third-party tools using ODP via OData — permitted; confirm with vendor</li>
+<li>Third-party tools using ODP via RFC — not permitted per Note 3255746</li>
+</ul>
+<p><strong>Step 4: Budget Full Use upgrade costs if SLT is required.</strong> If your extraction requirements genuinely need SLT (multi-billion-row tables, sub-minute real-time delta), and your current license is Runtime, budget for a Full Use upgrade from the start.</p>
+<p><strong>Step 5: Design within ODP constraints if staying on Runtime.</strong> ODP via OData handles most extraction scenarios at volumes up to approximately 500M rows per partition. Beyond that, sub-partitioning by posting period or month reduces partition sizes. ODP is not real-time (poll latency is typically 5–15 minutes at best); if sub-minute latency is a hard requirement, you need SLT and Full Use.</p>
+<h2>The Hidden Audit Risk</h2>
+<p>SAP audits licensing compliance. The audit process involves reviewing your system configuration — including whether SLT replication objects are configured in LTRC, whether custom ABAP extraction programs exist, and what table access patterns are in the system logs.</p>
+<p><strong>From the field (composite of multiple engagements, anonymized):</strong></p>
+<p>An organization migrated to S/4HANA on a Runtime License, negotiated at 35% below Full Use cost. The data architecture team, unaware of the license restriction, designed an ACDOCA extraction pipeline using SLT. The pipeline ran in production for several months before a routine license review identified the violation. The choices were: upgrade to Full Use (retroactive to go-live), decommission SLT and redesign the pipeline (3–6 months of rework), or accept an audit finding. The organization upgraded to Full Use. The licensing savings from choosing Runtime evaporated, plus the redesign cost had already been incurred. This pattern appears consistently across SAP customers. The mistake is always the same: extraction architecture designed before license validation.</p>
+<h2>Decision Framework</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Runtime OK?</th>
+<th>Action if Runtime</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ODP via OData API</td>
+<td>Yes</td>
+<td>Confirm tool uses OData, not RFC</td>
+</tr>
+<tr>
+<td>SLT replication</td>
+<td>No</td>
+<td>Upgrade to Full Use or redesign to ODP</td>
+</tr>
+<tr>
+<td>Custom ABAP extraction</td>
+<td>No</td>
+<td>Redesign to ODP or upgrade</td>
+</tr>
+<tr>
+<td>RFC-based ODP connector</td>
+<td>No (Note 3255746)</td>
+<td>Switch tool to OData mode</td>
+</tr>
+<tr>
+<td>Sub-minute delta latency</td>
+<td>No (ODP is poll-based)</td>
+<td>Need SLT — Full Use required</td>
+</tr>
+</tbody></table>
+<h2>Conclusion</h2>
+<p>Treat SAP license type as a hard architectural constraint. Validate it in week one of any extraction project. If your extraction requirements need SLT, the Full Use license cost is a known and plannable investment. If your requirements can be met by ODP via OData on a Runtime License, that is a legitimate and cost-effective path.</p>
+<p>The cost of discovering a license violation after go-live is always greater than the cost of planning for it upfront.</p>
+
+      </div>
+    </div>
+
+    <!-- Section card: related walkthroughs -->
+    <div class="card section">
+      <h2>Related <em>walkthroughs</em></h2>
+      <ul style="list-style:disc;padding-left:var(--space-6);">
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough/expert/acdoca/">Walkthrough: expert — acdoca</a>
+        </li>
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough/expert/vbak/">Walkthrough: expert — vbak</a>
+        </li>
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough/expert/bkpf/">Walkthrough: expert — bkpf</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Extractor: SAP Data Extractor Component — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="Extractors expose SAP table data for extraction. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.">
+  <link rel="canonical" href="https://academy.example.com/glossary/extractor/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extractor: SAP Data Extractor Component — Plain Explanation">
+  <meta property="og:description" content="Extractors expose SAP table data for extraction. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;extractor&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Extractor: SAP Data Extractor Component — Plain Explanation">
+  <meta name="twitter:description" content="Extractors expose SAP table data for extraction. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Data Extractor","alternateName":"Extractor","description":"An extractor is a reusable SAP component that exposes table data for extraction via ODP or custom querying. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+      <li aria-current="page">Extractor</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · Data Extractor</p>
+        <h1>Extractor<em>.</em></h1>
+      </div>
+      <p>An extractor is a reusable SAP component that exposes table data for extraction via ODP or custom querying. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/ODP/">ODP</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Operational Data Provisioning/">Operational Data Provisioning</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Generic Extractor/">Generic Extractor</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/ABAP/">ABAP</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/CDS/">CDS</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>An extractor is a reusable SAP component that exposes table data for extraction via ODP or custom querying. Generic extractors exist for all tables; they support filtering, field selection, and delta tracking.</p>
+      </div>
+
+      <div class="glossary-prose">
+        <h3>What is an Extractor?</h3>
+<p>An <strong>extractor</strong> is a reusable SAP-side component that provides structured, controlled access to a data source for extraction purposes. Rather than connecting directly to a database table with raw SQL, extraction frameworks like ODP interact with extractors — which are registered, named components with defined metadata, authorization logic, delta capability, and field selection rules. Every SAP table has at least a <strong>generic extractor</strong> automatically available through the ODP framework. Many key business objects also have <strong>SAP-published specialized extractors</strong>, exposed as CDS views or BW DataSources, that provide richer semantics, join logic, and currency/unit conversion.</p>
+<p>The extractor concept exists to give SAP control over what data leaves the system and in what form. A raw database connection bypasses authorization entirely; an extractor enforces it. When you access <code>ACDOCA</code> through the CDS view <code>I_JournalEntryItem</code>, you are using SAP&#39;s officially released extractor for universal journal data. That extractor applies ledger-level authorization objects, respects company code access restrictions, and returns semantically enriched data — amounts in both local and group currency, fiscal period attributes, cost object types. Direct table access gives you none of that automatically.</p>
+<h3>How it works</h3>
+<p>Extractors are registered in the ODP framework under one of several <strong>ODP contexts</strong>: <code>SAPI</code> (for BW DataSources), <code>ABAP_CDS</code> (for CDS views released with <code>@Analytics.dataExtract: true</code>), and <code>BW</code> (for SAP BW InfoProviders). When an ODP consumer — Fivetran, SAP Data Services, a custom ABAP program using the ODP API, or a third-party tool — subscribes to an extractor, it creates a named <strong>subscription</strong> in the ODP framework. The framework then manages delta state for that subscription: it records what was last delivered, queues new changes, and guarantees at-least-once delivery.</p>
+<p>Under the hood, a generic table extractor delegates to open SQL against the underlying transparent table. A CDS-based extractor executes the CDS view definition, which may join several tables, apply association logic, and invoke ABAP expression functions. A BW DataSource extractor calls the DataSource&#39;s ABAP extraction function module (typically named <code>RODBS_*</code> or <code>RSA3</code>-visible modules). Each type of extractor presents the same ODP interface to the consumer, hiding the underlying complexity. This abstraction is what makes ODP-based extraction tools like Fivetran pluggable across very different SAP data structures.</p>
+<h3>Why it matters for data extraction</h3>
+<p>Choosing the right extractor determines both the quality of the data you receive and the stability of your extraction pipeline. A <strong>generic extractor</strong> on <code>VBAK</code> gives you a flat dump of the sales order header table — every column, no joins, no unit conversion, delta tracked by the ODP framework. It is fast to set up and covers any table. A <strong>specialized CDS extractor</strong> like <code>I_SalesOrder</code> gives you a semantically aligned view of sales orders with resolved partner function roles, status fields derived from multiple tables, and field names aligned to SAP&#39;s public API surface. The specialized extractor is more future-proof: SAP maintains its compatibility across upgrades, whereas direct table structures can change.</p>
+<p>Authorization filtering through extractors is a critical and frequently overlooked point. If an extraction user&#39;s role does not include authorization for certain company codes (<code>BUKRS</code>) in the <code>F_BKPF_BUK</code> authorization object, the extractor will silently return only the authorized subset of rows. This means an extraction pipeline can appear to be working correctly — no errors, no warnings — while delivering incomplete data. Always validate row counts against a known-good reference when setting up a new extractor subscription, and ensure the extraction service account&#39;s authorizations are scoped to the full data range required.</p>
+<h3>Common pitfalls</h3>
+<p><strong>Bypassing extractors with direct RFC table reads</strong> is a common shortcut that creates long-term problems. Functions like <code>RFC_READ_TABLE</code> and <code>BBP_RFC_READ_TABLE</code> read tables directly without going through the ODP framework. They have no delta capability, no authorization enforcement beyond basic table-level access, and no field metadata. Pipelines built on direct RFC table reads must implement their own delta logic (usually a high-watermark timestamp on a field like <code>AEDAT</code>), which is fragile and table-specific. As table volumes grow, direct reads become performance bottlenecks. Investing in ODP-based extraction from the start avoids these problems.</p>
+<p><strong>Confusing extractor availability with extractor quality</strong> is another common mistake. A generic extractor is always available, but it exposes the physical table structure — which may change across SAP upgrades and SAP notes. If SAP adds or removes a column from <code>EKKO</code> via a support package, your generic extractor field list is suddenly out of date. CDS-based extractors released by SAP (<code>@VDM.viewType: #CONSUMPTION</code>) are protected by compatibility promises: SAP will not remove or rename fields without a deprecation period. Where SAP-released CDS extractors exist for the data you need, prefer them over generic table extractors for production pipelines.</p>
+<h3>In practice</h3>
+<p>A data team extracting procurement data chooses between three options for <code>EKKO</code> (purchase order headers): a direct RFC table read, a generic ODP extractor on <code>EKKO</code>, and the CDS view <code>I_PurchaseOrder</code>. The direct RFC read is rejected immediately — no delta, no authorization enforcement. The generic extractor is simpler to configure but exposes raw table columns like <code>AEDAT</code> (last changed date) for delta tracking, and column names that require mapping for business users. The CDS view <code>I_PurchaseOrder</code> includes resolved supplier names from <code>LFA1</code>, purchasing group descriptions from <code>T024</code>, and status semantics. The team chooses the CDS extractor for the analytics warehouse and uses <code>ODQMON</code> to monitor the subscription. When a support package update adds new fields to the CDS view, they appear automatically in the next extraction without pipeline changes — validating the choice.</p>
+
+      </div>
+
+      <p class="glossary-doc-link">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

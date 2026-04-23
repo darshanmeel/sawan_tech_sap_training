@@ -1,0 +1,287 @@
+// DDL generator — pure function, no side effects. Used at build time by
+// directory-table.html rendering. DDL is NOT stored in YAML; it is derived from
+// the column schema in each table's frontmatter.
+//
+// Signature:
+//   generateDdl(dialect, tableName, columns, partitionKeys) -> string
+//
+// dialect: 'snowflake' | 'databricks' | 'fabric'
+// tableName: the SAP table name as UPPERCASE, e.g. 'ACDOCA'
+// columns: [{ name, type, length, key, ... }]
+// partitionKeys: [string]   (column names used for clustering / partitioning)
+//
+// Unknown ABAP types fall back to VARCHAR/STRING rather than throwing, so that
+// the build never fails on a type we haven't mapped yet.
+
+// ---------------------------------------------------------------------------
+// Type mapping per dialect.
+//
+// Source: directory-brief.md §"DDL section" and the reference mockup
+// docs/design/directory-final.html (Snowflake/Databricks/Fabric panes).
+//
+// Each mapper receives (length, decimals) and returns a dialect-specific type
+// literal (upper-case keyword + optional precision).
+// ---------------------------------------------------------------------------
+
+const FALLBACK_SNOWFLAKE = (len) => `VARCHAR(${len || 255})`;
+const FALLBACK_DATABRICKS = () => 'STRING';
+const FALLBACK_FABRIC = (len) => `VARCHAR(${len || 255})`;
+
+const SNOWFLAKE_MAP = {
+  CHAR: (len) => `VARCHAR(${len || 1})`,
+  SSTR: (len) => `VARCHAR(${len || 1})`,
+  STRG: () => 'VARCHAR',
+  STRING: (len) => (len ? `VARCHAR(${len})` : 'VARCHAR'),
+  LCHR: (len) => `VARCHAR(${len || 255})`,
+  RAW: (len) => `BINARY(${len || 1})`,
+  LRAW: () => 'BINARY',
+  CLNT: (len) => `VARCHAR(${len || 3})`,
+  CUKY: (len) => `VARCHAR(${len || 5})`,
+  UNIT: (len) => `VARCHAR(${len || 3})`,
+  LANG: (len) => `VARCHAR(${len || 1})`,
+  NUMC: (len) => `NUMBER(${len || 10})`,
+  INT1: () => 'NUMBER(3)',
+  INT2: () => 'NUMBER(5)',
+  INT4: () => 'NUMBER(10)',
+  INT8: () => 'NUMBER(19)',
+  DEC: (len, dec) => `NUMBER(${len || 15}, ${dec || 2})`,
+  QUAN: (len, dec) => `NUMBER(${len || 15}, ${dec || 3})`,
+  CURR: (len, dec) => `NUMBER(${len || 15}, ${dec || 2})`,
+  FLTP: () => 'FLOAT',
+  DATS: () => 'DATE',
+  TIMS: () => 'TIME',
+  TIMN: () => 'TIME',
+  TIMESTAMP: () => 'TIMESTAMP_NTZ',
+  TZNTSTMPS: () => 'TIMESTAMP_NTZ',
+  TZNTSTMPL: () => 'TIMESTAMP_NTZ'
+};
+
+const DATABRICKS_MAP = {
+  CHAR: () => 'STRING',
+  SSTR: () => 'STRING',
+  STRG: () => 'STRING',
+  STRING: () => 'STRING',
+  LCHR: () => 'STRING',
+  RAW: () => 'BINARY',
+  LRAW: () => 'BINARY',
+  CLNT: () => 'STRING',
+  CUKY: () => 'STRING',
+  UNIT: () => 'STRING',
+  LANG: () => 'STRING',
+  NUMC: (len) => {
+    const n = len || 10;
+    if (n <= 4) return 'INT';
+    if (n <= 9) return 'INT';
+    return 'BIGINT';
+  },
+  INT1: () => 'TINYINT',
+  INT2: () => 'SMALLINT',
+  INT4: () => 'INT',
+  INT8: () => 'BIGINT',
+  DEC: (len, dec) => `DECIMAL(${len || 15}, ${dec || 2})`,
+  QUAN: (len, dec) => `DECIMAL(${len || 15}, ${dec || 3})`,
+  CURR: (len, dec) => `DECIMAL(${len || 15}, ${dec || 2})`,
+  FLTP: () => 'DOUBLE',
+  DATS: () => 'DATE',
+  TIMS: () => 'STRING',
+  TIMN: () => 'STRING',
+  TIMESTAMP: () => 'TIMESTAMP',
+  TZNTSTMPS: () => 'TIMESTAMP',
+  TZNTSTMPL: () => 'TIMESTAMP'
+};
+
+const FABRIC_MAP = {
+  CHAR: (len) => `VARCHAR(${len || 1})`,
+  SSTR: (len) => `VARCHAR(${len || 1})`,
+  STRG: () => 'VARCHAR(MAX)',
+  STRING: (len) => (len ? `VARCHAR(${len})` : 'VARCHAR(MAX)'),
+  LCHR: (len) => `VARCHAR(${len || 255})`,
+  RAW: (len) => `VARBINARY(${len || 1})`,
+  LRAW: () => 'VARBINARY(MAX)',
+  CLNT: (len) => `VARCHAR(${len || 3})`,
+  CUKY: (len) => `VARCHAR(${len || 5})`,
+  UNIT: (len) => `VARCHAR(${len || 3})`,
+  LANG: (len) => `VARCHAR(${len || 1})`,
+  NUMC: (len) => {
+    const n = len || 10;
+    if (n <= 4) return 'SMALLINT';
+    if (n <= 9) return 'INT';
+    return 'BIGINT';
+  },
+  INT1: () => 'SMALLINT',
+  INT2: () => 'SMALLINT',
+  INT4: () => 'INT',
+  INT8: () => 'BIGINT',
+  DEC: (len, dec) => `DECIMAL(${len || 15}, ${dec || 2})`,
+  QUAN: (len, dec) => `DECIMAL(${len || 15}, ${dec || 3})`,
+  CURR: (len, dec) => `DECIMAL(${len || 15}, ${dec || 2})`,
+  FLTP: () => 'FLOAT',
+  DATS: () => 'DATE',
+  TIMS: () => 'TIME',
+  TIMN: () => 'TIME',
+  TIMESTAMP: () => 'DATETIME2',
+  TZNTSTMPS: () => 'DATETIME2',
+  TZNTSTMPL: () => 'DATETIME2'
+};
+
+const DIALECTS = {
+  snowflake: { map: SNOWFLAKE_MAP, fallback: FALLBACK_SNOWFLAKE },
+  databricks: { map: DATABRICKS_MAP, fallback: FALLBACK_DATABRICKS },
+  fabric: { map: FABRIC_MAP, fallback: FALLBACK_FABRIC }
+};
+
+function normalizeType(t) {
+  if (!t) return '';
+  return String(t).trim().toUpperCase();
+}
+
+function mapType(dialect, type, length, decimals) {
+  const d = DIALECTS[dialect];
+  if (!d) throw new Error(`Unknown DDL dialect: ${dialect}`);
+  const key = normalizeType(type);
+  const fn = d.map[key];
+  if (fn) return fn(length, decimals);
+  return d.fallback(length);
+}
+
+// Pad column name into a fixed-width column for readability in the emitted SQL.
+function padRight(s, width) {
+  s = String(s);
+  if (s.length >= width) return s + ' ';
+  return s + ' '.repeat(width - s.length);
+}
+
+function keyColumns(columns) {
+  return columns.filter((c) => c.key).map((c) => c.name);
+}
+
+// ---------------------------------------------------------------------------
+// Snowflake — uppercase identifiers, SAP_<MODULE>.<TABLE>, CLUSTER BY
+// ---------------------------------------------------------------------------
+function generateSnowflake(tableName, columns, partitionKeys, module) {
+  const TABLE = String(tableName).toUpperCase();
+  const schema = `SAP_${String(module || 'COMMON').toUpperCase()}`;
+  const lines = [];
+  lines.push(`-- Snowflake · ${TABLE} · generated from column schema`);
+  lines.push(`CREATE OR REPLACE TABLE ${schema}.${TABLE} (`);
+
+  const nameWidth = Math.max(8, ...columns.map((c) => c.name.length)) + 2;
+  const body = columns.map((col) => {
+    const type = mapType('snowflake', col.type, col.length, col.decimals);
+    const notNull = col.key ? ' NOT NULL' : '';
+    return `  ${padRight(col.name.toUpperCase(), nameWidth)}${type}${notNull}`;
+  });
+  const keys = keyColumns(columns);
+  if (keys.length) {
+    body.push(
+      `  CONSTRAINT PK_${TABLE} PRIMARY KEY (${keys
+        .map((k) => k.toUpperCase())
+        .join(', ')})`
+    );
+  }
+  lines.push(body.join(',\n'));
+  const cluster = (partitionKeys && partitionKeys.length ? partitionKeys : keys)
+    .map((k) => k.toUpperCase())
+    .join(', ');
+  if (cluster) {
+    lines.push(')');
+    lines.push(`CLUSTER BY (${cluster});`);
+  } else {
+    lines.push(');');
+  }
+  return lines.join('\n');
+}
+
+// ---------------------------------------------------------------------------
+// Databricks — lowercase identifiers, sap_<module>.<table>, USING DELTA
+// ---------------------------------------------------------------------------
+function generateDatabricks(tableName, columns, partitionKeys, module) {
+  const table = String(tableName).toLowerCase();
+  const schema = `sap_${String(module || 'common').toLowerCase()}`;
+  const lines = [];
+  lines.push(`-- Databricks · ${tableName.toUpperCase()} · Delta Lake`);
+  lines.push(`CREATE OR REPLACE TABLE ${schema}.${table} (`);
+
+  const nameWidth = Math.max(8, ...columns.map((c) => c.name.length)) + 2;
+  const body = columns.map((col) => {
+    const type = mapType('databricks', col.type, col.length, col.decimals);
+    const notNull = col.key ? ' NOT NULL' : '';
+    return `  ${padRight(col.name.toLowerCase(), nameWidth)}${type}${notNull}`;
+  });
+  lines.push(body.join(',\n'));
+  lines.push(')');
+  lines.push('USING DELTA');
+  const parts = (partitionKeys && partitionKeys.length
+    ? partitionKeys
+    : keyColumns(columns)
+  ).map((k) => k.toLowerCase());
+  if (parts.length) {
+    lines.push(`PARTITIONED BY (${parts.join(', ')})`);
+  }
+  lines.push(
+    "TBLPROPERTIES ('delta.autoOptimize.optimizeWrite' = 'true');"
+  );
+  return lines.join('\n');
+}
+
+// ---------------------------------------------------------------------------
+// Fabric — dbo schema, clustered columnstore (implicit), no partitioning
+// ---------------------------------------------------------------------------
+function generateFabric(tableName, columns /* , partitionKeys, module */) {
+  const TABLE = String(tableName).toUpperCase();
+  const lines = [];
+  lines.push(`-- Microsoft Fabric Warehouse · ${TABLE}`);
+  lines.push('-- Note: Fabric Warehouse uses clustered columnstore by default.');
+  lines.push(`CREATE TABLE dbo.${TABLE} (`);
+
+  const nameWidth = Math.max(8, ...columns.map((c) => c.name.length)) + 2;
+  const body = columns.map((col) => {
+    const type = mapType('fabric', col.type, col.length, col.decimals);
+    const notNull = col.key ? ' NOT NULL' : '';
+    return `  ${padRight(col.name.toUpperCase(), nameWidth)}${type}${notNull}`;
+  });
+  lines.push(body.join(',\n'));
+  lines.push(');');
+  lines.push(
+    '-- Primary key is informational in Fabric Warehouse; enforce at pipeline layer.'
+  );
+  return lines.join('\n');
+}
+
+/**
+ * Generate paste-ready CREATE TABLE DDL for the given dialect.
+ *
+ * @param {'snowflake'|'databricks'|'fabric'} dialect
+ * @param {string} tableName            e.g. 'ACDOCA'
+ * @param {Array}  columns              each: { name, type, length, decimals?, key? }
+ * @param {Array}  partitionKeys        column names for CLUSTER BY / PARTITIONED BY
+ * @param {object} [opts]
+ * @param {string} [opts.module]        module code, e.g. 'FI' → schema SAP_FI
+ * @returns {string}
+ */
+export function generateDdl(
+  dialect,
+  tableName,
+  columns,
+  partitionKeys,
+  opts = {}
+) {
+  if (!tableName) throw new Error('generateDdl: tableName is required');
+  if (!Array.isArray(columns) || columns.length === 0) {
+    throw new Error(`generateDdl: columns must be a non-empty array (table ${tableName})`);
+  }
+  const module = opts.module;
+  const keys = Array.isArray(partitionKeys) ? partitionKeys : [];
+  switch (dialect) {
+    case 'snowflake':
+      return generateSnowflake(tableName, columns, keys, module);
+    case 'databricks':
+      return generateDatabricks(tableName, columns, keys, module);
+    case 'fabric':
+      return generateFabric(tableName, columns, keys, module);
+    default:
+      throw new Error(`generateDdl: unknown dialect "${dialect}"`);
+  }
+}
+
+export default generateDdl;

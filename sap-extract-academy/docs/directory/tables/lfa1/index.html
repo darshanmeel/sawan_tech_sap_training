@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>LFA1 — SAP Table Directory — SAP Extract Academy</title>
+  <meta name="description" content="Vendor master general data — one row per vendor (LIFNR), name, address pointer, country, tax categories. In S&#x2F;4HANA, usually read through the business-partner model (BUT000 &#x2F; BUT020).
+">
+  <link rel="canonical" href="https://academy.example.com/directory/tables/lfa1/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="LFA1 — SAP Table Directory">
+  <meta property="og:description" content="Vendor master general data — one row per vendor (LIFNR), name, address pointer, country, tax categories. In S&#x2F;4HANA, usually read through the business-partner model (BUT000 &#x2F; BUT020).
+">
+  <meta property="og:url" content="https://academy.example.com&#x2F;directory&#x2F;tables&#x2F;lfa1&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LFA1 — SAP Table Directory">
+  <meta name="twitter:description" content="Vendor master general data — one row per vendor (LIFNR), name, address pointer, country, tax categories. In S&#x2F;4HANA, usually read through the business-partner model (BUT000 &#x2F; BUT020).
+">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"LFA1","description":"Vendor master general data — one row per vendor (LIFNR), name, address pointer, country, tax categories. In S/4HANA, usually read through the business-partner model (BUT000 / BUT020).\n","url":"https://academy.example.com/directory/tables/lfa1/"}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Directory · Table detail page -->
+<!-- DOM structure matches docs/design/directory-final.html; class names and -->
+<!-- data-* attrs are the contract with Worker C (JS) and Worker D (CSS). -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+<div class="directory-page" data-directory-page data-table-slug="lfa1" data-mode="s4">
+
+  <header class="title-block">
+    <div>
+      <p class="eyebrow">MM · Materials · S&#x2F;4HANA</p>
+      <h1>LFA1<em>.</em></h1>
+      <p class="subtitle">Vendor master general data — one row per vendor (LIFNR), name, address pointer, country, tax categories. In S&#x2F;4HANA, usually read through the business-partner model (BUT000 &#x2F; BUT020).
+</p>
+    </div>
+    <dl class="meta">
+      <div><dt>Rows</dt><dd>50K – 5M</dd></div>
+      <div><dt>Class</dt><dd>small</dd></div>
+      <div><dt>CDS view</dt><dd>I_Supplier</dd></div>
+      <div><dt>Module</dt><dd>MM</dd></div>
+    </dl>
+
+    <form class="directory-mode-form" method="get" action="&#x2F;sawan_tech_sap_training/directory/tables/lfa1/" data-directory-mode-form>
+      <label for="directory-mode-lfa1" class="sr-only">Mode</label>
+      <select id="directory-mode-lfa1" name="mode" data-directory-mode-select>
+        <option value="s4" selected>S/4HANA</option>
+        <option value="ecc" >ECC</option>
+      </select>
+      <noscript><button type="submit">Switch mode</button></noscript>
+    </form>
+  </header>
+
+  <div class="body-grid">
+    <aside class="sidenav" data-directory-sidenav>
+      <h4>On this page</h4>
+      <ul>
+        <li><a href="#overview" class="active" data-sidenav-link="overview">Overview</a></li>
+        <li><a href="#columns" data-sidenav-link="columns">Columns · 16</a></li>
+        <li><a href="#ddl" data-sidenav-link="ddl">DDL</a></li>
+        <li><a href="#extract" data-sidenav-link="extract">How to extract</a></li>
+        <li><a href="#notes" data-sidenav-link="notes">Notes · 2</a></li>
+        
+      </ul>
+      <div class="footer">
+        Source metadata from <a href="https://help.sap.com" target="_blank" rel="noopener">SAP Help</a>.
+      </div>
+    </aside>
+
+    <main>
+
+      <!-- 1 · OVERVIEW -->
+      <section id="overview" data-section="overview">
+        <h2>What this <em>is</em></h2>
+        <p class="sub">Vendor master general data — one row per vendor (LIFNR), name, address pointer, country, tax categories. In S&#x2F;4HANA, usually read through the business-partner model (BUT000 &#x2F; BUT020).
+</p>
+        <div class="prose">
+          <p>LFA1 is the vendor master header — one row per vendor, keyed by client and
+vendor number (<code>LIFNR</code>). The shape has stayed stable across releases; what
+has changed is the surrounding model. In ECC, LFA1 is the authoritative
+vendor record. In S/4HANA, vendors live in the business-partner model
+(<code>BUT000</code>, <code>BUT020</code>, <code>ADRC</code>) and LFA1 is maintained as a write-through
+shadow for backward compatibility.</p>
+<p>For pipelines that target S/4 only, read <code>I_Supplier</code> (the released
+BP-backed view) or join LFA1 → <code>CVI_VEND_LINK</code> → <code>BUT000</code> explicitly. For
+mixed ECC+S/4 landscapes, plan to reconcile on LIFNR first and upgrade to
+the BP dimension only when business reporting requires it.</p>
+
+        </div>
+        <div class="scope-lock" data-scope-lock>
+          <span class="chip">Scope lock</span>
+          <p>In S&#x2F;4HANA, LFA1 is a write-through shadow of the business partner model — extract BUT000 &#x2F; BUT020 for the canonical truth and use LFA1 only for backward-compatible joins.
+</p>
+        </div>
+      </section>
+
+      <!-- 2 · COLUMNS -->
+      <section id="columns" data-section="columns">
+        <h2>Columns <em>· 16 fields</em></h2>
+        <p class="sub">Reference for what each field means. Use <kbd>Cmd+F</kbd> / <kbd>Ctrl+F</kbd> to filter. Switch to JSON to paste into your schema tooling.</p>
+        <div class="toolbar">
+          <div class="pill-picker" data-column-picker>
+            <input type="radio" name="col-view" id="cv-human" checked><label for="cv-human">Human</label>
+            <input type="radio" name="col-view" id="cv-json"><label for="cv-json">JSON</label>
+          </div>
+          <div class="actions"><button class="copy-btn" data-copy-target="columns">Copy</button></div>
+        </div>
+
+        <div class="view active" data-for="cv-human" data-column-view="human">
+          <table class="col-table">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Key</th>
+                <th>Description</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="k">MANDT</td>
+                <td>CLNT(3)</td>
+                <td class="key-flag">◆</td>
+                <td class="sans">Client identifier.</td>
+                <td class="sans">T000</td>
+              </tr>
+              <tr>
+                <td class="k">LIFNR</td>
+                <td>CHAR(10)</td>
+                <td class="key-flag">◆</td>
+                <td class="sans">Vendor account number — the canonical join key across MM tables.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">LAND1</td>
+                <td>CHAR(3)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Country key; resolves to ISO country via T005.</td>
+                <td class="sans">T005</td>
+              </tr>
+              <tr>
+                <td class="k">NAME1</td>
+                <td>CHAR(35)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Vendor name; primary line used on invoices and reports.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">NAME2</td>
+                <td>CHAR(35)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Secondary name line — trading name, division, etc.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">ORT01</td>
+                <td>CHAR(35)</td>
+                <td class="key-flag"></td>
+                <td class="sans">City in the primary address.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">PSTLZ</td>
+                <td>CHAR(10)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Postal code.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">REGIO</td>
+                <td>CHAR(3)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Region &#x2F; state &#x2F; province code; join to T005S for name.</td>
+                <td class="sans">T005S</td>
+              </tr>
+              <tr>
+                <td class="k">SORTL</td>
+                <td>CHAR(10)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Search term used for vendor lookup in ERP transactions.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">STRAS</td>
+                <td>CHAR(35)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Street address line 1.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">TELF1</td>
+                <td>CHAR(16)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Primary telephone number.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">STCEG</td>
+                <td>CHAR(20)</td>
+                <td class="key-flag"></td>
+                <td class="sans">EU VAT registration number.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">ERDAT</td>
+                <td>DATS(8)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Creation date of the vendor master record.</td>
+                <td class="sans">—</td>
+              </tr>
+              <tr>
+                <td class="k">KTOKK</td>
+                <td>CHAR(4)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Account group controlling field-status and numbering.</td>
+                <td class="sans">T077K</td>
+              </tr>
+              <tr>
+                <td class="k">SPRAS</td>
+                <td>LANG(1)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Communication language for the vendor.</td>
+                <td class="sans">T002</td>
+              </tr>
+              <tr>
+                <td class="k">LOEVM</td>
+                <td>CHAR(1)</td>
+                <td class="key-flag"></td>
+                <td class="sans">Central deletion flag — non-empty means the record is marked for deletion.</td>
+                <td class="sans">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="view" data-for="cv-json" data-column-view="json">
+        <pre><code class="json">{
+  <span class="s">"table"</span>: <span class="s">"LFA1"</span>,
+  <span class="s">"module"</span>: <span class="s">"MM"</span>,
+  <span class="s">"released_cds"</span>: <span class="s">"I_Supplier"</span>,
+  <span class="s">"source"</span>: <span class="s">"help.sap.com"</span>,
+  <span class="s">"columns"</span>: [
+    {
+      <span class="s">"name"</span>: <span class="s">"MANDT"</span>,
+      <span class="s">"type"</span>: <span class="s">"CLNT"</span>,
+      <span class="s">"length"</span>: <span class="n">3</span>,
+      <span class="s">"key"</span>: <span class="k">true</span>,
+      <span class="s">"source"</span>: <span class="s">"T000"</span>,
+      <span class="s">"description"</span>: <span class="s">"Client identifier."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"LIFNR"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">10</span>,
+      <span class="s">"key"</span>: <span class="k">true</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Vendor account number — the canonical join key across MM tables."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"LAND1"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">3</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="s">"T005"</span>,
+      <span class="s">"description"</span>: <span class="s">"Country key; resolves to ISO country via T005."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"NAME1"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">35</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Vendor name; primary line used on invoices and reports."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"NAME2"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">35</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Secondary name line — trading name, division, etc."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"ORT01"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">35</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"City in the primary address."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"PSTLZ"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">10</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Postal code."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"REGIO"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">3</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="s">"T005S"</span>,
+      <span class="s">"description"</span>: <span class="s">"Region / state / province code; join to T005S for name."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"SORTL"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">10</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Search term used for vendor lookup in ERP transactions."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"STRAS"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">35</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Street address line 1."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"TELF1"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">16</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Primary telephone number."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"STCEG"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">20</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"EU VAT registration number."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"ERDAT"</span>,
+      <span class="s">"type"</span>: <span class="s">"DATS"</span>,
+      <span class="s">"length"</span>: <span class="n">8</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Creation date of the vendor master record."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"KTOKK"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">4</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="s">"T077K"</span>,
+      <span class="s">"description"</span>: <span class="s">"Account group controlling field-status and numbering."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"SPRAS"</span>,
+      <span class="s">"type"</span>: <span class="s">"LANG"</span>,
+      <span class="s">"length"</span>: <span class="n">1</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="s">"T002"</span>,
+      <span class="s">"description"</span>: <span class="s">"Communication language for the vendor."</span>
+    },
+    {
+      <span class="s">"name"</span>: <span class="s">"LOEVM"</span>,
+      <span class="s">"type"</span>: <span class="s">"CHAR"</span>,
+      <span class="s">"length"</span>: <span class="n">1</span>,
+      <span class="s">"key"</span>: <span class="k">false</span>,
+      <span class="s">"source"</span>: <span class="k">null</span>,
+      <span class="s">"description"</span>: <span class="s">"Central deletion flag — non-empty means the record is marked for deletion."</span>
+    }
+  ]
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- 3 · DDL -->
+      <section id="ddl" data-section="ddl">
+        <h2>DDL <em>· paste-ready</em></h2>
+        <p class="sub">Generated from the column schema, adjusted for each warehouse's type system and partitioning model. Dialect quirks noted inline.</p>
+        <div class="toolbar">
+          <div class="pill-picker" data-ddl-picker>
+            <input type="radio" name="ddl-view" id="dv-snow" checked><label for="dv-snow">Snowflake</label>
+            <input type="radio" name="ddl-view" id="dv-dbx"><label for="dv-dbx">Databricks</label>
+            <input type="radio" name="ddl-view" id="dv-fab"><label for="dv-fab">Fabric</label>
+          </div>
+          <div class="actions"><button class="copy-btn" data-copy-target="ddl">Copy DDL</button></div>
+        </div>
+
+        <div class="view active" data-for="dv-snow" data-ddl-dialect="snowflake">
+        <pre><code class="sql">-- Snowflake · LFA1 · generated from column schema
+CREATE OR REPLACE TABLE SAP_MM.LFA1 (
+  MANDT     VARCHAR(3) NOT NULL,
+  LIFNR     VARCHAR(10) NOT NULL,
+  LAND1     VARCHAR(3),
+  NAME1     VARCHAR(35),
+  NAME2     VARCHAR(35),
+  ORT01     VARCHAR(35),
+  PSTLZ     VARCHAR(10),
+  REGIO     VARCHAR(3),
+  SORTL     VARCHAR(10),
+  STRAS     VARCHAR(35),
+  TELF1     VARCHAR(16),
+  STCEG     VARCHAR(20),
+  ERDAT     DATE,
+  KTOKK     VARCHAR(4),
+  SPRAS     VARCHAR(1),
+  LOEVM     VARCHAR(1),
+  CONSTRAINT PK_LFA1 PRIMARY KEY (MANDT, LIFNR)
+)
+CLUSTER BY (MANDT, LIFNR);</code></pre>
+          <div class="ingestion-prose" data-ingestion-dialect="snowflake">
+            <p><strong>Snowflake ingestion.</strong> Master-data volumes mean a simple daily snapshot
+via <code>COPY INTO</code> is usually sufficient; Snowpipe is only necessary if your
+vendor master genuinely churns hourly.</p>
+
+            <p><a href="https:&#x2F;&#x2F;docs.snowflake.com&#x2F;en&#x2F;user-guide&#x2F;data-load-overview" target="_blank" rel="noopener">Snowflake SAP ingestion docs →</a></p>
+          </div>
+        </div>
+        <div class="view" data-for="dv-dbx" data-ddl-dialect="databricks">
+        <pre><code class="sql">-- Databricks · LFA1 · Delta Lake
+CREATE OR REPLACE TABLE sap_mm.lfa1 (
+  mandt     STRING NOT NULL,
+  lifnr     STRING NOT NULL,
+  land1     STRING,
+  name1     STRING,
+  name2     STRING,
+  ort01     STRING,
+  pstlz     STRING,
+  regio     STRING,
+  sortl     STRING,
+  stras     STRING,
+  telf1     STRING,
+  stceg     STRING,
+  erdat     DATE,
+  ktokk     STRING,
+  spras     STRING,
+  loevm     STRING
+)
+USING DELTA
+PARTITIONED BY (mandt, lifnr)
+TBLPROPERTIES (&#39;delta.autoOptimize.optimizeWrite&#39; &#x3D; &#39;true&#39;);</code></pre>
+          <div class="ingestion-prose" data-ingestion-dialect="databricks">
+            <p><strong>Databricks ingestion.</strong> A daily Auto Loader job writing to a Delta
+dimension table is the standard pattern. SCD-2 management typically
+happens downstream rather than at ingestion time.</p>
+
+            <p><a href="https:&#x2F;&#x2F;docs.databricks.com&#x2F;aws&#x2F;en&#x2F;ingestion&#x2F;" target="_blank" rel="noopener">Databricks SAP ingestion docs →</a></p>
+          </div>
+        </div>
+        <div class="view" data-for="dv-fab" data-ddl-dialect="fabric">
+        <pre><code class="sql">-- Microsoft Fabric Warehouse · LFA1
+-- Note: Fabric Warehouse uses clustered columnstore by default.
+CREATE TABLE dbo.LFA1 (
+  MANDT     VARCHAR(3) NOT NULL,
+  LIFNR     VARCHAR(10) NOT NULL,
+  LAND1     VARCHAR(3),
+  NAME1     VARCHAR(35),
+  NAME2     VARCHAR(35),
+  ORT01     VARCHAR(35),
+  PSTLZ     VARCHAR(10),
+  REGIO     VARCHAR(3),
+  SORTL     VARCHAR(10),
+  STRAS     VARCHAR(35),
+  TELF1     VARCHAR(16),
+  STCEG     VARCHAR(20),
+  ERDAT     DATE,
+  KTOKK     VARCHAR(4),
+  SPRAS     VARCHAR(1),
+  LOEVM     VARCHAR(1)
+);
+-- Primary key is informational in Fabric Warehouse; enforce at pipeline layer.</code></pre>
+          <div class="ingestion-prose" data-ingestion-dialect="fabric">
+            <p><strong>Fabric ingestion.</strong> Mirroring via Datasphere keeps the vendor dimension
+in sync with minimal ops; Dataflow Gen2 is an alternative when cleansing
+or deduplication belongs in ingestion.</p>
+
+            <p><a href="https:&#x2F;&#x2F;learn.microsoft.com&#x2F;en-us&#x2F;fabric&#x2F;mirroring&#x2F;overview" target="_blank" rel="noopener">Fabric SAP ingestion docs →</a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 · EXTRACT (the interactive one) -->
+      <section id="extract" data-section="extract">
+        <h2>How to <em>extract</em></h2>
+        <p class="sub">4 methods exist for LFA1. Tell us your constraints and we'll highlight the fit. Methods you can't use are dimmed but still readable — you should understand what you're ruling out.</p>
+
+        <div class="extract-filters" data-extract-filters>
+          <div class="group">
+            <p class="group-label">License</p>
+            <div class="pill-picker">
+              <input type="radio" name="f-license" id="fl-any" checked><label for="fl-any">Any</label>
+              <input type="radio" name="f-license" id="fl-full"><label for="fl-full">Full use</label>
+              <input type="radio" name="f-license" id="fl-runtime"><label for="fl-runtime">Runtime</label>
+            </div>
+          </div>
+          <div class="group">
+            <p class="group-label">Latency need</p>
+            <div class="pill-picker">
+              <input type="radio" name="f-latency" id="flat-any" checked><label for="flat-any">Any</label>
+              <input type="radio" name="f-latency" id="flat-realtime"><label for="flat-realtime">Real-time</label>
+              <input type="radio" name="f-latency" id="flat-batch"><label for="flat-batch">Batch OK</label>
+            </div>
+          </div>
+          <div class="group">
+            <p class="group-label">Volume</p>
+            <div class="pill-picker">
+              <input type="radio" name="f-volume" id="fv-any" checked><label for="fv-any">Any</label>
+              <input type="radio" name="f-volume" id="fv-small"><label for="fv-small">&lt; 500M</label>
+              <input type="radio" name="f-volume" id="fv-big"><label for="fv-big">&gt; 500M</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-summary" id="filter-summary" data-filter-summary>
+          <strong>For your setup:</strong>
+          <span class="recommend-name" id="recommend-name" data-recommend-name>ODP via CDS view · I_Supplier</span>
+          — <span id="recommend-why" data-recommend-why></span>
+        </div>
+
+        <div class="methods" data-methods>
+          <div class="method"
+               data-method="odp-cds"
+               data-license="runtime"
+               data-latency="batch"
+               data-volume="any">
+            <div class="recommend-badge">Recommended</div>
+            <div class="blocked-badge">Blocked</div>
+            <h3>
+              <span class="num">01</span>ODP via CDS view <em>· I_Supplier</em>
+            </h3>
+            <p class="tagline">Business-partner-aware vendor view in S&#x2F;4HANA.</p>
+            <div class="attrs">
+              <span class="attr">License: <strong>Runtime OK</strong></span>
+              <span class="attr">Latency: <strong>Batch</strong></span>
+              <span class="attr">Volume: <strong>Any</strong></span>
+            </div>
+            
+            <div class="body">
+              <p><code>I_Supplier</code> exposes the BP-backed view of LFA1 in S/4HANA. It applies
+authorization and joins through BUT000 automatically, which matters
+because many attributes have migrated to the BP tables even though LFA1
+still shadows them.</p>
+
+              <p>
+                <a href="&#x2F;sawan_tech_sap_training/walkthrough/lfa1/?method=odp">Full walkthrough →</a>
+                
+                
+              </p>
+            </div>
+          </div>
+          <div class="method"
+               data-method="cds-direct"
+               data-license="runtime"
+               data-latency="batch"
+               data-volume="small">
+            <div class="recommend-badge">Recommended</div>
+            <div class="blocked-badge">Blocked</div>
+            <h3>
+              <span class="num">02</span>CDS view via OData <em>· I_Supplier</em>
+            </h3>
+            <p class="tagline">REST access for per-vendor lookups.</p>
+            <div class="attrs">
+              <span class="attr">License: <strong>Runtime OK</strong></span>
+              <span class="attr">Latency: <strong>Batch</strong></span>
+              <span class="attr">Volume: <strong>Under 500M rows</strong></span>
+            </div>
+            
+            <div class="body">
+              <p>OData is appropriate for the whole table at most vendor-master volumes
+(tens of thousands of rows fit comfortably in OData paging). Fine for a
+daily full-refresh pattern.</p>
+
+              <p>
+                <a href="&#x2F;sawan_tech_sap_training/walkthrough/lfa1/?method=odp">Full walkthrough →</a>
+                
+                
+              </p>
+            </div>
+          </div>
+          <div class="method"
+               data-method="rfc"
+               data-license="runtime"
+               data-latency="batch"
+               data-volume="small">
+            <div class="recommend-badge">Recommended</div>
+            <div class="blocked-badge">Blocked</div>
+            <h3>
+              <span class="num">03</span>Direct RFC read <em>· RFC_READ_TABLE</em>
+            </h3>
+            <p class="tagline">Emergency lookups when OData isn&#39;t configured.</p>
+            <div class="attrs">
+              <span class="attr">License: <strong>Runtime OK</strong></span>
+              <span class="attr">Latency: <strong>Batch</strong></span>
+              <span class="attr">Volume: <strong>Under 500M rows</strong></span>
+            </div>
+            
+            <div class="body">
+              <p>Master data volumes are small enough that <code>RFC_READ_TABLE</code> is acceptable
+for ad-hoc pulls. Still prefer ODP or OData for pipelines — RFC bypasses
+authorization and breaks the BP-shadow pattern.</p>
+
+              <p>
+                <a href="&#x2F;sawan_tech_sap_training/walkthrough/lfa1/?method=rfc">Full walkthrough →</a>
+                
+                
+              </p>
+            </div>
+          </div>
+          <div class="method"
+               data-method="bw-extractor"
+               data-license="runtime"
+               data-latency="batch"
+               data-volume="any">
+            <div class="recommend-badge">Recommended</div>
+            <div class="blocked-badge">Blocked</div>
+            <h3>
+              <span class="num">04</span>BW Extractor (classic) <em>· 0VENDOR_ATTR</em>
+            </h3>
+            <p class="tagline">Classic attribute extractor with native delta handling.</p>
+            <div class="attrs">
+              <span class="attr">License: <strong>Runtime OK</strong></span>
+              <span class="attr">Latency: <strong>Batch</strong></span>
+              <span class="attr">Volume: <strong>Any</strong></span>
+            </div>
+            
+            <div class="body">
+              <p><code>0VENDOR_ATTR</code> is the reference BW extractor for LFA1. Its delta mechanism
+is reliable at master-data volumes and it handles the address-integration
+(<code>ADRC</code>) join for you.</p>
+
+              <p>
+                <a href="&#x2F;sawan_tech_sap_training/walkthrough/lfa1/?method=odp">Full walkthrough →</a>
+                
+                
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 · NOTES -->
+      <section id="notes" data-section="notes">
+        <h2>Notes <em>· recent changes</em></h2>
+        <div class="toolbar" style="margin-bottom:14px">
+          <span class="source-chip"><span></span>Curated from SAP Help release notes · 2025 onwards</span>
+        </div>
+        <div class="note" data-note>
+          <time>2026-02</time>
+          <div class="body">
+            <p><strong>LFA1 continues as business-partner shadow in S&#x2F;4HANA 2025</strong> The business partner conversion remains the canonical model — LFA1 is
+kept as a compatibility shadow. Pipelines that still read LFA1 directly
+continue to work but miss BP-only fields.
+</p>
+            <p><a href="https:&#x2F;&#x2F;help.sap.com&#x2F;docs&#x2F;SAP_S4HANA_ON-PREMISE&#x2F;6d31005aa10649649041a0b205f5f4f7&#x2F;2cf9c5536a51204be10000000a174cb4.html" target="_blank" rel="noopener">SAP Note  →</a></p>
+          </div>
+        </div>
+        <div class="note" data-note>
+          <time>2025-08</time>
+          <div class="body">
+            <p><strong>Customer-Vendor Integration (CVI) link tables clarified</strong> <code>CVI_VEND_LINK</code> ties an LFA1 vendor to its BP counterpart. If your extract
+joins customer + vendor into a unified party dimension, take the BP
+number from <code>CVI_VEND_LINK</code> rather than assuming KUNNR = LIFNR.
+[NEEDS_SAP_CITATION]
+</p>
+            
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 · RELATED ARTICLES -->
+
+    </main>
+  </div>
+</div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

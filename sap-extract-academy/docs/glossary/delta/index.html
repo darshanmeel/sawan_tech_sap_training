@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Delta: Change Data Capture in SAP — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="Delta captures only changed rows since last extraction. Real-time delta streams immediately; queue-based delta batches changes. Enables efficient incremental loading.">
+  <link rel="canonical" href="https://academy.example.com/glossary/delta/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Delta: Change Data Capture in SAP — Plain Explanation">
+  <meta property="og:description" content="Delta captures only changed rows since last extraction. Real-time delta streams immediately; queue-based delta batches changes. Enables efficient incremental loading.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;delta&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Delta: Change Data Capture in SAP — Plain Explanation">
+  <meta name="twitter:description" content="Delta captures only changed rows since last extraction. Real-time delta streams immediately; queue-based delta batches changes. Enables efficient incremental loading.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Delta (Change Data Capture)","alternateName":"Delta","description":"Delta represents only the rows that have changed since the last extraction. Real-time delta captures inserts/updates/deletes immediately; queue-based delta periodically batches changes. Enables streaming architectures without full table replication.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+      <li aria-current="page">Delta</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · Delta (Change Data Capture)</p>
+        <h1>Delta<em>.</em></h1>
+      </div>
+      <p>Delta represents only the rows that have changed since the last extraction. Real-time delta captures inserts&#x2F;updates&#x2F;deletes immediately; queue-based delta periodically batches changes. Enables streaming architectures without full table replication.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/ODP/">ODP</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/SLT/">SLT</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Operational Data Provisioning/">Operational Data Provisioning</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/ODQMON/">ODQMON</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Full Load/">Full Load</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>Delta represents only the rows that have changed since the last extraction. Real-time delta captures inserts&#x2F;updates&#x2F;deletes immediately; queue-based delta periodically batches changes. Enables streaming architectures without full table replication.</p>
+      </div>
+
+      <div class="glossary-prose">
+        <h3>What is Delta?</h3>
+<p><strong>Delta</strong> — also called <strong>Change Data Capture (CDC)</strong> — is the practice of extracting only the rows that have been inserted, updated, or deleted since the previous extraction run, rather than re-reading the entire table from scratch. If you performed a full extraction of <code>ACDOCA</code> yesterday and 100,000 new journal entries were posted today, a delta extraction retrieves only those 100,000 rows. The rest of the table — potentially billions of rows accumulated over years — is left untouched.</p>
+<p>The concept sounds straightforward, but the implementation is where SAP systems introduce complexity. SAP does not expose a universal change log at the database level the way some relational databases do with a WAL (write-ahead log). Instead, SAP exposes delta through framework-level constructs: the <strong>Operational Data Provisioning (ODP)</strong> framework, <strong>SLT</strong> trigger-based replication, and legacy BW DataSources. Each mechanism tracks changes differently, and the correct choice depends on the table, the SAP version, and the latency requirement.</p>
+<h3>How it works</h3>
+<p>SAP offers two primary delta mechanisms. <strong>Real-time delta</strong> via ODP and SLT operates at the trigger level: when a posting occurs in <code>ACDOCA</code>, a database trigger (in SLT&#39;s case) or an ABAP update module (in ODP&#39;s case) writes the changed record to a staging queue immediately. An extraction consumer — a Kafka connector, a Fivetran sync, or a custom ODP subscriber — reads from that queue and forwards the data to the target system within seconds or minutes of the originating business event.</p>
+<p><strong>Queue-based delta</strong> using the ODP queue (<code>ODQMON</code>) takes a different approach. Changes accumulate in the ODP delta queue on the SAP side, and the consumer polls on a schedule — every 15 minutes, every hour — and drains the queue in batches. This is simpler to operate: the queue handles the buffering, retries are easy to reason about, and <code>ODQMON</code> provides a clear view of what has been queued versus delivered. The cost is latency: you will always be one polling interval behind real time. For overnight batch pipelines, that is entirely acceptable. For a near-real-time operational dashboard, it is not.</p>
+<h3>Why it matters for data extraction</h3>
+<p>Delta is not a nice-to-have for production SAP extraction — it is a requirement. <code>ACDOCA</code> in a mature SAP S/4HANA system can exceed one billion rows and grow by millions of rows per business day. A full load of that table takes hours and consumes enormous database I/O, competing directly with transactional users. Attempting nightly full loads at scale is operationally unsustainable and often technically infeasible within a maintenance window.</p>
+<p>Delta makes high-frequency extraction viable. With a properly configured ODP or SLT delta stream, a pipeline can process changes to <code>ACDOCA</code>, <code>BKPF</code>, <code>VBAK</code>, and <code>EKKO</code> continuously, keeping the data warehouse synchronized to within minutes of the SAP system without ever performing another full table scan. The downstream effect is significant: finance teams get near-real-time P&amp;L visibility, procurement teams see purchase order changes as they happen, and supply chain planners work from current inventory rather than last night&#39;s snapshot.</p>
+<h3>Common pitfalls</h3>
+<p><strong>State management</strong> is the most common source of delta failures. Delta extraction is stateful: the consumer must persist a pointer — a timestamp, a sequence number, or an ODP subscription handle — that marks where the last successful extraction ended. If that state is lost (a deployment wipes a configuration database, a container restarts without persistent storage), the consumer does not know where to resume. The result is either a data gap (missed changes) or a full re-extraction to be safe. Always store delta state in durable, backed-up storage outside the extraction process itself.</p>
+<p><strong>Deletes</strong> are frequently mishandled. When a record is physically deleted from an SAP table (rare in transactional systems but possible in master data), a delta stream must signal that deletion to the consumer. ODP encodes deletes as records with a special <strong>after-image</strong> flag; SLT marks deletions with a delete indicator. If the consumer ignores these markers and only upserts records, deleted rows persist in the data warehouse indefinitely, causing reconciliation failures. Verify your pipeline explicitly handles delete events — either by physically removing the row from the warehouse or by setting a soft-delete flag.</p>
+<p><strong>Periodic reconciliation</strong> is essential even with a working delta. Over weeks of operation, bugs, retries, and edge cases accumulate. A full-load reconciliation run — comparing row counts and key checksums between SAP and the warehouse — catches drift before it compounds. Plan for a monthly or quarterly reconciliation window even if delta appears healthy.</p>
+<h3>In practice</h3>
+<p>A global manufacturer runs SLT in real-time delta mode against <code>ACDOCA</code>, streaming journal entries to Kafka. The Kafka consumer writes to Snowflake, where finance analysts query a near-real-time P&amp;L. Delta volume averages 200,000 rows per hour during business hours. The full table is 4 billion rows — a full reload would take 40+ hours. With delta, the warehouse is never more than 2 minutes behind SAP, the daily ingestion window is under 30 minutes of total data moved, and the full-load reconciliation runs quarterly on a weekend. This is the production pattern delta enables.</p>
+
+      </div>
+
+      <p class="glossary-doc-link">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

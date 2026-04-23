@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>DATS: SAP 8-Digit Date Format — Plain Explanation — SAP Extract Academy</title>
+  <meta name="description" content="DATS is SAP&#39;s date type, stored as YYYYMMDD (8 digits, e.g., 20260422). Extractors must preserve format or dates become unreadable.">
+  <link rel="canonical" href="https://academy.example.com/glossary/dats/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DATS: SAP 8-Digit Date Format — Plain Explanation">
+  <meta property="og:description" content="DATS is SAP&#39;s date type, stored as YYYYMMDD (8 digits, e.g., 20260422). Extractors must preserve format or dates become unreadable.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;glossary&#x2F;dats&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DATS: SAP 8-Digit Date Format — Plain Explanation">
+  <meta name="twitter:description" content="DATS is SAP&#39;s date type, stored as YYYYMMDD (8 digits, e.g., 20260422). Extractors must preserve format or dates become unreadable.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTerm","name":"Date (8-digit format)","alternateName":"DATS","description":"DATS is SAP's date data type stored as YYYYMMDD (8 digits). Example: 20260422 for April 22, 2026. SAP handles DATS-to-local-date conversion automatically, but extractors must preserve the format.","inDefinedTermSet":{"@type":"DefinedTermSet","name":"SAP Extract Academy Glossary","url":"https://academy.example.com/glossary/"}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+      <li aria-current="page">DATS</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · Date (8-digit format)</p>
+        <h1>DATS<em>.</em></h1>
+      </div>
+      <p>DATS is SAP&#39;s date data type stored as YYYYMMDD (8 digits). Example: 20260422 for April 22, 2026. SAP handles DATS-to-local-date conversion automatically, but extractors must preserve the format.</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    <div class="card side">
+      <h3>Also see</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/TIMS/">TIMS</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Data Dictionary/">Data Dictionary</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/SE11/">SE11</a></li>
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="&#x2F;sawan_tech_sap_training/glossary/Date Conversion/">Date Conversion</a></li>
+      </ul>
+    </div>
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>DATS is SAP&#39;s date data type stored as YYYYMMDD (8 digits). Example: 20260422 for April 22, 2026. SAP handles DATS-to-local-date conversion automatically, but extractors must preserve the format.</p>
+      </div>
+
+      <div class="glossary-prose">
+        <h3>What is DATS?</h3>
+<p><strong>DATS</strong> is SAP&#39;s native date data type, representing any calendar date as an 8-digit string in <code>YYYYMMDD</code> format. April 22, 2026 is stored internally as <code>20260422</code>; January 1, 1990 is <code>19900101</code>. The format is defined in the <strong>ABAP Data Dictionary</strong> (<code>SE11</code>) and applies uniformly to every date field across the SAP system — from posting dates in financial documents, to validity periods in contracts, to planned delivery dates in procurement. There is no timezone component in <code>DATS</code>; it is a pure calendar date.</p>
+<p>SAP&#39;s application layer performs locale-aware formatting on the way out. When a user opens <code>SE16N</code> and sees <code>2026-04-22</code> or <code>22.04.2026</code>, that is the SAP GUI applying a user-specific date format mask on top of the raw <code>DATS</code> value. The underlying database column always holds exactly 8 characters. This distinction is easy to miss but critical for extractors: what the user sees in the GUI and what the database actually stores are different representations of the same value.</p>
+<h3>How it works</h3>
+<p>In ABAP programs, a <code>DATS</code> field behaves like a character string of fixed length 8, but the ABAP runtime understands its semantics and allows date arithmetic. <code>BUDAT - 30</code> gives you a date 30 days earlier without any manual parsing. When RFC-enabled function modules return <code>DATS</code> fields over a remote connection, the raw 8-digit string is transmitted, and the calling system must interpret it. This is where extraction tools diverge in quality.</p>
+<p>Well-built extraction tools — ODP connectors, certified Fivetran connectors, and RFC-aware libraries like <code>pyrfc</code> — read the ABAP metadata for each field and recognize when a field&#39;s type is <code>DATS</code>. They then automatically convert <code>20260422</code> to ISO 8601 (<code>2026-04-22</code>) or to a native date type in the target system. Poorly written extractors treat every character field as a plain string. When that happens, <code>20260422</code> lands in your data warehouse as a <code>VARCHAR</code>, date range queries silently return wrong results, and <code>DATE_DIFF</code> functions throw type errors.</p>
+<h3>Why it matters for data extraction</h3>
+<p>High-volume SAP tables are dense with <code>DATS</code> fields. <code>BKPF</code> (accounting document header) carries <code>BUDAT</code> (posting date), <code>BLDAT</code> (document date), and <code>CPUDT</code> (entry date), all typed <code>DATS</code>. <code>ACDOCA</code> (the universal journal) carries <code>POPER</code> for fiscal period and <code>BUDAT</code> inherited from the posting. <code>EKKO</code> and <code>VBAK</code> each carry multiple date fields governing delivery windows, pricing validity, and document creation. If any of these are loaded as raw strings, downstream BI and analytics will silently compute incorrect time-series metrics.</p>
+<p>The safest convention for cloud data warehouses is to convert <code>DATS</code> to ISO 8601 (<code>YYYY-MM-DD</code>) at extraction time. Snowflake, BigQuery, and Redshift all have native <code>DATE</code> types that accept ISO 8601 strings on load. If you load <code>20260422</code> as a <code>VARCHAR</code> instead, you can still parse it later using <code>TO_DATE(&#39;20260422&#39;, &#39;YYYYMMDD&#39;)</code>, but every downstream model must remember to call that function — a maintenance burden that compounds across hundreds of fields. Get the type right at the source.</p>
+<h3>Common pitfalls</h3>
+<p>The most common <code>DATS</code> mistake is treating the 8-digit value as an integer. Some hand-rolled SQL extractors cast <code>DATS</code> columns to <code>INTEGER</code>, producing values like <code>20260422</code>. Integer arithmetic then produces nonsense: <code>20260422 - 20260101</code> equals <code>321</code>, not 111 days. Date functions reject it entirely. If you discover this problem in a live data warehouse, the remediation requires a full re-extraction and backfill of every affected column.</p>
+<p>A subtler pitfall involves <strong>null dates</strong>. SAP represents an unset <code>DATS</code> field as <code>00000000</code> (eight zeros), not as a SQL <code>NULL</code>. If your extraction pipeline does a naive type cast to a native date type, <code>00000000</code> will either throw a conversion error or produce a nonsensical date like year zero. The correct handling is to map <code>00000000</code> explicitly to <code>NULL</code> before loading. Check your extraction tool&#39;s documentation for how it handles this; ODP-based connectors typically handle it automatically, but custom scripts must implement the guard explicitly.</p>
+<h3>In practice</h3>
+<p>Imagine extracting <code>BKPF</code> to build a month-end close report in Snowflake. Your pipeline lands the table overnight and you run <code>SELECT COUNT(*) FROM bkpf WHERE BUDAT BETWEEN &#39;2026-04-01&#39; AND &#39;2026-04-30&#39;</code>. If <code>BUDAT</code> was loaded as a string in <code>YYYYMMDD</code> format, the lexicographic comparison actually works here — but only because ISO-like strings sort correctly. The moment a business user writes <code>DATEADD(day, -1, BUDAT)</code> in a Snowflake worksheet, the query fails with a type error. Enforcing the <code>DATE</code> type at ingestion time — and mapping <code>00000000</code> to <code>NULL</code> — eliminates this entire class of downstream failure.</p>
+
+      </div>
+
+      <p class="glossary-doc-link">
+        <a href="https:&#x2F;&#x2F;help.sap.com&#x2F;" target="_blank" rel="noopener noreferrer">
+          SAP documentation <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
+        <p class="copyright">© SAP Extract Academy 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

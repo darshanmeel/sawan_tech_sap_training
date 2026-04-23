@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{{seoTitle}} — SAP Extract Academy</title>
+  <meta name="description" content="{{seoDescription}}">
+  <link rel="canonical" href="https://academy.example.com{{{canonicalPath}}}">
+
+  <meta property="og:type" content="{{ogType}}">
+  <meta property="og:title" content="{{seoTitle}}">
+  <meta property="og:description" content="{{seoDescription}}">
+  <meta property="og:url" content="https://academy.example.com{{canonicalPath}}">
+  <meta property="og:image" content="https://academy.example.com/assets/og/{{ogImage}}">
+  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{seoTitle}}">
+  <meta name="twitter:description" content="{{seoDescription}}">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/{{ogImage}}">
+
+  <script type="application/ld+json">{{{jsonLd}}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="{{basePath}}/assets/css/tokens.css">
+  <link rel="stylesheet" href="{{basePath}}/assets/css/main.css">
+  <link rel="stylesheet" href="{{basePath}}/assets/css/directory.css">
+  <link rel="icon" href="{{basePath}}/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="{{basePath}}/assets/js/source-picker.js" defer></script>
+  <script src="{{basePath}}/assets/js/picker.js" defer></script>
+  <script src="{{basePath}}/assets/js/checklist.js" defer></script>
+  <script type="module" src="{{basePath}}/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="{{basePath}}/" class="site-logo">Extract<span>.</span>Academy</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="{{basePath}}/directory/tables/">{{strings.nav.directory}}</a></li>
+            <li><a href="{{basePath}}/walkthrough/">{{strings.nav.walkthroughs}}</a></li>
+            <li><a href="{{basePath}}/glossary/">{{strings.nav.glossary}}</a></li>
+            <li><a href="{{basePath}}/articles/">{{strings.nav.articles}}</a></li>
+            <li><a href="{{basePath}}/about/">{{strings.nav.about}}</a></li>
+          </ul>
+          <div data-source-picker>
+            <label for="source-version-select" class="sr-only">SAP Version</label>
+            <select id="source-version-select" aria-label="Choose SAP version">
+              <option value="s4hana">S/4HANA</option>
+              <option value="ecc">ECC</option>
+            </select>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    {{{content}}}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="{{basePath}}/about/">About</a></li>
+            <li><a href="{{basePath}}/roadmap/">Roadmap</a></li>
+            <li><a href="{{basePath}}/glossary/">Glossary</a></li>
+            <li><a href="{{basePath}}/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      {{#buttondownUsername}}
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/{{buttondownUsername}}"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/{{buttondownUsername}}', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">{{strings.form.emailLabel}}</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="{{strings.cta.emailPlaceholder}}"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">{{strings.cta.subscribeEmail}}</button>
+          </div>
+          <p class="email-consent">{{strings.form.consentText}}</p>
+        </div>
+      </form>
+      {{/buttondownUsername}}
+
+      <div class="footer-info">
+        <p class="disclaimer">{{strings.footer.disclaimer}}</p>
+        <p class="copyright">{{strings.footer.copyright}} {{currentYear}}</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

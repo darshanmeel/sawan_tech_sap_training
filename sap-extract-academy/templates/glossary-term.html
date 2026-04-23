@@ -1,0 +1,59 @@
+<!-- Glossary term detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="{{basePath}}/">Home</a></li>
+      <li><a href="{{basePath}}/glossary/">Glossary</a></li>
+      <li aria-current="page">{{term}}</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: term + italic punctuation -->
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Glossary · {{fullName}}</p>
+        <h1>{{term}}<em>.</em></h1>
+      </div>
+      <p>{{shortDefinition}}</p>
+    </div>
+
+    <!-- Side card / meta: see also -->
+    {{#hasRelatedTerms}}
+    <div class="card side">
+      <h3>{{strings.glossary.relatedTermsLabel}}</h3>
+      <ul style="list-style:disc;padding-left:var(--space-5);margin-top:var(--space-3);">
+        {{#relatedTerms}}
+        <li style="margin-bottom:var(--space-2);font-size:15px;"><a href="{{basePath}}/glossary/{{.}}/">{{.}}</a></li>
+        {{/relatedTerms}}
+      </ul>
+    </div>
+    {{/hasRelatedTerms}}
+
+    <!-- Section card: definition body -->
+    <div class="card section">
+      <h2>Defini<em>tion</em></h2>
+
+      <div class="definition-lead">
+        <p>{{shortDefinition}}</p>
+      </div>
+
+      <div class="glossary-prose">
+        {{{body}}}
+      </div>
+
+      {{#sapDocUrl}}
+      <p class="glossary-doc-link">
+        <a href="{{sapDocUrl}}" target="_blank" rel="noopener noreferrer">
+          {{strings.glossary.sapDocLabel}} <span aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </p>
+      {{/sapDocUrl}}
+    </div>
+
+  </div>
+</div>

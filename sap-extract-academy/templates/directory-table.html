@@ -1,0 +1,168 @@
+<!-- Directory · Table detail page -->
+<!-- DOM structure matches docs/design/directory-final.html; class names and -->
+<!-- data-* attrs are the contract with Worker C (JS) and Worker D (CSS). -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+<div class="directory-page" data-directory-page data-table-slug="{{slug}}" data-mode="{{currentMode}}">
+
+  <header class="title-block">
+    <div>
+      <p class="eyebrow">{{module}}{{#moduleRole}} · {{moduleRole}}{{/moduleRole}}{{#modeLabel}} · {{modeLabel}}{{/modeLabel}}</p>
+      <h1>{{name}}<em>.</em></h1>
+      {{#descriptionOneLiner}}<p class="subtitle">{{descriptionOneLiner}}</p>{{/descriptionOneLiner}}
+    </div>
+    <dl class="meta">
+      {{#typicalRows}}<div><dt>Rows</dt><dd>{{typicalRows}}</dd></div>{{/typicalRows}}
+      {{#volumeClass}}<div><dt>Class</dt><dd>{{volumeClass}}</dd></div>{{/volumeClass}}
+      {{#releasedCds}}<div><dt>CDS view</dt><dd>{{releasedCds}}</dd></div>{{/releasedCds}}
+      {{#module}}<div><dt>Module</dt><dd>{{module}}</dd></div>{{/module}}
+    </dl>
+
+    {{! Directory-only mode selector. Works without JS via a plain form submit. }}
+    <form class="directory-mode-form" method="get" action="{{basePath}}/directory/tables/{{slug}}/" data-directory-mode-form>
+      <label for="directory-mode-{{slug}}" class="sr-only">Mode</label>
+      <select id="directory-mode-{{slug}}" name="mode" data-directory-mode-select>
+        <option value="s4" {{#isS4}}selected{{/isS4}}>S/4HANA</option>
+        <option value="ecc" {{#isEcc}}selected{{/isEcc}}>ECC</option>
+      </select>
+      <noscript><button type="submit">Switch mode</button></noscript>
+    </form>
+  </header>
+
+  <div class="body-grid">
+    {{> directory-sidenav}}
+
+    <main>
+
+      <!-- 1 · OVERVIEW -->
+      <section id="overview" data-section="overview">
+        <h2>What this <em>is</em></h2>
+        {{#descriptionOneLiner}}<p class="sub">{{descriptionOneLiner}}</p>{{/descriptionOneLiner}}
+        <div class="prose">
+          {{{body}}}
+        </div>
+        {{#scopeLock}}
+        <div class="scope-lock" data-scope-lock>
+          <span class="chip">Scope lock</span>
+          <p>{{scopeLock}}</p>
+        </div>
+        {{/scopeLock}}
+      </section>
+
+      <!-- 2 · COLUMNS -->
+      <section id="columns" data-section="columns">
+        <h2>Columns <em>· {{columnsCount}} fields</em></h2>
+        <p class="sub">Reference for what each field means. Use <kbd>Cmd+F</kbd> / <kbd>Ctrl+F</kbd> to filter. Switch to JSON to paste into your schema tooling.</p>
+        <div class="toolbar">
+          <div class="pill-picker" data-column-picker>
+            <input type="radio" name="col-view" id="cv-human" checked><label for="cv-human">Human</label>
+            <input type="radio" name="col-view" id="cv-json"><label for="cv-json">JSON</label>
+          </div>
+          <div class="actions"><button class="copy-btn" data-copy-target="columns">Copy</button></div>
+        </div>
+
+        {{> directory-column-table}}
+        {{> directory-column-json}}
+      </section>
+
+      <!-- 3 · DDL -->
+      <section id="ddl" data-section="ddl">
+        <h2>DDL <em>· paste-ready</em></h2>
+        <p class="sub">Generated from the column schema, adjusted for each warehouse's type system and partitioning model. Dialect quirks noted inline.</p>
+        <div class="toolbar">
+          <div class="pill-picker" data-ddl-picker>
+            <input type="radio" name="ddl-view" id="dv-snow" checked><label for="dv-snow">Snowflake</label>
+            <input type="radio" name="ddl-view" id="dv-dbx"><label for="dv-dbx">Databricks</label>
+            <input type="radio" name="ddl-view" id="dv-fab"><label for="dv-fab">Fabric</label>
+          </div>
+          <div class="actions"><button class="copy-btn" data-copy-target="ddl">Copy DDL</button></div>
+        </div>
+
+        {{#ddlPanes}}
+        {{> directory-ddl-pane}}
+        {{/ddlPanes}}
+      </section>
+
+      <!-- 4 · EXTRACT (the interactive one) -->
+      <section id="extract" data-section="extract">
+        <h2>How to <em>extract</em></h2>
+        <p class="sub">{{methodsCount}} methods exist for {{name}}. Tell us your constraints and we'll highlight the fit. Methods you can't use are dimmed but still readable — you should understand what you're ruling out.</p>
+
+        <div class="extract-filters" data-extract-filters>
+          <div class="group">
+            <p class="group-label">License</p>
+            <div class="pill-picker">
+              <input type="radio" name="f-license" id="fl-any" checked><label for="fl-any">Any</label>
+              <input type="radio" name="f-license" id="fl-full"><label for="fl-full">Full use</label>
+              <input type="radio" name="f-license" id="fl-runtime"><label for="fl-runtime">Runtime</label>
+            </div>
+          </div>
+          <div class="group">
+            <p class="group-label">Latency need</p>
+            <div class="pill-picker">
+              <input type="radio" name="f-latency" id="flat-any" checked><label for="flat-any">Any</label>
+              <input type="radio" name="f-latency" id="flat-realtime"><label for="flat-realtime">Real-time</label>
+              <input type="radio" name="f-latency" id="flat-batch"><label for="flat-batch">Batch OK</label>
+            </div>
+          </div>
+          <div class="group">
+            <p class="group-label">Volume</p>
+            <div class="pill-picker">
+              <input type="radio" name="f-volume" id="fv-any" checked><label for="fv-any">Any</label>
+              <input type="radio" name="f-volume" id="fv-small"><label for="fv-small">&lt; 500M</label>
+              <input type="radio" name="f-volume" id="fv-big"><label for="fv-big">&gt; 500M</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-summary" id="filter-summary" data-filter-summary>
+          <strong>For your setup:</strong>
+          <span class="recommend-name" id="recommend-name" data-recommend-name>{{#defaultMethod}}{{defaultMethodName}}{{/defaultMethod}}</span>
+          — <span id="recommend-why" data-recommend-why>{{#defaultMethod}}{{defaultMethodWhy}}{{/defaultMethod}}</span>
+        </div>
+
+        <div class="methods" data-methods>
+          {{#methods}}
+          {{> directory-method-card}}
+          {{/methods}}
+        </div>
+      </section>
+
+      <!-- 5 · NOTES -->
+      <section id="notes" data-section="notes">
+        <h2>Notes <em>· recent changes</em></h2>
+        <div class="toolbar" style="margin-bottom:14px">
+          <span class="source-chip"><span></span>Curated from SAP Help release notes · 2025 onwards</span>
+        </div>
+        {{#notes}}
+        <div class="note" data-note>
+          <time>{{date}}</time>
+          <div class="body">
+            <p><strong>{{headline}}</strong>{{#bodyHtml}} {{{bodyHtml}}}{{/bodyHtml}}</p>
+            {{#sapNoteUrl}}<p><a href="{{sapNoteUrl}}" target="_blank" rel="noopener">SAP Note {{sapNote}} →</a></p>{{/sapNoteUrl}}
+          </div>
+        </div>
+        {{/notes}}
+        {{^notes}}
+        <p class="sub">No notes for this table yet.</p>
+        {{/notes}}
+      </section>
+
+      <!-- 6 · RELATED ARTICLES -->
+      {{#hasRelatedArticles}}
+      <section id="articles" data-section="articles">
+        <h2>Related <em>articles</em></h2>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--space-3);">
+          {{#relatedArticles}}
+          <li>
+            <a href="{{basePath}}/articles/{{slug}}/" style="font-size:16px;font-weight:500;color:var(--color-ink);border-bottom:1px solid var(--color-accent);padding-bottom:1px;">{{title}}</a>
+          </li>
+          {{/relatedArticles}}
+        </ul>
+      </section>
+      {{/hasRelatedArticles}}
+
+    </main>
+  </div>
+</div>
+</div>
