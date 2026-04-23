@@ -1027,7 +1027,7 @@ html.has-js .directory-page .filter-summary {
 .directory-card-title {
   font-size: 22px;
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 600;
   letter-spacing: -0.02em;
   margin: 0 0 var(--space-1);
   line-height: 1.1;
