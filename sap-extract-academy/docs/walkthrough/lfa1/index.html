@@ -968,13 +968,37 @@ print(f&quot;Extraction complete: {rows_extracted} rows&quot;)</code></pre>
               <ul>
                 <li>Create a dedicated database (<code>SAP_LANDING</code>), schema (<code>RAW</code>), and warehouse (<code>SAP_LOAD_WH</code> — X-Small for bulk loads).</li>
                 <li>Create a Snowflake storage integration (not access keys) for your ADLS container or S3 bucket. Create an external stage pointing to the landing path where your tool drops Parquet files.</li>
-                <li>Create the target table: <code>CREATE TABLE SAP_LANDING.RAW.lfa1 ...</code> with columns matching SE11. Or use <code>COPY INTO</code> with <code>MATCH_BY_COLUMN_NAME</code> to auto-map Parquet columns.</li>
+                <li>Create the target table. If you do not know all columns yet, use <code>COPY INTO</code> with <code>MATCH_BY_COLUMN_NAME</code> below to auto-map Parquet columns. If you need to create the table first, use SE11 to identify all columns and their data types:
+                  <pre style="margin:8px 0;font-size:12px;"><code>CREATE TABLE SAP_LANDING.RAW.lfa1 (
+          -- Add columns from SE11 here, e.g.:
+          -- MANDT VARCHAR(3),
+          -- RBUKRS VARCHAR(4),
+          -- GJAHR VARCHAR(4),
+          -- POPER VARCHAR(3),
+          -- BTYPE VARCHAR(1),
+          -- -- ... (get full column list from SE11 table definition)
+        );
+        
+        -- Or let Snowflake infer schema from Parquet on first COPY INTO</code></pre>
+                </li>
               </ul>
             </div>
         
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
-                <strong style="display:block;margin-bottom:6px;">1. Load from external stage — COPY INTO or Snowpipe</strong>
+                <strong style="display:block;margin-bottom:6px;">1. Create table if not exists (one-time setup)</strong>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;">If you don't want to manually list all columns from SE11, Snowflake can auto-infer the schema from the first Parquet file. Run this once to create the table with inferred schema:</p>
+                <pre style="margin:0 0 6px;font-size:12px;"><code>COPY INTO SAP_LANDING.RAW.lfa1
+        FROM @your_stage/sap/lfa1/
+        PATTERN='.*parquet'
+        FILE_FORMAT=(TYPE=PARQUET)
+        MATCH_BY_COLUMN_NAME=CASE_INSENSITIVE
+        ON_ERROR=SKIP_FILE
+        VALIDATION_MODE=RETURN_ERRORS;</code></pre>
+                <p style="color:var(--color-ink-soft);font-size:14px;margin:0;"><strong>Tip:</strong> The first COPY creates the table if it doesn't exist (when <code>MATCH_BY_COLUMN_NAME</code> is set). Use <code>VALIDATION_MODE=RETURN_ERRORS</code> for a dry-run without actually loading — confirms the Parquet schema before committing.</p>
+              </li>
+              <li style="margin-bottom:var(--space-4);">
+                <strong style="display:block;margin-bottom:6px;">2. Load from external stage — COPY INTO or Snowpipe</strong>
                 <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 6px;"><strong>Batch (COPY INTO):</strong> Run <code>COPY INTO SAP_LANDING.RAW.lfa1 FROM @your_stage/sap/lfa1/ PATTERN='.*parquet' FILE_FORMAT=(TYPE=PARQUET)</code>. Schedule via a Snowflake task or your orchestrator after each extraction.<br><br><strong>Continuous (Snowpipe):</strong> Create a pipe: <code>CREATE PIPE sap_lfa1_pipe AS COPY INTO SAP_LANDING.RAW.lfa1 FROM @your_stage/sap/lfa1/ FILE_FORMAT=(TYPE=PARQUET)</code>. Enable auto-ingest on the stage — Snowpipe fires automatically when a file lands. No scheduling required; ideal for near-real-time SLT feeds.</p>
                 <p style="font-size:13px;color:var(--color-accent);margin:0;"><strong>Verify:</strong> <code>LIST @your_stage/sap/lfa1/</code> shows landed files. COPY INTO or Snowpipe status shows zero skipped files.</p>
               </li>
