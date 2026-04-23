@@ -127,6 +127,96 @@ stepsSlt:
       helpUrl: "https://help.sap.com/"
     verify: "Target row count matches SE16N within a 0.01% tolerance. Re-trigger any ERROR partitions in LTCO."
 
+toolSteps:
+  - tool: custom
+    label: "Custom (Python / pyrfc) — partition-based ODP extraction"
+    steps:
+      - title: "Extract ACDOCA with company code and fiscal year partitioning"
+        explanation: "Use pyrfc to extract ACDOCA via I_JournalEntryItem with ODP, filtering by RBUKRS (company code) and GJAHR (fiscal year). Extract one partition at a time to avoid timeout and memory issues on large tables."
+        code: |
+          import pyrfc
+          import pandas as pd
+          import boto3
+          from io import BytesIO
+          import pyarrow.parquet as pq
+          import pyarrow as pa
+          
+          def extract_acdoca_partition(rbukrs, gjahr):
+              """Extract one ACDOCA partition via ODP."""
+              conn = pyrfc.Connection(
+                  ashost='sap-prod.company.com',
+                  sysnr='00', client='100',
+                  user='EXTRACT_ACDOCA', passwd='<password>'
+              )
+              
+              # Full load extraction for single partition
+              result = conn.call(
+                  'RODPS_REPL_ODP_EXTRACT',
+                  SUBSCRIBER_NAME=f'PYTHON_ACDOCA_{rbukrs}_{gjahr}',
+                  SUBSCRIBER_TYPE='2',
+                  SUBSCRIBER_PROCESS='FULL_LOAD',
+                  DATA_AREA='ABAP_CDS',
+                  ENTITY_NAME='I_JournalEntryItem',
+                  MAX_RECORDS=500000,
+                  FIELDS=[{'FIELDNAME': '*'}],
+                  FILTERS=[
+                      {'FIELDNAME': 'RBUKRS', 'SIGN': 'I', 'OPTION': 'EQ', 'LOW': rbukrs},
+                      {'FIELDNAME': 'GJAHR', 'SIGN': 'I', 'OPTION': 'EQ', 'LOW': str(gjahr)}
+                  ]
+              )
+              
+              records = result.get('DATA', [])
+              df = pd.DataFrame(records)
+              
+              print(f"ACDOCA {rbukrs}/{gjahr}: {len(df)} rows extracted")
+              return df
+          
+          # Extract multiple partitions
+          s3 = boto3.client('s3')
+          partitions = [
+              ('1000', 2024),
+              ('1000', 2023),
+              ('2000', 2024),
+          ]
+          
+          for rbukrs, gjahr in partitions:
+              df = extract_acdoca_partition(rbukrs, gjahr)
+              
+              if len(df) > 0:
+                  # Write to S3 as Parquet
+                  table = pa.Table.from_pandas(df)
+                  buf = BytesIO()
+                  pq.write_table(table, buf, compression='snappy')
+                  buf.seek(0)
+                  s3.put_object(
+                      Bucket='my-sap-landing-bucket',
+                      Key=f'sap/acdoca/full/{rbukrs}_{gjahr}_acdoca.parquet',
+                      Body=buf.getvalue()
+                  )
+        language: python
+        verify: "Each partition extracts without timeout. S3 files appear with correct row counts. Row count in S3 matches SE16N count for the same RBUKRS+GJAHR filter."
+
+  - tool: adf
+    label: "Azure Data Factory — partition-based ODP extraction"
+    steps:
+      - title: "Set up parameterized Copy Activity with company code and fiscal year partitioning"
+        explanation: "In ADF, create a pipeline with pipeline parameters for RBUKRS (company code) and GJAHR (fiscal year). Use a Copy Activity with OData source pointing to I_JournalEntryItem. Add filters in the OData query to extract one partition at a time. Loop over all required partitions using ForEach."
+        verify: "Pipeline runs for each RBUKRS+GJAHR combination. ADLS folder structure shows separate files per partition (e.g., acdoca/full/1000_2024/). Row count per partition matches SE16N."
+
+  - tool: databricks
+    label: "Databricks — partition-based ODP extraction with Delta Lake"
+    steps:
+      - title: "Extract ACDOCA via Spark and write to Delta Lake"
+        explanation: "Use Databricks Spark connector for OData or direct RFC-to-Spark readers to extract ACDOCA. Partition the extraction by RBUKRS and GJAHR. Write to Delta Lake format in ABFS (Azure Blob Storage), enabling incremental updates and schema evolution for downstream delta runs."
+        verify: "Delta table created in Databricks workspace. Partitioned by RBUKRS and GJAHR. Can run SELECT COUNT(*) WHERE RBUKRS='1000' AND GJAHR=2024 and see row count matching SE16N."
+
+  - tool: fivetran
+    label: "Fivetran — full load via OData"
+    steps:
+      - title: "Configure Fivetran OData connector for I_JournalEntryItem"
+        explanation: "In Fivetran, create a new connector using the OData source type. Point to your SAP OData service for I_JournalEntryItem. Define a custom query or API filter to extract one company code + fiscal year per sync run. Set the schedule for hourly or daily depending on your refresh cadence. Fivetran will handle state management and automatic delta detection if available."
+        verify: "Fivetran connector syncs I_JournalEntryItem data to your data warehouse (Snowflake, Redshift, BigQuery, etc.). Row count in destination table matches SE16N for the same partition. Logs show successful full load with no errors."
+
 troubleshooting:
   - problem: "ODP extraction times out after 2 hours"
     solution: "The partition is more than 500M rows. Use the Expert walkthrough which covers SLT parallel readers for ACDOCA at that scale."

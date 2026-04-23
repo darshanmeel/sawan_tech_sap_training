@@ -993,178 +993,123 @@
         <div class="tool-steps-container" data-default-tool="custom">
           <div data-tool-block="custom">
             <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
-              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Custom (Python &#x2F; pyrfc)</h3>
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Custom (Python &#x2F; pyrfc) — partition-based ODP extraction</h3>
             </div>
             <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
               <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
                 <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
                   <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
-                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Install dependencies</strong>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Extract ACDOCA with company code and fiscal year partitioning</strong>
                 </div>
-                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">pyrfc requires the SAP NetWeaver RFC SDK. Install it alongside the Python packages.</p>
-                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-bash">pip install pyrfc boto3 pandas
-
-# Set SDK path before importing pyrfc:
-# export SAPNWRFC_HOME&#x3D;&#x2F;path&#x2F;to&#x2F;nwrfcsdk  (Linux&#x2F;Mac)
-# set SAPNWRFC_HOME&#x3D;C:\nwrfcsdk           (Windows)</code></pre>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> python -c &#39;import pyrfc&#39; prints no errors.</p>
-              </li>
-              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
-                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
-                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 2</span>
-                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Extract ACDOCA — one company code, one fiscal year</strong>
-                </div>
-                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Always partition ACDOCA by RBUKRS (company code) and RYEAR (fiscal year). A full table read without partition crashes SAP. This example extracts company code 1000, year 2024.</p>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Use pyrfc to extract ACDOCA via I_JournalEntryItem with ODP, filtering by RBUKRS (company code) and GJAHR (fiscal year). Extract one partition at a time to avoid timeout and memory issues on large tables.</p>
                 <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">import pyrfc
 import pandas as pd
-
-conn &#x3D; pyrfc.Connection(
-    ashost&#x3D;&#39;sap-prod.company.com&#39;,
-    sysnr&#x3D;&#39;00&#39;, client&#x3D;&#39;100&#39;,
-    user&#x3D;&#39;EXTRACT_ACDOCA&#39;, passwd&#x3D;&#39;&lt;password&gt;&#39;
-)
-
-# Extract via I_JournalEntryItem — never raw ACDOCA
-result &#x3D; conn.call(
-    &#39;RODPS_REPL_ODP_EXTRACT&#39;,
-    SUBSCRIBER_NAME&#x3D;&#39;PYTHON_ACDOCA_2024_1000&#39;,
-    SUBSCRIBER_TYPE&#x3D;&#39;2&#39;,
-    SUBSCRIBER_PROCESS&#x3D;&#39;FULL_LOAD&#39;,
-    DATA_AREA&#x3D;&#39;ABAP_CDS&#39;,
-    ENTITY_NAME&#x3D;&#39;I_JournalEntryItem&#39;,
-    MAX_RECORDS&#x3D;1000000,
-    FIELDS&#x3D;[{&#39;FIELDNAME&#39;: &#39;*&#39;}],
-    SELECTION&#x3D;[
-        {&#39;FIELDNAME&#39;: &#39;RBUKRS&#39;, &#39;SIGN&#39;: &#39;I&#39;, &#39;OPTION&#39;: &#39;EQ&#39;, &#39;LOW&#39;: &#39;1000&#39;},
-        {&#39;FIELDNAME&#39;: &#39;RYEAR&#39;,  &#39;SIGN&#39;: &#39;I&#39;, &#39;OPTION&#39;: &#39;EQ&#39;, &#39;LOW&#39;: &#39;2024&#39;}
-    ]
-)
-
-records &#x3D; result.get(&#39;DATA&#39;, [])
-df &#x3D; pd.DataFrame(records)
-print(f&quot;Extracted {len(df)} rows — ACDOCA RBUKRS&#x3D;1000, RYEAR&#x3D;2024&quot;)</code></pre>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Row count matches SE16N for RBUKRS&#x3D;1000, RYEAR&#x3D;2024. Never run without the RBUKRS+RYEAR filter.</p>
-              </li>
-              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
-                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
-                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 3</span>
-                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Write to S3 as Parquet</strong>
-                </div>
-                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Use Parquet, not CSV, for ACDOCA. At 5–50M rows per partition, CSV is too slow to load downstream. Parquet with snappy compression reduces size by 70–80%.</p>
-                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">import boto3
-import pyarrow as pa
-import pyarrow.parquet as pq
+import boto3
 from io import BytesIO
+import pyarrow.parquet as pq
+import pyarrow as pa
 
-s3 &#x3D; boto3.client(&#39;s3&#39;, region_name&#x3D;&#39;eu-west-1&#39;)
-table &#x3D; pa.Table.from_pandas(df)
-buf &#x3D; BytesIO()
-pq.write_table(table, buf, compression&#x3D;&#39;snappy&#39;)
-buf.seek(0)
-s3.put_object(
-    Bucket&#x3D;&#39;my-sap-landing-bucket&#39;,
-    Key&#x3D;&#39;sap&#x2F;acdoca&#x2F;rbukrs&#x3D;1000&#x2F;ryear&#x3D;2024&#x2F;acdoca.parquet&#39;,
-    Body&#x3D;buf.getvalue()
-)
-print(f&quot;Loaded {len(df)} rows to S3 as Parquet&quot;)</code></pre>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Parquet file appears in S3. Row count matches extraction count.</p>
+def extract_acdoca_partition(rbukrs, gjahr):
+    &quot;&quot;&quot;Extract one ACDOCA partition via ODP.&quot;&quot;&quot;
+    conn &#x3D; pyrfc.Connection(
+        ashost&#x3D;&#39;sap-prod.company.com&#39;,
+        sysnr&#x3D;&#39;00&#39;, client&#x3D;&#39;100&#39;,
+        user&#x3D;&#39;EXTRACT_ACDOCA&#39;, passwd&#x3D;&#39;&lt;password&gt;&#39;
+    )
+    
+    # Full load extraction for single partition
+    result &#x3D; conn.call(
+        &#39;RODPS_REPL_ODP_EXTRACT&#39;,
+        SUBSCRIBER_NAME&#x3D;f&#39;PYTHON_ACDOCA_{rbukrs}_{gjahr}&#39;,
+        SUBSCRIBER_TYPE&#x3D;&#39;2&#39;,
+        SUBSCRIBER_PROCESS&#x3D;&#39;FULL_LOAD&#39;,
+        DATA_AREA&#x3D;&#39;ABAP_CDS&#39;,
+        ENTITY_NAME&#x3D;&#39;I_JournalEntryItem&#39;,
+        MAX_RECORDS&#x3D;500000,
+        FIELDS&#x3D;[{&#39;FIELDNAME&#39;: &#39;*&#39;}],
+        FILTERS&#x3D;[
+            {&#39;FIELDNAME&#39;: &#39;RBUKRS&#39;, &#39;SIGN&#39;: &#39;I&#39;, &#39;OPTION&#39;: &#39;EQ&#39;, &#39;LOW&#39;: rbukrs},
+            {&#39;FIELDNAME&#39;: &#39;GJAHR&#39;, &#39;SIGN&#39;: &#39;I&#39;, &#39;OPTION&#39;: &#39;EQ&#39;, &#39;LOW&#39;: str(gjahr)}
+        ]
+    )
+    
+    records &#x3D; result.get(&#39;DATA&#39;, [])
+    df &#x3D; pd.DataFrame(records)
+    
+    print(f&quot;ACDOCA {rbukrs}&#x2F;{gjahr}: {len(df)} rows extracted&quot;)
+    return df
+
+# Extract multiple partitions
+s3 &#x3D; boto3.client(&#39;s3&#39;)
+partitions &#x3D; [
+    (&#39;1000&#39;, 2024),
+    (&#39;1000&#39;, 2023),
+    (&#39;2000&#39;, 2024),
+]
+
+for rbukrs, gjahr in partitions:
+    df &#x3D; extract_acdoca_partition(rbukrs, gjahr)
+    
+    if len(df) &gt; 0:
+        # Write to S3 as Parquet
+        table &#x3D; pa.Table.from_pandas(df)
+        buf &#x3D; BytesIO()
+        pq.write_table(table, buf, compression&#x3D;&#39;snappy&#39;)
+        buf.seek(0)
+        s3.put_object(
+            Bucket&#x3D;&#39;my-sap-landing-bucket&#39;,
+            Key&#x3D;f&#39;sap&#x2F;acdoca&#x2F;full&#x2F;{rbukrs}_{gjahr}_acdoca.parquet&#39;,
+            Body&#x3D;buf.getvalue()
+        )</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Each partition extracts without timeout. S3 files appear with correct row counts. Row count in S3 matches SE16N count for the same RBUKRS+GJAHR filter.</p>
               </li>
             </ol>
           </div>
           <div data-tool-block="adf" hidden>
             <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
-              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Azure Data Factory (ADF)</h3>
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Azure Data Factory — partition-based ODP extraction</h3>
             </div>
             <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
               <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
                 <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
                   <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
-                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Create SAP ODP Linked Service</strong>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Set up parameterized Copy Activity with company code and fiscal year partitioning</strong>
                 </div>
-                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">In ADF Studio, Manage → Linked Services → New → SAP ODP. Use the EXTRACT_ACDOCA system user. Connect via self-hosted Integration Runtime for on-premise SAP.</p>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">In ADF, create a pipeline with pipeline parameters for RBUKRS (company code) and GJAHR (fiscal year). Use a Copy Activity with OData source pointing to I_JournalEntryItem. Add filters in the OData query to extract one partition at a time. Loop over all required partitions using ForEach.</p>
                 
-                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Test Connection returns green.</p>
-              </li>
-              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
-                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
-                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 2</span>
-                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Dataset: I_JournalEntryItem with RBUKRS+RYEAR filter</strong>
-                </div>
-                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Source dataset uses I_JournalEntryItem (not raw ACDOCA). In Copy Activity source settings, add a Selection filter: RBUKRS EQ &#39;1000&#39;, RYEAR EQ &#39;2024&#39;. Without this filter ADF will attempt a full-table read and crash SAP.</p>
-                
-                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Dataset preview shows journal entry columns. Row count preview matches SE16N for the filtered partition.</p>
-              </li>
-              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
-                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
-                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 3</span>
-                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Sink: ADLS Gen2 in Parquet format</strong>
-                </div>
-                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Sink dataset points to ADLS Gen2. Use Parquet format with Snappy compression. Partition your storage path: sap/acdoca/rbukrs=1000/ryear=2024/. This enables partition pruning in Synapse and Databricks.</p>
-                
-                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Pipeline run completes. Parquet file visible in ADLS. Row count matches SE16N.</p>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Pipeline runs for each RBUKRS+GJAHR combination. ADLS folder structure shows separate files per partition (e.g., acdoca&#x2F;full&#x2F;1000_2024&#x2F;). Row count per partition matches SE16N.</p>
               </li>
             </ol>
           </div>
           <div data-tool-block="databricks" hidden>
             <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
-              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Databricks (PySpark &#x2F; pyrfc)</h3>
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Databricks — partition-based ODP extraction with Delta Lake</h3>
             </div>
             <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
               <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
                 <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
                   <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
-                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Extract via pyrfc into a Spark DataFrame</strong>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Extract ACDOCA via Spark and write to Delta Lake</strong>
                 </div>
-                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Extract from I_JournalEntryItem via ODP. ACDOCA must be partitioned by RBUKRS and RYEAR — always include both filter parameters.</p>
-                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">import pyrfc, pandas as pd
-from pyspark.sql import SparkSession
-
-spark &#x3D; SparkSession.builder.getOrCreate()
-
-conn &#x3D; pyrfc.Connection(
-    ashost&#x3D;&#39;sap-prod.company.com&#39;,
-    sysnr&#x3D;&#39;00&#39;, client&#x3D;&#39;100&#39;,
-    user&#x3D;&#39;EXTRACT_ACDOCA&#39;, passwd&#x3D;&#39;&lt;password&gt;&#39;
-)
-result &#x3D; conn.call(
-    &#39;RODPS_REPL_ODP_EXTRACT&#39;,
-    SUBSCRIBER_NAME&#x3D;&#39;DBX_ACDOCA_2024_1000&#39;,
-    SUBSCRIBER_TYPE&#x3D;&#39;2&#39;, SUBSCRIBER_PROCESS&#x3D;&#39;FULL_LOAD&#39;,
-    DATA_AREA&#x3D;&#39;ABAP_CDS&#39;, ENTITY_NAME&#x3D;&#39;I_JournalEntryItem&#39;,
-    MAX_RECORDS&#x3D;1000000, FIELDS&#x3D;[{&#39;FIELDNAME&#39;: &#39;*&#39;}],
-    SELECTION&#x3D;[
-        {&#39;FIELDNAME&#39;: &#39;RBUKRS&#39;, &#39;SIGN&#39;: &#39;I&#39;, &#39;OPTION&#39;: &#39;EQ&#39;, &#39;LOW&#39;: &#39;1000&#39;},
-        {&#39;FIELDNAME&#39;: &#39;RYEAR&#39;,  &#39;SIGN&#39;: &#39;I&#39;, &#39;OPTION&#39;: &#39;EQ&#39;, &#39;LOW&#39;: &#39;2024&#39;}
-    ]
-)
-df &#x3D; spark.createDataFrame(pd.DataFrame(result.get(&#39;DATA&#39;, [])))
-print(f&quot;Extracted {df.count()} rows — RBUKRS&#x3D;1000, RYEAR&#x3D;2024&quot;)</code></pre>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Row count matches SE16N for RBUKRS&#x3D;1000, RYEAR&#x3D;2024.</p>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Use Databricks Spark connector for OData or direct RFC-to-Spark readers to extract ACDOCA. Partition the extraction by RBUKRS and GJAHR. Write to Delta Lake format in ABFS (Azure Blob Storage), enabling incremental updates and schema evolution for downstream delta runs.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Delta table created in Databricks workspace. Partitioned by RBUKRS and GJAHR. Can run SELECT COUNT(*) WHERE RBUKRS&#x3D;&#39;1000&#39; AND GJAHR&#x3D;2024 and see row count matching SE16N.</p>
               </li>
+            </ol>
+          </div>
+          <div data-tool-block="fivetran" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Fivetran — full load via OData</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
               <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
                 <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
-                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 2</span>
-                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Write as Delta table (recommended), Iceberg table, or Parquet files</strong>
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Configure Fivetran OData connector for I_JournalEntryItem</strong>
                 </div>
-                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Choose your write format based on your downstream sink. Delta is the default for Databricks-to-Databricks flows. Iceberg is the best choice when downstream consumers include BigQuery, Athena, or non-Databricks engines — it is an open standard. Parquet files are the most portable option for any sink that reads from ADLS or S3.</p>
-                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python"># ── Option 1: Delta table (default — best for Databricks lakehouse) ──
-df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
-    .partitionBy(&#39;RBUKRS&#39;, &#39;RYEAR&#39;) \
-    .option(&#39;replaceWhere&#39;, &quot;RBUKRS&#x3D;&#39;1000&#39; AND RYEAR&#x3D;&#39;2024&#39;&quot;) \
-    .saveAsTable(&#39;sap_landing.raw.acdoca&#39;)
-
-# ── Option 2: Iceberg table (best for cross-engine &#x2F; open lake) ──
-# df.write.format(&#39;iceberg&#39;).mode(&#39;overwrite&#39;) \
-#     .partitionBy(&#39;RBUKRS&#39;, &#39;RYEAR&#39;) \
-#     .saveAsTable(&#39;sap_landing.raw.acdoca&#39;)
-
-# ── Option 3: Parquet files to ADLS &#x2F; S3 (most portable) ──
-# df.write.format(&#39;parquet&#39;).mode(&#39;overwrite&#39;) \
-#     .partitionBy(&#39;RBUKRS&#39;, &#39;RYEAR&#39;) \
-#     .option(&#39;compression&#39;, &#39;snappy&#39;) \
-#     .save(&#39;abfss:&#x2F;&#x2F;sap-landing@account.dfs.core.windows.net&#x2F;acdoca&#x2F;&#39;)
-#   # or for S3: .save(&#39;s3:&#x2F;&#x2F;my-bucket&#x2F;sap&#x2F;acdoca&#x2F;&#39;)</code></pre>
-                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Delta: sap_landing.raw.acdoca exists with partition RBUKRS&#x3D;1000&#x2F;RYEAR&#x3D;2024. Iceberg: same table path in Iceberg catalog. Parquet: files visible in ADLS&#x2F;S3 landing path.</p>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">In Fivetran, create a new connector using the OData source type. Point to your SAP OData service for I_JournalEntryItem. Define a custom query or API filter to extract one company code + fiscal year per sync run. Set the schedule for hourly or daily depending on your refresh cadence. Fivetran will handle state management and automatic delta detection if available.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Fivetran connector syncs I_JournalEntryItem data to your data warehouse (Snowflake, Redshift, BigQuery, etc.). Row count in destination table matches SE16N for the same partition. Logs show successful full load with no errors.</p>
               </li>
             </ol>
           </div>
