@@ -96,58 +96,75 @@ ACDOCA is the Universal Journal in SAP S/4HANA. It contains:
 
 ### Step-by-Step: Extract 2024 ACDOCA to Databricks + S3
 
-#### SAP-Side Preparation
+**Method:** ODP | **Tool:** Databricks | **Sink:** S3
 
-**In transaction SE80 (ABAP Repository):**
+#### Prerequisites
+
+- SAP source system with I_JournalEntryItem CDS view (S/4HANA 2020+)
+- Databricks workspace with Python runtime cluster
+- S3 bucket with write access
+- Extraction user credentials with S_ODP_READ authorization
+
+#### Step 1: SAP Enablement Check
+
+**Transaction SE80 (ABAP Repository):**
 1. Search for `I_JournalEntryItem`
-2. Confirm it has the annotation `@Analytics.dataExtract: true`
-3. If missing, your SAP version is too old; upgrade CDS views
+2. Confirm annotation `@Analytics.dataExtract: true` is present
+3. If missing, CDS views require upgrade
 
-**In transaction SE16N (Data Browser):**
+**Transaction SE16N (Data Browser):**
 1. Open ACDOCA table
-2. Filter: `BUKRS='1000' AND GJAHR=2024` (company code 1000, fiscal year 2024)
-3. Count rows (example: 45M rows)
-4. Write down this number—it's your reconciliation target
+2. Filter: `BUKRS='1000' AND GJAHR=2024`
+3. Count rows (this is your reconciliation target — example: 45M)
+4. Write down the count
 
-**In transaction SU01 (User Management):**
-1. Create a system-type extraction user (e.g., `EXTRACT_USER`)
+**Transaction SU01 (User Management):**
+1. Create extraction user: `EXTRACT_USER` (system-type)
 2. Assign roles:
    - `S_RFC` (for RFC access)
-   - `S_ODP_READ` with `ODPSOURCE=ABAP_CDS` (for ODP access)
-3. Confirm in PFCG: Authorization object `S_ODP_READ` is assigned
+   - `S_ODP_READ` with `ODPSOURCE=ABAP_CDS` (for ODP)
+3. Verify in PFCG: Authorization object `S_ODP_READ` assigned
 
-#### Databricks-Side Setup
+#### Step 2: Databricks Setup
 
-**In Databricks Workspace:**
-1. Create a cluster with Python runtime
-2. Install SAP ODP connector (pip install sap-odp-client or use Fivetran/ADF equivalents)
-3. Configure connection to SAP:
-   ```
-   sap_host = "sap.company.com"
-   sap_client = "100"
-   sap_user = "EXTRACT_USER"
-   sap_password = "password"
-   ```
-4. Create an S3 bucket: `s3://company-datalake/raw/acdoca/2024/`
+**Create cluster:**
+1. Databricks workspace → Compute → Create cluster
+2. Runtime: Python (7.3 LTS or later)
+3. Install library: `pip install sap-odp-client`
 
-**In Python (Databricks Notebook):**
+**Configure S3 bucket:**
+```bash
+s3://company-datalake/raw/acdoca/2024/
+```
+
+**Environment variables (in cluster config):**
+```
+SAP_HOST=sap.company.com
+SAP_CLIENT=100
+SAP_USER=EXTRACT_USER
+SAP_PASSWORD=<secure password>
+```
+
+#### Step 3: Extract via ODP (Databricks Notebook)
+
 ```python
 from sap_odp_client import ODP
+import os
 
 # Connect to SAP ODP
 odp = ODP(
-    host="sap.company.com",
-    client="100",
-    user="EXTRACT_USER",
-    password="password"
+    host=os.getenv("SAP_HOST"),
+    client=os.getenv("SAP_CLIENT"),
+    user=os.getenv("SAP_USER"),
+    password=os.getenv("SAP_PASSWORD")
 )
 
-# Register subscription for ACDOCA
+# Subscribe to ACDOCA with partition filters
 subscription = odp.subscribe(
     source="I_JournalEntryItem",
     filter={
-        "RBUKRS": "1000",  # Company code
-        "RYEAR": 2024       # Fiscal year
+        "RBUKRS": "1000",      # Company code (partition key)
+        "RYEAR": 2024          # Fiscal year (partition key)
     }
 )
 
@@ -158,23 +175,51 @@ row_count = 0
 
 for batch in subscription.fetch(batch_size=batch_size):
     df = spark.createDataFrame(batch)
-    df.write.mode("append").parquet(f"{output_path}/parquet/")
+    df.write.mode("append").parquet(f"{output_path}/batch_{row_count}")
     row_count += len(batch)
     print(f"Extracted {row_count} rows...")
 
-print(f"Total: {row_count} rows extracted to {output_path}")
+print(f"✓ Total: {row_count} rows extracted to {output_path}")
 ```
 
-#### Verification
+#### Step 4: S3 Sink Configuration
+
+**Verify data in S3:**
+```python
+# Read back and validate
+df = spark.read.parquet("s3://company-datalake/raw/acdoca/2024/")
+print(f"Records in S3: {df.count()}")
+df.show(5)
+```
+
+**S3 structure:**
+```
+s3://company-datalake/raw/acdoca/2024/
+├── batch_0/
+├── batch_100000/
+├── batch_200000/
+└── ...
+```
+
+#### Step 5: Verification
 
 **Back in SAP, transaction SE16N:**
-1. Run the same count query: `BUKRS='1000' AND GJAHR=2024`
-2. Confirm row count matches your extraction
-3. If mismatch > 0.1%, investigate: missing filters, delta not captured, or extract timeout
+1. Run same filter: `BUKRS='1000' AND GJAHR=2024`
+2. Confirm SAP count matches S3 record count
+3. If mismatch > 0.1%, investigate filters or delta delays
 
-#### Timeline
-- **100M rows:** ~4 hours (Databricks pulls ~7M rows/min with 8 parallel partitions)
-- **500M rows:** ~12 hours (scales linearly with partitioning)
+**In Databricks:**
+```python
+# Quick validation
+extracted_count = spark.read.parquet("s3://company-datalake/raw/acdoca/2024/").count()
+print(f"✓ Extracted: {extracted_count} rows")
+# Should match SAP SE16N count
+```
+
+#### Performance
+
+- **100M rows:** ~4 hours (7M rows/min with 8 parallel partitions)
+- **500M rows:** ~12 hours (scales linearly with partition strategy)
 
 ### Alternative Tools
 
