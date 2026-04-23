@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Extract ACDOCA One Company&#x2F;Year via ODP — SAP-Side Intermediate — SAP Extract Academy</title>
+  <title>Extract ACDOCA One Company&#x2F;Year via ODP — SAP-Side Intermediate — SAP Extract Guide</title>
   <meta name="description" content="SAP-side intermediate guide for ACDOCA extraction. ODQMON delta queue behavior, CDS view validation, ODP first-delta gotcha, SE16N reconciliation.">
   <link rel="canonical" href="https://academy.example.com/walkthrough/acdoca/">
 
@@ -13,7 +13,7 @@
   <meta property="og:description" content="SAP-side intermediate guide for ACDOCA extraction. ODQMON delta queue behavior, CDS view validation, ODP first-delta gotcha, SE16N reconciliation.">
   <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;acdoca&#x2F;">
   <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
-  <meta property="og:site_name" content="SAP Extract Academy">
+  <meta property="og:site_name" content="SAP Extract Guide">
   <meta property="og:locale" content="en_US">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -44,7 +44,7 @@
   <header class="site-header">
     <div class="container">
       <div class="header-inner">
-        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Academy</a>
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Guide</a>
         <nav class="site-nav" aria-label="Primary navigation">
           <ul>
             <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
@@ -52,15 +52,7 @@
             <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
             <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
             <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
-            <li><a href="&#x2F;sawan_tech_sap_training/decide/">Decide</a></li>
           </ul>
-          <div data-source-picker>
-            <label for="source-version-select" class="sr-only">SAP Version</label>
-            <select id="source-version-select" aria-label="Choose SAP version">
-              <option value="s4hana">S/4HANA</option>
-              <option value="ecc">ECC</option>
-            </select>
-          </div>
         </nav>
       </div>
     </div>
@@ -1219,17 +1211,17 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
         <h2>Sink <em>setup</em></h2>
         <p style="color:var(--color-ink-soft);font-size:14px;margin-bottom:var(--space-5);">Landing zone configuration for your selected sink. Switch the <strong>Sink</strong> picker above to see a different destination.</p>
         <div class="sink-steps-container" data-default-sink="adls">
-
+        
           <!-- ── ADLS ─────────────────────────────────────────────────────────── -->
           <div data-sink-block="adls">
             <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Azure Data Lake Storage Gen2</h3>
             <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">ADLS is your landing zone — your tool writes Parquet, Delta, or Iceberg files here. Downstream engines (Synapse, Databricks, Power BI) read directly from these files.</p>
-
+        
             <div class="sink-before" style="margin-bottom:var(--space-4);">
               <h4>Native SAP connector option</h4>
               <p style="margin:0 0 8px;font-size:14px;">If your organisation has an <strong>ADF SAP connector</strong> license (SAP connector for Azure Data Factory), ADF writes directly to ADLS from SAP — no intermediate tool pipeline code needed. Confirm connector licensing with your Azure team before setting up the manual pipeline below.</p>
             </div>
-
+        
             <div class="sink-before">
               <h4>Before your first extraction</h4>
               <ul>
@@ -1238,7 +1230,7 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
                 <li>Agree on a partition path convention: <code>sap/acdoca/rbukrs=1000/year=2024/</code>. Partition columns must match the filter dimensions used in the SAP extraction.</li>
               </ul>
             </div>
-
+        
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Confirm the file landed after extraction</strong>
@@ -1252,17 +1244,17 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
               </li>
             </ol>
           </div>
-
+        
           <!-- ── S3 ────────────────────────────────────────────────────────────── -->
           <div data-sink-block="s3" hidden>
             <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Amazon S3</h3>
             <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">S3 is your landing zone — your tool writes Parquet files here. Downstream engines (Athena, Redshift Spectrum, Databricks on AWS) read directly from S3, or you COPY INTO Snowflake/Redshift from here.</p>
-
+        
             <div class="sink-before" style="margin-bottom:var(--space-4);">
               <h4>Native SAP connector option</h4>
               <p style="margin:0 0 8px;font-size:14px;">If your organisation has <strong>AWS AppFlow with SAP OData connector</strong> or a licensed SAP Integration Suite adapter, AppFlow can land data directly in S3 without tool pipeline code. Check your AWS and SAP BTP licensing before building the pipeline below.</p>
             </div>
-
+        
             <div class="sink-before">
               <h4>Before your first extraction</h4>
               <ul>
@@ -1271,7 +1263,7 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
                 <li>Agree on a landing prefix convention: <code>sap/acdoca/rbukrs=1000/year=2024/</code>.</li>
               </ul>
             </div>
-
+        
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Confirm files land and register in Glue</strong>
@@ -1285,17 +1277,17 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
               </li>
             </ol>
           </div>
-
+        
           <!-- ── GCS ───────────────────────────────────────────────────────────── -->
           <div data-sink-block="gcs" hidden>
             <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Google Cloud Storage (GCS)</h3>
             <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">GCS is your landing zone — your tool writes Parquet or Iceberg files here. BigQuery reads them directly as an external table or via a load job. No intermediate copy needed.</p>
-
+        
             <div class="sink-before" style="margin-bottom:var(--space-4);">
               <h4>Native SAP connector option</h4>
               <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Google Cloud BigQuery Connector for SAP</strong> (available via SAP BTP / SAP LT Replication Server), it streams data directly from SAP ABAP tables into BigQuery without any intermediate GCS files or pipeline code. Confirm with your SAP Basis and GCP teams whether this connector is licensed before building the file-based pipeline below.</p>
             </div>
-
+        
             <div class="sink-before">
               <h4>Before your first extraction</h4>
               <ul>
@@ -1304,7 +1296,7 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
                 <li>Set a landing prefix: <code>sap/acdoca/rbukrs=1000/year=2024/</code>.</li>
               </ul>
             </div>
-
+        
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Create BigQuery external table or load job</strong>
@@ -1318,17 +1310,17 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
               </li>
             </ol>
           </div>
-
+        
           <!-- ── Snowflake ─────────────────────────────────────────────────────── -->
           <div data-sink-block="snowflake" hidden>
             <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Snowflake</h3>
             <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">Snowflake reads Parquet files your tool landed in ADLS or S3. Two loading patterns: <strong>COPY INTO</strong> (batch, scheduled) or <strong>Snowpipe</strong> (continuous, file-triggered — runs automatically when a file lands, no scheduling needed).</p>
-
+        
             <div class="sink-before" style="margin-bottom:var(--space-4);">
               <h4>Native SAP connector option — skip the steps below if licensed</h4>
               <p style="margin:0 0 8px;font-size:14px;">If your organisation has a <strong>Snowflake Native SAP BDC Connector</strong> license, Snowflake connects directly to SAP — no tool pipeline code, no external stage, and no Parquet files needed. The connector extracts and loads natively. If this applies to you, configure the connector in Snowflake Partner Connect with your SAP RFC credentials and skip the COPY INTO / Snowpipe steps below.</p>
             </div>
-
+        
             <div class="sink-before">
               <h4>Before your first extraction (file-based approach)</h4>
               <ul>
@@ -1337,7 +1329,7 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
                 <li>Create the target table: <code>CREATE TABLE SAP_LANDING.RAW.acdoca ...</code> with columns matching SE11. Or use <code>COPY INTO</code> with <code>MATCH_BY_COLUMN_NAME</code> to auto-map Parquet columns.</li>
               </ul>
             </div>
-
+        
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Load from external stage — COPY INTO or Snowpipe</strong>
@@ -1351,17 +1343,17 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
               </li>
             </ol>
           </div>
-
+        
           <!-- ── BigQuery ──────────────────────────────────────────────────────── -->
           <div data-sink-block="bigquery" hidden>
             <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">BigQuery</h3>
             <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">BigQuery reads Parquet or Iceberg files from GCS, or accepts direct writes from Fivetran and ADF. If your tool wrote to GCS as Parquet, create an external table — no copy needed.</p>
-
+        
             <div class="sink-before" style="margin-bottom:var(--space-4);">
               <h4>Native SAP connector option — skip the steps below if licensed</h4>
               <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Google Cloud BigQuery Connector for SAP</strong> (part of SAP LT Replication Server or SAP Integration Suite), it streams data directly from SAP into BigQuery tables — no GCS files, no tool pipeline code, no staging needed. Confirm with your SAP Basis team. If licensed, skip the file-based steps below.</p>
             </div>
-
+        
             <div class="sink-before">
               <h4>Before your first extraction (file-based approach)</h4>
               <ul>
@@ -1369,7 +1361,7 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
                 <li>Grant your service account <strong>BigQuery Data Editor</strong> on the dataset and <strong>Storage Object Viewer</strong> on the GCS bucket (for external tables).</li>
               </ul>
             </div>
-
+        
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Create external table, Iceberg table, or use direct connector</strong>
@@ -1383,17 +1375,17 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
               </li>
             </ol>
           </div>
-
+        
           <!-- ── Fabric ────────────────────────────────────────────────────────── -->
           <div data-sink-block="fabric" hidden>
             <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Microsoft Fabric / OneLake</h3>
             <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">Fabric has three file-based paths: (1) ADF writes to Lakehouse via Copy Activity, (2) Databricks writes Delta/Iceberg to ADLS and Fabric shortcuts it, (3) your tool lands Parquet in ADLS and Fabric shortcuts the folder as an external table.</p>
-
+        
             <div class="sink-before" style="margin-bottom:var(--space-4);">
               <h4>Native SAP connector option — skip the steps below if licensed</h4>
               <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Microsoft Fabric SAP CDC connector</strong> or an SAP integration via Azure Logic Apps with native Fabric write support, data flows directly from SAP into OneLake without any intermediate files or tool pipeline code. Confirm with your Microsoft and SAP teams. If licensed, skip the file-based steps below.</p>
             </div>
-
+        
             <div class="sink-before">
               <h4>Before your first extraction (file-based approach)</h4>
               <ul>
@@ -1401,7 +1393,7 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
                 <li>Decide your ingestion path before extracting: ADF Copy Activity, Databricks ADLS shortcut, or Parquet ADLS shortcut. Each wires up differently — agree with the analytics team first.</li>
               </ul>
             </div>
-
+        
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Set up your ingestion path</strong>
@@ -1415,17 +1407,17 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
               </li>
             </ol>
           </div>
-
+        
           <!-- ── Databricks ────────────────────────────────────────────────────── -->
           <div data-sink-block="databricks" hidden>
             <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Databricks Lakehouse</h3>
             <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">If your tool was Databricks, the Delta or Iceberg table is already written — querying it IS the sink step. If another tool wrote Parquet to ADLS/S3, register it as an external Delta or Iceberg table in Unity Catalog.</p>
-
+        
             <div class="sink-before" style="margin-bottom:var(--space-4);">
               <h4>Native SAP connector option — skip the steps below if licensed</h4>
               <p style="margin:0 0 8px;font-size:14px;">If your organisation has the <strong>Databricks SAP Connector</strong> (SAP LT Replication + Databricks native integration), it writes SAP change data directly to a Delta table in real time — no tool pipeline code or external files needed. Confirm with your SAP Basis and Databricks teams. If licensed, skip the file-based steps below.</p>
             </div>
-
+        
             <div class="sink-before">
               <h4>Before your first extraction (file-based approach)</h4>
               <ul>
@@ -1434,7 +1426,7 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
                 <li>If another tool writes Parquet to ADLS/S3: note the exact file path for registering as an external table.</li>
               </ul>
             </div>
-
+        
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Confirm Delta/Iceberg table or register Parquet</strong>
@@ -1448,12 +1440,12 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
               </li>
             </ol>
           </div>
-
+        
           <!-- ── Other ─────────────────────────────────────────────────────────── -->
           <div data-sink-block="other" hidden>
             <h3 style="font-size:18px;font-weight:500;margin:0 0 var(--space-3);">Other landing zone</h3>
             <p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-4);">Whatever your sink: it receives Parquet, Delta, or Iceberg files from your tool. Ensure your downstream system can read one of these formats efficiently before landing data in it.</p>
-
+        
             <div class="sink-before">
               <h4>Before your first extraction</h4>
               <ul>
@@ -1462,7 +1454,7 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
                 <li>Test a small write to your sink before running a full extraction — confirm schema mapping, encoding, and permissions.</li>
               </ul>
             </div>
-
+        
             <ol class="steps-list" style="padding-left:0;list-style:none;">
               <li style="margin-bottom:var(--space-4);">
                 <strong style="display:block;margin-bottom:6px;">1. Confirm file lands at the correct path</strong>
@@ -1476,7 +1468,7 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
               </li>
             </ol>
           </div>
-
+        
         </div>
 
         <!-- Sink troubleshooting -->
@@ -1586,8 +1578,8 @@ df.write.format(&#39;delta&#39;).mode(&#39;overwrite&#39;) \
       </form>
 
       <div class="footer-info">
-        <p class="disclaimer">SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE. All references to SAP documentation link to the original source on sap.com.</p>
-        <p class="copyright">© SAP Extract Academy 2026</p>
+        <p class="disclaimer">⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+        <p class="copyright">© SAP Extract Guide 2026</p>
       </div>
     </div>
   </footer>

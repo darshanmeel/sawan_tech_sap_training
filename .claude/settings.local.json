@@ -32,7 +32,15 @@
       "Bash(grep -E \"\\\\.md$\")",
       "mcp__notebooklm-mcp__notebook_query",
       "mcp__notebooklm-mcp__notebook_add_text",
-      "mcp__notebooklm-mcp__infographic_create"
+      "mcp__notebooklm-mcp__infographic_create",
+      "mcp__notebooklm-mcp__slide_deck_create",
+      "mcp__claude_ai_Excalidraw__read_me",
+      "mcp__notebooklm-mcp__studio_status",
+      "mcp__claude_ai_Excalidraw__create_view",
+      "mcp__claude_ai_Excalidraw__export_to_excalidraw",
+      "Bash(xargs -I {} gh run view {} --log)",
+      "Bash(cd D:\\\\\\\\darshanmeel\\\\\\\\sawan_tech_sap_training\\\\\\\\sap-extract-academy\\\\\\\\content\\\\\\\\en\\\\\\\\articles)",
+      "Bash(sed -i 's/author: \"SAP Extract Academy\"/author: \"SAP Extract Guide\"/g' *.md)"
     ]
   }
 }

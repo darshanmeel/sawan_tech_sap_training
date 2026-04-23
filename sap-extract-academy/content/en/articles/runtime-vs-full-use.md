@@ -3,7 +3,7 @@ title: "Runtime vs Full Use SAP License: The Extraction Architect's Guide"
 slug: runtime-vs-full-use
 publishDate: 2026-04-22
 readingTimeMinutes: 10
-author: "SAP Extract Academy"
+author: "SAP Extract Guide"
 summary: "SAP Runtime licenses forbid SLT replication. Many organizations discover this during or after implementation and face expensive license upgrades or architecture redesigns. Understand the license boundary, what it means for extraction design, and how to avoid the trap."
 relatedWalkthroughs:
   - slug: acdoca

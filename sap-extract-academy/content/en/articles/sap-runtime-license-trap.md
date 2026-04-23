@@ -4,7 +4,7 @@ slug: sap-runtime-license-trap
 redirectTo: "/articles/runtime-vs-full-use/"
 publishDate: 2026-04-22
 readingTimeMinutes: 10
-author: "SAP Extract Academy"
+author: "SAP Extract Guide"
 summary: "SAP Runtime Licenses forbid SLT replication. Many organizations discover this during implementation and face expensive license upgrades or project delays. Understand the trap and how to avoid it."
 relatedWalkthroughs:
   - slug: acdoca

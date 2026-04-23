@@ -1,7 +1,7 @@
 ---
 slug: /
 pageType: landing
-title: "SAP Extract Academy"
+title: "SAP Extract Guide"
 summary: "Master enterprise data extraction from SAP to your data warehouse. From beginner (simple ODP) to expert (real-time SLT streaming). Learn patterns that work at any scale."
 heroTitle: "Master SAP Data Extraction"
 heroSubtitle: "From simple ODP queries to enterprise-scale real-time streaming. Learn the patterns used by Fortune 500 data architects."
@@ -61,14 +61,14 @@ emailSignup:
   placeholder: "you@company.com"
   buttonLabel: "Get Notified"
   confirmationMessage: "Thanks! You'll hear from us with new walkthroughs every 2 weeks."
-seoTitle: "SAP Extract Academy — Master Enterprise Data Extraction"
-seoDescription: "Learn SAP data extraction from beginner to enterprise scale. 15+ walkthroughs, professional patterns, real-world architectures. ACDOCA, BKPF, ODP, SLT, Kafka, Snowflake."
+seoTitle: "SAP Extract Guide — Master Enterprise Data Extraction"
+seoDescription: "Learn SAP data extraction from beginner to enterprise scale. Walkthroughs, professional patterns, real-world architectures. ACDOCA, BKPF, ODP, SLT, Kafka, Snowflake."
 updatedAt: 2026-04-22
 ---
 
 The industry standard for SAP extraction is chaos: fragmented documentation, vendor lock-in, licensing traps, and patterns that don't scale. You learn one tool (ADF, Python, Fivetran), extract one table (VBAK), then hit the wall at ACDOCA (billions of rows, memory exhaustion, system crashes).
 
-This academy changes that. It's the professional curriculum for SAP data extraction: the patterns you need, tested at scale, explained clearly. From your first ODP extraction to real-time GL streaming with SLT, every pattern is covered.
+This guide changes that. It's the professional curriculum for SAP data extraction: the patterns you need, tested at scale, explained clearly. From your first ODP extraction to real-time GL streaming with SLT, every pattern is covered.
 
 ## How It Works
 
@@ -115,4 +115,4 @@ Pick a table that matters to your business. Start with the beginner pattern. You
 
 The expert ACDOCA walkthrough is the flagship—15 billion rows, real-time streaming to Kafka, sub-minute close. Master that, and you can extract any SAP table.
 
-Welcome to the academy.
+Welcome to the guide.

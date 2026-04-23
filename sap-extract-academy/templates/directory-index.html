@@ -32,11 +32,10 @@
         </div>
         <div class="filter-row">
           <p class="group-label">Availability</p>
-          <div class="toolbar-chips" role="group" aria-label="Filter by mode availability" data-filter-group="mode">
+          <div class="toolbar-chips" role="group" aria-label="Filter by availability" data-filter-group="mode">
             <button type="button" class="chip chip--active" data-filter="all" aria-pressed="true">All</button>
-            <button type="button" class="chip" data-filter="both" aria-pressed="false">S/4 &amp; ECC</button>
-            <button type="button" class="chip" data-filter="s4-only" aria-pressed="false">S/4-only</button>
-            <button type="button" class="chip" data-filter="ecc-only" aria-pressed="false">ECC-only</button>
+            <button type="button" class="chip" data-filter="s4hana" aria-pressed="false">S/4HANA</button>
+            <button type="button" class="chip" data-filter="ecc" aria-pressed="false">ECC</button>
           </div>
         </div>
       </section>
@@ -47,7 +46,7 @@
           <header class="directory-card-head">
             <div class="tags">
               <span class="tag tag--module">{{module}}</span>
-              <span class="tag tag--mode" data-mode-tag>{{modeLabel}}</span>
+              {{#systemTags}}<span class="tag tag--system">{{.}}</span>{{/systemTags}}
             </div>
             <h2 class="directory-card-title"><a href="{{basePath}}{{url}}">{{name}}</a></h2>
             {{#title}}<p class="directory-card-subtitle">{{title}}</p>{{/title}}
@@ -72,4 +71,6 @@
   </div>
 </div>
 </div>
+
+<script src="{{basePath}}/assets/js/directory-filter.js" defer></script>
 

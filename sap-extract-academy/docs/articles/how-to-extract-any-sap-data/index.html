@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>How to Extract Any SAP Data — Complete Guide with Examples — SAP Extract Guide</title>
+  <meta name="description" content="Master SAP data extraction: ACDOCA (GL) via ODP, VBAK (Sales) via SLT. Databricks + S3 examples. No licensing surprises. Step-by-step guide for data engineers.">
+  <link rel="canonical" href="https://academy.example.com/articles/how-to-extract-any-sap-data/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Extract Any SAP Data — Complete Guide with Examples">
+  <meta property="og:description" content="Master SAP data extraction: ACDOCA (GL) via ODP, VBAK (Sales) via SLT. Databricks + S3 examples. No licensing surprises. Step-by-step guide for data engineers.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;articles&#x2F;how-to-extract-any-sap-data&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Guide">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Extract Any SAP Data — Complete Guide with Examples">
+  <meta name="twitter:description" content="Master SAP data extraction: ACDOCA (GL) via ODP, VBAK (Sales) via SLT. Databricks + S3 examples. No licensing surprises. Step-by-step guide for data engineers.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"How to Extract Any SAP Data — The Complete Guide","description":"Master SAP data extraction: ACDOCA (GL) via ODP, VBAK (Sales) via SLT. Databricks + S3 examples. No licensing surprises. Step-by-step guide for data engineers.","author":{"@type":"Organization","name":"SAP Extract Guide"},"publisher":{"@type":"Organization","name":"SAP Extract Guide"},"datePublished":"2026-04-23T00:00:00.000Z","dateModified":"2026-04-23T00:00:00.000Z","mainEntityOfPage":"https://academy.example.com/articles/how-to-extract-any-sap-data/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://academy.example.com/articles/"},{"@type":"ListItem","position":3,"name":"How to Extract Any SAP Data — The Complete Guide"}]}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Guide</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Article detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+      <li aria-current="page">How to Extract Any SAP Data — The Complete Guide</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: article title + eyebrow with date and reading time -->
+    <div class="card hero article-hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>23 Apr 2026 · 12 min</p>
+        <h1>How to Extract Any SAP Data — The Complete Guide<em>.</em></h1>
+      </div>
+      <p>Master SAP data extraction with ACDOCA (GL) and VBAK (Sales Orders) examples. Learn which method to use, how to avoid licensing traps, and build your first extraction pipeline.</p>
+    </div>
+
+    <!-- Side card: author + tags -->
+    <div class="card side">
+      <h3>Author</h3>
+      <p class="big" style="font-size:22px;">SAP Extract Guide</p>
+      <p>12 minute read</p>
+    </div>
+
+    <!-- Section card: article body prose (max-width 780px per reference) -->
+    <div class="card section">
+      <div class="prose" style="max-width:780px;">
+        <h2>What This Guide Teaches</h2>
+<p>You&#39;re about to extract SAP data to your cloud warehouse. Here&#39;s what you need to know:</p>
+<p><strong>What we cover:</strong></p>
+<ul>
+<li>How to extract SAP data to any target system (S3, Snowflake, Databricks, etc.)</li>
+<li>Three proven extraction methods: ODP (batch), SLT (real-time), RFC (legacy)</li>
+<li>Patterns from beginner (one-time extract) to enterprise (billions of rows, sub-minute latency)</li>
+<li>Tool-agnostic guidance that works with ADF, Python, Fivetran, and custom pipelines</li>
+<li>Licensing constraints and how to avoid $100k+ in retroactive costs</li>
+</ul>
+<p><strong>What we don&#39;t cover:</strong></p>
+<ul>
+<li>Post-extraction data modeling or transformations (that&#39;s your responsibility)</li>
+<li>Custom connectors or non-standard extraction methods</li>
+<li>SAP Analytics Cloud or embedded analytics</li>
+<li>ECC-only tables (we focus on S/4HANA, with ECC addendums when critical)</li>
+</ul>
+<p>The key insight: <strong>80% of extraction decisions are made in the first hour.</strong> Choose your method, understand licensing, then execute.</p>
+<hr>
+<h2>How to Choose Your Extraction Method</h2>
+<p>Three methods exist. Here&#39;s when to use each:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Best For</th>
+<th>Latency</th>
+<th>License</th>
+<th>Tools</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ODP</strong></td>
+<td>Batch extractions, any volume with partitioning, scheduled loads</td>
+<td>Hours</td>
+<td>Runtime OK</td>
+<td>Fivetran, ADF, Databricks, Python/pyrfc, Airbyte</td>
+</tr>
+<tr>
+<td><strong>SLT</strong></td>
+<td>Real-time delta, sub-5-minute latency, continuous streaming</td>
+<td>Minutes</td>
+<td>Full Use required</td>
+<td>Kafka, Snowflake, Databricks, cloud storage (S3, ADLS)</td>
+</tr>
+<tr>
+<td><strong>RFC</strong></td>
+<td>Legacy systems, rare new projects</td>
+<td>Minutes</td>
+<td>Runtime OK</td>
+<td>Custom code only</td>
+</tr>
+</tbody></table>
+<p><strong>Decision framework:</strong></p>
+<ol>
+<li>Do you need real-time (&lt; 5 minutes)? → <strong>Use SLT</strong> (but verify Full Use license first)</li>
+<li>Do you need batch updates? → <strong>Use ODP</strong> (simpler, no special license)</li>
+<li>Do you need custom integration? → <strong>Use RFC</strong> (rarely recommended, complex)</li>
+</ol>
+<hr>
+<h2>Example 1: ACDOCA Extraction via ODP (Batch GL Data)</h2>
+<p><strong>Scenario:</strong> You&#39;re a financial analyst at a Fortune 500 company. You need to extract 2 years of GL postings (ACDOCA) to Databricks for reporting. You have 500M rows per fiscal year.</p>
+<h3>Why ACDOCA?</h3>
+<p>ACDOCA is the Universal Journal in SAP S/4HANA. It contains:</p>
+<ul>
+<li>Every GL posting (debit/credit entry)</li>
+<li>Cost allocations and controlling entries</li>
+<li>Currency conversions</li>
+<li>Audit trail for finance</li>
+</ul>
+<p><strong>The challenge:</strong> ACDOCA is massive. On a large enterprise system, it&#39;s 5–20 billion rows. A raw, unfiltered extraction will:</p>
+<ul>
+<li>Exhaust SAP application server memory within minutes</li>
+<li>Lock GL posting for finance users (bad: blocks month-end close)</li>
+<li>Fail silently with a TSLIB short dump</li>
+</ul>
+<p><strong>The solution:</strong> Always partition ACDOCA. Always.</p>
+<h3>The ODP Approach</h3>
+<p><strong>Why ODP?</strong></p>
+<ul>
+<li>Operational Data Provisioning is SAP&#39;s standard extraction framework</li>
+<li>Requires only Runtime license (no special licensing cost)</li>
+<li>Scales to 500M+ rows per partition with proper strategy</li>
+<li>Works with 6+ different tools (ADF, Fivetran, Databricks, Python, etc.)</li>
+</ul>
+<p><strong>How ODP works:</strong></p>
+<ol>
+<li>SAP exposes ACDOCA via a released CDS view: <code>I_JournalEntryItem</code></li>
+<li>You register an extraction subscription (via ODP)</li>
+<li>Your tool connects and reads in batches</li>
+<li>Delta queues capture changes for incremental loads</li>
+</ol>
+<h3>Step-by-Step: Extract 2024 ACDOCA to Databricks + S3</h3>
+<h4>SAP-Side Preparation</h4>
+<p><strong>In transaction SE80 (ABAP Repository):</strong></p>
+<ol>
+<li>Search for <code>I_JournalEntryItem</code></li>
+<li>Confirm it has the annotation <code>@Analytics.dataExtract: true</code></li>
+<li>If missing, your SAP version is too old; upgrade CDS views</li>
+</ol>
+<p><strong>In transaction SE16N (Data Browser):</strong></p>
+<ol>
+<li>Open ACDOCA table</li>
+<li>Filter: <code>BUKRS=&#39;1000&#39; AND GJAHR=2024</code> (company code 1000, fiscal year 2024)</li>
+<li>Count rows (example: 45M rows)</li>
+<li>Write down this number—it&#39;s your reconciliation target</li>
+</ol>
+<p><strong>In transaction SU01 (User Management):</strong></p>
+<ol>
+<li>Create a system-type extraction user (e.g., <code>EXTRACT_USER</code>)</li>
+<li>Assign roles:<ul>
+<li><code>S_RFC</code> (for RFC access)</li>
+<li><code>S_ODP_READ</code> with <code>ODPSOURCE=ABAP_CDS</code> (for ODP access)</li>
+</ul>
+</li>
+<li>Confirm in PFCG: Authorization object <code>S_ODP_READ</code> is assigned</li>
+</ol>
+<h4>Databricks-Side Setup</h4>
+<p><strong>In Databricks Workspace:</strong></p>
+<ol>
+<li>Create a cluster with Python runtime</li>
+<li>Install SAP ODP connector (pip install sap-odp-client or use Fivetran/ADF equivalents)</li>
+<li>Configure connection to SAP:<pre><code>sap_host = &quot;sap.company.com&quot;
+sap_client = &quot;100&quot;
+sap_user = &quot;EXTRACT_USER&quot;
+sap_password = &quot;password&quot;
+</code></pre>
+</li>
+<li>Create an S3 bucket: <code>s3://company-datalake/raw/acdoca/2024/</code></li>
+</ol>
+<p><strong>In Python (Databricks Notebook):</strong></p>
+<pre><code class="language-python">from sap_odp_client import ODP
+
+# Connect to SAP ODP
+odp = ODP(
+    host=&quot;sap.company.com&quot;,
+    client=&quot;100&quot;,
+    user=&quot;EXTRACT_USER&quot;,
+    password=&quot;password&quot;
+)
+
+# Register subscription for ACDOCA
+subscription = odp.subscribe(
+    source=&quot;I_JournalEntryItem&quot;,
+    filter={
+        &quot;RBUKRS&quot;: &quot;1000&quot;,  # Company code
+        &quot;RYEAR&quot;: 2024       # Fiscal year
+    }
+)
+
+# Extract in 100K-row batches
+batch_size = 100_000
+output_path = &quot;s3://company-datalake/raw/acdoca/2024/&quot;
+row_count = 0
+
+for batch in subscription.fetch(batch_size=batch_size):
+    df = spark.createDataFrame(batch)
+    df.write.mode(&quot;append&quot;).parquet(f&quot;{output_path}/parquet/&quot;)
+    row_count += len(batch)
+    print(f&quot;Extracted {row_count} rows...&quot;)
+
+print(f&quot;Total: {row_count} rows extracted to {output_path}&quot;)
+</code></pre>
+<h4>Verification</h4>
+<p><strong>Back in SAP, transaction SE16N:</strong></p>
+<ol>
+<li>Run the same count query: <code>BUKRS=&#39;1000&#39; AND GJAHR=2024</code></li>
+<li>Confirm row count matches your extraction</li>
+<li>If mismatch &gt; 0.1%, investigate: missing filters, delta not captured, or extract timeout</li>
+</ol>
+<h4>Timeline</h4>
+<ul>
+<li><strong>100M rows:</strong> ~4 hours (Databricks pulls ~7M rows/min with 8 parallel partitions)</li>
+<li><strong>500M rows:</strong> ~12 hours (scales linearly with partitioning)</li>
+</ul>
+<h3>Alternative Tools</h3>
+<p>Don&#39;t have Databricks? No problem. Same logic, different tools:</p>
+<ul>
+<li><strong>Azure Data Factory:</strong> Use ODP connector + Azure Data Lake Storage</li>
+<li><strong>Fivetran:</strong> Preconfigured SAP ODP source, maps to Snowflake/Redshift/BigQuery</li>
+<li><strong>Python (on-prem):</strong> Use pyrfc library, write CSVs to S3</li>
+<li><strong>Airbyte:</strong> Open-source ODP connector, self-hosted or cloud</li>
+</ul>
+<h3>What Comes Next</h3>
+<p>Now that you&#39;ve extracted ACDOCA:</p>
+<ol>
+<li><strong>Deep dive:</strong> See the full <a href="/walkthrough/beginner/acdoca/">ACDOCA walkthrough</a> for single-partition loads</li>
+<li><strong>Scale up:</strong> Read <a href="/walkthrough/intermediate/acdoca/">ACDOCA intermediate</a> for multi-partition parallel extraction</li>
+<li><strong>Go real-time:</strong> Check <a href="/walkthrough/expert/acdoca/">ACDOCA expert</a> for SLT real-time streaming</li>
+<li><strong>Avoid mistakes:</strong> Read <a href="/articles/sap-runtime-license-trap/">Runtime vs. Full Use licensing</a></li>
+</ol>
+<hr>
+<h2>Example 2: VBAK Extraction via SLT (Real-Time Sales Orders)</h2>
+<p><strong>Scenario:</strong> You&#39;re a supply chain analyst. Sales orders (VBAK) change constantly. You need real-time visibility into order-to-cash metrics in your analytics platform. Updates must land within 5 minutes.</p>
+<h3>Why VBAK?</h3>
+<p>VBAK is the Sales Order header table in SAP. It contains:</p>
+<ul>
+<li>Every sales order (customer, sales org, document date)</li>
+<li>Order value and status (open, partially delivered, closed)</li>
+<li>Shipping/payment terms</li>
+</ul>
+<p>Sales orders drive revenue analytics, order aging reports, and customer dashboards. For real-time insights, VBAK must be streamed continuously.</p>
+<p><strong>The challenge:</strong> Batch extractions (once/day) are too slow. You need delta queues that capture every order change within minutes.</p>
+<p><strong>The solution:</strong> SLT (SAP Landscape Transformation) with real-time replication.</p>
+<h3>The SLT Approach</h3>
+<p><strong>Why SLT?</strong></p>
+<ul>
+<li>Real-time delta replication with sub-5-minute latency</li>
+<li>Automatic full-load + continuous delta (no manual scripting)</li>
+<li>Streams to Kafka, Snowflake, S3, or cloud storage</li>
+<li>Requires Full Use license (this is the hard constraint)</li>
+</ul>
+<p><strong>How SLT works:</strong></p>
+<ol>
+<li>You define a replication object in SAP (LTCO transaction)</li>
+<li>SLT performs a full-load of VBAK</li>
+<li>SLT monitors the database log for changes</li>
+<li>Every change (insert/update/delete) flows to your target in real-time</li>
+<li>Your tool (Kafka, Snowflake) captures the stream</li>
+</ol>
+<h3>Step-by-Step: Stream VBAK to Databricks + S3 with Sub-5-Minute Lag</h3>
+<h4>Pre-Flight Check: Licensing</h4>
+<p><strong>In transaction SLICENSE:</strong></p>
+<ol>
+<li>Check license type: Is it &quot;Full Use&quot; or &quot;Runtime&quot;?</li>
+<li>If Runtime: <strong>STOP.</strong> SLT is not permitted. Go back to ODP (Example 1).</li>
+<li>If Full Use: Confirm in writing with SAP licensing team before proceeding</li>
+</ol>
+<p>This is critical. Many enterprises discover mid-implementation that they have a Runtime license. The cost of retrofitting can be $100k+.</p>
+<h4>SAP-Side Setup</h4>
+<p><strong>In transaction LTCO (SLT Configuration):</strong></p>
+<ol>
+<li>Create replication object for VBAK</li>
+<li>Partition key: <code>VKORG</code> (Sales Org) + <code>VTWEG</code> (Distribution Channel)</li>
+<li>Example partitions: VKORG=&#39;1000&#39;/VTWEG=&#39;01&#39;, VKORG=&#39;1000&#39;/VTWEG=&#39;02&#39;, etc.</li>
+<li>Set parallel readers: 4–8 (coordinate with Basis to avoid overloading)</li>
+</ol>
+<p><strong>In transaction SM50 (Work Processes):</strong></p>
+<ol>
+<li>During full-load, monitor active dialogs</li>
+<li>Keep utilization &lt; 80% to avoid impacting sales transactions</li>
+</ol>
+<p><strong>In transaction SM59 (RFC Destination):</strong></p>
+<ol>
+<li>Create destination for your target (Kafka, Snowflake, S3, or Event Hub)</li>
+<li>SAP writes directly to your cloud infrastructure</li>
+<li>No intermediate servers needed</li>
+</ol>
+<h4>SLT Direct-to-Cloud Options (Full Use License Only)</h4>
+<p><strong>💡 Key Advantage:</strong> With Full Use license, SAP pushes data <strong>directly</strong> to your cloud without Kafka:</p>
+<p><strong>Option A: Direct to Kafka</strong> (most flexible for CDC logic)</p>
+<ul>
+<li>SAP → Kafka topic</li>
+<li>Databricks consumes for transformation</li>
+<li>Best for: Complex change data capture, deduplication, multi-consumer scenarios</li>
+</ul>
+<p><strong>Option B: Direct to S3/Azure Data Lake</strong> (serverless)</p>
+<ul>
+<li>SAP → S3 bucket or ADLS directly</li>
+<li>Databricks or Snowflake reads from cloud storage</li>
+<li>Best for: Cost optimization, eventual consistency, event-driven architectures</li>
+<li>Pay only for storage + compute, no intermediate infrastructure</li>
+</ul>
+<p><strong>Option C: Direct to Snowflake</strong> (one-step ingestion)</p>
+<ul>
+<li>SAP → Snowflake table directly</li>
+<li>No staging required</li>
+<li>Best for: Snowflake-native teams, simpler architecture</li>
+<li>Note: Requires Snowflake connector configuration</li>
+</ul>
+<p><strong>Option D: Direct to Event Hubs / Pub/Sub</strong> (managed streaming)</p>
+<ul>
+<li>SLT → Azure Event Hubs or Google Pub/Sub</li>
+<li>Your cloud provider handles scaling</li>
+<li>Best for: Teams already using cloud-native event systems</li>
+</ul>
+<p><strong>Which path should you choose?</strong></p>
+<ul>
+<li><strong>Complex CDC (capture deletes, schema evolution):</strong> Use Kafka</li>
+<li><strong>Simple streaming, no infrastructure management:</strong> Direct to Snowflake or S3</li>
+<li><strong>Cost-sensitive, eventual consistency OK:</strong> Direct to S3</li>
+<li><strong>Already using Kafka for other pipelines:</strong> Direct to Kafka for consistency</li>
+</ul>
+<h4>Kafka Setup (If Using Kafka as Intermediate)</h4>
+<p><strong>On your Kafka cluster:</strong></p>
+<ol>
+<li>Create topic: <code>sap-vbak-cdc</code> (change data capture)</li>
+<li>Partitions: one per SLT replication partition</li>
+<li>Retention: 7 days (allows for late subscribers)</li>
+<li>Configure SLT RFC destination to push to Kafka</li>
+</ol>
+<p><strong>Kafka message format (example):</strong></p>
+<pre><code class="language-json">{
+  &quot;op&quot;: &quot;I&quot;,  // Insert
+  &quot;table&quot;: &quot;VBAK&quot;,
+  &quot;key&quot;: {&quot;VBELN&quot;: &quot;0000100001&quot;},
+  &quot;data&quot;: {
+    &quot;VBELN&quot;: &quot;0000100001&quot;,
+    &quot;KUNNR&quot;: &quot;0001234&quot;,
+    &quot;VKORG&quot;: &quot;1000&quot;,
+    &quot;VTWEG&quot;: &quot;01&quot;,
+    &quot;NETWR&quot;: &quot;50000.00&quot;,
+    &quot;WAERK&quot;: &quot;USD&quot;
+  },
+  &quot;timestamp&quot;: 1713871234
+}
+</code></pre>
+<h4>Databricks Streaming</h4>
+<p><strong>In Databricks Notebook:</strong></p>
+<pre><code class="language-python">from pyspark.sql import SparkSession
+from pyspark.sql.functions import from_json, col
+from pyspark.sql.types import StructType, StructField, StringType, DoubleType
+
+spark = SparkSession.builder.appName(&quot;SAP_VBAK_Stream&quot;).getOrCreate()
+
+# Define schema for Kafka messages
+schema = StructType([
+    StructField(&quot;op&quot;, StringType()),
+    StructField(&quot;table&quot;, StringType()),
+    StructField(&quot;key&quot;, StringType()),
+    StructField(&quot;data&quot;, StringType()),
+    StructField(&quot;timestamp&quot;, StringType())
+])
+
+# Read from Kafka topic
+kafka_df = spark.readStream \
+    .format(&quot;kafka&quot;) \
+    .option(&quot;kafka.bootstrap.servers&quot;, &quot;kafka:9092&quot;) \
+    .option(&quot;subscribe&quot;, &quot;sap-vbak-cdc&quot;) \
+    .option(&quot;startingOffsets&quot;, &quot;earliest&quot;) \
+    .load()
+
+# Parse JSON
+parsed_df = kafka_df.select(
+    from_json(col(&quot;value&quot;).cast(&quot;string&quot;), schema).alias(&quot;value&quot;)
+).select(&quot;value.*&quot;)
+
+# Bronze layer: Raw CDC
+parsed_df.writeStream \
+    .format(&quot;parquet&quot;) \
+    .option(&quot;path&quot;, &quot;s3://company-datalake/bronze/vbak-cdc/&quot;) \
+    .option(&quot;checkpointLocation&quot;, &quot;s3://company-datalake/checkpoints/bronze-vbak/&quot;) \
+    .partitionBy(&quot;timestamp&quot;) \
+    .start()
+
+# Silver layer: Deduplicated (latest version of each order)
+parsed_df.createOrReplaceTempView(&quot;vbak_cdc&quot;)
+
+silver_query = &quot;&quot;&quot;
+WITH latest_changes AS (
+  SELECT
+    key,
+    data,
+    timestamp,
+    ROW_NUMBER() OVER (PARTITION BY key ORDER BY timestamp DESC) as rn
+  FROM vbak_cdc
+)
+SELECT * FROM latest_changes WHERE rn = 1
+&quot;&quot;&quot;
+
+spark.sql(silver_query).writeStream \
+    .format(&quot;parquet&quot;) \
+    .option(&quot;path&quot;, &quot;s3://company-datalake/silver/vbak-current/&quot;) \
+    .option(&quot;checkpointLocation&quot;, &quot;s3://company-datalake/checkpoints/silver-vbak/&quot;) \
+    .outputMode(&quot;update&quot;) \
+    .start()
+
+spark.awaitAnyStreamingQuery()
+</code></pre>
+<h4>S3 Architecture</h4>
+<pre><code>s3://company-datalake/
+├── bronze/
+│   └── vbak-cdc/          # Raw CDC events (insert/update/delete)
+│       ├── 2026-04-23/
+│       └── 2026-04-24/
+├── silver/
+│   └── vbak-current/      # Latest version of each order (deduplicated)
+├── gold/
+│   └── vbak-business/     # Business-ready (joins with KNA1, etc.)
+└── checkpoints/           # Spark streaming checkpoints (don&#39;t delete!)
+</code></pre>
+<h4>Verification</h4>
+<p><strong>In SAP, transaction ODQMON:</strong></p>
+<ol>
+<li>Find replication object for VBAK</li>
+<li>Check status: &quot;DELTA&quot; means replication is active</li>
+<li>Monitor lag: should be &lt; 5 minutes</li>
+</ol>
+<p><strong>In Databricks:</strong></p>
+<pre><code class="language-python"># Check latest record
+df = spark.read.parquet(&quot;s3://company-datalake/silver/vbak-current/&quot;)
+latest = df.orderBy(col(&quot;timestamp&quot;).desc()).limit(1).select(&quot;data&quot;, &quot;timestamp&quot;).show()
+# Should be within 5 minutes of now
+</code></pre>
+<h4>Timeline</h4>
+<ul>
+<li><strong>Full load:</strong> 2–4 hours (50M orders across all partitions)</li>
+<li><strong>Delta lag:</strong> &lt; 5 minutes (Databricks processes Kafka within 1–2 minutes)</li>
+</ul>
+<h3>Alternative Tools</h3>
+<p>Don&#39;t want Kafka + Databricks? Other paths:</p>
+<ul>
+<li><strong>Snowflake:</strong> SLT → Snowflake Kafka connector directly (no Kafka needed)</li>
+<li><strong>Azure ADLS:</strong> SLT → Event Hubs → Azure Synapse Analytics</li>
+<li><strong>Google Cloud:</strong> SLT → Pub/Sub → BigQuery</li>
+<li><strong>Custom Kafka consumers:</strong> Write Go/Python/Rust apps to consume Kafka and push to your warehouse</li>
+</ul>
+<h3>What Comes Next</h3>
+<p>Now that you&#39;re streaming VBAK:</p>
+<ol>
+<li><strong>Deep dive:</strong> See the full <a href="/walkthrough/beginner/vbak/">VBAK walkthrough</a> for one-time loads</li>
+<li><strong>Real-time:</strong> Check <a href="/walkthrough/expert/vbak/">VBAK expert</a> for SLT streaming details</li>
+<li><strong>Avoid licensing trap:</strong> Read <a href="/articles/sap-runtime-license-trap/">Full Use vs. Runtime licensing</a></li>
+<li><strong>Monitor health:</strong> Read <a href="/articles/streaming-reconciliation/">reconciliation and data quality for streaming</a></li>
+</ol>
+<hr>
+<h2>Licensing &amp; Common Pitfalls: How to Avoid $100k+ Mistakes</h2>
+<h3>Licensing Trap #1: Designing Before Confirming License</h3>
+<p><strong>What happens:</strong></p>
+<ul>
+<li>You design an extraction architecture using SLT (real-time replication)</li>
+<li>3 months after go-live, audit discovers your license is Runtime, not Full Use</li>
+<li>SAP licensing team demands retroactive licensing costs: $50k–$200k</li>
+<li>You must redesign the entire architecture or pay</li>
+</ul>
+<p><strong>How to avoid:</strong></p>
+<ol>
+<li><strong>Before day 1 of design:</strong> Check SLICENSE transaction in your SAP system</li>
+<li><strong>Get it in writing:</strong> Request written confirmation from SAP licensing team</li>
+<li><strong>If Runtime license:</strong> Use ODP instead of SLT (no special license required)</li>
+<li><strong>If Full Use:</strong> Document it for audit trail</li>
+</ol>
+<h3>Licensing Trap #2: ACDOCA Without Partitioning</h3>
+<p><strong>What happens:</strong></p>
+<ul>
+<li>You extract ACDOCA without filtering by BUKRS + GJAHR</li>
+<li>SAP application server tries to load 5 billion rows into memory</li>
+<li>Application server crashes with TSLIB short dump</li>
+<li>Finance users can&#39;t post GL entries for 2 hours</li>
+<li>Your CIO gets a call</li>
+</ul>
+<p><strong>How to avoid:</strong></p>
+<ol>
+<li><strong>Always filter ACDOCA</strong> by at least BUKRS (company code) and GJAHR (fiscal year)</li>
+<li><strong>Count before extracting</strong> in SE16N</li>
+<li><strong>Reconcile after extracting:</strong> SE16N count must match your target count</li>
+</ol>
+<h3>Licensing Trap #3: Raw ACDOCA Extract (Authorization Issues)</h3>
+<p><strong>What happens:</strong></p>
+<ul>
+<li>You extract raw ACDOCA table (not via CDS view)</li>
+<li>Authorization restrictions aren&#39;t enforced</li>
+<li>You extract GL entries for restricted profit centers</li>
+<li>Audit finds sensitive financial data in your cloud warehouse</li>
+<li>Compliance incident</li>
+</ul>
+<p><strong>How to avoid:</strong></p>
+<ol>
+<li><strong>Always use released CDS views</strong> (e.g., <code>I_JournalEntryItem</code> for ACDOCA)</li>
+<li>CDS views enforce SAP authorization</li>
+<li>CDS views apply currency conversion automatically</li>
+<li>CDS views are SAP&#39;s standard for analytics extraction</li>
+</ol>
+<h3>Licensing Trap #4: No Reconciliation</h3>
+<p><strong>What happens:</strong></p>
+<ul>
+<li>You extract 500M rows of ACDOCA</li>
+<li>An hour later, you discover you only got 499M rows</li>
+<li>Silent data quality issue—no error was thrown</li>
+<li>Finance reports are wrong, and you don&#39;t know for how long</li>
+</ul>
+<p><strong>How to avoid:</strong></p>
+<ol>
+<li><strong>After every extract:</strong> Count rows in your target</li>
+<li><strong>Compare to SAP:</strong> Run SE16N count query with same filters</li>
+<li><strong>If mismatch &gt; 0.1%:</strong> Investigate before declaring success</li>
+<li><strong>Automate it:</strong> Build a reconciliation check into every pipeline</li>
+</ol>
+<hr>
+<h2>Summary: Three Methods, Three Decisions</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Method</th>
+<th>Example</th>
+<th>License</th>
+<th>Tools</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Extract GL data (ACDOCA), batch, scheduled</td>
+<td>ODP</td>
+<td>500M rows/year → S3 monthly</td>
+<td>Runtime OK</td>
+<td>Databricks, ADF, Fivetran</td>
+</tr>
+<tr>
+<td>Stream sales orders (VBAK) in real-time</td>
+<td>SLT</td>
+<td>Every order change → Kafka → analytics</td>
+<td>Full Use required</td>
+<td>Kafka, Snowflake, Databricks</td>
+</tr>
+<tr>
+<td>Legacy system, custom integration</td>
+<td>RFC</td>
+<td>Rare, not recommended</td>
+<td>Runtime OK</td>
+<td>Custom code only</td>
+</tr>
+</tbody></table>
+<p><strong>Your next step:</strong></p>
+<ol>
+<li><strong>Pick your table:</strong> ACDOCA (GL), VBAK (Sales), or another</li>
+<li><strong>Pick your method:</strong> ODP (batch) or SLT (real-time)</li>
+<li><strong>Pick your destination:</strong> S3, Snowflake, Databricks, or cloud storage</li>
+<li><strong>Validate licensing:</strong> Check SLICENSE before you design</li>
+<li><strong>Start with a walkthrough:</strong> Use the full <a href="/walkthrough/">beginner walkthrough</a> for step-by-step guidance</li>
+</ol>
+<hr>
+<h2>Get Notified of New Walkthroughs</h2>
+<p>We publish new extraction patterns every 2 weeks. Stay updated with intermediate and expert patterns for ACDOCA, BKPF, MARA, and more.</p>
+<p>**<a href="">Sign up for notifications →</a> **</p>
+<hr>
+
+      </div>
+    </div>
+
+    <!-- Section card: related walkthroughs -->
+    <div class="card section">
+      <h2>Related <em>walkthroughs</em></h2>
+      <ul style="list-style:disc;padding-left:var(--space-6);">
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough/beginner/acdoca/">Walkthrough: beginner — acdoca</a>
+        </li>
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough/intermediate/acdoca/">Walkthrough: intermediate — acdoca</a>
+        </li>
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough/expert/acdoca/">Walkthrough: expert — acdoca</a>
+        </li>
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough/beginner/vbak/">Walkthrough: beginner — vbak</a>
+        </li>
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough/intermediate/vbak/">Walkthrough: intermediate — vbak</a>
+        </li>
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough/expert/vbak/">Walkthrough: expert — vbak</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+        <p class="copyright">© SAP Extract Guide 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

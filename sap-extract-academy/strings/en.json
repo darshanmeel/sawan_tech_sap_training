@@ -41,6 +41,6 @@
   },
   "footer": {
     "disclaimer": "⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S/4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.",
-    "copyright": "© SAP Extract Academy"
+    "copyright": "© SAP Extract Guide"
   }
 }

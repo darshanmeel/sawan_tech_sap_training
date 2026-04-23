@@ -216,8 +216,8 @@ function buildJsonLd(pageType, data, canonicalPath, breadcrumbs) {
       '@type': 'TechArticle',
       'headline': data.title,
       'description': data.description || data.seoDescription,
-      'author': { '@type': 'Organization', 'name': 'SAP Extract Academy' },
-      'publisher': { '@type': 'Organization', 'name': 'SAP Extract Academy' },
+      'author': { '@type': 'Organization', 'name': 'SAP Extract Guide' },
+      'publisher': { '@type': 'Organization', 'name': 'SAP Extract Guide' },
       'datePublished': data.publishDate || new Date().toISOString(),
       'dateModified': data.updatedAt || new Date().toISOString(),
       'mainEntityOfPage': baseUrl + canonicalPath,
@@ -240,7 +240,7 @@ function buildJsonLd(pageType, data, canonicalPath, breadcrumbs) {
       'description': data.shortDefinition,
       'inDefinedTermSet': {
         '@type': 'DefinedTermSet',
-        'name': 'SAP Extract Academy Glossary',
+        'name': 'SAP Extract Guide Glossary',
         'url': baseUrl + '/glossary/'
       }
     });
@@ -248,7 +248,7 @@ function buildJsonLd(pageType, data, canonicalPath, breadcrumbs) {
     return JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'WebPage',
-      'name': 'SAP Extract Academy Roadmap',
+      'name': 'SAP Extract Guide Roadmap',
       'description': 'Upcoming phases and content roadmap',
       'url': baseUrl + canonicalPath
     });
@@ -846,7 +846,12 @@ function generateDirectoryIndex() {
         title: data.title || '',
         module: data.module || '',
         mode,
-        modeLabel: MODE_LABELS[mode] || mode,
+        systemTags: (() => {
+          const modeStr = mode;
+          if (modeStr.includes('both') || modeStr === 's4-ecc') return ['S/4HANA', 'ECC'];
+          if (modeStr.includes('ecc')) return ['ECC'];
+          return ['S/4HANA'];
+        })(),
         descriptionOneLiner: data.description_one_liner || '',
         typicalRows: data.typical_rows || '',
         volumeClass: data.volume_class || '',
@@ -1137,7 +1142,7 @@ function generateSitemap() {
 }
 
 function build() {
-  console.log('Building SAP Extract Academy...\n');
+  console.log('Building SAP Extract Guide...\n');
 
   if (fs.existsSync(CONTENT_DIR)) {
     walkFiles(CONTENT_DIR);

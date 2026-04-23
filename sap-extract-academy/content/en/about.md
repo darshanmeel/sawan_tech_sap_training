@@ -1,10 +1,10 @@
 ---
 slug: /about/
 pageType: about
-title: "About SAP Extract Academy"
-summary: "Who we are, why this academy exists, and what it stands for."
-seoTitle: "About SAP Extract Academy — Our Mission"
-seoDescription: "SAP Extract Academy teaches professional data extraction patterns. For data architects, engineers, and analytics teams at enterprise scale."
+title: "About SAP Extract Guide"
+summary: "Who we are, why this guide exists, and what it stands for."
+seoTitle: "About SAP Extract Guide — Our Mission"
+seoDescription: "SAP Extract Guide teaches professional data extraction patterns. For data architects, engineers, and analytics teams at enterprise scale."
 updatedAt: 2026-04-22
 ---
 
@@ -14,7 +14,7 @@ SAP data extraction is broken. Organizations spend millions migrating from ECC t
 
 The industry response is vendor-centric: "Use our tool, it handles everything." The reality is vendor lock-in, licensing surprises, and patterns that don't transfer when you switch tools.
 
-This academy exists to fix that. We teach **professional extraction patterns**—the principles behind successful data pipelines, independent of vendor or tool. A data architect should understand why ACDOCA partitioning is mandatory, not because one tool requires it, but because the table's structure makes it mandatory.
+This guide exists to fix that. We teach **professional extraction patterns**—the principles behind successful data pipelines, independent of vendor or tool. A data architect should understand why ACDOCA partitioning is mandatory, not because one tool requires it, but because the table's structure makes it mandatory.
 
 ## What We Teach
 
@@ -28,7 +28,7 @@ This academy exists to fix that. We teach **professional extraction patterns**�
 
 ## Who We Are
 
-This academy is built by data architects and engineers who have:
+This guide is built by data architects and engineers who have:
 - Migrated terabytes from SAP to cloud data warehouses
 - Hit (and fixed) memory exhaustion on ACDOCA extraction
 - Discovered licensing violations during SAP audits
@@ -58,7 +58,7 @@ We've made the mistakes so you don't have to.
 
 **Currency.** SAP updates S/4HANA every year. We update walkthroughs and patterns to reflect current versions and best practices.
 
-## How to Use This Academy
+## How to Use This Guide
 
 **Start with your problem.** Need to extract ACDOCA? Find the ACDOCA walkthrough. Choose beginner (simple, one-time), intermediate (multi-year production load), or expert (real-time GL).
 
@@ -80,9 +80,9 @@ For those, we link to the relevant documentation.
 
 ## Contact & Contributions
 
-We're building this academy for the data community. If you have questions, corrections, or suggestions, reach out:
+We're building this guide for the data community. If you have questions, corrections, or suggestions, reach out:
 
-- **Email**: team@sapextractacademy.com (coming soon)
+- **Email**: team@sapextractguide.com (coming soon)
 - **GitHub**: [darshanmeel/sawan_tech_sap_training](https://github.com/darshanmeel/sawan_tech_sap_training)
 - **LinkedIn**: Follow for new walkthroughs and extraction patterns
 
@@ -92,4 +92,4 @@ ACDOCA, BKPF, VBAK, MARA, LFA1 are complete. Coming soon: ECC-only tables (no S/
 
 The vision: a comprehensive, production-grade curriculum for SAP data extraction, built by and for data professionals.
 
-Welcome to the academy. Let's build better extraction architectures together.
+Welcome to the guide. Let's build better extraction architectures together.

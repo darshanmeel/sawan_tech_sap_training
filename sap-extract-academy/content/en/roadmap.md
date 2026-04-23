@@ -1,10 +1,10 @@
 ---
 slug: /roadmap/
 pageType: roadmap
-title: "SAP Extract Academy Roadmap"
+title: "SAP Extract Guide Roadmap"
 summary: "Planned walkthroughs, articles, and features for 2026-2027."
-seoTitle: "SAP Extract Academy Roadmap — What's Coming"
-seoDescription: "Roadmap for new walkthroughs, advanced patterns, and features planned for SAP Extract Academy in 2026 and 2027."
+seoTitle: "SAP Extract Guide Roadmap — What's Coming"
+seoDescription: "Roadmap for new walkthroughs, advanced patterns, and features planned for SAP Extract Guide in 2026 and 2027."
 updatedAt: 2026-04-22
 ---
 
@@ -149,6 +149,6 @@ Yes! Once we launch the GitHub discussions board (Q2 2026), you can:
 - Report corrections or clarifications
 - Submit code examples
 
-We're building this academy for the data community. Your contributions help everyone.
+We're building this guide for the data community. Your contributions help everyone.
 
-Thank you for being part of SAP Extract Academy.
+Thank you for being part of SAP Extract Guide.

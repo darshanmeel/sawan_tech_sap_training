@@ -3,7 +3,7 @@ title: "Why Reading ACDOCA Directly Breaks Your SAP System"
 slug: why-acdoca-breaks-sap
 publishDate: 2026-04-22
 readingTimeMinutes: 8
-author: "SAP Extract Academy"
+author: "SAP Extract Guide"
 summary: "ACDOCA is the universal journal—billions of rows, complex structure, and a raw SELECT * will exhaust memory and lock the system. Learn why direct reads are dangerous and what to extract instead."
 relatedWalkthroughs:
   - slug: acdoca

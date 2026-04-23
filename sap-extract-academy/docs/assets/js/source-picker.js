@@ -2,7 +2,7 @@
 // Allows users to select ECC or S/4HANA and stores preference
 
 (function() {
-  const STORAGE_KEY = 'sap-extract-academy-source-version';
+  const STORAGE_KEY = 'sap-extract-guide-source-version';
   const DEFAULT_VERSION = 's4hana';
 
   function initializeSourcePicker() {
@@ -66,9 +66,9 @@
   }
 
   // Expose to global scope
-  window.sapExtractAcademy = window.sapExtractAcademy || {};
-  window.sapExtractAcademy.sourceVersion = getSourceVersion;
-  window.sapExtractAcademy.setSourceVersion = saveSourceVersion;
+  window.sapExtractGuide = window.sapExtractGuide || {};
+  window.sapExtractGuide.sourceVersion = getSourceVersion;
+  window.sapExtractGuide.setSourceVersion = saveSourceVersion;
 
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {

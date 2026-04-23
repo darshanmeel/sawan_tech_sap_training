@@ -3,7 +3,7 @@ title: "How to Extract Any SAP Data — The Complete Guide"
 slug: how-to-extract-any-sap-data
 publishDate: 2026-04-23
 readingTimeMinutes: 12
-author: "SAP Extract Academy"
+author: "SAP Extract Guide"
 summary: "Master SAP data extraction with ACDOCA (GL) and VBAK (Sales Orders) examples. Learn which method to use, how to avoid licensing traps, and build your first extraction pipeline."
 relatedWalkthroughs:
   - slug: acdoca

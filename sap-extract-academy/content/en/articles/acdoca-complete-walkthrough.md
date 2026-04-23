@@ -3,7 +3,7 @@ title: "ACDOCA Extraction: Three Patterns from Beginner to Enterprise"
 slug: acdoca-complete-walkthrough
 publishDate: 2026-04-22
 readingTimeMinutes: 8
-author: "SAP Extract Academy"
+author: "SAP Extract Guide"
 summary: "A guide to extracting ACDOCA (the Universal Journal) at three levels of scale and complexity. The decision points are SAP-side: how big is your partition, do you need real-time delta, and does your license cover your chosen method."
 relatedWalkthroughs:
   - slug: acdoca
