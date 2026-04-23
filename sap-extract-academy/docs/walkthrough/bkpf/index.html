@@ -796,6 +796,38 @@ print(f&quot;Total extracted: {total_rows} rows across {len(partitions)} partiti
               </li>
             </ol>
           </div>
+          <div data-tool-block="databricks" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Databricks — multi-partition extraction with Spark</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Extract BKPF partitions in parallel with Spark SQL</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Use Databricks Spark with a custom ODP or RFC connector to extract from I_AccountingDocument. Create a Spark DataFrame for each (BUKRS, GJAHR) partition, then write each as a Delta table. Databricks natively parallelizes the reads across multiple partitions.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Delta tables created in Databricks workspace for each partition. Running SELECT COUNT(*) on each table matches SE16N counts. Tables are queryable from Databricks notebooks.</p>
+              </li>
+            </ol>
+          </div>
+          <div data-tool-block="fivetran" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Fivetran — scheduled multi-partition extraction</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Set up Fivetran connector with schedule for I_AccountingDocument</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Create a Fivetran connector using OData to SAP ODP. Configure Fivetran to extract I_AccountingDocument in scheduled full-load runs (daily or weekly). If Fivetran supports parameterized filters, add BUKRS and GJAHR filters per run. Otherwise, Fivetran will extract the full view and your downstream transform filters the partitions.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Fivetran syncs complete on schedule. Data arrives in your target warehouse (Snowflake, Redshift, BigQuery) in a table with BUKRS and GJAHR columns. Row counts per partition match SE16N.</p>
+              </li>
+            </ol>
+          </div>
         </div>
 
         <!-- Tool troubleshooting -->

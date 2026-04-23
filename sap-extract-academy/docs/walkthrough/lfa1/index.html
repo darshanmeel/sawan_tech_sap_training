@@ -818,6 +818,38 @@ print(f&quot;Extraction complete: {rows_extracted} rows&quot;)</code></pre>
               </li>
             </ol>
           </div>
+          <div data-tool-block="databricks" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Databricks — hourly delta extraction with Spark</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Extract LFA1 delta via Spark ODP connector with scheduled job</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Use Databricks Spark with an ODP connector to extract from I_Supplier in delta mode. Create a scheduled Databricks job that runs every hour. Each job run appends changed vendor rows to a Delta table, maintaining a full incremental history.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Databricks job runs hourly. Delta table shows new rows appearing within minutes of vendor changes in SAP. Delta transaction log shows incremental appends on each run.</p>
+              </li>
+            </ol>
+          </div>
+          <div data-tool-block="fivetran" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Fivetran — automatic hourly sync</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Configure Fivetran OData connector for hourly incremental sync</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Create a Fivetran connector to I_Supplier using OData source type. Set sync frequency to hourly. Fivetran automatically detects changes in the ODP delta queue and syncs only new/modified vendor records to your target warehouse.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Fivetran connector syncs hourly automatically. Sync logs show incremental row counts (0–N per run). Target warehouse table contains cumulative vendor data with change tracking.</p>
+              </li>
+            </ol>
+          </div>
         </div>
 
         <!-- Tool troubleshooting -->

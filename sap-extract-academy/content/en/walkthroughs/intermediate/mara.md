@@ -148,6 +148,20 @@ toolSteps:
         explanation: "In ADF Copy Activity, set the source OData service to point to ZPROD_ZFIELDS instead of the base I_Product. All fields including ZZ_BRAND and ZZ_SUSTAINABILITY are now available. Write directly to Azure Data Lake Storage or Synapse table."
         verify: "Pipeline output includes MATNR, MTART, ZZ_BRAND, and ZZ_SUSTAINABILITY columns. Z-field values appear in the target dataset."
 
+  - tool: databricks
+    label: "Databricks — full load with Spark"
+    steps:
+      - title: "Extract MARA via Spark OData connector"
+        explanation: "Use Databricks Spark with an ODP/OData connector to extract from ZPROD_ZFIELDS (or I_Product if no Z-fields are needed). Write the resulting DataFrame as a Delta table in Databricks, partitioned by common filter columns if needed."
+        verify: "Delta table created in Databricks with all MARA columns including Z-fields. SELECT COUNT(*) matches SE16N row count."
+
+  - tool: fivetran
+    label: "Fivetran — scheduled full load"
+    steps:
+      - title: "Configure Fivetran OData connector for MARA with Z-fields"
+        explanation: "In Fivetran, create a connector to ZPROD_ZFIELDS (or I_Product) using OData source type. Configure schedule for daily or weekly full-load syncs. Fivetran will detect the extension view automatically and include all Z-field columns in the schema."
+        verify: "Fivetran connector syncs successfully. Target warehouse table includes MATNR, MTART, ZZ_BRAND, ZZ_SUSTAINABILITY columns. Row count matches SE16N."
+
 nextSteps:
   - label: "Try MARA Expert — 20+ Z-fields, multi-table extraction"
     url: "/walkthrough/expert/mara/"

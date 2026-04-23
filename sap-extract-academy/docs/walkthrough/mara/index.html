@@ -795,6 +795,38 @@ conn.close()</code></pre>
               </li>
             </ol>
           </div>
+          <div data-tool-block="databricks" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Databricks — full load with Spark</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Extract MARA via Spark OData connector</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Use Databricks Spark with an ODP/OData connector to extract from ZPROD_ZFIELDS (or I_Product if no Z-fields are needed). Write the resulting DataFrame as a Delta table in Databricks, partitioned by common filter columns if needed.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Delta table created in Databricks with all MARA columns including Z-fields. SELECT COUNT(*) matches SE16N row count.</p>
+              </li>
+            </ol>
+          </div>
+          <div data-tool-block="fivetran" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Fivetran — scheduled full load</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Configure Fivetran OData connector for MARA with Z-fields</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">In Fivetran, create a connector to ZPROD_ZFIELDS (or I_Product) using OData source type. Configure schedule for daily or weekly full-load syncs. Fivetran will detect the extension view automatically and include all Z-field columns in the schema.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Fivetran connector syncs successfully. Target warehouse table includes MATNR, MTART, ZZ_BRAND, ZZ_SUSTAINABILITY columns. Row count matches SE16N.</p>
+              </li>
+            </ol>
+          </div>
         </div>
 
         <!-- Tool troubleshooting -->

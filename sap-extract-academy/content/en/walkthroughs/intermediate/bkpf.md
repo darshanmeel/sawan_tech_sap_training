@@ -149,6 +149,20 @@ toolSteps:
         explanation: "In ADF, create a pipeline with parameters for BUKRS and GJAHR. The Copy Activity source queries I_AccountingDocument with ODP, filtering on these parameters. Then create a ForEach loop that iterates through all (BUKRS, GJAHR) pairs, calling the parameterized Copy Activity for each."
         verify: "Pipeline runs for all partitions. Row counts per partition visible in ADF monitoring. All data lands in Azure Data Lake Storage organized by BUKRS/GJAHR folder structure."
 
+  - tool: databricks
+    label: "Databricks — multi-partition extraction with Spark"
+    steps:
+      - title: "Extract BKPF partitions in parallel with Spark SQL"
+        explanation: "Use Databricks Spark with a custom ODP or RFC connector to extract from I_AccountingDocument. Create a Spark DataFrame for each (BUKRS, GJAHR) partition, then write each as a Delta table. Databricks natively parallelizes the reads across multiple partitions."
+        verify: "Delta tables created in Databricks workspace for each partition. Running SELECT COUNT(*) on each table matches SE16N counts. Tables are queryable from Databricks notebooks."
+
+  - tool: fivetran
+    label: "Fivetran — scheduled multi-partition extraction"
+    steps:
+      - title: "Set up Fivetran connector with schedule for I_AccountingDocument"
+        explanation: "Create a Fivetran connector using OData to SAP ODP. Configure Fivetran to extract I_AccountingDocument in scheduled full-load runs (daily or weekly). If Fivetran supports parameterized filters, add BUKRS and GJAHR filters per run. Otherwise, Fivetran will extract the full view and your downstream transform filters the partitions."
+        verify: "Fivetran syncs complete on schedule. Data arrives in your target warehouse (Snowflake, Redshift, BigQuery) in a table with BUKRS and GJAHR columns. Row counts per partition match SE16N."
+
 nextSteps:
   - label: "Try BKPF Expert — SLT parallel readers for enterprise scale"
     url: "/walkthrough/expert/bkpf/"

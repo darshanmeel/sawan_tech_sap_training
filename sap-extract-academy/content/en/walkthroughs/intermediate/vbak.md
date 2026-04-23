@@ -149,6 +149,20 @@ toolSteps:
         explanation: "In the ADF Copy Activity source settings, change Extraction Mode from Full to Incremental. ADF will manage the delta watermark automatically using the ODP subscription registered in step 02 of the SAP-side flow. Point the source object at ZI_SalesDocument_Ext to include ZZ_REGION."
         verify: "Pipeline run shows Incremental mode. Row count equals number of changed records since last run (check ODQMON for expected count)."
 
+  - tool: databricks
+    label: "Databricks — daily delta extraction with Spark"
+    steps:
+      - title: "Extract VBAK delta via Spark ODP connector"
+        explanation: "Use Databricks Spark with an ODP connector to extract from ZI_SalesDocument_Ext (the extension view with ZZ_REGION). Configure a scheduled Databricks job to run daily. Each run appends changed order records to a Delta table, maintaining full change history."
+        verify: "Databricks job runs daily. Delta table shows new rows appearing after SAP posting activity. Row count per run equals number of changed orders detected in ODQMON."
+
+  - tool: fivetran
+    label: "Fivetran — daily delta sync"
+    steps:
+      - title: "Configure Fivetran OData connector for daily VBAK delta"
+        explanation: "Create a Fivetran connector to ZI_SalesDocument_Ext using OData source type. Set sync frequency to daily. Fivetran detects changes via ODP and syncs only new/modified orders. Include ZZ_REGION in the column mapping."
+        verify: "Fivetran syncs daily automatically. Target warehouse receives incremental order changes. ZZ_REGION values populated for new and changed orders."
+
 nextSteps:
   - label: "Try VBAK Expert — SLT push replication for real-time scenarios"
     url: "/walkthrough/expert/vbak/"

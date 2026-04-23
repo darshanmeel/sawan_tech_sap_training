@@ -172,6 +172,20 @@ toolSteps:
         explanation: "In ADF, create a pipeline with a Copy Activity pointing to I_Supplier with delta mode enabled. Attach a Scheduled Trigger set to run every hour. ADF automatically manages the delta token and incremental load state."
         verify: "Pipeline runs hourly. Each run shows 0–N rows depending on vendor changes in SAP. ODQMON shows subscription status active and queue depth increasing/decreasing with extraction frequency."
 
+  - tool: databricks
+    label: "Databricks — hourly delta extraction with Spark"
+    steps:
+      - title: "Extract LFA1 delta via Spark ODP connector with scheduled job"
+        explanation: "Use Databricks Spark with an ODP connector to extract from I_Supplier in delta mode. Create a scheduled Databricks job that runs every hour. Each job run appends changed vendor rows to a Delta table, maintaining a full incremental history."
+        verify: "Databricks job runs hourly. Delta table shows new rows appearing within minutes of vendor changes in SAP. Delta transaction log shows incremental appends on each run."
+
+  - tool: fivetran
+    label: "Fivetran — automatic hourly sync"
+    steps:
+      - title: "Configure Fivetran OData connector for hourly incremental sync"
+        explanation: "Create a Fivetran connector to I_Supplier using OData source type. Set sync frequency to hourly. Fivetran automatically detects changes in the ODP delta queue and syncs only new/modified vendor records to your target warehouse."
+        verify: "Fivetran connector syncs hourly automatically. Sync logs show incremental row counts (0–N per run). Target warehouse table contains cumulative vendor data with change tracking."
+
 nextSteps:
   - label: "Try LFA1 Expert — multi-table extraction with LFB1 and LFBK"
     url: "/walkthrough/expert/lfa1/"
