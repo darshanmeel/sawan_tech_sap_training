@@ -7,9 +7,10 @@
 
   <header class="title-block">
     <div>
-      <p class="eyebrow">{{module}}{{#moduleRole}} · {{moduleRole}}{{/moduleRole}}{{#modeLabel}} · {{modeLabel}}{{/modeLabel}}</p>
+      <p class="eyebrow">{{module}}{{#moduleRole}} · {{moduleRole}}{{/moduleRole}}</p>
       <h1>{{name}}<em>.</em></h1>
       {{#descriptionOneLiner}}<p class="subtitle">{{descriptionOneLiner}}</p>{{/descriptionOneLiner}}
+      {{#systemTags}}<div class="system-tags">{{#systemTags}}<span class="chip">{{.}}</span>{{/systemTags}}</div>{{/systemTags}}
     </div>
     <dl class="meta">
       {{#typicalRows}}<div><dt>Rows</dt><dd>{{typicalRows}}</dd></div>{{/typicalRows}}
@@ -17,16 +18,6 @@
       {{#releasedCds}}<div><dt>CDS view</dt><dd>{{releasedCds}}</dd></div>{{/releasedCds}}
       {{#module}}<div><dt>Module</dt><dd>{{module}}</dd></div>{{/module}}
     </dl>
-
-    {{! Directory-only mode selector. Works without JS via a plain form submit. }}
-    <form class="directory-mode-form" method="get" action="{{basePath}}/directory/tables/{{slug}}/" data-directory-mode-form>
-      <label for="directory-mode-{{slug}}" class="sr-only">Mode</label>
-      <select id="directory-mode-{{slug}}" name="mode" data-directory-mode-select>
-        <option value="s4" {{#isS4}}selected{{/isS4}}>S/4HANA</option>
-        <option value="ecc" {{#isEcc}}selected{{/isEcc}}>ECC</option>
-      </select>
-      <noscript><button type="submit">Switch mode</button></noscript>
-    </form>
   </header>
 
   <div class="body-grid">

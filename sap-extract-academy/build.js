@@ -645,11 +645,13 @@ function buildDirectoryTableViewModel(data, bodyHtml, slug, mode, canonicalPath)
     volumeClass: data.volume_class || '',
     descriptionOneLiner: data.description_one_liner || '',
     scopeLock: data.scope_lock || '',
-    // mode
-    currentMode: mode,
-    modeLabel: MODE_LABELS[mode] || mode.toUpperCase(),
-    isS4: mode === 's4',
-    isEcc: mode === 'ecc',
+    // system availability tags
+    systemTags: (() => {
+      const modeStr = data.mode || 's4-only';
+      if (modeStr.includes('both') || modeStr === 's4-ecc') return ['S/4HANA', 'ECC'];
+      if (modeStr.includes('ecc')) return ['ECC'];
+      return ['S/4HANA'];
+    })(),
     // body (rendered markdown)
     body: bodyHtml,
     // columns
