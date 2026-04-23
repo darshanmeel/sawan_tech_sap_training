@@ -39,6 +39,7 @@ const pageTemplates = {
   glossary: fs.readFileSync(path.join(TEMPLATES_DIR, 'glossary-term.html'), 'utf-8'),
   list: fs.readFileSync(path.join(TEMPLATES_DIR, 'list.html'), 'utf-8'),
   page: fs.readFileSync(path.join(TEMPLATES_DIR, 'page.html'), 'utf-8'),
+  guide: fs.readFileSync(path.join(TEMPLATES_DIR, 'guide.html'), 'utf-8'),
   tablesIndex: fs.readFileSync(path.join(TEMPLATES_DIR, 'tables-index.html'), 'utf-8'),
   // Worker B — directory templates
   directoryTable: fs.readFileSync(path.join(TEMPLATES_DIR, 'directory-table.html'), 'utf-8'),
@@ -92,7 +93,7 @@ function getPageType(filePath) {
   if (normalized.endsWith('/directory/index.md')) return 'directoryLanding';
 
   if (baseName === 'index.md') return 'landing';
-  if (baseName === 'about.md') return 'page';
+  if (baseName === 'about.md') return 'guide';
   if (baseName === 'decide.md') return 'page';
   if (baseName === 'roadmap.md') return 'list';
   if (normalized.includes('/tables/')) return 'table';
@@ -281,6 +282,19 @@ function buildPage(filePath, content) {
   const breadcrumbs = buildBreadcrumbs(filePath, data);
   const jsonLd = buildJsonLd(pageType, data, canonicalPath, breadcrumbs);
 
+  // Parse sections for guide pages (split by h2 headers)
+  let sections = [];
+  if (pageType === 'guide') {
+    const h2Regex = /<h2>(.*?)<\/h2>/g;
+    const parts = renderedBody.split(h2Regex);
+    for (let i = 1; i < parts.length; i += 2) {
+      sections.push({
+        heading: parts[i],
+        content: parts[i + 1] ? parts[i + 1].trim() : ''
+      });
+    }
+  }
+
   const stepCount = data.steps ? data.steps.length : 0;
 
   const tableSlug = data.slug || (data.code ? data.code.toLowerCase() : '');
@@ -398,7 +412,8 @@ function buildPage(filePath, content) {
     relatedWalkthroughs,
     hasRelatedWalkthroughs: relatedWalkthroughs.length > 0,
     hasRelatedTerms: Array.isArray(data.relatedTerms) && data.relatedTerms.length > 0,
-    hasWalkthrough: walkthroughsBySlug[tableSlug] !== undefined
+    hasWalkthrough: walkthroughsBySlug[tableSlug] !== undefined,
+    sections: sections
   };
 
   const pageTypeTemplate = pageTemplates[pageType];

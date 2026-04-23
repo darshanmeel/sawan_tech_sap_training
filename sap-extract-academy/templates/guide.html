@@ -1,0 +1,26 @@
+<!-- Guide page with card-based sections — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+  <div class="grid">
+
+    <!-- Hero card with page title -->
+    <div class="card hero" style="grid-column:span 12;">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>SAP Extract Guide</p>
+        <h1>{{title}}<em>.</em></h1>
+      </div>
+      {{#summary}}<p>{{summary}}</p>{{/summary}}
+    </div>
+
+    <!-- Section cards from guide sections -->
+    {{#sections}}
+    <div class="card section">
+      <h2>{{heading}}</h2>
+      <div class="prose">
+        {{{content}}}
+      </div>
+    </div>
+    {{/sections}}
+
+  </div>
+</div>
