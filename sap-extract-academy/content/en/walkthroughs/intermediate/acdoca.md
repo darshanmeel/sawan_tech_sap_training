@@ -1,9 +1,8 @@
 ---
 table: ACDOCA
-level: intermediate
 slug: acdoca
-title: "Extract ACDOCA One Company/Year via ODP (Intermediate)"
-summary: "SAP-side intermediate guide for ACDOCA extraction. Focuses on confirming the I_JournalEntryItem CDS view, understanding ODP delta queue behavior, monitoring with ODQMON, and SE16N reconciliation for a single fiscal year partition."
+title: "Extract ACDOCA One Company/Year via ODP"
+summary: "SAP-side guide for ACDOCA extraction. Focuses on confirming the I_JournalEntryItem CDS view, understanding ODP delta queue behavior, monitoring with ODQMON, and SE16N reconciliation for a single fiscal year partition."
 estimatedMinutes: 90
 prerequisites:
   - "Technical extraction user (System type) created in SU01 with S_RFC and S_ODP_READ authorizations"
@@ -15,8 +14,8 @@ extractors:
   - ODP
   - SLT
 method: odp
-seoTitle: "Extract ACDOCA One Company/Year via ODP — SAP-Side Intermediate"
-seoDescription: "SAP-side intermediate guide for ACDOCA extraction. ODQMON delta queue behavior, CDS view validation, ODP first-delta gotcha, SE16N reconciliation."
+seoTitle: "Extract ACDOCA One Company/Year via ODP — SAP-Side Guide"
+seoDescription: "SAP-side guide for ACDOCA extraction. ODQMON delta queue behavior, CDS view validation, ODP first-delta gotcha, SE16N reconciliation."
 steps:
   - id: step-01
     title: "Confirm ACDOCA partition size in SE16N"

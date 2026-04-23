@@ -1,9 +1,8 @@
 ---
 table: MARA
-level: intermediate
 slug: mara
-title: "Extract MARA with Z-Fields via CDS Extension (Intermediate)"
-summary: "SAP-side intermediate guide for MARA extraction with custom Z-fields. Covers identifying Z-fields in SE11 Append Structures, creating a CDS extension view in SE80, confirming the extension view activates cleanly, and verifying Z-field values with SE16N."
+title: "Extract MARA with Z-Fields via CDS Extension"
+summary: "SAP-side guide for MARA extraction with custom Z-fields. Covers identifying Z-fields in SE11 Append Structures, creating a CDS extension view in SE80, confirming the extension view activates cleanly, and verifying Z-field values with SE16N."
 estimatedMinutes: 60
 prerequisites:
   - "SE80 familiarity — you can open and read a CDS view"
@@ -16,7 +15,7 @@ extractors:
   - ODP
 method: odp
 seoTitle: "Extract MARA with Z-Fields via CDS Extension — SAP-Side Intermediate"
-seoDescription: "SAP-side intermediate guide for MARA Z-field extraction. SE11 Append Structure identification, CDS extension view creation in SE80, Z-field validation with SE16N."
+seoDescription: "SAP-side guide for MARA Z-field extraction. SE11 Append Structure identification, CDS extension view creation in SE80, Z-field validation with SE16N."
 steps:
   - id: step-01
     title: "Identify Z-fields in MARA via SE11"

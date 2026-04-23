@@ -80,6 +80,7 @@ const VOLUME_LABELS = {
 
 const sitemapEntries = [];
 const currentYear = new Date().getFullYear();
+const walkthroughsBySlug = {};
 
 function getPageType(filePath) {
   const normalized = filePath.replaceAll('\\', '/');
@@ -397,13 +398,7 @@ function buildPage(filePath, content) {
     relatedWalkthroughs,
     hasRelatedWalkthroughs: relatedWalkthroughs.length > 0,
     hasRelatedTerms: Array.isArray(data.relatedTerms) && data.relatedTerms.length > 0,
-    availableLevels: Array.isArray(data.availableLevels)
-      ? data.availableLevels.map(level => ({
-          level,
-          levelCapitalized: level.charAt(0).toUpperCase() + level.slice(1),
-          tableSlug
-        }))
-      : []
+    hasWalkthrough: walkthroughsBySlug[tableSlug] !== undefined
   };
 
   const pageTypeTemplate = pageTemplates[pageType];
@@ -445,6 +440,14 @@ function walkFiles(dir) {
         continue;
       }
       const content = fs.readFileSync(fullPath, 'utf-8');
+      // Collect walkthroughs for reference by table detail pages
+      if (normalized.includes('/walkthroughs/intermediate/')) {
+        const { data } = matter(content);
+        const slug = data.slug || path.parse(file.name).name;
+        if (!walkthroughsBySlug[slug]) {
+          walkthroughsBySlug[slug] = { slug, table: data.table || slug.toUpperCase(), summary: data.summary || '' };
+        }
+      }
       // Fan-out: one /directory/tables/<slug>.md produces up to 3 outputs
       // (canonical + /s4/ + /ecc/). Keep the single-output pipeline for
       // everything else.
@@ -919,7 +922,6 @@ function generateIndexPages() {
           module: data.module,
           businessDescription: data.businessDescription,
           volumeClass: data.volumeClass,
-          availableLevels: Array.isArray(data.availableLevels) ? data.availableLevels : [],
           sourceSystem: data.sourceSystem || 'S/4HANA'
         });
       }
@@ -970,7 +972,7 @@ function generateIndexPages() {
     const moduleChips = moduleCodes.map(code => ({ code, label: MODULE_LABELS[code] || code }));
 
     const items = tables.map(t => {
-      const levelCount = t.availableLevels.length;
+      const hasWalkthrough = walkthroughsBySlug[t.slug] !== undefined;
       return {
         code: t.code,
         name: t.name,
@@ -980,9 +982,7 @@ function generateIndexPages() {
         volumeLabel: VOLUME_LABELS[t.volumeClass] || (t.volumeClass
           ? t.volumeClass.charAt(0).toUpperCase() + t.volumeClass.slice(1)
           : 'Unspecified'),
-        walkthroughLabel: levelCount > 0
-          ? `${levelCount} level${levelCount === 1 ? '' : 's'}`
-          : 'Planned',
+        walkthroughLabel: hasWalkthrough ? 'Available' : 'Planned',
         url: `/tables/${t.slug}/`
       };
     });
@@ -1041,19 +1041,7 @@ function generateIndexPages() {
   }
 
   // Generate walkthrough index page — one walkthrough per table
-  const walkthroughsDir = path.join(CONTENT_DIR, 'walkthroughs');
-  const walkthroughsBySlug = {};
-  const intermediateDir = path.join(walkthroughsDir, 'intermediate');
-  if (fs.existsSync(intermediateDir)) {
-    for (const file of fs.readdirSync(intermediateDir)) {
-      if (!file.endsWith('.md')) continue;
-      const { data } = matter(fs.readFileSync(path.join(intermediateDir, file), 'utf-8'));
-      const slug = data.slug || path.parse(file).name;
-      if (!walkthroughsBySlug[slug]) {
-        walkthroughsBySlug[slug] = { slug, table: data.table || slug.toUpperCase(), summary: data.summary || '' };
-      }
-    }
-  }
+  // (walkthroughsBySlug is populated during walkFiles when processing intermediate walkthroughs)
   const walkthroughItems = Object.values(walkthroughsBySlug).map(w => ({
     title: w.table,
     description: w.summary,

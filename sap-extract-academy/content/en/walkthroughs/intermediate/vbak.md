@@ -1,9 +1,8 @@
 ---
 table: VBAK
-level: intermediate
 slug: vbak
-title: "Extract VBAK with Delta and Z-Field (Intermediate)"
-summary: "SAP-side intermediate guide for VBAK extraction with delta processing and a custom Z-field. Covers ODP delta queue mechanics in ODQMON, CDS extension view creation in SE80 for Z-field inclusion, and checking delta subscription health."
+title: "Extract VBAK with Delta and Z-Field"
+summary: "SAP-side guide for VBAK extraction with delta processing and a custom Z-field. Covers ODP delta queue mechanics in ODQMON, CDS extension view creation in SE80 for Z-field inclusion, and checking delta subscription health."
 estimatedMinutes: 60
 prerequisites:
   - "Technical extraction user (System type) created in SU01 with S_RFC and S_ODP_READ authorizations"
@@ -14,8 +13,8 @@ destinations:
 extractors:
   - ODP
 method: odp
-seoTitle: "Extract VBAK with Delta and Z-Field (Intermediate) — SAP-Side Guide"
-seoDescription: "SAP-side intermediate guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics."
+seoTitle: "Extract VBAK with Delta and Z-Field — SAP-Side Guide"
+seoDescription: "SAP-side guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics."
 steps:
   - id: step-01
     title: "Verify I_SalesDocument supports delta extraction"

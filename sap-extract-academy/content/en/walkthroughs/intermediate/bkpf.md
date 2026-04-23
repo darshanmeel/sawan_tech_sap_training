@@ -1,9 +1,8 @@
 ---
 table: BKPF
-level: intermediate
 slug: bkpf
-title: "Extract BKPF Multi-Year (Intermediate)"
-summary: "SAP-side intermediate guide for multi-year BKPF extraction. Covers partitioning by BUKRS and GJAHR across multiple years, SM50 load monitoring during multi-partition runs, and ODQMON queue health checks."
+title: "Extract BKPF Multi-Year"
+summary: "SAP-side guide for multi-year BKPF extraction. Covers partitioning by BUKRS and GJAHR across multiple years, SM50 load monitoring during multi-partition runs, and ODQMON queue health checks."
 estimatedMinutes: 75
 prerequisites:
   - "Technical extraction user (System type) created in SU01 with S_RFC and S_ODP_READ authorizations"
@@ -14,8 +13,8 @@ destinations:
 extractors:
   - ODP
 method: odp
-seoTitle: "Extract BKPF Multi-Year (Intermediate) — SAP-Side Guide"
-seoDescription: "SAP-side intermediate guide for multi-year BKPF extraction. Partition by BUKRS+GJAHR, monitor SM50 during parallel runs, verify ODQMON queue health."
+seoTitle: "Extract BKPF Multi-Year — SAP-Side Guide"
+seoDescription: "SAP-side guide for multi-year BKPF extraction. Partition by BUKRS+GJAHR, monitor SM50 during parallel runs, verify ODQMON queue health."
 steps:
   - id: step-01
     title: "Count rows per partition in SE16N"

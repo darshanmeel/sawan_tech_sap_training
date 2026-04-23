@@ -97,19 +97,15 @@
     {{/hasExtractionGotchas}}
 
     <!-- Section: Walkthroughs available -->
+    {{#hasWalkthrough}}
     <div class="card section">
-      <h2>Walkthroughs <em>available</em></h2>
-      <p class="subhead">Pick your skill level and start learning how to extract {{code}}.</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--space-4);margin-top:var(--space-5);">
-        {{#availableLevels}}
-        <a href="{{basePath}}/walkthrough/{{level}}/{{tableSlug}}/" style="display:block;background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);text-decoration:none;border:none;transition:box-shadow 0.15s;">
-          <p class="eyebrow" style="margin-bottom:var(--space-2);">{{level}}</p>
-          <div style="font-family:var(--font-display);font-size:24px;letter-spacing:-0.02em;color:var(--color-ink);margin-bottom:var(--space-2);">{{levelCapitalized}}</div>
-          <p style="font-size:14px;color:var(--color-ink-soft);margin:0;">Step-by-step guide</p>
-        </a>
-        {{/availableLevels}}
-      </div>
+      <h2>Walkthrough</h2>
+      <p class="subhead">Learn how to extract {{code}} step-by-step.</p>
+      <a href="{{basePath}}/walkthrough/{{slug}}/" style="display:inline-block;background:var(--color-accent);border-radius:var(--radius-md);padding:var(--space-4) var(--space-5);text-decoration:none;border:none;color:white;font-weight:500;transition:opacity 0.15s;margin-top:var(--space-4);">
+        Start walkthrough →
+      </a>
     </div>
+    {{/hasWalkthrough}}
 
     <!-- Section: External references -->
     <div class="card section external-refs">

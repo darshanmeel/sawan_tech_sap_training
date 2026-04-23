@@ -1,9 +1,8 @@
 ---
 table: LFA1
-level: intermediate
 slug: lfa1
-title: "Extract LFA1 with Hourly Delta (Intermediate)"
-summary: "SAP-side intermediate guide for LFA1 extraction with ODP delta. Covers creating an ODP subscription in ODQMON, understanding subscription lifecycle, validating delta behavior with manual SAP edits, and monitoring queue health."
+title: "Extract LFA1 with Hourly Delta"
+summary: "SAP-side guide for LFA1 extraction with ODP delta. Covers creating an ODP subscription in ODQMON, understanding subscription lifecycle, validating delta behavior with manual SAP edits, and monitoring queue health."
 estimatedMinutes: 55
 prerequisites:
   - "Technical extraction user (System type) created in SU01 with S_RFC and S_ODP_READ authorizations"
@@ -14,8 +13,8 @@ destinations:
 extractors:
   - ODP
 method: odp
-seoTitle: "Extract LFA1 with Hourly Delta (Intermediate) — SAP-Side Guide"
-seoDescription: "SAP-side intermediate guide for LFA1 ODP delta extraction. Create and monitor ODQMON subscriptions, test delta with manual vendor changes, understand subscription lifecycle."
+seoTitle: "Extract LFA1 with Hourly Delta — SAP-Side Guide"
+seoDescription: "SAP-side guide for LFA1 ODP delta extraction. Create and monitor ODQMON subscriptions, test delta with manual vendor changes, understand subscription lifecycle."
 steps:
   - id: step-01
     title: "Verify I_Supplier has delta annotation in SE80"

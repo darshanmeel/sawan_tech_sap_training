@@ -4,24 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Extract VBAK with Delta and Z-Field (Intermediate) — SAP-Side Guide — SAP Extract Guide</title>
-  <meta name="description" content="SAP-side intermediate guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics.">
+  <title>Extract VBAK with Delta and Z-Field — SAP-Side Guide — SAP Extract Guide</title>
+  <meta name="description" content="SAP-side guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics.">
   <link rel="canonical" href="https://academy.example.com/walkthrough/vbak/">
 
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Extract VBAK with Delta and Z-Field (Intermediate) — SAP-Side Guide">
-  <meta property="og:description" content="SAP-side intermediate guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics.">
+  <meta property="og:title" content="Extract VBAK with Delta and Z-Field — SAP-Side Guide">
+  <meta property="og:description" content="SAP-side guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics.">
   <meta property="og:url" content="https://academy.example.com&#x2F;walkthrough&#x2F;vbak&#x2F;">
   <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
   <meta property="og:site_name" content="SAP Extract Guide">
   <meta property="og:locale" content="en_US">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Extract VBAK with Delta and Z-Field (Intermediate) — SAP-Side Guide">
-  <meta name="twitter:description" content="SAP-side intermediate guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics.">
+  <meta name="twitter:title" content="Extract VBAK with Delta and Z-Field — SAP-Side Guide">
+  <meta name="twitter:description" content="SAP-side guide for VBAK with ODP delta and custom Z-field via CDS extension view. ODQMON subscription monitoring, delta queue mechanics.">
   <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract VBAK with Delta and Z-Field (Intermediate)","description":"SAP-side intermediate guide for VBAK extraction with delta processing and a custom Z-field. Covers ODP delta queue mechanics in ODQMON, CDS extension view creation in SE80 for Z-field inclusion, and checking delta subscription health.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Verify I_SalesDocument supports delta extraction","text":"Open I_SalesDocument in <a href=\"https://help.sap.com/\">SE80</a> and inspect the delta annotation. For ODP delta to work, the view must carry <code>@Analytics.dataExtraction.delta.changeDataCapture.automatic: true</code>.","url":"https://academy.example.com/walkthrough/vbak/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Check for the custom Z-field ZZ_REGION in VBAK","text":"Your S/4HANA system has a custom Z-field ZZ_REGION on VBAK (added via an Append Structure). Confirm this field exists in the table definition using <a href=\"https://help.sap.com/\">SE11</a> before building a CDS extension view to expose it.","url":"https://academy.example.com/walkthrough/vbak/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Create a CDS extension view to expose ZZ_REGION","text":"In <a href=\"https://help.sap.com/\">SE80</a> or ABAP Development Tools (ADT), create a CDS extension view that adds ZZ_REGION to I_SalesDocument. The extension view must not modify the released view — it extends it.","url":"https://academy.example.com/walkthrough/vbak/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Monitor the ODP delta subscription in ODQMON","text":"After your extraction tool registers and runs its init-delta, check <a href=\"https://help.sap.com/\">ODQMON</a>. Confirm the subscription exists and is in an active (not stuck) state. Note: the first delta after init returns 0 records — this is normal per <a href=\"https://support.sap.com/notes/2884410\">SAP Note 2884410</a>.","url":"https://academy.example.com/walkthrough/vbak/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Validate Z-field data in SE16N","text":"Before handing data to your analytics team, verify that ZZ_REGION values look correct. Use <a href=\"https://help.sap.com/\">SE16N</a> to browse VBAK and check ZZ_REGION values for a sample of document numbers. Then confirm those same values appear in your target system for the same VBELN keys.","url":"https://academy.example.com/walkthrough/vbak/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"VBAK","item":"https://academy.example.com/tables/vbak/"},{"@type":"ListItem","position":4,"name":"Extract VBAK with Delta and Z-Field (Intermediate)"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"Extract VBAK with Delta and Z-Field","description":"SAP-side guide for VBAK extraction with delta processing and a custom Z-field. Covers ODP delta queue mechanics in ODQMON, CDS extension view creation in SE80 for Z-field inclusion, and checking delta subscription health.","totalTime":"PT60M","estimatedCost":{"@type":"MonetaryAmount","currency":"USD","value":"0"},"step":[{"@type":"HowToStep","position":1,"name":"Verify I_SalesDocument supports delta extraction","text":"Open I_SalesDocument in <a href=\"https://help.sap.com/\">SE80</a> and inspect the delta annotation. For ODP delta to work, the view must carry <code>@Analytics.dataExtraction.delta.changeDataCapture.automatic: true</code>.","url":"https://academy.example.com/walkthrough/vbak/#step-step-01"},{"@type":"HowToStep","position":2,"name":"Check for the custom Z-field ZZ_REGION in VBAK","text":"Your S/4HANA system has a custom Z-field ZZ_REGION on VBAK (added via an Append Structure). Confirm this field exists in the table definition using <a href=\"https://help.sap.com/\">SE11</a> before building a CDS extension view to expose it.","url":"https://academy.example.com/walkthrough/vbak/#step-step-02"},{"@type":"HowToStep","position":3,"name":"Create a CDS extension view to expose ZZ_REGION","text":"In <a href=\"https://help.sap.com/\">SE80</a> or ABAP Development Tools (ADT), create a CDS extension view that adds ZZ_REGION to I_SalesDocument. The extension view must not modify the released view — it extends it.","url":"https://academy.example.com/walkthrough/vbak/#step-step-03"},{"@type":"HowToStep","position":4,"name":"Monitor the ODP delta subscription in ODQMON","text":"After your extraction tool registers and runs its init-delta, check <a href=\"https://help.sap.com/\">ODQMON</a>. Confirm the subscription exists and is in an active (not stuck) state. Note: the first delta after init returns 0 records — this is normal per <a href=\"https://support.sap.com/notes/2884410\">SAP Note 2884410</a>.","url":"https://academy.example.com/walkthrough/vbak/#step-step-04"},{"@type":"HowToStep","position":5,"name":"Validate Z-field data in SE16N","text":"Before handing data to your analytics team, verify that ZZ_REGION values look correct. Use <a href=\"https://help.sap.com/\">SE16N</a> to browse VBAK and check ZZ_REGION values for a sample of document numbers. Then confirm those same values appear in your target system for the same VBELN keys.","url":"https://academy.example.com/walkthrough/vbak/#step-step-05"}],"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Walkthroughs","item":"https://academy.example.com/walkthrough/"},{"@type":"ListItem","position":3,"name":"VBAK","item":"https://academy.example.com/tables/vbak/"},{"@type":"ListItem","position":4,"name":"Extract VBAK with Delta and Z-Field"}]}}</script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -163,16 +163,16 @@
     </ol>
   </nav>
 
-  <article class="walkthrough" data-walkthrough-id="intermediate-vbak" data-page-slug="intermediate-vbak">
+  <article class="walkthrough" data-walkthrough-id="vbak" data-page-slug="vbak">
     <div class="grid">
 
       <!-- Hero card: walkthrough title -->
       <div class="card hero walkthrough-hero">
         <div>
           <p class="eyebrow"><span class="dot"></span>VBAK · Walkthrough</p>
-          <h1>Extract VBAK with Delta and Z-Field (Intermediate)<em>.</em></h1>
+          <h1>Extract VBAK with Delta and Z-Field<em>.</em></h1>
         </div>
-        <p>SAP-side intermediate guide for VBAK extraction with delta processing and a custom Z-field. Covers ODP delta queue mechanics in ODQMON, CDS extension view creation in SE80 for Z-field inclusion, and checking delta subscription health.</p>
+        <p>SAP-side guide for VBAK extraction with delta processing and a custom Z-field. Covers ODP delta queue mechanics in ODQMON, CDS extension view creation in SE80 for Z-field inclusion, and checking delta subscription health.</p>
       </div>
 
       <!-- Side card: est. time / method -->
