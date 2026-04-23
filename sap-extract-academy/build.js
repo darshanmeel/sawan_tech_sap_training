@@ -524,8 +524,7 @@ const PICKER_METHOD_MAP = {
   'slt': 'slt',
   'rfc': 'rfc',
   'cds-direct': 'odp',
-  'bw-bridge': 'ref',
-  'ref': 'ref',
+  'bw-bridge': 'odp',
   'odata': 'odp',
 };
 
