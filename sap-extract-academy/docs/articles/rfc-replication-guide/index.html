@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>RFC Replication Guide — Legacy &amp; Custom Integration — SAP Extract Guide</title>
+  <meta name="description" content="Setup RFC-based data replication. SM59 connections, RFC authorizations, logging tables, and delta processing.">
+  <link rel="canonical" href="https://academy.example.com/articles/rfc-replication-guide/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="RFC Replication Guide — Legacy &amp; Custom Integration">
+  <meta property="og:description" content="Setup RFC-based data replication. SM59 connections, RFC authorizations, logging tables, and delta processing.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;articles&#x2F;rfc-replication-guide&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Guide">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RFC Replication Guide — Legacy &amp; Custom Integration">
+  <meta name="twitter:description" content="Setup RFC-based data replication. SM59 connections, RFC authorizations, logging tables, and delta processing.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"RFC-Based Replication — Complete Setup Guide","description":"Setup RFC-based data replication. SM59 connections, RFC authorizations, logging tables, and delta processing.","author":{"@type":"Organization","name":"SAP Extract Guide"},"publisher":{"@type":"Organization","name":"SAP Extract Guide"},"datePublished":"2026-04-23T00:00:00.000Z","dateModified":"2026-04-23T00:00:00.000Z","mainEntityOfPage":"https://academy.example.com/articles/rfc-replication-guide/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://academy.example.com/articles/"},{"@type":"ListItem","position":3,"name":"RFC-Based Replication — Complete Setup Guide"}]}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Guide</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Article detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+      <li aria-current="page">RFC-Based Replication — Complete Setup Guide</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: article title + eyebrow with date and reading time -->
+    <div class="card hero article-hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>23 Apr 2026 · 18 min</p>
+        <h1>RFC-Based Replication — Complete Setup Guide<em>.</em></h1>
+      </div>
+      <p>Configure RFC-based replication for SAP data extraction. Direct table reads via RFC function modules with logging table delta capture.</p>
+    </div>
+
+    <!-- Side card: author + tags -->
+    <div class="card side">
+      <h3>Author</h3>
+      <p class="big" style="font-size:22px;">SAP Extract Guide</p>
+      <p>18 minute read</p>
+    </div>
+
+    <!-- Section card: article body prose (max-width 780px per reference) -->
+    <div class="card section">
+      <div class="prose" style="max-width:780px;">
+        <h2>What is RFC Replication?</h2>
+<p>RFC (Remote Function Call) based replication reads SAP tables directly via RFC function modules. It supports full loads and incremental deltas through database logging tables and triggers.</p>
+<p><strong>Key characteristics:</strong></p>
+<ul>
+<li><strong>Latency:</strong> 1–5 minutes (batch, on-schedule)</li>
+<li><strong>License requirement:</strong> Runtime OK (no special license)</li>
+<li><strong>Use case:</strong> Internal SAP-to-SAP connections, legacy systems, SLT infrastructure</li>
+<li><strong>Method:</strong> RFC function calls + logging table monitoring</li>
+</ul>
+<p><strong>⚠️ Important Policy Note:</strong></p>
+<ul>
+<li>SAP policy restricts native ODP RFC modules for third-party use</li>
+<li>RFC still required for SLT-based replication</li>
+<li>For third-party applications, use ODP or SLT instead</li>
+</ul>
+<hr>
+<h2>Prerequisites &amp; Requirements</h2>
+<h3>SAP System</h3>
+<ul>
+<li>SAP source system with RFC modules active</li>
+<li>SAP target system or SLT Replication Server</li>
+</ul>
+<h3>Infrastructure</h3>
+<ul>
+<li>Network connectivity and firewall rules configured for RFC</li>
+<li>Sufficient dialog and batch work processes</li>
+</ul>
+<h3>User &amp; Permissions</h3>
+<ul>
+<li>RFC user with appropriate authorizations</li>
+<li>S_DEVELOP, S_TABU_DIS, S_RFC authorization objects</li>
+</ul>
+<hr>
+<h2>Part 1: Setup &amp; Enablement Check</h2>
+<h3>Step 1: Create RFC Connection</h3>
+<p>Transaction: <strong>SM59</strong></p>
+<pre><code>Connection Details:
+  - Connection Name: (e.g., &quot;PROD_VBAK_RFC&quot;)
+  - Connection Type: 3 (ABAP to ABAP)
+  - Target Host: Source SAP system hostname
+  - System Number: Source system number (e.g., 00)
+  - Client: Source client (e.g., 100)
+  - Logon User: Dedicated RFC user
+  - Password: Secure RFC user password
+  - Language: EN
+  - Query Timeout: 600 seconds
+</code></pre>
+<h3>Step 2: Test RFC Connection</h3>
+<p>Transaction: <strong>SM59</strong></p>
+<p>Actions:</p>
+<ol>
+<li>Select your new RFC connection</li>
+<li>Click &quot;Connection Test&quot;</li>
+<li>Click &quot;Remote Logon Test&quot;</li>
+<li>Verify: &quot;Connection OK&quot; message</li>
+<li>Check: User permissions sufficient</li>
+</ol>
+<h3>Step 3: Authorize RFC User</h3>
+<p>Transaction: <strong>SU01</strong> (User maintenance)</p>
+<p>SAP Authorization Objects Needed:</p>
+<pre><code>  - S_DEVELOP: Table access for extraction
+  - S_TABU_DIS: Table access (e.g., VBAK full access)
+  - RFC1: RFC call permission
+  - S_RFC: RFC function module execution
+</code></pre>
+<p>Steps:</p>
+<ol>
+<li>Select RFC user account</li>
+<li>Assign roles:<ul>
+<li>SAP_USER (basic)</li>
+<li>Z_RFC_VBAK_ACCESS (custom role for VBAK extraction, if applicable)</li>
+</ul>
+</li>
+<li>Save and confirm</li>
+</ol>
+<h3>Step 4: Configure RFC for Replication</h3>
+<p>If using SLT, configure RFC in:</p>
+<p>Transaction: <strong>LTRC</strong> (SLT Cockpit)</p>
+<p>Steps:</p>
+<ol>
+<li>Create new configuration</li>
+<li>Specify RFC Connection (created in Step 1)</li>
+<li>Configure target destination</li>
+<li>Enable RFC data transfer option</li>
+<li>Set RFC timeouts appropriately</li>
+<li>Save configuration</li>
+</ol>
+<h3>Step 5: Verify RFC Enablement</h3>
+<p><strong>Check RFC Connection Status:</strong></p>
+<ul>
+<li>Transaction: SM59</li>
+<li>Select connection</li>
+<li>Click &quot;Connection Test&quot;</li>
+<li>Verify: Green light = Connection OK</li>
+</ul>
+<p><strong>Verify RFC User Authorizations:</strong></p>
+<ul>
+<li>Transaction: SU01</li>
+<li>User: RFC user</li>
+<li>Check: Required object access</li>
+<li>Verify: S_TABU_DIS for target table</li>
+</ul>
+<p><strong>Check Network Connectivity:</strong></p>
+<ul>
+<li>Transaction: SM59</li>
+<li>Connection test should pass</li>
+<li>If fails: Check firewall, routing, hostname resolution</li>
+</ul>
+<p><strong>Verify RFC Configuration (If Using SLT):</strong></p>
+<ul>
+<li>Transaction: LTRC</li>
+<li>Open configuration</li>
+<li>Verify: RFC connection selected</li>
+<li>Test: Configuration activation</li>
+</ul>
+<hr>
+<h2>Part 2: Configure Table Replication (VBAK Example)</h2>
+<h3>Step 1: Initiate RFC Data Extraction</h3>
+<p><strong>Process Overview:</strong></p>
+<pre><code>SLT sends RFC calls to source system
+Source system returns VBAK data
+RFC stream delivers data to target
+</code></pre>
+<h3>Step 2: Configure Full Load Transfer</h3>
+<p>In SLT Configuration (LTRC):</p>
+<pre><code>  1. Select VBAK table in Data Provisioning
+  2. Set &quot;Initial Load Mode&quot;: Performance Optimized
+  3. Set RFC Transfer Parameters:
+     - Data Transfer Jobs: 4
+     - Package Size: 50,000 records
+     - RFC Timeout: 600 seconds
+     - Retry Count: 3
+  4. Select &quot;Start Replication (Including Initial Load)&quot;
+</code></pre>
+<h3>Step 3: Configure Delta Load Transfer</h3>
+<p><strong>RFC Delta Mechanism:</strong></p>
+<pre><code>  1. After initial load completes
+  2. SLT monitors logging table via RFC calls
+  3. Retrieves delta batches periodically
+  4. Sends updates through RFC interface
+  5. Frequency: Default every 5,000 records
+</code></pre>
+<h3>Step 4: Start Replication</h3>
+<p>Steps:</p>
+<ol>
+<li>Transaction: LTRC</li>
+<li>Select configuration with RFC connection</li>
+<li>Table: VBAK</li>
+<li>Click &quot;Start Replication (Including Initial Load)&quot;</li>
+<li>Monitor in &quot;Data Transfer Monitor&quot; tab</li>
+</ol>
+<hr>
+<h2>RFC Automatic Processes</h2>
+<h3>Phase 1: RFC Initial Load</h3>
+<p><strong>Sequence:</strong></p>
+<pre><code>  1. SLT constructs RFC function calls
+  2. Calls SM59 connection to source system
+  3. Source system reads VBAK table in parallel
+  4. Data packaged in 50,000-record batches
+  5. RFC transfer sends each batch to target
+  6. Target writes received data to database
+  7. Acknowledgment sent back via RFC
+  8. Process repeats until all records transferred
+</code></pre>
+<p><strong>Performance:</strong></p>
+<ul>
+<li>Parallel RFC calls: 4 (default)</li>
+<li>Package size: 50,000 (adjustable)</li>
+<li>Network bandwidth: Critical factor</li>
+<li>Typical speed: 100K–500K records/minute</li>
+</ul>
+<h3>Phase 2: RFC Delta Load</h3>
+<p><strong>Sequence:</strong></p>
+<pre><code>  1. Source system maintains logging table (VBAK#0)
+  2. SLT queries logging table via RFC
+  3. Retrieves batch of deltas (5,000 records)
+  4. Identifies change type (INSERT/UPDATE/DELETE)
+  5. Sends delta batch via RFC to target
+  6. Target applies changes (INSERT/UPDATE/DELETE)
+  7. Process marks records as processed
+  8. Repeat every 1–5 minutes (configurable)
+</code></pre>
+<p><strong>Change Detection:</strong></p>
+<pre><code>  - Triggers track INSERT/UPDATE/DELETE
+  - Logging table stores key fields + operation type
+  - RFC queries identify unprocessed changes
+  - Batch retrieval prevents network congestion
+</code></pre>
+<hr>
+<h2>RFC Delta Load — Table Structure Details</h2>
+<h3>RFC Transfer Protocol for VBAK</h3>
+<p><strong>Initial Load RFC Call:</strong></p>
+<pre><code>Function: REPL_DATA_READ (internal SLT function)
+Parameters:
+  - Object Name: VBAK
+  - Start Key: (empty for first call)
+  - Read Mode: RANGE_CALC (parallel read)
+  - Package Size: 50000
+
+Returns:
+  - Data rows (VBAK records)
+  - End key (position in table)
+  - End-of-file indicator
+</code></pre>
+<p><strong>Delta Load RFC Call:</strong></p>
+<pre><code>Function: REPL_LOG_READ (reads logging table)
+Parameters:
+  - Object Name: VBAK
+  - Logging Table: VBAK#0
+  - Last Processed Record: (sequence number)
+
+Returns:
+  - Changed records (key + operation type)
+  - Record count
+  - New sequence number
+</code></pre>
+<h3>Logging Table Referenced by RFC</h3>
+<p><strong>Table: VBAK#0</strong> (in source system)</p>
+<pre><code>Fields Transferred via RFC:
+  - VBELN: Sales document number (key)
+  - POSNR: Item number (key)
+  - OPERATION: Type of change
+    * I = INSERT
+    * U = UPDATE
+    * D = DELETE
+  - TMSTMP: Timestamp of change
+  - SOURCE_RECORD_ID: Internal SLT record ID
+</code></pre>
+<p><strong>RFC Transfer Pattern:</strong></p>
+<pre><code>  1. Query: SELECT from VBAK#0 WHERE processed = 0
+  2. RFC sends batch of unprocessed changes
+  3. Each change identifies the VBAK record affected
+  4. Target system applies the change
+  5. SLT marks records as processed (via RFC update)
+  6. Next RFC query retrieves remaining changes
+</code></pre>
+<hr>
+<h2>RFC Monitoring</h2>
+<h3>Monitor Transaction: LTRC</h3>
+<p><strong>Monitoring Elements:</strong></p>
+<ol>
+<li><p><strong>Data Transfer Monitor</strong></p>
+<ul>
+<li>RFC call status (Success/Error)</li>
+<li>Records transferred per RFC batch</li>
+<li>RFC timeout occurrences</li>
+<li>Network error counts</li>
+</ul>
+</li>
+<li><p><strong>RFC Connection Status</strong></p>
+<ul>
+<li>Transaction: SM59</li>
+<li>View RFC connection state</li>
+<li>Check last successful call</li>
+<li>Monitor error logs</li>
+</ul>
+</li>
+<li><p><strong>Logging Table Status</strong></p>
+<ul>
+<li>Transaction: SE12</li>
+<li>View VBAK#0 table</li>
+<li>Check row count (unprocessed changes)</li>
+<li>Monitor table growth</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Issue: RFC Connection Test Fails</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Verify network connectivity (ping SAP host)</li>
+<li>Check firewall rules for RFC port (typically 3200 + system number)</li>
+<li>Verify hostname resolution</li>
+<li>Confirm user credentials in RFC connection</li>
+<li>Check SM59 gateway logs for error details</li>
+</ol>
+<h3>Issue: RFC Timeout During Full Load</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Reduce package size in LTRC (current: 50,000)</li>
+<li>Reduce parallel RFC jobs (current: 4)</li>
+<li>Increase RFC timeout in SM59 (current: 600 sec)</li>
+<li>Check SAP application server CPU/memory utilization</li>
+<li>Run during off-peak hours</li>
+</ol>
+<h3>Issue: Delta Lag Exceeds Expected Time</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Check logging table size in SE12 (VBAK#0)</li>
+<li>Verify RFC delta retrieval frequency setting</li>
+<li>Check network latency between systems</li>
+<li>Monitor RFC dialog availability in SM50</li>
+<li>Increase parallel jobs if available</li>
+</ol>
+<hr>
+<h2>Summary</h2>
+<p>RFC-based replication is suitable for SAP-to-SAP connections and SLT infrastructure. Key considerations:</p>
+<ol>
+<li><strong>Policy:</strong> SAP restricts native ODP RFC for third-party use</li>
+<li><strong>Setup:</strong> Create RFC connection, authorize user, configure in LTRC (if using SLT)</li>
+<li><strong>Performance:</strong> Parallel jobs and package size directly impact throughput</li>
+<li><strong>Monitoring:</strong> Use LTRC monitor, check RFC status in SM59, monitor logging table in SE12</li>
+<li><strong>Delta:</strong> Logging table captures changes; RFC retrieves periodically</li>
+</ol>
+<p>For third-party applications, use ODP or SLT instead of raw RFC.</p>
+
+      </div>
+    </div>
+
+    <!-- Section card: related walkthroughs -->
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+        <p class="copyright">© SAP Extract Guide 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

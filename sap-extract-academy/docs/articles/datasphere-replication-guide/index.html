@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Datasphere Replication Guide — Cloud-Native SAP Data Integration — SAP Extract Guide</title>
+  <meta name="description" content="Setup SAP Datasphere replication flows from on-premise S&#x2F;4HANA. Cloud Connector, CDS views, Resilient Data Buffer, CDC integration.">
+  <link rel="canonical" href="https://academy.example.com/articles/datasphere-replication-guide/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Datasphere Replication Guide — Cloud-Native SAP Data Integration">
+  <meta property="og:description" content="Setup SAP Datasphere replication flows from on-premise S&#x2F;4HANA. Cloud Connector, CDS views, Resilient Data Buffer, CDC integration.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;articles&#x2F;datasphere-replication-guide&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Guide">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Datasphere Replication Guide — Cloud-Native SAP Data Integration">
+  <meta name="twitter:description" content="Setup SAP Datasphere replication flows from on-premise S&#x2F;4HANA. Cloud Connector, CDS views, Resilient Data Buffer, CDC integration.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"SAP Datasphere Replication Flows — Complete Setup Guide","description":"Setup SAP Datasphere replication flows from on-premise S/4HANA. Cloud Connector, CDS views, Resilient Data Buffer, CDC integration.","author":{"@type":"Organization","name":"SAP Extract Guide"},"publisher":{"@type":"Organization","name":"SAP Extract Guide"},"datePublished":"2026-04-23T00:00:00.000Z","dateModified":"2026-04-23T00:00:00.000Z","mainEntityOfPage":"https://academy.example.com/articles/datasphere-replication-guide/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://academy.example.com/articles/"},{"@type":"ListItem","position":3,"name":"SAP Datasphere Replication Flows — Complete Setup Guide"}]}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Guide</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Article detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+      <li aria-current="page">SAP Datasphere Replication Flows — Complete Setup Guide</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: article title + eyebrow with date and reading time -->
+    <div class="card hero article-hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>23 Apr 2026 · 22 min</p>
+        <h1>SAP Datasphere Replication Flows — Complete Setup Guide<em>.</em></h1>
+      </div>
+      <p>Configure SAP Datasphere for real-time and incremental data replication. Cloud Connector, replication flows, Resilient Data Buffer, and delta mechanics.</p>
+    </div>
+
+    <!-- Side card: author + tags -->
+    <div class="card side">
+      <h3>Author</h3>
+      <p class="big" style="font-size:22px;">SAP Extract Guide</p>
+      <p>22 minute read</p>
+    </div>
+
+    <!-- Section card: article body prose (max-width 780px per reference) -->
+    <div class="card section">
+      <div class="prose" style="max-width:780px;">
+        <h2>What is SAP Datasphere?</h2>
+<p>SAP Datasphere is a cloud-native analytics platform that replicates data from on-premise SAP systems via Replication Flows. It uses the Resilient Data Buffer (RDB) framework for change data capture.</p>
+<p><strong>Key characteristics:</strong></p>
+<ul>
+<li><strong>Latency:</strong> 1–60 minutes (configurable, CDC-based)</li>
+<li><strong>License requirement:</strong> SAP Datasphere subscription (cloud)</li>
+<li><strong>Target destinations:</strong> Datasphere native tables, external cloud (HANA Cloud, BigQuery, Snowflake, etc.)</li>
+<li><strong>Method:</strong> Cloud Connector + RFC + RDB for CDC</li>
+</ul>
+<hr>
+<h2>Prerequisites &amp; Requirements</h2>
+<h3>Cloud Infrastructure</h3>
+<ul>
+<li>SAP Datasphere subscription (cloud-based)</li>
+<li>Access to Datasphere administrator console</li>
+</ul>
+<h3>On-Premise Infrastructure</h3>
+<ul>
+<li>SAP Cloud Connector (installed on-premise)</li>
+<li>S/4HANA 2021 or later (source system)</li>
+</ul>
+<h3>RFC Resources</h3>
+<ul>
+<li>DHAMB_: Data Hub ABAP Module</li>
+<li>DHAPE_: Data Hub ABAP Process Engine</li>
+<li>RFC_FUNCTION_SEARCH: RFC lookup</li>
+</ul>
+<h3>User &amp; Permissions</h3>
+<ul>
+<li>User with Datasphere admin rights</li>
+<li>RFC user on source S/4HANA system</li>
+<li>Basis team access to configure RFC</li>
+</ul>
+<hr>
+<h2>Part 1: Setup &amp; Enablement Check</h2>
+<h3>Step 1: Install and Configure Cloud Connector</h3>
+<p>SAP Cloud Connector Setup:</p>
+<pre><code>Location: Download from SAP Launchpad
+
+Installation:
+  1. Install on on-premise network DMZ/internal network
+  2. Configure Cloud Connector to reach Datasphere
+  3. Configure RFC protocol resources
+
+Required Resources:
+  - DHAMB_: Data Hub ABAP Module
+  - DHAPE_: Data Hub ABAP Process Engine
+  - RFC_FUNCTION_SEARCH: RFC lookup
+
+Configuration:
+  Cloud Connector Settings:
+    - Region: Your Datasphere region
+    - Subaccount: Datasphere subaccount
+    - Region Host: Datasphere region endpoint
+    - Certificate: Client certificate
+    - Logon User: Cloud Connector service user
+</code></pre>
+<h3>Step 2: Create Connection in SAP Datasphere</h3>
+<p>Transaction/UI: <strong>SAP Datasphere</strong></p>
+<p>Steps:</p>
+<pre><code>  1. Navigate: Connections → New Connection
+  2. Connection Type: SAP S/4HANA On-Premise (or SAP ABAP)
+  3. Connection Details:
+     - Name: (e.g., &quot;PROD_S4_Connection&quot;)
+     - Cloud Connector: Select configured connector
+     - System ID: Source SAP system ID
+     - System Client: Client to replicate from
+     - System Number: Source system number
+     - Logon Language: EN
+  4. Authentication:
+     - User: RFC user account
+     - Password: RFC user password
+     - Test Connection (should succeed)
+  5. Validate: &quot;Replication flows are enabled&quot;
+  6. Save connection
+</code></pre>
+<h3>Step 3: Verify CDS View Configuration (If Using CDS)</h3>
+<p>For CDS View-based Replication:</p>
+<p><strong>CDS View Definition (in S/4HANA):</strong></p>
+<pre><code>define view ZC_VBAK_EXTRACT
+@Analytics.dataExtraction.enabled: true
+@Analytics.dataExtraction.delta.changeDataCapture: true
+@Analytics.dataExtraction.delta.changeDataCapture.automatic: true
+as select from vbak {
+  key vbak.vbeln,
+  vbak.posnr,
+  vbak.kunnr,
+  vbak.erdat,
+  vbak.netwr,
+  ...
+}
+</code></pre>
+<p><strong>Annotation Check:</strong></p>
+<pre><code>  - @Analytics.dataExtraction.enabled: YES
+  - @Analytics.dataExtraction.delta.changeDataCapture: YES
+  - @Analytics.dataExtraction.delta.changeDataCapture.automatic: YES
+</code></pre>
+<h3>Step 4: Enable Resilient Data Buffer (RDB)</h3>
+<p><strong>Configuration in S/4HANA Source System:</strong></p>
+<p>Steps:</p>
+<pre><code>  1. Transaction: /1DH/SETUP (Data Hub setup)
+  2. Initialize Resilient Data Buffer framework
+  3. Configure RFC user permissions for RDB
+  4. Set buffer table parameters
+  5. Schedule observer job: /1DH/OBSERVE_LOGTAB
+     - Frequency: Every 30 minutes
+     - Purpose: Push changes to RDB buffers
+</code></pre>
+<h3>Step 5: Verify Datasphere Replication is Enabled</h3>
+<p><strong>Check Cloud Connector Status:</strong></p>
+<ul>
+<li>Cloud Connector UI: <code>https://localhost:8443</code></li>
+<li>Verify: Connected to Datasphere region</li>
+<li>Check: All RFC resources configured</li>
+</ul>
+<p><strong>Check Datasphere Connection:</strong></p>
+<ul>
+<li>Datasphere UI: Connections → Your connection</li>
+<li>Test: Test connection button</li>
+<li>Verify: &quot;Connection successful&quot;</li>
+<li>Confirm: &quot;Replication flows enabled&quot; message</li>
+</ul>
+<p><strong>Check CDS View Annotations:</strong></p>
+<ul>
+<li>S/4HANA: Transaction SE11</li>
+<li>CDS View: Your extraction view</li>
+<li>Verify: All required annotations present</li>
+</ul>
+<p><strong>Check RDB Initialization:</strong></p>
+<ul>
+<li>Transaction: /1DH/SETUP</li>
+<li>Verify: RDB framework is active</li>
+<li>Check: Observer job scheduled</li>
+<li>Confirm: Buffer tables created</li>
+</ul>
+<p><strong>Validate via Test Extraction:</strong></p>
+<ul>
+<li>Datasphere: Create test replication flow</li>
+<li>Select: VBAK or test CDS view</li>
+<li>Run: Test extraction</li>
+<li>Verify: Data retrieved successfully</li>
+</ul>
+<hr>
+<h2>Part 2: Configure Table Replication (VBAK Example)</h2>
+<h3>Step 1: Create Replication Flow</h3>
+<p>SAP Datasphere UI:</p>
+<pre><code>Steps:
+  1. Navigate: Data Builder → New Object → Replication Flow
+  2. Flow Name: (e.g., &quot;VBAK_Replication_Flow&quot;)
+  3. Flow Description: Sales Document Header replication
+  4. Source Connection: Select S/4HANA connection (configured in Part 1)
+</code></pre>
+<h3>Step 2: Select Source Object</h3>
+<p><strong>Source Selection:</strong></p>
+<p>Option 1: Direct Table (Recommended)</p>
+<pre><code>  - Container: CDS_EXTRACTION or SLT_EXTRACTION
+  - Object Type: CDS View
+  - Object Name: C_SALESDOCUMENTITEMDEX_1
+    (SAP standard view for VBAK data)
+  OR
+  - Object Name: ZC_VBAK_EXTRACT (custom CDS view)
+</code></pre>
+<p>Option 2: SLT Table (If using SLT as source)</p>
+<pre><code>  - Container: SLT_EXTRACTION
+  - Object Type: Table
+  - Object Name: VBAK (if replicated via SLT)
+</code></pre>
+<h3>Step 3: Configure Load Strategy</h3>
+<p><strong>Load Configuration:</strong></p>
+<p>Initial Load Settings:</p>
+<pre><code>  - Load Type: &quot;Initial and Delta&quot;
+  - Initial Load Mode: &quot;Full Load&quot;
+  - Transfer Size: 100,000 records per batch
+  - Parallel Processes: 4
+  - Commit Strategy: Every 50,000 records
+</code></pre>
+<p>Delta Load Settings:</p>
+<pre><code>  - Enable: &quot;Incremental Updates&quot; (Initial and Delta)
+  - Delta Mode: &quot;Automatic CDC&quot; (Resilient Data Buffer)
+  - Delta Frequency: Every 60 minutes (default, adjustable)
+  - Handle Deletes: Yes
+</code></pre>
+<h3>Step 4: Configure Target Container</h3>
+<p>Target Selection:</p>
+<pre><code>Steps:
+  1. Target Container: (e.g., &quot;SALES_DATA&quot; or &quot;VBAK_TARGET&quot;)
+  2. Create New Table: Yes (Datasphere will create target table)
+  3. Table Name: VBAK or C_VBAK_REPL
+  4. Schema: Auto-mapped from source CDS view
+</code></pre>
+<p>Target Capabilities:</p>
+<pre><code>  - Datasphere native table (in-memory column-store)
+  - Supports delta processing automatically
+  - Real-time analytics-ready structure
+</code></pre>
+<h3>Step 5: Configure Field Mapping</h3>
+<p><strong>Field Mapping:</strong></p>
+<pre><code>VBAK Source Fields → Target Fields:
+  - VBELN → VBELN (Sales Document Number)
+  - POSNR → POSNR (Item Number)
+  - KUNNR → KUNNR (Customer)
+  - ERDAT → ERDAT (Creation Date)
+  - EDERZ → EDERZ (Last Change Date)
+  - NETWR → NETWR (Net Value)
+  - WAERK → WAERK (Currency)
+  - (Auto-mapped for all fields in CDS view)
+</code></pre>
+<p>System Fields Added Automatically:</p>
+<pre><code>  - operation_flag: I/U/D (Insert/Update/Delete)
+  - recordstamp: Timestamp of change
+  - is_deleted: Boolean for soft deletes
+</code></pre>
+<h3>Step 6: Deploy and Run Replication Flow</h3>
+<p><strong>Deployment:</strong></p>
+<pre><code>Steps:
+  1. Click &quot;Deploy&quot; to validate flow
+  2. Fix any validation errors
+  3. Click &quot;Run&quot; to start replication
+</code></pre>
+<p><strong>Execution:</strong></p>
+<pre><code>  - Initial Load starts automatically
+  - Monitor progress in Execution tab
+  - Status: &quot;Running&quot; → &quot;Completed&quot;
+</code></pre>
+<p><strong>Delta Activation:</strong></p>
+<pre><code>  - After initial load completes
+  - Status: &quot;Monitoring for changes&quot;
+  - Delta job runs at configured frequency (60min default)
+</code></pre>
+<hr>
+<h2>Datasphere Automatic Processes</h2>
+<h3>Phase 1: Initial Load (Full VBAK Data)</h3>
+<p><strong>Triggered Automatically:</strong></p>
+<pre><code>Sequence:
+  1. Datasphere calls Cloud Connector
+  2. Cloud Connector executes RFC to S/4HANA
+  3. S/4HANA reads VBAK via CDS view
+  4. Parallel read jobs: 4 (configurable)
+  5. Batch size: 100,000 records per package
+</code></pre>
+<p><strong>Data Flow:</strong></p>
+<pre><code>S/4HANA VBAK → CDS View → RFC → Cloud Connector → 
+Datasphere Network → Target Container
+</code></pre>
+<p><strong>Target Table Creation:</strong></p>
+<pre><code>  - Datasphere creates target table automatically
+  - Column structure: Matches CDS view schema
+  - Adds system columns:
+    * operation_flag (for delta tracking)
+    * recordstamp (change timestamp)
+    * is_deleted (deletion indicator)
+</code></pre>
+<p><strong>Data Loading:</strong></p>
+<pre><code>  - Batch 1: Records 1–100,000
+  - Batch 2: Records 100,001–200,000
+  - ... continues until all records loaded
+</code></pre>
+<p>Status: &quot;Replication → Initial Load&quot; (visible in monitor)</p>
+<h3>Phase 2: Delta Replication (Ongoing Changes)</h3>
+<p><strong>Triggered by Resilient Data Buffer (RDB) Framework:</strong></p>
+<pre><code>Sequence:
+  1. Database Triggers on VBAK capture changes:
+     - INSERT: Logged with operation=&#39;I&#39;
+     - UPDATE: Logged with operation=&#39;U&#39;
+     - DELETE: Logged with operation=&#39;D&#39;
+
+  2. Master Logging Table (in S/4HANA)
+     - Stores changed VBAK records
+     - Records all I/U/D operations
+
+  3. Observer Job (/1DH/OBSERVE_LOGTAB)
+     - Runs every 30 minutes (configurable)
+     - Reads master logging table
+     - Pushes changes to subscriber buffers (RDB)
+
+  4. Replication Flow Delta Job
+     - Runs every 60 minutes (configurable)
+     - Calls RDB via RFC
+     - Retrieves change records from RDB buffer
+     - Groups changes by operation type
+
+  5. Datasphere applies changes:
+     - INSERT: Add new row to target table
+     - UPDATE: Merge into existing row
+     - DELETE: Mark with is_deleted=TRUE or remove row
+     - Updates operation_flag and recordstamp
+</code></pre>
+<p><strong>Sequence Maintenance:</strong></p>
+<pre><code>  - Observer job ensures order
+  - Buffer tracks sequence numbers
+  - Delta job applies in sequence order
+  - Prevents out-of-order updates
+</code></pre>
+<hr>
+<h2>Delta Load — Target Table Structure</h2>
+<h3>RDB (Resilient Data Buffer) Structure</h3>
+<p><strong>Changes Captured in Master Logging Table:</strong></p>
+<pre><code>For each VBAK change:
+  - VBELN: Sales document number
+  - POSNR: Item number
+  - OPERATION: Type of change
+    * I = INSERT (new VBAK record)
+    * U = UPDATE (modified VBAK record)
+    * D = DELETE (removed VBAK record)
+  - TIMESTAMP: When change occurred
+  - All other VBAK fields (for INSERT/UPDATE)
+  - For DELETE: Only key fields populated
+
+Buffer Table Structure:
+  - Observer pushes changes to:
+    * Subscriber buffer (for each system subscribed)
+    * Indexed by: Sequence number, VBELN, POSNR
+    * Contains: Changes pending pickup
+</code></pre>
+<h3>Target Table in Datasphere</h3>
+<p><strong>VBAK Target Table Columns:</strong></p>
+<p>Original VBAK Columns:</p>
+<pre><code>  - VBELN, POSNR, KUNNR, ERDAT, EDERZ, NETWR, WAERK, ...
+</code></pre>
+<p>System-Added Columns for Delta Processing:</p>
+<pre><code>  - operation_flag (CHAR 1)
+    * &#39;I&#39; = Insert
+    * &#39;U&#39; = Update
+    * &#39;D&#39; = Delete (soft delete, row remains)
+
+  - recordstamp (TIMESTAMP)
+    * Date/time of the change
+    * Allows temporal queries
+
+  - is_deleted (BOOLEAN)
+    * TRUE = Row marked for deletion
+    * FALSE = Row is active
+    * Enables soft-delete reporting
+</code></pre>
+<hr>
+<h2>Datasphere Monitoring</h2>
+<h3>Monitor in SAP Datasphere</h3>
+<p><strong>Replication Flow Details:</strong></p>
+<ol>
+<li><p><strong>Status Dashboard</strong></p>
+<ul>
+<li>Current status: Running/Idle/Error</li>
+<li>Last successful run: Timestamp</li>
+<li>Next scheduled run: Timestamp</li>
+<li>Records processed: Total count</li>
+</ul>
+</li>
+<li><p><strong>Execution History</strong></p>
+<ul>
+<li>All run attempts: Timestamp, duration, row count</li>
+<li>Error logs: If any failures</li>
+<li>Performance metrics: Rows per second</li>
+</ul>
+</li>
+<li><p><strong>Data Integration Monitor</strong></p>
+<ul>
+<li>All active replication flows</li>
+<li>Cumulative load status</li>
+<li>Delta pipeline status</li>
+<li>System resource usage</li>
+</ul>
+</li>
+</ol>
+<h3>Monitor in S/4HANA Source System</h3>
+<p><strong>Transaction: /1DH/RSDBMON</strong> (RDB Monitor)</p>
+<pre><code>  - RDB buffer table sizes
+  - Number of active subscribers
+  - Pending change count
+  - Observer job schedule and last run
+</code></pre>
+<p><strong>Transaction: DHCDCMON</strong> (CDC Monitor)</p>
+<pre><code>  - CDC listener status
+  - Active change streams
+  - Change rate (records/minute)
+  - Any CDC errors
+</code></pre>
+<h3>Health Metrics</h3>
+<pre><code>Monitor:
+  - Delta lag: &lt;1 hour (should be minimal)
+  - Observer job: Should complete within schedule
+  - RDB buffer: Should not continuously grow
+  - Datasphere flow: Should complete in minutes
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Issue: Cloud Connector Connection Fails</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Verify Cloud Connector is installed and running</li>
+<li>Check connection to Datasphere region</li>
+<li>Verify RFC resources (DHAMB_, DHAPE_) configured</li>
+<li>Check network connectivity between on-premise and cloud</li>
+<li>Review Cloud Connector logs</li>
+</ol>
+<h3>Issue: RDB (Resilient Data Buffer) Framework Not Initialized</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Transaction: /1DH/SETUP on source S/4HANA</li>
+<li>Initialize RDB framework</li>
+<li>Configure RFC user permissions</li>
+<li>Schedule observer job: /1DH/OBSERVE_LOGTAB</li>
+<li>Verify RDB tables created in database</li>
+</ol>
+<h3>Issue: Delta Lag Exceeds Expected Frequency</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Check observer job execution in /1DH/RSDBMON</li>
+<li>Verify RDB buffer table is not growing indefinitely</li>
+<li>Increase delta flow frequency (currently 60 min)</li>
+<li>Check for errors in Datasphere execution history</li>
+<li>Monitor RFC resource availability</li>
+</ol>
+<hr>
+<h2>Summary</h2>
+<p>SAP Datasphere provides cloud-native, managed replication with automatic full load + delta processing via RDB. Key success factors:</p>
+<ol>
+<li><strong>Infrastructure:</strong> Install Cloud Connector on-premise</li>
+<li><strong>Connection:</strong> Create Datasphere connection to S/4HANA</li>
+<li><strong>CDS Views:</strong> Enable with delta annotations</li>
+<li><strong>RDB:</strong> Initialize Resilient Data Buffer framework</li>
+<li><strong>Replication Flows:</strong> Configure in Datasphere UI</li>
+<li><strong>Monitoring:</strong> Check flow status, RDB health, observer jobs</li>
+<li><strong>Testing:</strong> Validate with test extractions before production</li>
+</ol>
+<p>Datasphere is ideal for enterprises already using SAP Cloud ecosystem and seeking managed, serverless analytics infrastructure.</p>
+
+      </div>
+    </div>
+
+    <!-- Section card: related walkthroughs -->
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+        <p class="copyright">© SAP Extract Guide 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

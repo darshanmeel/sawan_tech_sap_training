@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ODP Setup Guide — Batch Data Extraction Framework — SAP Extract Guide</title>
+  <meta name="description" content="Configure ODP (Operational Data Provisioning) for SAP data extraction. CDS views, DataSources, delta queues, ODQMON monitoring.">
+  <link rel="canonical" href="https://academy.example.com/articles/odp-setup-guide/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="ODP Setup Guide — Batch Data Extraction Framework">
+  <meta property="og:description" content="Configure ODP (Operational Data Provisioning) for SAP data extraction. CDS views, DataSources, delta queues, ODQMON monitoring.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;articles&#x2F;odp-setup-guide&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Guide">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ODP Setup Guide — Batch Data Extraction Framework">
+  <meta name="twitter:description" content="Configure ODP (Operational Data Provisioning) for SAP data extraction. CDS views, DataSources, delta queues, ODQMON monitoring.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"ODP (Operational Data Provisioning) — Complete Setup Guide","description":"Configure ODP (Operational Data Provisioning) for SAP data extraction. CDS views, DataSources, delta queues, ODQMON monitoring.","author":{"@type":"Organization","name":"SAP Extract Guide"},"publisher":{"@type":"Organization","name":"SAP Extract Guide"},"datePublished":"2026-04-23T00:00:00.000Z","dateModified":"2026-04-23T00:00:00.000Z","mainEntityOfPage":"https://academy.example.com/articles/odp-setup-guide/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://academy.example.com/articles/"},{"@type":"ListItem","position":3,"name":"ODP (Operational Data Provisioning) — Complete Setup Guide"}]}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Guide</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Article detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+      <li aria-current="page">ODP (Operational Data Provisioning) — Complete Setup Guide</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: article title + eyebrow with date and reading time -->
+    <div class="card hero article-hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>23 Apr 2026 · 20 min</p>
+        <h1>ODP (Operational Data Provisioning) — Complete Setup Guide<em>.</em></h1>
+      </div>
+      <p>Setup and configure ODP for batch and incremental data extraction. CDS views, DataSources, OData services, and delta mechanism.</p>
+    </div>
+
+    <!-- Side card: author + tags -->
+    <div class="card side">
+      <h3>Author</h3>
+      <p class="big" style="font-size:22px;">SAP Extract Guide</p>
+      <p>20 minute read</p>
+    </div>
+
+    <!-- Section card: article body prose (max-width 780px per reference) -->
+    <div class="card section">
+      <div class="prose" style="max-width:780px;">
+        <h2>What is ODP?</h2>
+<p>Operational Data Provisioning (ODP) is SAP&#39;s standard extraction framework. It exposes SAP data via:</p>
+<ul>
+<li>CDS Views (modern, recommended)</li>
+<li>DataSources (standard SAP extractors)</li>
+<li>BW objects</li>
+</ul>
+<p>ODP handles full loads and incremental deltas through change data capture.</p>
+<p><strong>Key characteristics:</strong></p>
+<ul>
+<li><strong>Latency:</strong> 15–60 minutes (batch, on-schedule)</li>
+<li><strong>License requirement:</strong> Runtime OK (no special license)</li>
+<li><strong>Target destinations:</strong> Any external system (S3, Snowflake, Databricks, Fivetran, ADF, etc.)</li>
+<li><strong>Method:</strong> CDS view or DataSource via OData/RFC + delta queues</li>
+</ul>
+<hr>
+<h2>Prerequisites &amp; Requirements</h2>
+<h3>SAP System</h3>
+<ul>
+<li>SAP source system (S/4HANA 2020 or later recommended)</li>
+<li>ODP providers configured (DataSources, CDS Views, BW objects)</li>
+</ul>
+<h3>Infrastructure</h3>
+<ul>
+<li>Target subscription system or application</li>
+<li>Network connectivity for OData or RFC</li>
+</ul>
+<h3>User &amp; Permissions</h3>
+<ul>
+<li>User roles: ODP configuration and extraction privileges</li>
+<li>S_ODP_READ authorization object</li>
+</ul>
+<hr>
+<h2>Part 1: Setup &amp; Enablement Check</h2>
+<h3>Step 1: Identify ODP Provider Type</h3>
+<p><strong>Option A: For CDS Views (Recommended)</strong></p>
+<p>CDS View Definition with annotations:</p>
+<pre><code>@Analytics.dataExtraction.enabled: true
+define view ZMY_VBAK_VIEW as
+select from vbak {
+  key vbak.vbeln,
+  key vbak.posnr,
+  vbak.kunnr,
+  vbak.erdat,
+  ...
+}
+</code></pre>
+<p><strong>Option B: For Standard DataSources</strong></p>
+<p>Example: <code>2LIS_11_VAHDR</code> (Sales Document Header extractor for VBAK)</p>
+<ul>
+<li>Pre-built extractor for VBAK</li>
+<li>Covers most standard fields</li>
+<li>Recommended for common tables</li>
+</ul>
+<h3>Step 2: Enable ODP for CDS Views</h3>
+<p>If using CDS view, add annotations:</p>
+<pre><code>For Full &amp; Delta Extraction:
+@Analytics.dataExtraction.enabled: true
+@Analytics.dataExtraction.delta.changeDataCapture: true
+@Analytics.dataExtraction.delta.changeDataCapture.automatic: true
+</code></pre>
+<h3>Step 3: Expose as OData Service</h3>
+<p>Transaction: <strong>/IWFND/MAINT_SERVICE</strong></p>
+<p>Steps:</p>
+<ol>
+<li>Create or register OData service</li>
+<li>Bind service to CDS view or DataSource</li>
+<li>Set service as &quot;Active&quot;</li>
+<li>Test service connectivity</li>
+<li>Document service endpoint URL</li>
+</ol>
+<h3>Step 4: Configure DataSource (If Using Standard Extractors)</h3>
+<p>Transaction: <strong>RSA6</strong> (DataSource monitor)</p>
+<p>Steps:</p>
+<ol>
+<li>Search for DataSource name (e.g., <code>2LIS_11_VAHDR</code>)</li>
+<li>Check if ODP-enabled (Green tick = enabled)</li>
+<li>If not enabled:<ul>
+<li>Transaction: SE38</li>
+<li>Run Program: <code>RODPS_OS_EXPOSE</code></li>
+<li>Select DataSource to release</li>
+<li>Confirm completion</li>
+</ul>
+</li>
+</ol>
+<h3>Step 5: Verify ODP Enablement</h3>
+<p><strong>Check CDS View Annotations:</strong></p>
+<ul>
+<li>Transaction: SE80</li>
+<li>View: CDS view definition</li>
+<li>Verify: <code>@Analytics.dataExtraction</code> annotations present</li>
+</ul>
+<p><strong>Check DataSource ODP Status:</strong></p>
+<ul>
+<li>Transaction: RSA6</li>
+<li>Search: Table/DataSource name</li>
+<li>Look for: Green tick icon = ODP-enabled</li>
+</ul>
+<p><strong>Test Extraction:</strong></p>
+<ul>
+<li>Transaction: SE38</li>
+<li>Program: <code>RODPS_REPL_TEST</code></li>
+<li>Select: DataSource/CDS view</li>
+<li>Execute: Test extraction</li>
+<li>Verify: Data extraction successful</li>
+</ul>
+<p><strong>Check OData Service Registration:</strong></p>
+<ul>
+<li>Transaction: /IWFND/MAINT_SERVICE</li>
+<li>Search: Service name</li>
+<li>Verify: Service is &quot;Active&quot;</li>
+<li>Test: Service connectivity</li>
+</ul>
+<hr>
+<h2>Part 2: Configure Table Replication (VBAK Example)</h2>
+<h3>Step 1: Select ODP Provider</h3>
+<p><strong>Option 1: Use Standard VBAK Extractor</strong></p>
+<pre><code>DataSource: 2LIS_11_VAHDR (Sales Document Header)
+Provider Type: Standard SAP DataSource
+Status: ODP-enabled (verify in RSA6)
+</code></pre>
+<p><strong>Option 2: Use Custom CDS View</strong></p>
+<pre><code>Provider Type: ABAP CDS View
+View Name: Z_VBAK_EXTRACTION
+Annotations: @Analytics.dataExtraction.enabled: true
+</code></pre>
+<h3>Step 2: Configure ODP Subscriber Connection</h3>
+<p><strong>In SAP Source System:</strong></p>
+<pre><code>- Expose OData service (Transaction: /IWFND/MAINT_SERVICE)
+- Service Endpoint: http[s]://SAP_Host:Port/sap/opu/odata/sap/2LIS_11_VAHDR_CDS
+</code></pre>
+<p><strong>In Target System (AppFlow/ADF):</strong></p>
+<pre><code>- Create connection to OData service
+- Provide SAP Gateway credentials
+- Test connection
+- Select &quot;ODP&quot; as data source type
+</code></pre>
+<h3>Step 3: Configure Full Load Settings</h3>
+<p>Steps:</p>
+<ol>
+<li>Create mapping from ODP provider to target system</li>
+<li>Select Trigger Type: &quot;On Demand&quot; (for full load)</li>
+<li>Configure field mapping:<ul>
+<li>VBELN → Order Number</li>
+<li>KUNNR → Customer Number</li>
+<li>ERDAT → Document Date</li>
+<li>(Map all required VBAK fields)</li>
+</ul>
+</li>
+<li>Set initial execution to &quot;Full Load&quot;</li>
+</ol>
+<h3>Step 4: Configure Delta Load Settings</h3>
+<p>Steps:</p>
+<ol>
+<li>After full load completes, configure delta trigger</li>
+<li>Select Trigger Type: &quot;On Schedule&quot;</li>
+<li>Set Schedule Frequency:<ul>
+<li>Recommended: Hourly or Every 15 minutes</li>
+<li>Minimum interval: 15 minutes</li>
+</ul>
+</li>
+<li>Enable: &quot;Subscribe to Delta Queue&quot; option</li>
+<li>Configure delta token handling (automatic in most platforms)</li>
+</ol>
+<h3>Step 5: Start Replication</h3>
+<p>Execution:</p>
+<ol>
+<li>Run full load extraction (On Demand)</li>
+<li>Monitor extraction in source system</li>
+<li>Verify data arrival in target system</li>
+<li>Activate delta subscriptions</li>
+<li>Schedule delta job frequency</li>
+</ol>
+<hr>
+<h2>ODP Automatic Processes</h2>
+<h3>Phase 1: Full Load (On Demand)</h3>
+<p><strong>Triggered Process:</strong></p>
+<ol>
+<li>ODP Provider reads all VBAK records from source</li>
+<li>Packages data for transmission via OData</li>
+<li>Sends full dataset to target system</li>
+<li>Target creates table structure automatically</li>
+<li>Target loads all records in batches</li>
+<li>Confirms successful load</li>
+</ol>
+<p><strong>Data Flow:</strong></p>
+<pre><code>VBAK Table → ODP Provider → OData Service → Target System
+</code></pre>
+<h3>Phase 2: Delta Replication (On Schedule)</h3>
+<p><strong>Triggered Process:</strong></p>
+<ol>
+<li>Operational Delta Queue (ODQ) captures VBAK changes</li>
+<li>Changes stored with delta tokens</li>
+<li>Consumer applications request deltas at scheduled intervals</li>
+<li>ODQ provides delta data packages</li>
+<li>Target system receives and applies changes</li>
+</ol>
+<p><strong>Delta Identifier Fields:</strong></p>
+<pre><code>- ODQ_CHANGEMODE:
+  * &quot;C&quot; = New image (INSERT/UPDATE)
+  * &quot;D&quot; = Delete marker
+  * &quot;U&quot; = Update
+
+- ODQ_ENTITYCNTR: Unique change counter
+- Delta Token: Tracks last processed change
+</code></pre>
+<h3>Phase 3: Data Validation</h3>
+<p><strong>Target System Receives:</strong></p>
+<pre><code>- VBELN: Sales document number
+- POSNR: Line item number
+- KUNNR: Customer number
+- ERDAT: Creation date
+- NETWR: Net value
+- WAERK: Currency
+- (All mapped VBAK fields)
+
+Plus Change Metadata:
+- Extraction timestamp
+- Change type
+- Delta token for next retrieval
+</code></pre>
+<hr>
+<h2>ODP Monitoring</h2>
+<h3>Monitor Transaction: ODQMON</h3>
+<p><strong>Features:</strong></p>
+<ol>
+<li><p><strong>Active Subscriber Queues</strong></p>
+<ul>
+<li>List of all systems subscribed to ODP</li>
+<li>Queue status (Active/Inactive)</li>
+<li>Last update timestamp</li>
+</ul>
+</li>
+<li><p><strong>Data Volume Tracking</strong></p>
+<ul>
+<li>Records extracted per delta</li>
+<li>Queue size</li>
+<li>Extraction frequency</li>
+</ul>
+</li>
+<li><p><strong>Delta Status</strong></p>
+<ul>
+<li>Last successful extraction</li>
+<li>Current delta token</li>
+<li>Pending changes count</li>
+</ul>
+</li>
+</ol>
+<h3>Alternative Monitoring</h3>
+<p><strong>CDS View: I_DataExtractionEnabledView</strong></p>
+<ul>
+<li>Shows all ODP-enabled CDS views</li>
+<li>Available in S/4HANA 2020+</li>
+</ul>
+<p><strong>Transaction: RSA6</strong></p>
+<ul>
+<li>Monitor specific DataSource extractions</li>
+<li>View extraction logs</li>
+<li>Check last extraction timestamp</li>
+</ul>
+<hr>
+<h2>Delta Load — Table Structure Details</h2>
+<h3>Operational Delta Queue (ODQ) Structure</h3>
+<p><strong>When ODP captures changes:</strong></p>
+<pre><code>Fields Added to Delta Stream:
+  - ODQ_CHANGEMODE (1 char):
+    * &quot;C&quot; = New image (INSERT or UPDATE as new image)
+    * &quot;D&quot; = Delete marker
+  
+  - ODQ_ENTITYCNTR (Counter):
+    * Unique number for each change
+    * Helps sequence delta application
+  
+  - Original VBAK Fields:
+    * All mapped extraction fields
+    * VBELN, POSNR, KUNNR, ERDAT, etc.
+  
+  - Metadata Fields:
+    * Extraction timestamp
+    * Source system ID
+    * Delta token
+</code></pre>
+<h3>Delta Processing Pattern</h3>
+<p><strong>Initial Extraction (Full Load):</strong></p>
+<pre><code>Request: Get all records from ODP provider
+Response: All VBAK records + ODQ_ENTITYCNTR=0
+Status: Load complete, delta token recorded
+</code></pre>
+<p><strong>Subsequent Delta Extraction (Every 15min/hourly):</strong></p>
+<pre><code>Request: Get changes since last delta token
+Response: Only records with ODQ_ENTITYCNTR &gt; last_token
+Changes Included:
+  - New VBAK records (ODQ_CHANGEMODE=&#39;C&#39;)
+  - Modified VBAK records (ODQ_CHANGEMODE=&#39;C&#39; with updated values)
+  - Deleted VBAK records (ODQ_CHANGEMODE=&#39;D&#39; with key fields only)
+Status: Delta updates applied, new token saved
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Issue: DataSource Shows as Not ODP-Enabled</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Transaction: SE38</li>
+<li>Run Program: <code>RODPS_OS_EXPOSE</code></li>
+<li>Select DataSource to enable for ODP</li>
+<li>Confirm completion</li>
+<li>Check RSA6 again for Green tick</li>
+</ol>
+<h3>Issue: OData Service Returns 0 Records on First Sync</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>ODP provider may require init-delta run before returning data</li>
+<li>Trigger full refresh for initial run in extraction tool</li>
+<li>After init completes, subsequent incremental syncs will return changes correctly</li>
+<li>Confirm ODP subscription appears in ODQMON after first run</li>
+</ol>
+<h3>Issue: Delta Queue Lag Exceeds 1 Hour</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Check ODQMON for subscription status</li>
+<li>Verify extraction schedule is running</li>
+<li>Check for errors in extraction logs</li>
+<li>If queue grows continuously, trigger full re-init</li>
+</ol>
+<hr>
+<h2>Summary</h2>
+<p>ODP provides standard, batch-based extraction with flexible scheduling and multi-subscriber support. Key success factors:</p>
+<ol>
+<li><strong>Choose provider:</strong> CDS View (modern) or DataSource (standard)</li>
+<li><strong>Enable ODP:</strong> Add annotations or use RODPS_OS_EXPOSE</li>
+<li><strong>Expose as OData:</strong> Register in /IWFND/MAINT_SERVICE</li>
+<li><strong>Configure full load:</strong> On Demand trigger with field mapping</li>
+<li><strong>Configure delta:</strong> On Schedule with 15–60 minute frequency</li>
+<li><strong>Monitor:</strong> Use ODQMON for subscription health and delta lag</li>
+<li><strong>Test:</strong> Verify first delta returns 0 (expected behavior after init)</li>
+</ol>
+<p>See the table-specific walkthroughs (<a href="/walkthrough/acdoca/">ACDOCA</a>, <a href="/walkthrough/vbak/">VBAK</a>, etc.) for ODP implementation examples.</p>
+
+      </div>
+    </div>
+
+    <!-- Section card: related walkthroughs -->
+    <div class="card section">
+      <h2>Related <em>walkthroughs</em></h2>
+      <ul style="list-style:disc;padding-left:var(--space-6);">
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough//acdoca/">Walkthrough:  — acdoca</a>
+        </li>
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough//bkpf/">Walkthrough:  — bkpf</a>
+        </li>
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough//lfa1/">Walkthrough:  — lfa1</a>
+        </li>
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough//mara/">Walkthrough:  — mara</a>
+        </li>
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough//vbak/">Walkthrough:  — vbak</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+        <p class="copyright">© SAP Extract Guide 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

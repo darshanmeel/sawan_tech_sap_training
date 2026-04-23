@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SLT Setup Guide — Real-Time SAP Data Replication — SAP Extract Guide</title>
+  <meta name="description" content="Configure SAP Landscape Transformation (SLT) for real-time replication. LTRC, LTCO, LTRS transactions. Full load + delta with database triggers.">
+  <link rel="canonical" href="https://academy.example.com/articles/slt-setup-guide/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="SLT Setup Guide — Real-Time SAP Data Replication">
+  <meta property="og:description" content="Configure SAP Landscape Transformation (SLT) for real-time replication. LTRC, LTCO, LTRS transactions. Full load + delta with database triggers.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;articles&#x2F;slt-setup-guide&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Guide">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SLT Setup Guide — Real-Time SAP Data Replication">
+  <meta name="twitter:description" content="Configure SAP Landscape Transformation (SLT) for real-time replication. LTRC, LTCO, LTRS transactions. Full load + delta with database triggers.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"SLT (SAP Landscape Transformation) — Complete Setup Guide","description":"Configure SAP Landscape Transformation (SLT) for real-time replication. LTRC, LTCO, LTRS transactions. Full load + delta with database triggers.","author":{"@type":"Organization","name":"SAP Extract Guide"},"publisher":{"@type":"Organization","name":"SAP Extract Guide"},"datePublished":"2026-04-23T00:00:00.000Z","dateModified":"2026-04-23T00:00:00.000Z","mainEntityOfPage":"https://academy.example.com/articles/slt-setup-guide/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://academy.example.com/articles/"},{"@type":"ListItem","position":3,"name":"SLT (SAP Landscape Transformation) — Complete Setup Guide"}]}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Guide</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Article detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+      <li aria-current="page">SLT (SAP Landscape Transformation) — Complete Setup Guide</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: article title + eyebrow with date and reading time -->
+    <div class="card hero article-hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>23 Apr 2026 · 25 min</p>
+        <h1>SLT (SAP Landscape Transformation) — Complete Setup Guide<em>.</em></h1>
+      </div>
+      <p>Setup and configure SLT for real-time data replication. Full initial load + delta replication with sub-5-minute latency. Prerequisites, configuration, and monitoring.</p>
+    </div>
+
+    <!-- Side card: author + tags -->
+    <div class="card side">
+      <h3>Author</h3>
+      <p class="big" style="font-size:22px;">SAP Extract Guide</p>
+      <p>25 minute read</p>
+    </div>
+
+    <!-- Section card: article body prose (max-width 780px per reference) -->
+    <div class="card section">
+      <div class="prose" style="max-width:780px;">
+        <h2>What is SLT?</h2>
+<p>SAP Landscape Transformation (SLT) provides real-time data replication with sub-5-minute latency. It reads SAP tables directly, performs a full initial load, then captures changes via database triggers and replicates deltas in real-time.</p>
+<p><strong>Key characteristics:</strong></p>
+<ul>
+<li><strong>Latency:</strong> &lt; 5 minutes (real-time)</li>
+<li><strong>License requirement:</strong> Full Use (critical constraint)</li>
+<li><strong>Target destinations:</strong> SAP HANA, ODP, cloud platforms, custom databases</li>
+<li><strong>Method:</strong> Direct table read + database triggers + parallel jobs</li>
+</ul>
+<hr>
+<h2>Prerequisites &amp; Requirements</h2>
+<h3>Infrastructure</h3>
+<ul>
+<li>SAP source system with DMIS (Data Migration Server) add-on installed</li>
+<li>SAP LT Replication Server (target system for SLT engine)</li>
+<li>Sufficient background and dialog work processes on both systems</li>
+<li>Network connectivity between source and SLT systems</li>
+</ul>
+<h3>User &amp; Permissions</h3>
+<ul>
+<li>User role: <strong>SAP_IUUC_REPL_ADMIN</strong> (or equivalent)</li>
+<li>RFC user with appropriate table access authorizations</li>
+<li>Basis team access to configure parallel jobs and monitor work processes</li>
+</ul>
+<h3>Licensing</h3>
+<ul>
+<li><strong>Full Use license required</strong> — this is non-negotiable</li>
+<li>Runtime licenses cannot use SLT</li>
+<li>Verify in transaction SLICENSE before designing</li>
+</ul>
+<hr>
+<h2>Part 1: Setup &amp; Enablement Check</h2>
+<h3>Step 1: Create RFC Connection (SLT to Source System)</h3>
+<p>Transaction: <strong>SM59</strong></p>
+<pre><code>Action: Create RFC connection from SLT Replication Server to SAP source
+Configuration:
+  - Connection Type: 3 (ABAP to ABAP)
+  - Target host: Source SAP system hostname
+  - System number: Source SAP system number (e.g., 00)
+  - Client: Source system client (e.g., 100)
+  - User: Communication user with appropriate roles
+  - Password: Secure password
+  - Language: EN
+</code></pre>
+<p><strong>Verify:</strong></p>
+<ol>
+<li>Select connection and click &quot;Connection Test&quot;</li>
+<li>Click &quot;Remote Logon Test&quot;</li>
+<li>Expect message: &quot;Connection OK&quot;</li>
+</ol>
+<h3>Step 2: Open SLT Cockpit</h3>
+<p>Transaction: <strong>LTRC</strong> (Main SLT configuration interface)</p>
+<p>This is where all SLT configurations are managed.</p>
+<h3>Step 3: Create Configuration</h3>
+<p>Steps in LTRC:</p>
+<ol>
+<li>Click &quot;Create Configuration&quot; or &quot;New Configuration&quot;</li>
+<li>Specify Configuration Name (e.g., &quot;VBAK_Production_Replication&quot;)</li>
+<li>Specify Description</li>
+<li>Select RFC Connection to source system (created in Step 1)</li>
+<li>Specify Target System:<ul>
+<li>DB Connection (SAP HANA)</li>
+<li>ODP / SAP Data Intelligence</li>
+<li>Cloud platform connection</li>
+</ul>
+</li>
+<li>Define Transfer Settings:<ul>
+<li>Initial Load Mode: Performance Optimized</li>
+<li>Data Transfer Jobs: 4–8 (adjust based on system capacity)</li>
+<li>Initial Load Jobs: 4–8</li>
+<li>Replication Mode: Real Time</li>
+</ul>
+</li>
+<li>Save (generates Mass Transfer ID)</li>
+</ol>
+<h3>Step 4: Verify SLT Enablement</h3>
+<p><strong>Check BAdI Implementation:</strong></p>
+<ul>
+<li>Transaction: LTRC → Expert Functions tab</li>
+<li>Verify active ODP scenario implementations</li>
+</ul>
+<p><strong>Verify Source System Connection:</strong></p>
+<ul>
+<li>Transaction: SM59</li>
+<li>Test the RFC connection</li>
+<li>Confirm connection status is active</li>
+</ul>
+<p><strong>Check User Permissions:</strong></p>
+<ul>
+<li>Verify user has <strong>SAP_IUUC_REPL_ADMIN</strong> role</li>
+<li>Confirm necessary authorizations</li>
+</ul>
+<p><strong>Verify Target System Availability:</strong></p>
+<ul>
+<li>Test target database/ODP connection</li>
+<li>Ensure sufficient storage space</li>
+</ul>
+<hr>
+<h2>Part 2: Configure Table Replication (VBAK Example)</h2>
+<h3>Step 1: Navigate to Table Selection</h3>
+<p>Transaction: <strong>LTRC</strong></p>
+<ol>
+<li>Open existing configuration</li>
+<li>Tab: &quot;Table Overview&quot; or &quot;Data Provisioning&quot;</li>
+</ol>
+<h3>Step 2: Select Table</h3>
+<pre><code>Actions:
+  1. Click &quot;Data Provisioning&quot; button
+  2. Enter Table Name: VBAK (Sales Document Header)
+  3. Click &quot;Add&quot; or &quot;Continue&quot;
+</code></pre>
+<h3>Step 3: Configure Load Strategy</h3>
+<p><strong>Initial Load Settings:</strong></p>
+<pre><code>- Reading Type: 1 (Range Calculation)
+- Parallel Read Jobs: 4–8 (coordinate with Basis)
+- Package Size: 50,000 records (default)
+- Commit Frequency: Every 100,000 records
+</code></pre>
+<p><strong>Delta Load Settings:</strong></p>
+<pre><code>- Replication Mode: Real Time
+- Delta Retrieval Frequency: 5,000 records per batch
+- Enable Logging Table: YES
+</code></pre>
+<h3>Step 4: Start Replication</h3>
+<pre><code>Steps:
+  1. Select &quot;Start Replication (Including Initial Load)&quot;
+  2. Confirm the action
+  3. Monitor begins in LTRC Data Transfer Monitor
+</code></pre>
+<hr>
+<h2>SLT Automatic Backend Processes</h2>
+<p>Once replication starts, SLT automatically:</p>
+<h3>1. Create Target Table Structure</h3>
+<ul>
+<li>Generates VBAK table in destination</li>
+<li>Applies all field definitions</li>
+<li>Creates indexes and constraints</li>
+</ul>
+<h3>2. Create Logging Table in Source</h3>
+<pre><code>Table Name Format: VBAK#0 (source system identifier)
+Stores:
+  - Key field values of changed rows
+  - Change sequence
+  - Operation type (INSERT/UPDATE/DELETE)
+</code></pre>
+<h3>3. Create Database Triggers on VBAK</h3>
+<pre><code>Triggers Created:
+  - INSERT Trigger: Captures new sales documents
+  - UPDATE Trigger: Captures modifications
+  - DELETE Trigger: Captures deletions (if applicable)
+  
+Trigger Location: Source ABAP system
+Trigger Type: Direct database triggers
+</code></pre>
+<h3>4. Execute Full Initial Load</h3>
+<pre><code>Process:
+  1. Reads all existing VBAK records
+  2. Transfers to target system
+  3. Default batch: 50,000 records
+  4. Validates data integrity
+  5. Status in Monitor: &quot;Replication (Initial Load)&quot;
+</code></pre>
+<h3>5. Begin Delta Replication</h3>
+<pre><code>Process:
+  1. Monitors logging table for changes
+  2. Processes changes from logging table
+  3. Retrieves 5,000 records per batch (default)
+  4. Transfers deltas in real-time
+  5. Status in Monitor: &quot;Replication&quot;
+</code></pre>
+<hr>
+<h2>SLT Monitoring</h2>
+<h3>Monitor Transaction: LTRC</h3>
+<p><strong>Data Transfer Monitor Tab:</strong></p>
+<ul>
+<li>Current status: &quot;Replication&quot; or &quot;Initial Load&quot;</li>
+<li>Records transferred</li>
+<li>Current processing record count</li>
+<li>Estimated time remaining</li>
+</ul>
+<p><strong>Load Statistics Tab:</strong></p>
+<ul>
+<li>Total records transferred</li>
+<li>Time elapsed</li>
+<li>Records per second</li>
+<li>Performance metrics</li>
+</ul>
+<h3>Alternative Monitor: LTRO</h3>
+<p>Transaction: <strong>LTRO</strong> (Global landscape monitoring)</p>
+<p>Health checks:</p>
+<ul>
+<li>Master Job Check</li>
+<li>Connection Check</li>
+<li>Table Status Check</li>
+<li>Latency Check (delta lag)</li>
+</ul>
+<h3>Work Process Monitoring: SM50</h3>
+<p>During replication, monitor work process utilization:</p>
+<ul>
+<li>Keep utilization &lt; 80% to avoid impacting user transactions</li>
+<li>If saturation occurs, reduce parallel jobs</li>
+</ul>
+<hr>
+<h2>Delta Load — Table Structure Details</h2>
+<h3>Logging Table Structure</h3>
+<pre><code>Table Name: VBAK#0 (example)
+
+Standard Columns:
+  - SID: System identifier
+  - TID: Trigger identifier (INSERT/UPDATE/DELETE)
+  - TMSTMP: Timestamp of change
+  - VBELN: Sales document number (key field)
+  - POSNR: Item number (key field) if applicable
+  - OPERAND: Type of operation
+
+Change Type Values:
+  - I: INSERT (new record)
+  - U: UPDATE (modified record)
+  - D: DELETE (deleted record)
+</code></pre>
+<h3>Delta Processing Flow</h3>
+<pre><code>Phase 1: Initial Load
+  VBAK Source → Read all records → Transfer to Target
+  Status: &quot;Initial Load&quot; (in LTRC monitor)
+
+Phase 2: Delta Replication
+  VBAK Changes → Logging Table → SLT Reader → Target
+  Batch Size: 5,000 records (default)
+  Frequency: Real-time (on-trigger)
+  Status: &quot;Replication&quot; (in LTRC monitor)
+
+Phase 3: Monitoring
+  SLT calculates delta lag
+  Logs transferred records
+  Reports completion status
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Issue: SM50 Shows Work Process Saturation During Extraction</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Reduce number of parallel extraction connections</li>
+<li>Limit to 3–4 concurrent partitions maximum</li>
+<li>Queue remaining partitions to run sequentially after first batch completes</li>
+<li>Run extractions outside peak transaction hours</li>
+</ol>
+<h3>Issue: One Partition Fails While Others Succeed</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Table may have unusual volume for a specific partition</li>
+<li>Re-run failed partition with smaller sub-partition</li>
+<li>Add additional filter (e.g., BLART for document types)</li>
+<li>Check ODQMON for specific subscription error message</li>
+</ol>
+<h3>Issue: Delta Lag Exceeds 5 Minutes</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Increase parallel readers in LTRS</li>
+<li>Reduce batch size in LTRC (current: 5,000)</li>
+<li>Check logging table size in SE12 (may have grown too large)</li>
+<li>Verify network connectivity between source and target</li>
+</ol>
+<hr>
+<h2>Summary</h2>
+<p>SLT provides real-time replication with automatic full load + delta processing. Key success factors:</p>
+<ol>
+<li><strong>Verify Full Use license before designing</strong></li>
+<li><strong>Configure parallel readers based on system capacity</strong> (avoid &gt; 80% work process utilization)</li>
+<li><strong>Monitor delta lag continuously</strong> (should stay &lt; 5 minutes)</li>
+<li><strong>Test with subset of data first</strong> before full production deployment</li>
+<li><strong>Reconcile row counts after initial load</strong> to verify data integrity</li>
+</ol>
+<p>See the <a href="/walkthrough/slt-setup/">SLT Setup Walkthrough</a> for step-by-step implementation.</p>
+
+      </div>
+    </div>
+
+    <!-- Section card: related walkthroughs -->
+    <div class="card section">
+      <h2>Related <em>walkthroughs</em></h2>
+      <ul style="list-style:disc;padding-left:var(--space-6);">
+        <li style="margin-bottom:var(--space-2);">
+          <a href="&#x2F;sawan_tech_sap_training/walkthrough//slt-setup/">Walkthrough:  — slt-setup</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+        <p class="copyright">© SAP Extract Guide 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

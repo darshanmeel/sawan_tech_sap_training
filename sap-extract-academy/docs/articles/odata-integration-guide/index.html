@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>OData Integration Guide — REST-Based SAP Data Access — SAP Extract Guide</title>
+  <meta name="description" content="Setup OData services for SAP data extraction. SAP Gateway, OData consumers, HTTP authentication, delta extraction via REST.">
+  <link rel="canonical" href="https://academy.example.com/articles/odata-integration-guide/">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="OData Integration Guide — REST-Based SAP Data Access">
+  <meta property="og:description" content="Setup OData services for SAP data extraction. SAP Gateway, OData consumers, HTTP authentication, delta extraction via REST.">
+  <meta property="og:url" content="https://academy.example.com&#x2F;articles&#x2F;odata-integration-guide&#x2F;">
+  <meta property="og:image" content="https://academy.example.com/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Guide">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="OData Integration Guide — REST-Based SAP Data Access">
+  <meta name="twitter:description" content="Setup OData services for SAP data extraction. SAP Gateway, OData consumers, HTTP authentication, delta extraction via REST.">
+  <meta name="twitter:image" content="https://academy.example.com/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"OData Services Integration — Complete Setup Guide","description":"Setup OData services for SAP data extraction. SAP Gateway, OData consumers, HTTP authentication, delta extraction via REST.","author":{"@type":"Organization","name":"SAP Extract Guide"},"publisher":{"@type":"Organization","name":"SAP Extract Guide"},"datePublished":"2026-04-23T00:00:00.000Z","dateModified":"2026-04-23T00:00:00.000Z","mainEntityOfPage":"https://academy.example.com/articles/odata-integration-guide/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://academy.example.com/"},{"@type":"ListItem","position":2,"name":"Articles","item":"https://academy.example.com/articles/"},{"@type":"ListItem","position":3,"name":"OData Services Integration — Complete Setup Guide"}]}}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Guide</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Article detail page — Bento card grid -->
+
+<div class="container" style="padding-top: var(--space-4); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+      <li aria-current="page">OData Services Integration — Complete Setup Guide</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <!-- Hero card: article title + eyebrow with date and reading time -->
+    <div class="card hero article-hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>23 Apr 2026 · 18 min</p>
+        <h1>OData Services Integration — Complete Setup Guide<em>.</em></h1>
+      </div>
+      <p>Expose SAP data via OData services. Gateway configuration, CDS binding, consumer setup, and REST-based data extraction.</p>
+    </div>
+
+    <!-- Side card: author + tags -->
+    <div class="card side">
+      <h3>Author</h3>
+      <p class="big" style="font-size:22px;">SAP Extract Guide</p>
+      <p>18 minute read</p>
+    </div>
+
+    <!-- Section card: article body prose (max-width 780px per reference) -->
+    <div class="card section">
+      <div class="prose" style="max-width:780px;">
+        <h2>What is OData?</h2>
+<p>OData Services expose SAP data via HTTP/HTTPS REST endpoints. OData providers:</p>
+<ul>
+<li>CDS Views</li>
+<li>Standard DataSources</li>
+<li>BW queries</li>
+</ul>
+<p>Target systems access via standard HTTP clients (AppFlow, ADF, Postman, curl, etc.).</p>
+<p><strong>Key characteristics:</strong></p>
+<ul>
+<li><strong>Latency:</strong> 15+ minutes (batch, on-schedule, HTTP overhead)</li>
+<li><strong>License requirement:</strong> Runtime OK (no special license)</li>
+<li><strong>Target destinations:</strong> Any system with HTTP/REST support</li>
+<li><strong>Method:</strong> OData service endpoint with Basic Auth + pagination</li>
+</ul>
+<hr>
+<h2>Prerequisites &amp; Requirements</h2>
+<h3>SAP Infrastructure</h3>
+<ul>
+<li>SAP Gateway system (NetWeaver or SAP Fiori)</li>
+<li>OData provider services exposed (CDS Views or DataSources)</li>
+<li>SAP Web Dispatcher or firewall access to Gateway port</li>
+</ul>
+<h3>Client Infrastructure</h3>
+<ul>
+<li>Client applications with HTTP/HTTPS support</li>
+<li>Network connectivity to SAP Gateway</li>
+</ul>
+<h3>User &amp; Permissions</h3>
+<ul>
+<li>Web service user credentials (Gateway authentication)</li>
+<li>Table access for OData provider</li>
+</ul>
+<hr>
+<h2>Part 1: Setup &amp; Enablement Check</h2>
+<h3>Step 1: Expose ODP Provider as OData Service</h3>
+<p>Transaction: <strong>/IWFND/MAINT_SERVICE</strong></p>
+<p>Steps:</p>
+<ol>
+<li>Access SAP Gateway</li>
+<li>Search/Create service for your provider</li>
+<li>Service Type: OData (V2 or V4)</li>
+<li>Select Provider:<ul>
+<li>CDS View (e.g., Z_VBAK_EXTRACT)</li>
+<li>Standard DataSource (2LIS_11_VAHDR)</li>
+<li>BW query</li>
+</ul>
+</li>
+<li>Activate Service</li>
+<li>Set Access Level: Public (if external access needed)</li>
+</ol>
+<h3>Step 2: Register OData Service Metadata</h3>
+<p>Actions:</p>
+<ol>
+<li>Service alias: <code>/sap/opu/odata/sap/2LIS_11_VAHDR_CDS</code></li>
+<li>Document service endpoint</li>
+<li>Generate technical documentation</li>
+<li>Create user documentation</li>
+</ol>
+<h3>Step 3: Create Gateway User</h3>
+<p>Transaction: <strong>SU01</strong> (User Maintenance)</p>
+<p>User Setup:</p>
+<pre><code>  - User type: System/Communication
+  - Role: SAP_GATEWAY_USER
+  - Assign: Table access for VBAK
+  - Set password: Secure credentials
+  - Enable: Service activation
+</code></pre>
+<h3>Step 4: Test OData Service</h3>
+<p>Steps:</p>
+<ol>
+<li>Service URL: <code>http[s]://host:port/sap/opu/odata/sap/SERVICE_NAME</code></li>
+<li>Append: <code>/$metadata</code> (view service definition)</li>
+<li>Append: <code>/ZMY_VBAK_SET</code> (view VBAK data sample)</li>
+<li>Authenticate: Use Gateway user credentials</li>
+<li>Verify: Returns XML/JSON data successfully</li>
+</ol>
+<h3>Step 5: Verify OData Service is Enabled</h3>
+<p><strong>Check Service Registration:</strong></p>
+<ul>
+<li>Transaction: /IWFND/MAINT_SERVICE</li>
+<li>Search: Service name</li>
+<li>Verify: Status = &quot;Active&quot;</li>
+</ul>
+<p><strong>Check Service Metadata:</strong></p>
+<ul>
+<li>URL: Service endpoint + <code>/$metadata</code></li>
+<li>Verify: Returns valid XML schema</li>
+<li>Check: All VBAK fields included</li>
+</ul>
+<p><strong>Test Service Access:</strong></p>
+<ul>
+<li>Use Tool: Postman or curl</li>
+<li>URL: Service endpoint/Entity</li>
+<li>Method: GET</li>
+<li>Auth: Gateway user credentials</li>
+<li>Expected: HTTP 200 with data</li>
+</ul>
+<p><strong>Check Gateway User:</strong></p>
+<ul>
+<li>Transaction: SU01</li>
+<li>User: Gateway service user</li>
+<li>Verify: Active, password set, roles assigned</li>
+</ul>
+<hr>
+<h2>Part 2: Configure Table Replication (VBAK Example)</h2>
+<h3>Step 1: Configure OData Consumer</h3>
+<p>In External System (e.g., Amazon AppFlow):</p>
+<pre><code>  1. Create new data source
+  2. Type: SAP OData Service
+  3. URL: https://[SAP_HOST]:port/sap/opu/odata/sap/2LIS_11_VAHDR_CDS
+  4. Authentication:
+     - Type: Basic Auth
+     - Username: Gateway user
+     - Password: User password
+  5. Test connection
+</code></pre>
+<h3>Step 2: Configure Full Load Extraction</h3>
+<p>Extraction Settings:</p>
+<pre><code>  1. Entity: ZMY_VBAK_SET (VBAK data)
+  2. Load Mode: Full Extract
+  3. Fields to Extract:
+     - VBELN (Sales Document Number)
+     - POSNR (Item Number)
+     - KUNNR (Customer Number)
+     - ERDAT (Creation Date)
+     - NETWR (Net Value)
+     - WAERK (Currency)
+     - (All required VBAK fields)
+  4. Filter (optional): $filter=ERDAT ge &#39;20260101&#39;
+  5. Pagination: $top=100000, $skip=0 (repeat for all records)
+</code></pre>
+<h3>Step 3: Configure Delta Load Extraction</h3>
+<p>Delta Settings:</p>
+<pre><code>  1. After initial full load completes
+  2. Delta Detection: ODP change tokens
+  3. Schedule: Every 15 minutes (minimum)
+  4. Delta Query:
+     - Include timestamp filter
+     - Request only modified records
+     - Use change data capture fields
+  5. Target Merge: Upsert (update if exists, insert if new)
+</code></pre>
+<h3>Step 4: Start OData Extraction</h3>
+<p>Steps:</p>
+<ol>
+<li>Trigger full load extraction</li>
+<li>Monitor progress (typically 5–30 minutes for VBAK)</li>
+<li>Verify all records received</li>
+<li>Activate delta extraction schedule</li>
+<li>Confirm delta data flowing</li>
+</ol>
+<hr>
+<h2>OData Automatic Processes</h2>
+<h3>Phase 1: OData Full Load</h3>
+<p><strong>HTTP Request Pattern:</strong></p>
+<pre><code>GET /sap/opu/odata/sap/2LIS_11_VAHDR_CDS/ZMY_VBAK_SET
+Headers:
+  - Authorization: Basic [base64_credentials]
+  - Accept: application/json
+</code></pre>
+<p><strong>SAP Response:</strong></p>
+<pre><code>  1. Returns first 10,000 records (default page size)
+  2. Includes pagination token: __next or $skiptoken
+  3. Consumer repeats request with token until completion
+</code></pre>
+<p><strong>Process:</strong></p>
+<pre><code>Page 1: Records 1–10,000
+Page 2: Records 10,001–20,000 (using token)
+Page N: Records until all extracted
+
+Status: Initial load complete, delta token recorded
+</code></pre>
+<h3>Phase 2: OData Delta Load</h3>
+<p><strong>HTTP Request Pattern (Periodic - Every 15min):</strong></p>
+<pre><code>GET /sap/opu/odata/sap/2LIS_11_VAHDR_CDS/ZMY_VBAK_SET?$filter=LastModified gt &#39;timestamp&#39;
+</code></pre>
+<p><strong>SAP Response:</strong></p>
+<pre><code>  1. Returns only records modified since timestamp
+  2. Includes operation metadata:
+     - ODQ_CHANGEMODE: &#39;C&#39; (change) or &#39;D&#39; (delete)
+     - Last modified timestamp
+     - Record version ID
+</code></pre>
+<p><strong>Process:</strong></p>
+<pre><code>  1. Consumer requests changes since last extraction
+  2. SAP returns delta records with metadata
+  3. Consumer applies changes:
+     - Mode &#39;C&#39;: INSERT or UPDATE
+     - Mode &#39;D&#39;: DELETE
+  4. Consumer updates last extraction timestamp
+  5. Wait 15 minutes, repeat
+</code></pre>
+<p><strong>Data Fields in Delta Response:</strong></p>
+<pre><code>  - All VBAK fields
+  - ODQ_CHANGEMODE: Operation type
+  - ODQ_ENTITYCNTR: Sequence number
+  - Modification timestamp
+</code></pre>
+<hr>
+<h2>OData Response Structure</h2>
+<h3>Full Load Response Example</h3>
+<pre><code class="language-json">{
+  &quot;d&quot;: {
+    &quot;results&quot;: [
+      {
+        &quot;__metadata&quot;: {
+          &quot;uri&quot;: &quot;http://host/...&quot;,
+          &quot;type&quot;: &quot;I_SalesDocument&quot;
+        },
+        &quot;VBELN&quot;: &quot;0000100001&quot;,
+        &quot;POSNR&quot;: &quot;00010&quot;,
+        &quot;KUNNR&quot;: &quot;100001&quot;,
+        &quot;ERDAT&quot;: &quot;/Date(1704067200000)/&quot;,
+        &quot;NETWR&quot;: &quot;1000.00&quot;,
+        &quot;WAERK&quot;: &quot;USD&quot;,
+        &quot;ODQ_CHANGEMODE&quot;: &quot;C&quot;,
+        &quot;ODQ_ENTITYCNTR&quot;: &quot;12345&quot;
+      }
+    ],
+    &quot;__next&quot;: &quot;/sap/.../ZMY_VBAK_SET?$skiptoken=...&quot;
+  }
+}
+</code></pre>
+<h3>Delta Processing Fields</h3>
+<p><strong>Standard OData Delta Fields:</strong></p>
+<pre><code>1. ODQ_CHANGEMODE (Operation indicator)
+   - &quot;C&quot;: Change (INSERT or UPDATE)
+   - &quot;D&quot;: Delete marker
+   - &quot;U&quot;: Update marker (alternative)
+
+2. ODQ_ENTITYCNTR (Sequence counter)
+   - Unique number per change
+   - Helps order delta application
+   - Prevents duplicate processing
+
+3. Original VBAK Fields
+   - All extracted fields present
+   - For deletes: Only key fields + mode
+
+4. Metadata
+   - Modified timestamp
+   - Record version ID (if available)
+   - Source system indicator
+</code></pre>
+<hr>
+<h2>OData Monitoring</h2>
+<h3>Monitor Location: SAP Gateway</h3>
+<p><strong>Transaction: /IWFND/MAINT_SERVICE</strong></p>
+<pre><code>  1. Service status
+  2. Service access logs
+  3. Lookup failure/error counts
+</code></pre>
+<p><strong>Transaction: /IWFND/MONITOR_LOG</strong></p>
+<pre><code>  1. OData call logs
+  2. Performance metrics
+  3. Error details
+</code></pre>
+<h3>External System Monitoring</h3>
+<pre><code>  1. Extraction job logs
+  2. Data row counts
+  3. Delta processing status
+  4. Error rate monitoring
+</code></pre>
+<hr>
+<h2>Troubleshooting</h2>
+<h3>Issue: OData Service Returns HTTP 401 (Unauthorized)</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Verify Gateway user credentials</li>
+<li>Check user is active in SU01</li>
+<li>Confirm SAP_GATEWAY_USER role assigned</li>
+<li>Verify table access authorization (S_TABU_DIS)</li>
+<li>Test connection in /IWFND/MAINT_SERVICE</li>
+</ol>
+<h3>Issue: OData Service Pagination Slow (High Latency)</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Increase $top parameter (current: 100,000)</li>
+<li>Reduce filter complexity ($filter clause)</li>
+<li>Ensure CDS view is optimized (check execution plan in RSA1)</li>
+<li>Check SAP Gateway server CPU/memory</li>
+<li>Run extraction during off-peak hours</li>
+</ol>
+<h3>Issue: OData Service Returns &quot;Service Not Found&quot; (HTTP 404)</h3>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Verify service URL syntax</li>
+<li>Check service is activated in /IWFND/MAINT_SERVICE</li>
+<li>Verify Gateway user has service access</li>
+<li>Check SAP Gateway logs</li>
+<li>Confirm service alias matches</li>
+</ol>
+<hr>
+<h2>Summary</h2>
+<p>OData provides HTTP-based, REST-friendly data access with standard pagination and delta mechanisms. Key considerations:</p>
+<ol>
+<li><strong>Expose OData service:</strong> /IWFND/MAINT_SERVICE with CDS View or DataSource</li>
+<li><strong>Create Gateway user:</strong> SU01 with SAP_GATEWAY_USER role</li>
+<li><strong>Test service:</strong> Verify metadata and sample data access</li>
+<li><strong>Configure consumer:</strong> Full load with pagination, delta with timestamp</li>
+<li><strong>Monitor:</strong> Check service logs, verify HTTP status codes</li>
+<li><strong>Performance:</strong> HTTP overhead makes OData slower than native methods</li>
+</ol>
+<p>OData is ideal for firewall-friendly, HTTP-based integrations with external systems.</p>
+
+      </div>
+    </div>
+
+    <!-- Section card: related walkthroughs -->
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+        <p class="copyright">© SAP Extract Guide 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
