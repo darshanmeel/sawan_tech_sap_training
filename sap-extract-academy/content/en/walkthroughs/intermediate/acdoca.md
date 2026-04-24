@@ -236,6 +236,10 @@ nextSteps:
 updatedAt: 2026-04-22
 ---
 
+<div class="callout info">
+<strong>Applies to other tables too.</strong> The same patterns work for any SAP table — replace <code>ACDOCA</code> (and its CDS view <code>I_JournalEntryItem</code>) in the code below with the table and view you want. Partition keys change per table (<code>BUKRS + GJAHR</code> here; <code>BUKRS + BUDAT</code> for BKPF; <code>VKORG</code> for VBAK; just <code>MATNR</code> or <code>LIFNR</code> for master data), but the ODP / SLT / RFC mechanics are the same. See <a href="/tables/">the table directory</a> for the full list and each table's recommended partition strategy.
+</div>
+
 ## Scenario
 
 Your finance team needs ACDOCA data for year-end close analytics. You will extract one company code, one fiscal year — enough for meaningful analysis without hitting system limits. This walkthrough focuses on the SAP-side checks: confirming delta capability, monitoring ODP subscriptions, and understanding the first-delta behavior that surprises most teams on their first run.

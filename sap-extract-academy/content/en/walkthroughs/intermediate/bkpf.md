@@ -169,6 +169,10 @@ nextSteps:
 updatedAt: 2026-04-22
 ---
 
+<div class="callout info">
+<strong>Applies to other tables too.</strong> The same patterns work for any SAP table — replace <code>BKPF</code> (and its CDS view <code>I_AccountingDocumentHeader</code>) in the code below with the table and view you want. Partition keys change per table (<code>BUKRS + BUDAT</code> here; <code>BUKRS + GJAHR</code> for ACDOCA; <code>VKORG</code> for VBAK; just <code>MATNR</code> or <code>LIFNR</code> for master data), but the ODP / SLT / RFC mechanics are the same. See <a href="/tables/">the table directory</a> for the full list and each table's recommended partition strategy.
+</div>
+
 ## Scenario
 
 Your finance warehouse needs three years of accounting documents. You will extract in parallel by fiscal year and company code to minimize extraction time, while keeping SAP work process utilization safe for concurrent posting activity.

@@ -171,6 +171,10 @@ nextSteps:
 updatedAt: 2026-04-22
 ---
 
+<div class="callout info">
+<strong>Applies to other tables too.</strong> The same patterns work for any SAP table — replace <code>VBAK</code> (and its CDS view <code>I_SalesDocument</code>) in the code below with the table and view you want. Partition keys change per table (<code>VKORG + ERDAT</code> here; <code>BUKRS + GJAHR</code> for ACDOCA; <code>BUKRS + BUDAT</code> for BKPF; just <code>MATNR</code> or <code>LIFNR</code> for master data), but the ODP / SLT / RFC mechanics are the same. See <a href="/tables/">the table directory</a> for the full list and each table's recommended partition strategy.
+</div>
+
 ## Scenario
 
 Your analytics team now needs near-real-time sales data. Daily delta extracts are sufficient — you do not need sub-minute updates, but every morning's refresh should catch all yesterday's new and changed orders. Your company also added a custom Z-field ZZ_REGION to sales documents for regional analysis.

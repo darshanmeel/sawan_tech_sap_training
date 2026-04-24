@@ -185,7 +185,9 @@
       <div class="card section">
         <h2>Over<em>view</em></h2>
         <div class="prose">
-          <h2>Scenario</h2>
+          <div class="callout info">
+<strong>Applies to other tables too.</strong> The same patterns work for any SAP table — replace <code>MARA</code> (and its CDS view <code>I_Product</code>) in the code below with the table and view you want. Master data like MARA and LFA1 usually extracts in a single pass without partitioning; transactional tables need a partition key (<code>BUKRS + GJAHR</code> for ACDOCA, <code>BUKRS + BUDAT</code> for BKPF, <code>VKORG + ERDAT</code> for VBAK). The ODP / SLT / RFC mechanics are identical. See <a href="/tables/">the table directory</a> for the full list and each table's recommended strategy.
+</div><h2>Scenario</h2>
 <p>Your company extended MARA with Z-fields for brand and sustainability tracking. You need these fields in the data warehouse without modifying the released CDS view.</p>
 <p>This walkthrough covers the SAP-side work: identifying Z-fields in SE11, creating a CDS extension view, and verifying the Z-field data is correctly exposed. Your tool team points the extraction at the extension view instead of the base I_Product view.</p>
 <hr>

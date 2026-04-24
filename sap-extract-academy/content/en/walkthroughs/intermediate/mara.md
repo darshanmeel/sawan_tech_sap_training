@@ -168,6 +168,10 @@ nextSteps:
 updatedAt: 2026-04-22
 ---
 
+<div class="callout info">
+<strong>Applies to other tables too.</strong> The same patterns work for any SAP table — replace <code>MARA</code> (and its CDS view <code>I_Product</code>) in the code below with the table and view you want. Master data like MARA and LFA1 usually extracts in a single pass without partitioning; transactional tables need a partition key (<code>BUKRS + GJAHR</code> for ACDOCA, <code>BUKRS + BUDAT</code> for BKPF, <code>VKORG + ERDAT</code> for VBAK). The ODP / SLT / RFC mechanics are identical. See <a href="/tables/">the table directory</a> for the full list and each table's recommended strategy.
+</div>
+
 ## Scenario
 
 Your company extended MARA with Z-fields for brand and sustainability tracking. You need these fields in the data warehouse without modifying the released CDS view.
