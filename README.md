@@ -1,236 +1,279 @@
 # SAP Extract Academy
 
-A free, professional-grade learning platform for SAP data extraction. Master how to extract GL posting data, sales orders, and master data from SAP S/4HANA and ECC into any cloud warehouse.
+> A free, production-grade field guide for extracting data out of SAP S/4HANA and ECC into any cloud data platform — without the licensing surprises, memory crashes, and 3 AM incidents that come from learning these patterns the hard way.
 
 **Live site:** [https://darshanmeel.github.io/sawan_tech_sap_training/](https://darshanmeel.github.io/sawan_tech_sap_training/)
 
----
-
-## What This Website Does
-
-SAP Extract Academy teaches **data engineers, architects, and analysts** how to:
-
-1. **Extract SAP data to cloud** using ODP (batch), SLT (real-time), or RFC (custom)
-2. **Handle massive tables** like ACDOCA (Universal Journal) — billions of rows, complex partitioning
-3. **Avoid licensing traps** — $100k+ in retroactive audit costs if you choose the wrong method
-4. **Stream real-time data** from SAP to Kafka, Snowflake, Databricks, or S3 directly
-5. **Use professional patterns** tested at enterprise scale — not tutorials, production architectures
+**Repo layout:** This is a mono-repo containing the static site source (`sap-extract-academy/`) plus supporting notes and planning docs at the root. The site itself is a fully static build output under `sap-extract-academy/docs/`, published to GitHub Pages from `main`.
 
 ---
 
-## How to Extract Your First Table
+## Table of Contents
 
-### Option 1: ACDOCA (GL Posting Data) via ODP
-
-**For:** Batch extractions, historical GL data, scheduled loads  
-**Why:** No special license required (Runtime license OK), scales to 500M+ rows per partition  
-**Time:** 4–12 hours for 500M rows
-
-**Path:**
-1. Visit the [Core Extraction Guide](/articles/how-to-extract-any-sap-data/)
-2. Follow the **ACDOCA via ODP** example
-3. Use Databricks + S3 (or ADF, Fivetran, Python) as shown
-4. Partition by company code (BUKRS) + fiscal year (GJAHR)
-
-**Tools supported:**
-- Azure Data Factory (ODP connector)
-- Fivetran (preconfigured SAP source)
-- Databricks (spark-sap connector)
-- Python (pyrfc library)
-- Airbyte (open-source ODP)
-
-**Destination options:** S3, Azure Data Lake, Google Cloud Storage, Snowflake
-
-### Option 2: VBAK (Sales Orders) via SLT
-
-**For:** Real-time data, sub-5-minute latency, continuous streaming  
-**Why:** Full-load + delta in one setup, automatic change capture  
-**License:** ⚠️ Full Use license required (NOT Runtime)  
-**Time:** 2–4 hours full load, <5 minutes delta lag
-
-**Path:**
-1. Visit the [Core Extraction Guide](/articles/how-to-extract-any-sap-data/)
-2. Follow the **VBAK via SLT** example
-3. Choose your destination:
-
-   **Direct SAP-to-Cloud Streaming** (Full Use license only):
-   - SAP writes directly to Kafka topic → no intermediate infrastructure needed
-   - SAP writes directly to S3/ADLS → serverless, pay-per-use
-   - SAP writes directly to Snowflake → one-step ingestion
-   
-   **Traditional Kafka Path** (more control):
-   - SAP → Kafka topic → Databricks/Spark → S3 or Snowflake
-   - Allows transformation and deduplication in flight
-   - Easier to implement CDC (change data capture) patterns
-
-**Key Note:** With SLT + Full Use license, SAP's Landscape Transformation can push real-time changes **directly to your cloud infrastructure** (Kafka, S3, ADLS, Snowflake) without additional tools or servers.
-
-**Tools supported:**
-- Kafka (recommended for CDC and complex logic)
-- Snowflake connector (direct SLT ingestion)
-- Azure Event Hubs → Databricks
-- Google Pub/Sub → BigQuery
-- S3 / ADLS (for eventual consistency use cases)
+1. [Who this is for](#who-this-is-for)
+2. [What the site teaches](#what-the-site-teaches)
+3. [Content architecture](#content-architecture)
+4. [The five tables](#the-five-tables)
+5. [Extraction methods covered](#extraction-methods-covered)
+6. [Licensing guardrails](#licensing-guardrails)
+7. [How to navigate the site](#how-to-navigate-the-site)
+8. [Repository layout](#repository-layout)
+9. [Local development](#local-development)
+10. [Build system overview](#build-system-overview)
+11. [Deployment](#deployment)
+12. [Content conventions](#content-conventions)
+13. [Contributing](#contributing)
+14. [Roadmap](#roadmap)
+15. [Trademarks and licensing](#trademarks-and-licensing)
 
 ---
 
-## Tables & Walkthroughs
+## Who this is for
 
-| Table | Module | Beginner | Intermediate | Expert |
-|-------|--------|----------|--------------|--------|
-| **ACDOCA** | FI (Finance) | ODP single partition | ODP multi-partition | SLT real-time |
-| **VBAK** | SD (Sales) | One-time extract | Scheduled batch | Real-time SLT |
-| **BKPF** | FI (Finance) | Basic accounting docs | Parallel extraction | - |
-| **MARA** | MM (Materials) | Material master basics | Change data capture | - |
-| **LFA1** | MM (Materials) | Vendor data | - | - |
+The Academy is written for four audiences:
 
-Each walkthrough includes:
-- ✅ Step-by-step SAP configuration (SE80, SE16N, SU01, LTCO, SLICENSE)
-- ✅ Data tool setup (Databricks, ADF, Snowflake, etc.)
-- ✅ Reconciliation checks (row count validation)
-- ✅ Troubleshooting guide (common failures and fixes)
-- ✅ Performance expectations (4 hours for 500M rows ODP, <5 min lag for SLT)
+- **Data engineers** building extraction pipelines from SAP into Snowflake, Databricks, BigQuery, Redshift, Fabric, or object storage. You want patterns that survive real volumes (billions of rows), not toy tutorials against a demo system.
+- **Data architects** designing the target architecture before a single line of config is written. You need to weigh ODP vs. SLT vs. RFC, understand the blast radius of each, and know what each license entitles you to.
+- **SAP Basis / BTP teams** who own the source system and get paged when an extraction job locks ACDOCA during month-end close. You need to know which levers to pull in LTRC, LTRS, ODQMON, and SM50.
+- **Analytics engineers and technical program managers** who don't touch SAP themselves but need to scope the work, budget the license, and set realistic expectations with finance and operations stakeholders.
 
----
+The shared thread: everyone here is somewhere on the path from "we need SAP data in the warehouse" to "the pipeline runs unattended and Finance trusts it".
 
-## Key Learning Areas
+## What the site teaches
 
-### Extraction Methods
+Every page is organised around the same three-part mental model:
 
-- **ODP** — Operational Data Provisioning
-  - Standard SAP framework for batch extraction
-  - Works with 6+ tools (ADF, Fivetran, Databricks, Python, Airbyte)
-  - Runtime license OK
-  - Scales: 100M–500M rows per partition
+1. **SAP-side reality first.** Released CDS views, authorization requirements, volume characteristics, delta mechanics, and the gotchas that break pipelines. This is the part most tutorials skip, and it is the part that actually determines whether your project ships.
+2. **Tool configuration second.** ADF, Databricks, Fivetran, Qlik Replicate, Python/pyrfc, SAP Datasphere, SLT targets — wrapped so you only see the stack you care about.
+3. **Operations and cost reality third.** Reconciliation patterns, partitioning math, license costs, lock contention on dialog users, and the failure modes you will actually hit in production.
 
-- **SLT** — SAP Landscape Transformation  
-  - Real-time replication with full-load + continuous delta
-  - Writes directly to Kafka, Snowflake, cloud storage
-  - Requires Full Use license
-  - Latency: <5 minutes
+The site deliberately does **not** teach "how to click through LTRC for the first time" as a standalone exercise — those walkthroughs exist all over the web. It teaches the patterns and trade-offs that are hard to find anywhere else, grounded in the tables your business actually cares about.
 
-- **RFC** — Remote Function Call
-  - Legacy, rarely used for new projects
-  - Custom integration only
-  - Not recommended
+## Content architecture
 
-### Licensing & Compliance
+The site is composed of five content types, all generated from Markdown:
 
-- Runtime vs. Full Use — which methods each license permits
-- Audit risk — what triggers SAP licensing audits
-- How to validate your license before designing architecture
-- Cost impact — licensing mistakes = $100k+ retroactive bills
+| Content type | Path on site | What it is |
+|---|---|---|
+| **Landing** | `/` | Bento-style home page that frames the site and links to the five featured tables. |
+| **Tables** | `/tables/<slug>/` | Per-table reference: business meaning, fields, ECC vs. S/4HANA DDL, typical volumes, and links to the table's end-to-end walkthrough. |
+| **Walkthroughs** | `/walkthrough/<slug>/` | One end-to-end walkthrough per table. Each covers ODP, SLT, and RFC paths in a single canonical document — no more beginner / intermediate / expert fragmentation. |
+| **Articles** | `/articles/<slug>/` | Long-form deep dives: ACDOCA memory internals, Runtime vs. Full Use licensing, Datasphere replication, OData integration, and a core "how to extract any SAP data" guide that glues everything together. |
+| **Glossary** | `/glossary/<term>/` | 32 terms covering SAP transactions (LTRC, LTRS, ODQMON, SE16N, SM59), extraction concepts (ODP, SLT, RFC, delta, CDS), field types (CUKY, CURR, DATS, NUMC, QUAN, MEINS), and runtime concepts (dialog work process, extractor, transport request). |
 
-### Performance & Scale
+One walkthrough per table is a deliberate choice made in April 2026. The earlier structure had three levels (beginner / intermediate / expert) per table, which meant readers had to context-switch between three very similar documents and maintainers had to keep them in sync. The merged model keeps all three trajectories — small batch, partitioned batch, real-time streaming — inside a single tabbed walkthrough.
 
-- Partitioning strategies for billion-row tables
-- Parallel extraction with work process management
-- Memory exhaustion prevention (TSLIB errors)
-- Lock contention and finance user impact
+## The five tables
 
-### Real-World Context
+The Academy covers five SAP tables that together represent the bulk of enterprise extraction work:
 
-- Finance user blocking (month-end close impact)
-- Authorization and data security (CDS views vs. raw tables)
-- Data quality validation (reconciliation patterns)
-- Cloud cost optimization (partitioning, compression, incremental loads)
+| Table | Module | Business meaning | Why it's featured |
+|---|---|---|---|
+| **ACDOCA** | FI — Finance | Universal Journal. Every GL posting in S/4HANA. | The hardest table in SAP. 2–20 billion rows at large enterprises. Extracting it wrong will take the system down during close. |
+| **BKPF** | FI — Finance | Accounting document headers. One row per financial document. | The classic FI extraction pattern — smaller volumes than ACDOCA, but you need it for audit trails and document-level reconciliation. |
+| **VBAK** | SD — Sales & Distribution | Sales order headers. One row per sales order. | The canonical real-time streaming use case. Sales velocity dashboards, fulfillment SLAs, and order-to-cash analytics all start here. |
+| **MARA** | MM — Materials Management | Material master. One row per material, across all plants. | Master data. Small enough to full-load, complex enough to teach Z-field handling and MANDT filtering. |
+| **LFA1** | MM — Materials Management | Vendor master. One row per vendor / supplier. | The other canonical master data table. Great for teaching slowly-changing-dimension patterns against SAP. |
 
----
+Each table has a dedicated reference page under `/tables/<slug>/` and a single end-to-end walkthrough under `/walkthrough/<slug>/`. The reference pages also ship ECC and S/4HANA DDL side by side, generated from the source-of-truth field lists in `content/en/directory/tables/<slug>/`.
 
-## Getting Started
+## Extraction methods covered
 
-### For First-Time Users
+Every walkthrough covers three paths, so you can see the trade-off directly:
 
-1. **Read the [Core Extraction Guide](/articles/how-to-extract-any-sap-data/)**
-   - Understand which method fits your use case
-   - See ACDOCA and VBAK examples end-to-end
-   - Learn licensing constraints
+### ODP — Operational Data Provisioning (OData or RFC)
 
-2. **Pick your table** — ACDOCA (GL) or VBAK (Sales Orders)
+- **What it is:** SAP's officially supported framework for third-party extraction. Exposes released CDS views over OData or (historically) RFC. Handles full loads and delta via built-in queues (monitored in ODQMON).
+- **License:** Runtime-compatible when accessed via OData against published CDS views. Note 3255746 (Feb 2024) restricted third-party RFC access to ODP — this is covered in detail in the licensing articles.
+- **Ceiling:** ~500M rows per partition before you start fighting timeouts. Delta latency is poll-based (typically 5–15 minutes at best).
+- **Tools that speak ODP:** ADF, Fivetran, Qlik Replicate, Informatica, Airbyte, custom Python via pyrfc or OData clients.
 
-3. **Pick your method** — ODP (batch) or SLT (real-time)
+### SLT — SAP Landscape Transformation
 
-4. **Follow the walkthrough** — Beginner level to start
+- **What it is:** SAP's real-time replication server. Trigger-based change data capture at the database layer. Configured via LTRC and LTRS. Pushes directly to Kafka, cloud storage, SAP Datasphere, HANA, or another SAP system.
+- **License:** Full Use only. This is the single most expensive licensing surprise in SAP extraction — covered at length in [`articles/runtime-vs-full-use`](./sap-extract-academy/content/en/articles/runtime-vs-full-use.md) and [`articles/sap-runtime-license-trap`](./sap-extract-academy/content/en/articles/sap-runtime-license-trap.md).
+- **Ceiling:** Billions of rows with LTRS parallelism (8–16 parallel readers is common). Sub-minute delta latency is achievable.
+- **Targets:** Kafka, S3 / ADLS / GCS, Snowflake, Databricks, SAP HANA, SAP Datasphere, Google BigQuery via partners.
 
-5. **Validate your license** — Check SLICENSE transaction before designing
+### RFC — Remote Function Call (custom)
 
-### For Experienced Data Engineers
+- **What it is:** Direct function-module calls from Python, Java, or .NET into SAP. Low-level, flexible, and dangerous in the wrong hands.
+- **License:** Mixed. Custom ABAP extractors are not permitted on Runtime. BAPIs for standard operations are fine. Third-party ODP-via-RFC is restricted by Note 3255746.
+- **When to use:** Edge cases only — tables without CDS views, niche function modules, or one-off historical extractions. Not recommended for new projects.
+- **Covered separately:** [`articles/rfc-replication-guide`](./sap-extract-academy/content/en/articles/rfc-replication-guide.md) covers the patterns and pitfalls.
 
-- Jump to [Intermediate walkthroughs](/walkthrough/) for parallel extraction patterns
-- Read [Expert guides](/walkthrough/) for SLT streaming and CDC
-- Use the [Table Directory](/directory/) for column definitions, DDL, and extraction methods
+The Academy's opinion: most teams should start with ODP via OData, validate the license covers it, and only escalate to SLT when they have a concrete requirement that ODP cannot meet (typically sub-5-minute delta on a high-volume table).
 
-### For Architects
+## Licensing guardrails
 
-- Review licensing implications in [Runtime vs. Full Use article](/articles/sap-runtime-license-trap/)
-- Check [Roadmap](/roadmap/) for upcoming advanced patterns
-- Explore [Glossary](/glossary/) for 30+ SAP extraction terms
+Licensing is the single biggest cause of SAP extraction projects going sideways, and the site gives it proportionate weight. Two dedicated articles cover it in detail:
 
----
+- **[`articles/runtime-vs-full-use`](./sap-extract-academy/content/en/articles/runtime-vs-full-use.md)** — the architect-facing decision framework. What each license type permits, how to validate yours before designing, and a decision matrix mapping requirements to license tier.
+- **[`articles/sap-runtime-license-trap`](./sap-extract-academy/content/en/articles/sap-runtime-license-trap.md)** — the incident-facing view. Why organizations fall into the trap, how SAP audits detect it, what the retroactive bills look like, and the recovery paths when you are already in violation.
 
-## Site Structure
+The short version that everyone should internalize:
+
+- **ODP via OData against published CDS views** — permitted on Runtime.
+- **SLT (any target)** — Full Use only.
+- **Custom ABAP extractors** — Full Use only.
+- **Third-party tools using ODP via RFC** — restricted by SAP Note 3255746 regardless of license tier.
+- **Third-party tools using ODP via OData** — permitted on Runtime; verify with your vendor.
+
+Treat license type as a hard architectural constraint. Validate in week one. Get it in writing from SAP licensing, not from your account exec.
+
+## How to navigate the site
+
+Four entry points, depending on what you're trying to do:
+
+1. **I'm new — where do I start?** → Open the [Core Extraction Guide](https://darshanmeel.github.io/sawan_tech_sap_training/articles/how-to-extract-any-sap-data/). It walks through the full mental model, from "which method fits my use case" through two worked examples (ACDOCA via ODP and VBAK via SLT) end to end.
+2. **I know which table I need.** → Go to `/tables/<slug>/` for the reference page, then follow the link to `/walkthrough/<slug>/`.
+3. **I'm scoping a project and need the licensing view.** → Read the two licensing articles first, then skim the method-specific guides (`odp-setup-guide`, `slt-setup-guide`, `rfc-replication-guide`, `datasphere-replication-guide`, `odata-integration-guide`).
+4. **I hit a term I don't recognize.** → `/glossary/<term>/`. The glossary is deliberately concise (one concept per page) so you can link back into it from walkthroughs without dragging readers into a 2000-word tangent.
+
+## Repository layout
 
 ```
-Extract Academy/
-├── Core Guide              → How to extract any SAP data (start here)
-├── Walkthroughs            → Step-by-step guides (beginner → expert)
-├── Articles                → Deep-dives on licensing, patterns, pitfalls
-├── Table Directory         → Column reference, DDL, extraction methods
-├── Glossary                → 30+ SAP extraction terms explained
-└── About                   → Project background and credits
+sawan_tech_sap_training/
+├── README.md                        # This file — repo-level overview
+├── sap-extract-academy/             # The site
+│   ├── README.md                    # Site-level README (build details, content conventions)
+│   ├── package.json                 # Node deps (marked, mustache, gray-matter, js-yaml)
+│   ├── build.js                     # Main build script: markdown → HTML
+│   ├── build/                       # Support modules
+│   │   ├── ddl.js                   # Generates ECC + S/4HANA DDL from table field lists
+│   │   └── directory-validator.js   # Sanity-checks table metadata
+│   ├── content/en/                  # All content (English; structure is i18n-ready)
+│   │   ├── index.md                 # Landing page
+│   │   ├── about.md, roadmap.md     # Static pages
+│   │   ├── tables/                  # 5 table reference pages
+│   │   ├── walkthroughs/            # End-to-end walkthroughs (one per table)
+│   │   ├── articles/                # 10 long-form articles
+│   │   ├── glossary/                # 32 term definitions
+│   │   └── directory/tables/        # Field-level metadata driving the DDL generator
+│   ├── templates/                   # Mustache templates (one per page type)
+│   ├── strings/en.json              # UI text — internationalization-ready
+│   ├── docs/                        # BUILD OUTPUT — published to GitHub Pages
+│   │   ├── index.html
+│   │   ├── tables/, walkthrough/, articles/, glossary/, directory/
+│   │   ├── assets/css/, assets/js/, assets/images/
+│   │   └── sitemap.xml
+│   ├── .github/workflows/           # CI/CD (GitHub Actions → GitHub Pages)
+│   └── lighthouserc.json            # Performance budget for Lighthouse CI
+├── academy_handoff/                 # Planning docs and the original project spec
+└── .claude/                         # Claude Code settings (local only, not published)
 ```
 
----
+## Local development
 
-## Repository Structure
-
-| Directory | Purpose |
-|-----------|---------|
-| [`sap-extract-academy/`](./sap-extract-academy/) | Live site: source code, content, build system |
-| [`sap-extract-academy/content/`](./sap-extract-academy/content/en/) | Markdown content for articles, walkthroughs, tables |
-| [`sap-extract-academy/templates/`](./sap-extract-academy/templates/) | HTML templates (Mustache) for pages |
-| [`sap-extract-academy/docs/`](./sap-extract-academy/docs/) | Generated static HTML (build output) |
-| [`sap-extract-academy/build/`](./sap-extract-academy/build/) | Build system: DDL generator, directory validator |
-
----
-
-## Build & Deployment
+**Prerequisites:** Node.js 18 or newer, npm 9 or newer. No other runtimes, databases, or services required — the site is entirely static.
 
 ```bash
+# One-time setup
 cd sap-extract-academy
 npm install
-npm run build      # Generate static HTML from markdown
-npm run test       # Run test suite (DDL snapshots, schema validation)
-npm start          # Local dev server
+
+# Build the site
+npm run build          # Generates docs/ from content/en/
+
+# Serve it locally
+cd docs
+npx local-web-server   # Default port 8000
+# Open http://localhost:8000
 ```
 
-Site auto-deploys to GitHub Pages on every push to `main`.
+**Typical edit loop:**
+
+1. Edit a Markdown file under `sap-extract-academy/content/en/`.
+2. Re-run `npm run build` in `sap-extract-academy/`.
+3. Refresh the browser on the local web server.
+4. When it looks right, commit the Markdown source **and** the regenerated `docs/` output. Both are checked in; the deploy pipeline does not rebuild.
+
+**Why we commit `docs/`:** GitHub Pages serves this repo from the `docs/` folder on `main`. Committing the build output means the live site is always exactly what is in the repo at HEAD — no CI race conditions, no surprises when the pipeline runtime changes. The trade-off is that every content PR includes both source and output changes; the build is fast enough that this is worth it.
+
+## Build system overview
+
+The build is a single Node script (`sap-extract-academy/build.js`) with no framework around it. It runs in two passes:
+
+**Pass 1 — collect.** Walk `content/en/**/*.md`, parse frontmatter (via `gray-matter`), and build an in-memory index of all pages. This is what makes the auto-generated index pages (`/tables/`, `/articles/`, `/walkthrough/`, `/glossary/`) and cross-references (related walkthroughs on each article) possible without manual maintenance.
+
+**Pass 2 — render.** For each page:
+
+1. Render Markdown to HTML with `marked`.
+2. Pick a template based on the page's location (`tables/*.md` → `table.html`, `walkthroughs/*.md` → `walkthrough.html`, etc.).
+3. Render the template with `Mustache`, passing frontmatter + content + the Pass 1 index as context.
+4. Wrap with `base.html` (shared header, footer, nav).
+5. Write to `docs/<slug>/index.html`.
+
+Additional outputs generated alongside HTML:
+
+- `sitemap.xml` — every canonical URL.
+- ECC and S/4HANA DDL files per table, generated from `content/en/directory/tables/<slug>/` metadata.
+- JSON-LD structured data injected into each page (WebPage, HowTo, TechArticle, DefinedTerm — whichever matches the page type).
+
+**Page types and their templates:**
+
+| Source path | Type | Template | Notes |
+|---|---|---|---|
+| `index.md` | landing | `landing.html` | Bento grid layout, featured tables |
+| `about.md`, `roadmap.md` | page | `page.html` | Generic static pages |
+| `tables/*.md` | table | `table.html` | Table reference page; embeds DDL |
+| `walkthroughs/*.md` | walkthrough | `walkthrough.html` | Tabbed walkthrough with checklist |
+| `articles/*.md` | article | `article.html` | Long-form content, 1500–4000 words |
+| `glossary/*.md` | glossary | `glossary.html` | One term per page |
+| Any index | list | `list.html` | Auto-generated from Pass 1 index |
+
+## Deployment
+
+**GitHub Pages, from `main`, serving the `docs/` folder.** No GitHub Actions pipeline is required to deploy — a push to `main` with updated `docs/` is sufficient. There is a Lighthouse CI workflow under `.github/workflows/` that runs performance audits as advisory warnings, not hard gates.
+
+**Performance budget (enforced in Lighthouse CI):**
+
+- Performance ≥ 85
+- Accessibility ≥ 95
+- Best Practices ≥ 90
+- SEO ≥ 95
+
+The site hits these consistently because it is genuinely static HTML + a small amount of progressive-enhancement JavaScript (checklist persistence and the ECC/S/4HANA picker). No framework, no hydration, no client-side routing.
+
+## Content conventions
+
+A handful of rules keep the content maintainable as the site grows:
+
+**Frontmatter.** Every Markdown file starts with YAML frontmatter. The required fields depend on page type, but `title`, `slug`, `seoTitle`, `seoDescription`, and `updatedAt` are universal. Walkthroughs and articles also declare `relatedWalkthroughs` to drive cross-linking — the build deduplicates by slug so you cannot accidentally link the same walkthrough twice.
+
+**One walkthrough per table.** Do not create `/walkthrough/beginner/<slug>/` or `/walkthrough/expert/<slug>/` directories. The single canonical URL is `/walkthrough/<slug>/`. The walkthrough itself uses tabs or sections to cover small-batch, partitioned-batch, and real-time-streaming trajectories.
+
+**ECC vs. S/4HANA.** Content that only applies to one source system is wrapped in `<div data-ecc-only>…</div>` or `<div data-s4hana-only>…</div>`. The reader's choice in the header picker (persisted in localStorage) shows or hides these blocks. When editing, always set a sensible default — the page should read cleanly if the reader has no preference set.
+
+**Code blocks inside list items.** Markdown inside HTML blocks is tricky. When embedding `<pre><code>` inside an `<li>`, do not leave blank lines between the `<pre>` tags — CommonMark treats a blank line inside a type-6 HTML block as a terminator, which mangles the nested code. This has bitten us multiple times; the rule is: no blank lines inside `<pre>` when it is nested in `<li>`.
+
+**Glossary entries stay short.** One concept per file, ideally under 200 words. Link back out to articles or walkthroughs for depth.
+
+## Contributing
+
+Contributions welcome, particularly:
+
+1. **New tables.** Follow the existing pattern: a `tables/<slug>.md` reference page, a `walkthroughs/<slug>.md` end-to-end walkthrough, and field metadata under `directory/tables/<slug>/` to drive the DDL generator.
+2. **Glossary terms.** Anything you had to look up while reading the site is a good candidate.
+3. **Corrections.** Especially around licensing — SAP rules change, and this content has to stay accurate. Cite SAP Notes by number whenever possible.
+4. **Translations.** The build is i18n-ready (`content/en/` is a locale directory, and UI strings live in `strings/en.json`). Adding a new locale means creating `content/<lang>/` and `strings/<lang>.json`.
+
+Pull requests should include both the Markdown source and the regenerated `docs/` output (run `npm run build` before committing).
+
+## Roadmap
+
+The roadmap lives at [`content/en/roadmap.md`](./sap-extract-academy/content/en/roadmap.md) and is published as a page on the site. High-level direction:
+
+- **Near term** — deepen the licensing content (BTP subscription models, Datasphere licensing), expand glossary to ~50 terms, add Qlik Replicate and Informatica setup guides.
+- **Medium term** — add CO (Controlling) tables, cover OData V4 patterns, document the SAP S/4HANA Cloud public edition constraints separately from on-prem.
+- **Long term** — HR / SuccessFactors extraction, community contributions, a real-time CDP pattern reference.
+
+## Trademarks and licensing
+
+SAP, S/4HANA, ECC, SLT, ODP, BTP, Datasphere, HANA, and related names are trademarks of SAP SE. This project is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.
+
+Content is provided under a permissive license for non-commercial educational use. The build system (everything under `sap-extract-academy/build.js`, `build/`, and `templates/`) is open for reuse.
 
 ---
 
-## What You'll Master
-
-By the end, you'll understand:
-
-✅ When to use ODP vs. SLT vs. RFC  
-✅ How to extract 1B+ row tables without memory exhaustion  
-✅ Licensing traps that cost $100k+ in audit bills  
-✅ Real-time streaming from SAP to Kafka/Snowflake/S3  
-✅ Reconciliation patterns to validate extraction completeness  
-✅ Tool selection: ADF, Fivetran, Databricks, Python, SLT  
-✅ Destination choice: S3, Snowflake, BigQuery, Redshift, ADLS  
-
----
-
-## Questions?
-
-- **[Start with the Core Guide](/articles/how-to-extract-any-sap-data/)** for overview
-- **[Browse Walkthroughs](/walkthrough/)** for hands-on guidance
-- **[Check Glossary](/glossary/)** for terminology
-- **[Read Articles](/articles/)** for deep-dives and pitfalls
-
-**Get notified when we publish new extraction patterns (every 2 weeks):** Subscribe on the homepage.
-
----
-
-© SAP Extract Academy — Independent educational resource, not affiliated with SAP SE.
+**Built with Node.js, Markdown, Mustache, and deployed to GitHub Pages.** Questions or corrections — open an issue.
