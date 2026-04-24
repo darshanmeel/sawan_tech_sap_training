@@ -24,7 +24,7 @@ Your entire extraction strategy may be invalid. This article explains why, what 
 
 SAP licenses for S/4HANA come in several tiers. Two matter most for data extraction architecture:
 
-**Full Use License** — The premium tier. Covers all extraction methods: ODP (both OData and RFC paths), SLT replication, OData APIs, standard BW extractors, direct table access, custom ABAP extractors, and certified third-party connector tools. If you have a Full Use license, all extraction methods described in this Academy are available to you.
+**Full Use License** — The premium tier. Covers all extraction methods: ODP (both OData and RFC paths), SLT replication, OData APIs, standard BW extractors, direct table access, custom ABAP extractors, and certified third-party connector tools. If you have a Full Use license, all extraction methods described in this guide are available to you.
 
 **Runtime License** — The value tier. Designed for organizations that want to reduce licensing costs after migrating to S/4HANA. Runtime covers standard transaction execution and ODP extraction via published CDS views through the OData API. It does **not** cover: SLT replication, classic BW extraction (InfoProviders, OpenHub), custom ABAP extraction programs, and some advanced analytics tools.
 

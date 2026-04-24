@@ -2,94 +2,81 @@
 slug: /about/
 pageType: about
 title: "About SAP Extract Guide"
-summary: "Who we are, why this guide exists, and what it stands for."
-seoTitle: "About SAP Extract Guide — Our Mission"
-seoDescription: "SAP Extract Guide teaches professional data extraction patterns. For data architects, engineers, and analytics teams at enterprise scale."
-updatedAt: 2026-04-22
+summary: "What this guide is, who it's for, and what it deliberately isn't."
+seoTitle: "About SAP Extract Guide — Field Guide to SAP Data Extraction"
+seoDescription: "SAP Extract Guide is a practical field guide to extracting data from S/4HANA and ECC. Patterns, licensing reality, and operational detail, not marketing."
+updatedAt: 2026-04-24
 ---
 
-## Our Mission
+## What this guide is
 
-SAP data extraction is broken. Organizations spend millions migrating from ECC to S/4HANA, Teradata to Snowflake. They inherit fragmented extraction pipelines: 10 different tools, 50 custom scripts, patterns that worked on 100M rows but crash on 1B.
+SAP Extract Guide is a practical field guide to extracting data out of SAP S/4HANA and ECC into cloud platforms. It is written for the person who has a real table, a real volume, a real deadline, and a real finance team that will be unhappy if the pipeline misbehaves during close.
 
-The industry response is vendor-centric: "Use our tool, it handles everything." The reality is vendor lock-in, licensing surprises, and patterns that don't transfer when you switch tools.
+It is organised around five tables (ACDOCA, BKPF, VBAK, MARA, LFA1) and three extraction methods (ODP, SLT, RFC). Every walkthrough covers the SAP-side reality first, tool configuration second, and operational concerns (licensing, reconciliation, failure modes) third. The goal is to get you to a pipeline you can trust, not to sell you a course.
 
-This guide exists to fix that. We teach **professional extraction patterns**—the principles behind successful data pipelines, independent of vendor or tool. A data architect should understand why ACDOCA partitioning is mandatory, not because one tool requires it, but because the table's structure makes it mandatory.
+## Who this is for
 
-## What We Teach
+- **Data engineers** building pipelines against SAP for the first time or the tenth time.
+- **Data architects** making design decisions that will be hard to undo — which extraction method, which license tier, where to land the data.
+- **SAP Basis and BTP teams** who own the source system and need to know what an extraction job is actually doing to their application servers.
+- **Analytics engineers and program managers** who need to scope SAP extraction work without becoming SAP experts themselves.
 
-**Conceptual foundations.** What is ODP, and why is it better than raw SQL? How does SLT parallelism work? Why does currency always pair with amount fields? Why is licensing such a minefield?
+If you have SAP access, some Python or SQL, and a concrete table you need to move, you are in the right place.
 
-**Escalating difficulty.** Beginner: extract one fiscal year via ODP. Intermediate: multi-company parallelism. Expert: real-time streaming via SLT. You understand the trade-offs at each level and choose the pattern that fits your business.
+## What you'll find here
 
-**Production reality.** Licensing traps, memory exhaustion errors, lock contention, dialog process blocking, reconciliation strategies. The stuff nobody teaches in tutorials but every production data engineer encounters.
+**Pattern-first walkthroughs.** One end-to-end walkthrough per table. Each covers the small-batch, partitioned-batch, and real-time-streaming trajectories in a single document so you can see the trade-offs directly without hopping between pages.
 
-**Tool agnostic principles.** Whether you use ADF, Python, Informatica, or custom code, the patterns transfer. Learn the concepts, apply them anywhere.
+**Licensing treated as architecture.** Runtime vs. Full Use, SAP Note 3255746, third-party connector restrictions, audit detection, and recovery paths. Licensing is the single biggest cause of SAP extraction projects going sideways, and it gets proportional weight here.
 
-## Who We Are
+**Operational detail.** Memory exhaustion (`TSV_TNEW_PAGE_ALLOC_FAILED`), lock contention on dialog users, LTRS reader tuning, ODQMON queue depth, Kafka lag during bulk loads, reconciliation queries, and the specific transactions you will actually run (LTRC, LTRS, ODQMON, SE11, SE16N, SM50, SM59, SLICENSE).
 
-This guide is built by data architects and engineers who have:
-- Migrated terabytes from SAP to cloud data warehouses
-- Hit (and fixed) memory exhaustion on ACDOCA extraction
-- Discovered licensing violations during SAP audits
-- Tuned parallel extraction for sub-minute GL close
-- Debugged Kafka lag during 24-hour bulk loads
-- Trained teams on real-world patterns
+**A focused glossary.** 32 terms covering SAP transactions, extraction concepts, field types, and runtime concepts. One concept per page, short, linkable from walkthroughs without dragging readers into a tangent.
 
-We've made the mistakes so you don't have to.
-
-## What Makes This Different
-
-**Professional, not educational.** This isn't "learn SAP in 5 minutes." It's "understand the patterns enterprise data teams use." Walkthroughs assume you have SAP access, Python knowledge, and a real problem to solve.
-
-**Comprehensive licensing.** SAP licensing is complex and a source of expensive surprises. We cover Full Use vs. Runtime in detail, licensing audit risks, and cost-saving strategies.
-
-**Error-driven learning.** Each walkthrough includes troubleshooting sections: "What breaks at this scale, and why?" TSV_TNEW_PAGE_ALLOC_FAILED, lock contention, Kafka lag—real errors, real fixes.
-
-**Escalating complexity.** Start with beginner patterns (ODP, simple extraction), progress to intermediate (parallelism, delta queues), graduate to expert (SLT, real-time streaming). Each level builds on the last.
-
-## Our Commitments
-
-**Accuracy.** Every walkthrough is based on production patterns used by Fortune 500 data teams. Code examples are tested. Licensing guidance is current as of the publication date.
-
-**Clarity.** SAP documentation is dense and vendor-centric. We explain concepts clearly, with examples, without jargon. Glossary terms decode the terminology.
-
-**Honesty.** We don't hide trade-offs. SLT is powerful but expensive; ODP is simple but slower. We show the full picture so you can choose the right pattern.
-
-**Currency.** SAP updates S/4HANA every year. We update walkthroughs and patterns to reflect current versions and best practices.
-
-## How to Use This Guide
-
-**Start with your problem.** Need to extract ACDOCA? Find the ACDOCA walkthrough. Choose beginner (simple, one-time), intermediate (multi-year production load), or expert (real-time GL).
-
-**Learn the pattern.** Each walkthrough teaches the architecture, step-by-step implementation, monitoring, reconciliation, and troubleshooting.
-
-**Adapt to your tools.** The patterns are tool-agnostic. If the walkthrough shows Python/pyrfc and you use ADF, adapt the orchestration—the extraction principles are the same.
-
-**Reference the glossary.** Stuck on ODP, delta, or LTRS? The glossary explains concepts in plain language with SAP context.
-
-**Read the cornerstone articles.** Why does ACDOCA break SAP systems? What's the licensing trap? How do you choose between ODP and SLT? The articles provide deep context.
-
-## What's Not Here
+## What's not here
 
 - **Vendor-specific tutorials.** We don't teach "use Fivetran, it's easy." We teach extraction principles that apply across tools.
-- **SAP transaction deep dives.** We show you *how* to use SE11, LTRC, ODQMON, but we're not replacing SAP documentation.
+- **SAP transaction deep dives.** We show you how to use SE11, LTRC, and ODQMON, but we're not replacing SAP documentation.
 - **Cloud data warehouse specifics.** We teach loading patterns, but not Snowflake SQL optimization or BigQuery partitioning strategies.
 
 For those, we link to the relevant documentation.
 
-## Contact & Contributions
+## How to use this guide
 
-We're building this guide for the data community. If you have questions, corrections, or suggestions, reach out:
+**Start with your problem.** If you need to extract ACDOCA, go to the ACDOCA walkthrough. If you need to understand the licensing before designing, read the two licensing articles first.
 
-- **Email**: team@sapextractguide.com (coming soon)
-- **GitHub**: [darshanmeel/sawan_tech_sap_training](https://github.com/darshanmeel/sawan_tech_sap_training)
-- **LinkedIn**: Follow for new walkthroughs and extraction patterns
+**Read the Core Extraction Guide.** The article "How to Extract Any SAP Data" walks through the decision framework end to end, with two worked examples (ACDOCA via ODP and VBAK via SLT). It is the best single entry point if you are new.
 
-## The Path Forward
+**Adapt patterns to your stack.** Walkthroughs show specific tools for concreteness, but the underlying patterns are tool-agnostic. If the walkthrough uses Python and you use ADF, the orchestration changes; the extraction shape does not.
 
-ACDOCA, BKPF, VBAK, MARA, LFA1 are complete. Coming soon: ECC-only tables (no S/4HANA), SAP Analytics Cloud extraction, OData patterns, CDP real-time data architectures, and enterprise consolidation extraction.
+**Use the glossary for terminology, not depth.** The glossary decodes terms in 150 words. For depth, read the linked walkthroughs and articles.
 
-The vision: a comprehensive, production-grade curriculum for SAP data extraction, built by and for data professionals.
+## Our commitments
 
-Welcome to the guide. Let's build better extraction architectures together.
+**Accuracy.** Patterns are grounded in production experience, not demos. Licensing guidance cites SAP Notes where applicable. Code examples are tested before publication.
+
+**Clarity.** SAP documentation is dense and version-specific on purpose; this guide is plain-language on purpose. Jargon gets a glossary entry; everything else is explained in context.
+
+**Honesty about trade-offs.** SLT is powerful but expensive. ODP is cheaper but slower. RFC is flexible but dangerous. Every method section says what it costs as well as what it does.
+
+**Currency.** S/4HANA ships regularly; extraction patterns drift. Content carries an `updatedAt` date, and we revise when the underlying SAP behaviour changes materially.
+
+## What's next
+
+The five core tables are complete. On the near-term list: deeper BTP licensing coverage, expanded glossary (target ~50 terms), Qlik Replicate and Informatica setup notes, and OData V4 batch patterns. Further out: CO (Controlling) tables, S/4HANA Cloud (public edition) specifics, and HR / SuccessFactors extraction.
+
+The published [roadmap](/roadmap/) has the current list.
+
+## Contact and contributions
+
+This guide is built for the data community and improves when you contribute to it. If you spot an error, have a correction, or want to suggest a missing topic:
+
+- **GitHub:** [darshanmeel/sawan_tech_sap_training](https://github.com/darshanmeel/sawan_tech_sap_training) — open an issue or a pull request.
+- **LinkedIn:** Follow for new walkthroughs and pattern updates.
+- **Email:** `team@sapextractguide.com` (coming soon).
+
+Corrections on licensing content are especially welcome — SAP rules shift, and this content needs to stay current. Cite SAP Notes by number where possible.
+
+---
+
+Welcome to the guide. Let's build SAP extractions that behave.

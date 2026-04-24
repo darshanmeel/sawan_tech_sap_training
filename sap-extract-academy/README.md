@@ -1,6 +1,8 @@
-# SAP Extract Academy — Site Source
+# SAP Extract Guide — Site Source
 
-Source for the SAP Extract Academy static site. This README covers the **build system, content conventions, and local development workflow**. For the mission, audience, and content overview, see the [repo-level README](../README.md).
+Source for the SAP Extract Guide static site. This README covers the **build system, content conventions, and local development workflow**. For the mission, audience, and content overview, see the [repo-level README](../README.md).
+
+The directory name `sap-extract-academy/` is retained as the repo path because the deploy workflow, Pages artifact path, `package.json` name, and localStorage keys all depend on it. The user-facing site and its content use **Guide**.
 
 **Live site:** [https://darshanmeel.github.io/sawan_tech_sap_training/](https://darshanmeel.github.io/sawan_tech_sap_training/)
 

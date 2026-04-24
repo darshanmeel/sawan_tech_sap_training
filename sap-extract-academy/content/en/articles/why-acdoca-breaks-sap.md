@@ -97,7 +97,7 @@ The system tries to fetch 10 years × 12 months × 1000 companies of GL data—b
 
 The DBA has to kill the extraction process (20 minutes), clear locks (10 minutes), and restart the system (15 minutes). 45 minutes of finance downtime. Auditors later ask: "Why was the GL unavailable during month-end close?" Root cause: missing partition filter.
 
-This exact scenario has shut down finance operations at hundreds of enterprises. It's why this lesson is emphasized so heavily in the academy: partitioning is not optional; it's the difference between a smooth extraction and a financial crisis.
+This exact scenario has shut down finance operations at hundreds of enterprises. It's why this lesson is emphasized so heavily in this guide: partitioning is not optional; it's the difference between a smooth extraction and a financial crisis.
 
 ## The Right Way Forward
 

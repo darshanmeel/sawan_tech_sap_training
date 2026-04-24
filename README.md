@@ -1,4 +1,4 @@
-# SAP Extract Academy
+# SAP Extract Guide
 
 > A free, production-grade field guide for extracting data out of SAP S/4HANA and ECC into any cloud data platform — without the licensing surprises, memory crashes, and 3 AM incidents that come from learning these patterns the hard way.
 
@@ -30,7 +30,7 @@
 
 ## Who this is for
 
-The Academy is written for four audiences:
+This guide is written for four audiences:
 
 - **Data engineers** building extraction pipelines from SAP into Snowflake, Databricks, BigQuery, Redshift, Fabric, or object storage. You want patterns that survive real volumes (billions of rows), not toy tutorials against a demo system.
 - **Data architects** designing the target architecture before a single line of config is written. You need to weigh ODP vs. SLT vs. RFC, understand the blast radius of each, and know what each license entitles you to.
@@ -65,7 +65,7 @@ One walkthrough per table is a deliberate choice made in April 2026. The earlier
 
 ## The five tables
 
-The Academy covers five SAP tables that together represent the bulk of enterprise extraction work:
+This guide covers five SAP tables that together represent the bulk of enterprise extraction work:
 
 | Table | Module | Business meaning | Why it's featured |
 |---|---|---|---|
@@ -102,7 +102,7 @@ Every walkthrough covers three paths, so you can see the trade-off directly:
 - **When to use:** Edge cases only — tables without CDS views, niche function modules, or one-off historical extractions. Not recommended for new projects.
 - **Covered separately:** [`articles/rfc-replication-guide`](./sap-extract-academy/content/en/articles/rfc-replication-guide.md) covers the patterns and pitfalls.
 
-The Academy's opinion: most teams should start with ODP via OData, validate the license covers it, and only escalate to SLT when they have a concrete requirement that ODP cannot meet (typically sub-5-minute delta on a high-volume table).
+The guide's opinion: most teams should start with ODP via OData, validate the license covers it, and only escalate to SLT when they have a concrete requirement that ODP cannot meet (typically sub-5-minute delta on a high-volume table).
 
 ## Licensing guardrails
 
