@@ -187,8 +187,6 @@ toolSteps:
         verify: "Fivetran connector syncs hourly automatically. Sync logs show incremental row counts (0–N per run). Target warehouse table contains cumulative vendor data with change tracking."
 
 nextSteps:
-  - label: "Try LFA1 Expert — multi-table extraction with LFB1 and LFBK"
-    url: "/walkthrough/expert/lfa1/"
   - label: "License trap: Runtime vs Full Use"
     url: "/articles/runtime-vs-full-use/"
 updatedAt: 2026-04-22

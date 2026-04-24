@@ -7,9 +7,6 @@ author: "SAP Extract Guide"
 summary: "ACDOCA is the universal journal—billions of rows, complex structure, and a raw SELECT * will exhaust memory and lock the system. Learn why direct reads are dangerous and what to extract instead."
 relatedWalkthroughs:
   - slug: acdoca
-    level: intermediate
-  - slug: acdoca
-    level: expert
 seoTitle: "Why Reading ACDOCA Directly Breaks SAP Systems — Extraction Guide"
 seoDescription: "ACDOCA raw reads crash SAP systems. Learn the architecture, why SELECT * fails, and the safe extraction patterns for GL data at scale."
 updatedAt: 2026-04-22

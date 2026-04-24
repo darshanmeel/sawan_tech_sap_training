@@ -164,8 +164,6 @@ toolSteps:
         verify: "Fivetran syncs daily automatically. Target warehouse receives incremental order changes. ZZ_REGION values populated for new and changed orders."
 
 nextSteps:
-  - label: "Try VBAK Expert — SLT push replication for real-time scenarios"
-    url: "/walkthrough/expert/vbak/"
   - label: "Glossary: Operational Data Provisioning delta"
     url: "/glossary/odp/"
   - label: "License trap: Runtime vs Full Use"

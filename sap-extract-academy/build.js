@@ -465,9 +465,18 @@ function buildPage(filePath, content) {
   const hasToolSteps = toolSteps.length > 0;
   const defaultTool = (toolSteps[0] || {}).tool || 'custom';
 
-  // B4: gate the relatedWalkthroughs section so it only renders when non-empty
+  // B4: gate the relatedWalkthroughs section so it only renders when non-empty.
+  // Difficulty levels (beginner/intermediate/expert) are merged into a single
+  // canonical walkthrough per table, so dedupe by slug — keeping the {level}
+  // field would produce duplicate links to the same page.
   const relatedWalkthroughs = Array.isArray(data.relatedWalkthroughs)
-    ? data.relatedWalkthroughs
+    ? Array.from(
+        new Map(
+          data.relatedWalkthroughs
+            .filter(w => w && w.slug)
+            .map(w => [w.slug, { slug: w.slug }])
+        ).values()
+      )
     : [];
 
   // Format publishDate as "22 Apr 2026" for article pages (in UTC)

@@ -7,11 +7,6 @@ author: "SAP Extract Guide"
 summary: "A guide to extracting ACDOCA (the Universal Journal) at three levels of scale and complexity. The decision points are SAP-side: how big is your partition, do you need real-time delta, and does your license cover your chosen method."
 relatedWalkthroughs:
   - slug: acdoca
-    level: beginner
-  - slug: acdoca
-    level: intermediate
-  - slug: acdoca
-    level: expert
 seoTitle: "ACDOCA Extraction: Three Patterns Beginner to Enterprise"
 seoDescription: "Choosing an ACDOCA extraction pattern. Three approaches: ODP single-partition, ODP multi-partition, and SLT real-time. Decision driven by volume, latency, and license."
 updatedAt: 2026-04-22
@@ -72,7 +67,7 @@ Confirm it is present and annotated in [SE80](https://help.sap.com/) before proc
 
 **When to use:** Billions of rows. Real-time delta required (GL postings visible in target within minutes). Full Use license in place.
 
-**What you do in SAP (summary — see [Expert walkthrough](/walkthrough/expert/acdoca/) for full detail):**
+**What you do in SAP (summary — see [the ACDOCA walkthrough](/walkthrough/acdoca/) for full detail):**
 
 1. Verify Full Use license in [SLICENSE](https://help.sap.com/). Get written confirmation from SAP licensing.
 2. Work with Basis to create an SLT replication object in [LTCO](https://help.sap.com/) for ACDOCA with partition key RBUKRS+RYEAR.

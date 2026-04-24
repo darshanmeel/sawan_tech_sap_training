@@ -7,17 +7,7 @@ author: "SAP Extract Guide"
 summary: "Master SAP data extraction with ACDOCA (GL) and VBAK (Sales Orders) examples. Learn which method to use, how to avoid licensing traps, and build your first extraction pipeline."
 relatedWalkthroughs:
   - slug: acdoca
-    level: beginner
-  - slug: acdoca
-    level: intermediate
-  - slug: acdoca
-    level: expert
   - slug: vbak
-    level: beginner
-  - slug: vbak
-    level: intermediate
-  - slug: vbak
-    level: expert
 seoTitle: "How to Extract Any SAP Data — Complete Guide with Examples"
 seoDescription: "Master SAP data extraction: ACDOCA (GL) via ODP, VBAK (Sales) via SLT. Databricks + S3 examples. No licensing surprises. Step-by-step guide for data engineers."
 updatedAt: 2026-04-23
@@ -331,10 +321,8 @@ Don't have Databricks? No problem. Same logic, different tools:
 ### What Comes Next
 
 Now that you've extracted ACDOCA:
-1. **Deep dive:** See the full [ACDOCA walkthrough](/walkthrough/beginner/acdoca/) for single-partition loads
-2. **Scale up:** Read [ACDOCA intermediate](/walkthrough/intermediate/acdoca/) for multi-partition parallel extraction
-3. **Go real-time:** Check [ACDOCA expert](/walkthrough/expert/acdoca/) for SLT real-time streaming
-4. **Avoid mistakes:** Read [Runtime vs. Full Use licensing](/articles/sap-runtime-license-trap/)
+1. **Deep dive:** See the full [ACDOCA walkthrough](/walkthrough/acdoca/) — partitioning, delta, and SLT streaming in one place
+2. **Avoid mistakes:** Read [Runtime vs. Full Use licensing](/articles/sap-runtime-license-trap/)
 
 ---
 
@@ -645,10 +633,9 @@ Don't want Kafka + Databricks? Other paths:
 ### What Comes Next
 
 Now that you're streaming VBAK:
-1. **Deep dive:** See the full [VBAK walkthrough](/walkthrough/beginner/vbak/) for one-time loads
-2. **Real-time:** Check [VBAK expert](/walkthrough/expert/vbak/) for SLT streaming details
-3. **Avoid licensing trap:** Read [Full Use vs. Runtime licensing](/articles/sap-runtime-license-trap/)
-4. **Monitor health:** Read [reconciliation and data quality for streaming](/articles/streaming-reconciliation/)
+1. **Deep dive:** See the full [VBAK walkthrough](/walkthrough/vbak/) — one-time loads through SLT real-time streaming
+2. **Avoid licensing trap:** Read [Full Use vs. Runtime licensing](/articles/sap-runtime-license-trap/)
+3. **Monitor health:** Read [reconciliation and data quality for streaming](/articles/streaming-reconciliation/)
 
 ---
 

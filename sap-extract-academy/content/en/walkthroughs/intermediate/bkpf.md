@@ -164,8 +164,6 @@ toolSteps:
         verify: "Fivetran syncs complete on schedule. Data arrives in your target warehouse (Snowflake, Redshift, BigQuery) in a table with BUKRS and GJAHR columns. Row counts per partition match SE16N."
 
 nextSteps:
-  - label: "Try BKPF Expert — SLT parallel readers for enterprise scale"
-    url: "/walkthrough/expert/bkpf/"
   - label: "License trap: Runtime vs Full Use"
     url: "/articles/runtime-vs-full-use/"
 updatedAt: 2026-04-22

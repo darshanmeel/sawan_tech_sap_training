@@ -163,8 +163,6 @@ toolSteps:
         verify: "Fivetran connector syncs successfully. Target warehouse table includes MATNR, MTART, ZZ_BRAND, ZZ_SUSTAINABILITY columns. Row count matches SE16N."
 
 nextSteps:
-  - label: "Try MARA Expert — 20+ Z-fields, multi-table extraction"
-    url: "/walkthrough/expert/mara/"
   - label: "License trap: Runtime vs Full Use"
     url: "/articles/runtime-vs-full-use/"
 updatedAt: 2026-04-22

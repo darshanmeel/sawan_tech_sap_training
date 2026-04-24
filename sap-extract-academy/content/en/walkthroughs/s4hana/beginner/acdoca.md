@@ -261,10 +261,8 @@ steps:
     whyItMatters: "GJAHR as INTEGER seems harmless but breaks fiscal year comparisons — SAP uses '0001' for fiscal year 1 in some configurations, leading zeros in document numbers (BELNR) are significant for matching back to SAP, and partition pruning fails in Snowflake and BigQuery when analysts filter WHERE GJAHR = '2024' on an INTEGER column. [SME_KNOWLEDGE]"
 
 nextSteps:
-  - label: "ACDOCA Intermediate — adding delta loads and Z-fields"
-    url: "/walkthrough/intermediate/acdoca/"
-  - label: "ACDOCA Expert — SLT real-time replication"
-    url: "/walkthrough/expert/acdoca/"
+  - label: "Full ACDOCA walkthrough — delta, Z-fields, and SLT streaming"
+    url: "/walkthrough/acdoca/"
   - label: "Glossary: Operational Data Provisioning (ODP)"
     url: "/glossary/odp/"
   - label: "Glossary: ODQMON — the delta queue monitor"

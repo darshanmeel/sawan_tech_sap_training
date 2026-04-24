@@ -229,8 +229,6 @@ troubleshooting:
     sapNoteUrl: "https://support.sap.com/notes/2884410"
 
 nextSteps:
-  - label: "Try ACDOCA Expert for ultra-large extractions"
-    url: "/walkthrough/expert/acdoca/"
   - label: "Table overview: ACDOCA Universal Journal"
     url: "/tables/acdoca/"
   - label: "License trap: Runtime vs Full Use"

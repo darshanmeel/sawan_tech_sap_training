@@ -21,18 +21,17 @@ valueProps:
     description: "ADF, Python, Fivetran, SLT. Learn the concepts, apply them anywhere."
   - title: "Real-World Context"
     description: "Includes licensing, performance tuning, monitoring, error handling. The stuff nobody teaches."
-  - title: "15+ Walkthroughs"
-    description: "ACDOCA, BKPF, VBAK, MARA, LFA1. Each with beginner, intermediate, expert patterns."
+  - title: "End-to-End Walkthroughs"
+    description: "ACDOCA, BKPF, VBAK, MARA, LFA1. Each with a single end-to-end walkthrough covering ODP, SLT, and RFC patterns."
   - title: "Comprehensive Glossary"
     description: "32 terms: ODP, SLT, LTRS, CDS, Delta, Z-fields, licensing concepts. Jargon decoded."
 featuredWalkthrough:
   slug: acdoca
-  level: expert
   title: "Extract ACDOCA Enterprise Scale"
   description: "The ultimate SAP extraction challenge. 10 billion rows. Real-time streaming to Kafka. SLT + LTRS parallelism. This is the flagship walkthrough."
 tablePreview:
   title: "Master These Tables"
-  description: "5 core tables across FI, MM, SD, MD. Each with three difficulty levels."
+  description: "5 core tables across FI, MM, SD, MD. Each with a complete end-to-end extraction walkthrough."
   tables:
     - code: ACDOCA
       name: "Universal Journal"
