@@ -51,6 +51,10 @@ For those, we link to the relevant documentation.
 
 **Use the glossary for terminology, not depth.** The glossary decodes terms in 150 words. For depth, read the linked walkthroughs and articles.
 
+## AI-generated content notice
+
+This site and its content are AI-generated and have not been fully verified or proof-checked. While the underlying patterns are drawn from established SAP field experience, individual details — field names, transaction codes, licensing nuances, version-specific behaviour — may be incomplete or inaccurate. Always cross-reference against official SAP documentation and validate in your own environment before relying on anything here in production.
+
 ## Our commitments
 
 **Accuracy.** Patterns are grounded in production experience, not demos. Licensing guidance cites SAP Notes where applicable. Code examples are tested before publication.

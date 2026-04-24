@@ -2,6 +2,8 @@
 
 > A free, production-grade field guide for extracting data out of SAP S/4HANA and ECC into any cloud data platform — without the licensing surprises, memory crashes, and 3 AM incidents that come from learning these patterns the hard way.
 
+> **AI-generated content disclaimer:** This site and its content are AI-generated and have not been fully verified or proof-checked. Information may be incomplete or inaccurate. Always verify against official SAP documentation before use.
+
 **Live site:** [https://darshanmeel.github.io/sawan_tech_sap_training/](https://darshanmeel.github.io/sawan_tech_sap_training/)
 
 **Repo layout:** This is a mono-repo containing the static site source (`sap-extract-academy/`) plus supporting notes and planning docs at the root. The site itself is a fully static build output under `sap-extract-academy/docs/`, published to GitHub Pages from `main`.

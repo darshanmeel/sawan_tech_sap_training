@@ -856,6 +856,14 @@ legend {
   max-width: none;
 }
 
+.ai-notice {
+  font-size: 11px;
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-2);
+  max-width: none;
+  opacity: 0.75;
+}
+
 /* ===== Email Form ===== */
 
 .email-form {
