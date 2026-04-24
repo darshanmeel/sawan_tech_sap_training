@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SAP Direct DB Extraction — When to Use, How to Handle — SAP Extract Guide</title>
+  <meta name="description" content="Reading SAP tables directly via HANA JDBC. License implications, pool&#x2F;cluster table traps, walkthroughs.">
+  <link rel="canonical" href="https://darshanmeel.github.io/sawan_tech_sap_training/methods/direct-db/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SAP Direct DB Extraction — When to Use, How to Handle">
+  <meta property="og:description" content="Reading SAP tables directly via HANA JDBC. License implications, pool&#x2F;cluster table traps, walkthroughs.">
+  <meta property="og:url" content="https://darshanmeel.github.io/sawan_tech_sap_training/methods/direct-db/">
+  <meta property="og:image" content="https://darshanmeel.github.io/sawan_tech_sap_training/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Guide">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SAP Direct DB Extraction — When to Use, How to Handle">
+  <meta name="twitter:description" content="Reading SAP tables directly via HANA JDBC. License implications, pool&#x2F;cluster table traps, walkthroughs.">
+  <meta name="twitter:image" content="https://darshanmeel.github.io/sawan_tech_sap_training/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage"}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Guide</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/methods/">Methods</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Method detail page -->
+
+<div class="container" style="padding-top: var(--space-6); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/methods/">Methods</a></li>
+      <li aria-current="page">Direct DB</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Extraction method</p>
+        <h1>Direct DB read<em>.</em></h1>
+      </div>
+      <p>JDBC straight to HANA or the underlying DB. Fastest path, highest license risk.</p>
+    </div>
+
+    <div class="card section">
+      <h2>When to <em>use</em></h2>
+      <p>Usually: don&#39;t. When you own the SAP landscape end-to-end and have an explicit license opinion in writing, it&#39;s the fastest extraction interface.</p>
+    </div>
+
+    <div class="card section">
+      <h2>How to <em>handle</em></h2>
+      <div class="prose">
+        <h2>Setup</h2>
+<ol>
+<li>Get DB credentials with read access on the SAP schema (<code>SAPSR3</code>, <code>SAPHANADB</code>,
+or whatever your system uses). This almost always needs a DBA, not a Basis,
+because SAP doesn&#39;t provision DB users through its normal tooling.</li>
+<li>Connect the sink (Fivetran DB connector, Databricks JDBC, custom Python)
+directly to the SAP database. No SAP application layer involvement.</li>
+<li>Query the raw tables. Columns and types match the SAP Data Dictionary, but
+none of the app-level semantics (currency conversion, authorization, release
+status) are enforced.</li>
+</ol>
+<h2>How to handle</h2>
+<ul>
+<li><strong>License risk is real</strong> — SAP&#39;s standard licensing reserves &quot;indirect use&quot;
+and most read paths for the application layer. Direct DB reads are often
+contractually restricted. Get the license question answered in writing
+before anything ships to production.</li>
+<li><strong>Pool and cluster tables</strong> — in ECC, some tables (<code>BSEG</code>, <code>KONV</code>,
+<code>RFBLG</code>) are stored inside cluster tables. A direct SELECT returns
+unreadable binary. On S/4HANA these were flattened, so they read cleanly,
+but you still need to check per-table.</li>
+<li><strong>Custom Z-tables</strong> — readable directly, but the SAP Data Dictionary is the
+only source of truth for types. The DB catalog has raw storage types
+(<code>NVARCHAR</code>, <code>DECIMAL</code>) that lose SAP semantics like NUMC leading zeros.</li>
+</ul>
+<h2>Tradeoffs</h2>
+<p>Fastest possible reads and no SAP runtime overhead. Against that: genuine
+license exposure, no application-layer protections, cluster-table traps on
+ECC, and the operational awkwardness of a DB-level account that Basis
+doesn&#39;t own. Use as an extraction path of last resort, not a default.</p>
+
+      </div>
+    </div>
+
+    <div class="card section">
+      <h2>At a <em>glance</em></h2>
+      <table class="method-attributes">
+        <tbody>
+          <tr>
+            <th scope="row">Standard SAP tables</th>
+            <td class="cell cell--warn">
+              <span class="cell-icon" aria-hidden="true">⚠️</span>
+              <span class="sr-only">With caveats</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Custom Z-tables</th>
+            <td class="cell cell--warn">
+              <span class="cell-icon" aria-hidden="true">⚠️</span>
+              <span class="sr-only">With caveats</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">S&#x2F;4HANA</th>
+            <td class="cell cell--bad">
+              <span class="cell-icon" aria-hidden="true">❌</span>
+              <span class="sr-only">No</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">ECC 6.0</th>
+            <td class="cell cell--bad">
+              <span class="cell-icon" aria-hidden="true">❌</span>
+              <span class="sr-only">No</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Fivetran native</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              <span class="cell-text">DB connector</span>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Agent required</th>
+            <td class="cell cell--bad">
+              <span class="cell-icon" aria-hidden="true">❌</span>
+              <span class="sr-only">No</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">SAP Basis needed</th>
+            <td class="cell cell--bad">
+              <span class="cell-icon" aria-hidden="true">❌</span>
+              <span class="sr-only">No</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Custom PV tables</th>
+            <td class="cell cell--warn">
+              <span class="cell-icon" aria-hidden="true">⚠️</span>
+              <span class="sr-only">With caveats</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Volume performance</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">License risk</th>
+            <td class="cell cell--warn">
+              <span class="cell-icon" aria-hidden="true">⚠️</span>
+              <span class="sr-only">With caveats</span>
+              <span class="cell-text">High</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <div class="card section">
+      <h2>Walkthroughs using <em>Direct DB</em></h2>
+      <p style="color:var(--color-ink-soft);">No walkthroughs currently demonstrate this method. See <a href="&#x2F;sawan_tech_sap_training/walkthrough/">all walkthroughs</a>.</p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+        <p class="copyright">© SAP Extract Guide 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

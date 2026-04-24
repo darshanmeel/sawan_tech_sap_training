@@ -1,0 +1,63 @@
+<!-- Methods landing — side-by-side comparison + per-method cards -->
+
+<div class="container" style="padding-top: var(--space-6); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="{{basePath}}/">Home</a></li>
+      <li aria-current="page">Methods</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Extraction methods</p>
+        <h1>Methods<em>.</em></h1>
+      </div>
+      <p>{{{bodyHtml}}}</p>
+    </div>
+
+    <div class="card section" style="grid-column: 1 / -1;">
+      <h2>Side by side <em>— quick reference</em></h2>
+      <p class="subhead">Pick a column to read the full method page. Dimmed cells aren't blockers — they're tradeoffs worth reading before you commit.</p>
+
+      <div class="method-compare-wrap">
+        <table class="method-compare">
+          <thead>
+            <tr>
+              <th scope="col" class="row-label-col"></th>
+              {{#comparisonColumns}}
+              <th scope="col"><a href="{{basePath}}/methods/{{slug}}/">{{shortName}}</a></th>
+              {{/comparisonColumns}}
+            </tr>
+          </thead>
+          <tbody>
+            {{#comparisonRows}}
+            <tr>
+              <th scope="row">{{label}}</th>
+              {{#cells}}
+              <td class="cell cell--{{iconClass}}">
+                <span class="cell-icon" aria-hidden="true">{{iconChar}}</span>
+                <span class="sr-only">{{ariaLabel}}</span>
+                {{#text}}<span class="cell-text">{{text}}</span>{{/text}}
+              </td>
+              {{/cells}}
+            </tr>
+            {{/comparisonRows}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {{#comparisonColumns}}
+    <div class="card section">
+      <p class="eyebrow">{{shortName}}</p>
+      <h3 style="margin-top:var(--space-2);"><a href="{{basePath}}/methods/{{slug}}/">{{name}} →</a></h3>
+      <p>{{tagline}}</p>
+    </div>
+    {{/comparisonColumns}}
+
+  </div>
+</div>

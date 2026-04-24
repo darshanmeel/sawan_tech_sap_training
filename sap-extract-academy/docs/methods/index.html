@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SAP Extraction Methods — Side-by-Side Comparison — SAP Extract Guide</title>
+  <meta name="description" content="Compare OData, RFC&#x2F;BAPI, Direct DB, BW Open Hub, Flat File, and SLT side by side. Which extraction method fits your table, system, and license.">
+  <link rel="canonical" href="https://darshanmeel.github.io/sawan_tech_sap_training/methods/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SAP Extraction Methods — Side-by-Side Comparison">
+  <meta property="og:description" content="Compare OData, RFC&#x2F;BAPI, Direct DB, BW Open Hub, Flat File, and SLT side by side. Which extraction method fits your table, system, and license.">
+  <meta property="og:url" content="https://darshanmeel.github.io/sawan_tech_sap_training/methods/">
+  <meta property="og:image" content="https://darshanmeel.github.io/sawan_tech_sap_training/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Guide">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SAP Extraction Methods — Side-by-Side Comparison">
+  <meta name="twitter:description" content="Compare OData, RFC&#x2F;BAPI, Direct DB, BW Open Hub, Flat File, and SLT side by side. Which extraction method fits your table, system, and license.">
+  <meta name="twitter:image" content="https://darshanmeel.github.io/sawan_tech_sap_training/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage"}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Guide</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/methods/">Methods</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Methods landing — side-by-side comparison + per-method cards -->
+
+<div class="container" style="padding-top: var(--space-6); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li aria-current="page">Methods</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Extraction methods</p>
+        <h1>Methods<em>.</em></h1>
+      </div>
+      <p><p>Every SAP extraction boils down to one of a handful of interfaces. Each has a
+license profile, a performance ceiling, and a list of tables it handles well.</p>
+<p>Use the table below to rule out the ones that don&#39;t fit, then click through to
+the method page for setup steps and the walkthroughs that use it.</p>
+</p>
+    </div>
+
+    <div class="card section" style="grid-column: 1 / -1;">
+      <h2>Side by side <em>— quick reference</em></h2>
+      <p class="subhead">Pick a column to read the full method page. Dimmed cells aren't blockers — they're tradeoffs worth reading before you commit.</p>
+
+      <div class="method-compare-wrap">
+        <table class="method-compare">
+          <thead>
+            <tr>
+              <th scope="col" class="row-label-col"></th>
+              <th scope="col"><a href="&#x2F;sawan_tech_sap_training/methods/odp/">OData</a></th>
+              <th scope="col"><a href="&#x2F;sawan_tech_sap_training/methods/rfc/">RFC&#x2F;BAPI</a></th>
+              <th scope="col"><a href="&#x2F;sawan_tech_sap_training/methods/direct-db/">Direct DB</a></th>
+              <th scope="col"><a href="&#x2F;sawan_tech_sap_training/methods/bw-openhub/">BW Open Hub</a></th>
+              <th scope="col"><a href="&#x2F;sawan_tech_sap_training/methods/flat-file/">Flat File</a></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Standard SAP tables</th>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--warn">
+                <span class="cell-icon" aria-hidden="true">⚠️</span>
+                <span class="sr-only">With caveats</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Custom Z-tables</th>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--warn">
+                <span class="cell-icon" aria-hidden="true">⚠️</span>
+                <span class="sr-only">With caveats</span>
+                
+              </td>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">S&#x2F;4HANA</th>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                <span class="cell-text">Best</span>
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">ECC 6.0</th>
+              <td class="cell cell--warn">
+                <span class="cell-icon" aria-hidden="true">⚠️</span>
+                <span class="sr-only">With caveats</span>
+                <span class="cell-text">Limited</span>
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                <span class="cell-text">Best</span>
+              </td>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                <span class="cell-text">if exists</span>
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Fivetran native</th>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                <span class="cell-text">Enterprise</span>
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                <span class="cell-text">DB connector</span>
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                <span class="cell-text">S3</span>
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                <span class="cell-text">S3</span>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Agent required</th>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">SAP Basis needed</th>
+              <td class="cell cell--warn">
+                <span class="cell-icon" aria-hidden="true">⚠️</span>
+                <span class="sr-only">With caveats</span>
+                <span class="cell-text">Auth only</span>
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                <span class="cell-text">RFC user</span>
+              </td>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--warn">
+                <span class="cell-icon" aria-hidden="true">⚠️</span>
+                <span class="sr-only">With caveats</span>
+                
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Custom PV tables</th>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--warn">
+                <span class="cell-icon" aria-hidden="true">⚠️</span>
+                <span class="sr-only">With caveats</span>
+                
+              </td>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Volume performance</th>
+              <td class="cell cell--warn">
+                <span class="cell-icon" aria-hidden="true">⚠️</span>
+                <span class="sr-only">With caveats</span>
+                <span class="cell-text">Slow</span>
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                <span class="cell-text">Fast</span>
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+              <td class="cell cell--ok">
+                <span class="cell-icon" aria-hidden="true">✅</span>
+                <span class="sr-only">Yes</span>
+                
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">License risk</th>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--warn">
+                <span class="cell-icon" aria-hidden="true">⚠️</span>
+                <span class="sr-only">With caveats</span>
+                <span class="cell-text">High</span>
+              </td>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+              <td class="cell cell--bad">
+                <span class="cell-icon" aria-hidden="true">❌</span>
+                <span class="sr-only">No</span>
+                
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card section">
+      <p class="eyebrow">OData</p>
+      <h3 style="margin-top:var(--space-2);"><a href="&#x2F;sawan_tech_sap_training/methods/odp/">OData &#x2F; ODP via CDS →</a></h3>
+      <p>The default for S&#x2F;4HANA. Runtime-license compatible, scales with partitioning.</p>
+    </div>
+    <div class="card section">
+      <p class="eyebrow">RFC&#x2F;BAPI</p>
+      <h3 style="margin-top:var(--space-2);"><a href="&#x2F;sawan_tech_sap_training/methods/rfc/">RFC &#x2F; BAPI →</a></h3>
+      <p>Works on anything. Fast. Requires a real SAP RFC user and careful row-size handling.</p>
+    </div>
+    <div class="card section">
+      <p class="eyebrow">Direct DB</p>
+      <h3 style="margin-top:var(--space-2);"><a href="&#x2F;sawan_tech_sap_training/methods/direct-db/">Direct DB read →</a></h3>
+      <p>JDBC straight to HANA or the underlying DB. Fastest path, highest license risk.</p>
+    </div>
+    <div class="card section">
+      <p class="eyebrow">BW Open Hub</p>
+      <h3 style="margin-top:var(--space-2);"><a href="&#x2F;sawan_tech_sap_training/methods/bw-openhub/">BW Open Hub →</a></h3>
+      <p>BW-mediated extraction via Open Hub destinations. Safe license posture if BW is already in the landscape.</p>
+    </div>
+    <div class="card section">
+      <p class="eyebrow">Flat File</p>
+      <h3 style="margin-top:var(--space-2);"><a href="&#x2F;sawan_tech_sap_training/methods/flat-file/">Flat file export →</a></h3>
+      <p>Scheduled ABAP jobs writing CSV&#x2F;Parquet to shared storage. The boring, unkillable option.</p>
+    </div>
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+        <p class="copyright">© SAP Extract Guide 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

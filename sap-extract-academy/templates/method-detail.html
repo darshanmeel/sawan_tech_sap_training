@@ -1,0 +1,74 @@
+<!-- Method detail page -->
+
+<div class="container" style="padding-top: var(--space-6); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="{{basePath}}/">Home</a></li>
+      <li><a href="{{basePath}}/methods/">Methods</a></li>
+      <li aria-current="page">{{shortName}}</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Extraction method</p>
+        <h1>{{name}}<em>.</em></h1>
+      </div>
+      <p>{{tagline}}</p>
+    </div>
+
+    {{#whenToUse}}
+    <div class="card section">
+      <h2>When to <em>use</em></h2>
+      <p>{{whenToUse}}</p>
+    </div>
+    {{/whenToUse}}
+
+    <div class="card section">
+      <h2>How to <em>handle</em></h2>
+      <div class="prose">
+        {{{body}}}
+      </div>
+    </div>
+
+    <div class="card section">
+      <h2>At a <em>glance</em></h2>
+      <table class="method-attributes">
+        <tbody>
+          {{#matrixRows}}
+          <tr>
+            <th scope="row">{{label}}</th>
+            <td class="cell cell--{{cell.iconClass}}">
+              <span class="cell-icon" aria-hidden="true">{{cell.iconChar}}</span>
+              <span class="sr-only">{{cell.ariaLabel}}</span>
+              {{#cell.text}}<span class="cell-text">{{cell.text}}</span>{{/cell.text}}
+            </td>
+          </tr>
+          {{/matrixRows}}
+        </tbody>
+      </table>
+    </div>
+
+    {{#hasWalkthroughsUsing}}
+    <div class="card section">
+      <h2>Walkthroughs using <em>{{shortName}}</em></h2>
+      <ul class="method-walkthroughs">
+        {{#walkthroughsUsing}}
+        <li><a href="{{basePath}}{{url}}"><strong>{{table}}</strong>{{#title}} — {{title}}{{/title}}</a></li>
+        {{/walkthroughsUsing}}
+      </ul>
+    </div>
+    {{/hasWalkthroughsUsing}}
+
+    {{^hasWalkthroughsUsing}}
+    <div class="card section">
+      <h2>Walkthroughs using <em>{{shortName}}</em></h2>
+      <p style="color:var(--color-ink-soft);">No walkthroughs currently demonstrate this method. See <a href="{{basePath}}/walkthrough/">all walkthroughs</a>.</p>
+    </div>
+    {{/hasWalkthroughsUsing}}
+
+  </div>
+</div>

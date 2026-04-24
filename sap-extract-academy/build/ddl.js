@@ -39,7 +39,7 @@ const SNOWFLAKE_MAP = {
   CUKY: (len) => `VARCHAR(${len || 5})`,
   UNIT: (len) => `VARCHAR(${len || 3})`,
   LANG: (len) => `VARCHAR(${len || 1})`,
-  NUMC: (len) => `NUMBER(${len || 10})`,
+  NUMC: (len) => `VARCHAR(${len || 10})`, // Preserve leading zeros (e.g. BUKRS '0001' ≠ 1)
   INT1: () => 'NUMBER(3)',
   INT2: () => 'NUMBER(5)',
   INT4: () => 'NUMBER(10)',
@@ -68,12 +68,7 @@ const DATABRICKS_MAP = {
   CUKY: () => 'STRING',
   UNIT: () => 'STRING',
   LANG: () => 'STRING',
-  NUMC: (len) => {
-    const n = len || 10;
-    if (n <= 4) return 'INT';
-    if (n <= 9) return 'INT';
-    return 'BIGINT';
-  },
+  NUMC: () => 'STRING', // NUMC is a numeric string (e.g. '0001'), must remain STRING to preserve leading zeros
   INT1: () => 'TINYINT',
   INT2: () => 'SMALLINT',
   INT4: () => 'INT',
@@ -104,7 +99,7 @@ const BIGQUERY_MAP = {
   CUKY: () => 'STRING',
   UNIT: () => 'STRING',
   LANG: () => 'STRING',
-  NUMC: (len) => (len && len <= 9 ? 'INT64' : 'INT64'),
+  NUMC: () => 'STRING', // Preserve leading zeros (e.g. BUKRS '0001')
   INT1: () => 'INT64',
   INT2: () => 'INT64',
   INT4: () => 'INT64',
@@ -133,12 +128,7 @@ const FABRIC_MAP = {
   CUKY: (len) => `VARCHAR(${len || 5})`,
   UNIT: (len) => `VARCHAR(${len || 3})`,
   LANG: (len) => `VARCHAR(${len || 1})`,
-  NUMC: (len) => {
-    const n = len || 10;
-    if (n <= 4) return 'SMALLINT';
-    if (n <= 9) return 'INT';
-    return 'BIGINT';
-  },
+  NUMC: (len) => `VARCHAR(${len || 10})`, // Preserve leading zeros
   INT1: () => 'SMALLINT',
   INT2: () => 'SMALLINT',
   INT4: () => 'INT',

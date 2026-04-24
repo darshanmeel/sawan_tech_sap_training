@@ -2215,3 +2215,107 @@ legend {
     font-size: 14px;
   }
 }
+
+/* ===== Methods comparison matrix ===== */
+.method-compare-wrap {
+  overflow-x: auto;
+  margin-top: var(--space-4);
+}
+.method-compare {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.method-compare thead th {
+  font-family: var(--font-body);
+  font-weight: 600;
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-rule);
+  white-space: nowrap;
+}
+.method-compare thead th a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.method-compare thead th a:hover {
+  text-decoration: underline;
+}
+.method-compare tbody th {
+  font-weight: 600;
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-rule);
+  white-space: nowrap;
+  color: var(--color-ink);
+}
+.method-compare tbody td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-rule);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.method-compare .cell-icon {
+  font-size: 16px;
+  margin-right: var(--space-2);
+}
+.method-compare .cell-text {
+  color: var(--color-ink-soft);
+  font-size: 13px;
+}
+.method-compare .cell--bad .cell-text,
+.method-compare .cell--warn .cell-text {
+  color: var(--color-ink);
+}
+.method-compare tbody tr:last-child th,
+.method-compare tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* At-a-glance table on method detail pages */
+.method-attributes {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-top: var(--space-2);
+}
+.method-attributes th,
+.method-attributes td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-rule);
+  text-align: left;
+  vertical-align: middle;
+}
+.method-attributes th {
+  font-weight: 500;
+  color: var(--color-ink);
+  width: 45%;
+}
+.method-attributes tr:last-child th,
+.method-attributes tr:last-child td {
+  border-bottom: none;
+}
+.method-attributes .cell-icon {
+  margin-right: var(--space-2);
+}
+.method-attributes .cell-text {
+  color: var(--color-ink-soft);
+  font-size: 13px;
+}
+
+/* Walkthroughs using this method — list */
+.method-walkthroughs {
+  list-style: disc;
+  padding-left: var(--space-6);
+  margin: var(--space-2) 0 0;
+}
+.method-walkthroughs li {
+  margin-bottom: var(--space-2);
+}
+.method-walkthroughs li a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.method-walkthroughs li a:hover {
+  text-decoration: underline;
+}

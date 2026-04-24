@@ -211,26 +211,22 @@ databricks secrets put --scope sap-prod --key password</code></pre>
 <strong style="font-size:16px;">Extract 2024 ACDOCA via ODP subscription</strong>
 </div>
 <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">from sap_odp_client import ODP
-
 odp = ODP(
     host=dbutils.secrets.get("sap-prod", "host"),
     client="100",
     user=dbutils.secrets.get("sap-prod", "user"),
     password=dbutils.secrets.get("sap-prod", "password"),
 )
-
 subscription = odp.subscribe(
     source="I_JournalEntryItem",
     filter={"RBUKRS": "1000", "RYEAR": 2024},
 )
-
 output = "s3://company-datalake/raw/acdoca/2024/"
 rows = 0
 for batch in subscription.fetch(batch_size=100_000):
     spark.createDataFrame(batch) \
         .write.mode("append").parquet(f"{output}part={rows}")
     rows += len(batch)
-
 print(f"Extracted {rows} rows")</code></pre>
 <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Row count matches SE16N target from SAP Side step 2.</p>
 </li>
@@ -252,7 +248,6 @@ print(f"Extracted {rows} rows")</code></pre>
 <strong style="font-size:16px;">Create S3 bucket with partition layout</strong>
 </div>
 <pre style="margin:0 0 var(--space-3);font-size:12px;"><code>aws s3 mb s3://company-datalake --region us-east-1
-
 # Hive-style partitioning for Glue/Athena
 s3://company-datalake/raw/acdoca/rbukrs=1000/ryear=2024/</code></pre>
 <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>aws s3 ls s3://company-datalake/raw/acdoca/</code> returns the partition folders.</p>
@@ -288,14 +283,11 @@ USING PARQUET
 PARTITIONED BY (rbukrs, ryear)
 LOCATION 's3://company-datalake/raw/acdoca/'
 """)
-
 spark.sql("MSCK REPAIR TABLE sap_landing.raw.acdoca")
-
 count = spark.sql("""
   SELECT COUNT(*) FROM sap_landing.raw.acdoca
   WHERE rbukrs='1000' AND ryear=2024
 """).collect()[0][0]
-
 print(f"S3 rows: {count}  (must match SE16N)")</code></pre>
 <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>count</code> matches SE16N reconciliation target within 0.1%.</p>
 </li>
@@ -380,188 +372,266 @@ Sales orders drive revenue analytics, order aging reports, and customer dashboar
 
 ### Step-by-Step: Stream VBAK to Databricks + S3 with Sub-5-Minute Lag
 
-#### Pre-Flight Check: Licensing
+The walkthrough below uses the **Kafka → Databricks → S3** path. Before you
+commit, skim the sink alternatives — same SLT source, different downstream:
 
-**In transaction SLICENSE:**
-1. Check license type: Is it "Full Use" or "Runtime"?
-2. If Runtime: **STOP.** SLT is not permitted. Go back to ODP (Example 1).
-3. If Full Use: Confirm in writing with SAP licensing team before proceeding
+- **Direct to Kafka** (this walkthrough) — flexible CDC, deduplication, multi-consumer.
+- **Direct to S3 / ADLS** — serverless, cost-optimised, eventual consistency.
+- **Direct to Snowflake** — one-step ingestion via the Snowflake Kafka connector.
+- **Direct to Event Hubs / Pub/Sub** — cloud-native managed streaming.
 
-This is critical. Many enterprises discover mid-implementation that they have a Runtime license. The cost of retrofitting can be $100k+.
+Guidance: complex CDC → Kafka. Cost-sensitive → direct to S3. Already running
+Kafka for other pipelines → stay in Kafka.
 
-#### SAP-Side Setup
+<div class="article-walkthrough" id="vbak-databricks-s3">
 
-**In transaction LTCO (SLT Configuration):**
-1. Create replication object for VBAK
-2. Partition key: `VKORG` (Sales Org) + `VTWEG` (Distribution Channel)
-3. Example partitions: VKORG='1000'/VTWEG='01', VKORG='1000'/VTWEG='02', etc.
-4. Set parallel readers: 4–8 (coordinate with Basis to avoid overloading)
+<div style="background:var(--color-bg-3);border:1px solid var(--color-rule);border-radius:var(--radius-md);padding:var(--space-4);margin-bottom:var(--space-4);display:flex;gap:var(--space-5);flex-wrap:wrap;">
+  <div><span style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--color-ink-soft);">Method</span><br><strong>SLT</strong></div>
+  <div><span style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--color-ink-soft);">Tool</span><br><strong>Databricks</strong></div>
+  <div><span style="font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.14em;color:var(--color-ink-soft);">Sink</span><br><strong>Kafka + S3</strong></div>
+  <div style="margin-left:auto;"><a href="/sawan_tech_sap_training/methods/slt/" style="font-size:13px;">Open SLT method page →</a></div>
+</div>
 
-**In transaction SM50 (Work Processes):**
-1. During full-load, monitor active dialogs
-2. Keep utilization < 80% to avoid impacting sales transactions
+<nav class="wt-tab-bar" role="tablist" aria-label="Walkthrough sections" style="margin-bottom:0;">
+  <button class="wt-tab" role="tab" aria-selected="true" data-aw-tab="sap" aria-controls="aw-panel-sap-vbak" type="button">SAP Side</button>
+  <button class="wt-tab" role="tab" aria-selected="false" data-aw-tab="tool" aria-controls="aw-panel-tool-vbak" type="button">Tool</button>
+  <button class="wt-tab" role="tab" aria-selected="false" data-aw-tab="sink" aria-controls="aw-panel-sink-vbak" type="button">Sink</button>
+</nav>
 
-**In transaction SM59 (RFC Destination):**
-1. Create destination for your target (Kafka, Snowflake, S3, or Event Hub)
-2. SAP writes directly to your cloud infrastructure
-3. No intermediate servers needed
+<div id="aw-panel-sap-vbak" role="tabpanel" style="background:var(--color-bg-2);border:1px solid var(--color-rule);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);padding:var(--space-5);">
 
-#### SLT Direct-to-Cloud Options (Full Use License Only)
+<h4 style="margin-top:0;font-family:var(--font-display);font-size:22px;font-weight:600;">SAP <em style="color:var(--color-accent-2);font-style:italic;">side</em></h4>
+<p style="color:var(--color-ink-soft);font-size:14px;">Steps to complete in SAP before replication starts. Step 1 is a hard blocker — don't skip it.</p>
 
-**💡 Key Advantage:** With Full Use license, SAP pushes data **directly** to your cloud without Kafka:
+<ol style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
 
-**Option A: Direct to Kafka** (most flexible for CDC logic)
-- SAP → Kafka topic
-- Databricks consumes for transformation
-- Best for: Complex change data capture, deduplication, multi-consumer scenarios
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 1</span>
+<strong style="font-size:16px;">Pre-flight: confirm Full Use license in SLICENSE</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">SLT reads below the SAP application layer. Runtime licenses typically don't cover this. If your system is Runtime-only, stop and use ODP instead.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>Transaction: SLICENSE
+Check:       License type == "Full Use"
+If Runtime:  STOP. Switch to ODP (see Example 1).
+If Full Use: Request written confirmation from SAP licensing.</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Written license confirmation on file before any config work.</p>
+</li>
 
-**Option B: Direct to S3/Azure Data Lake** (serverless)
-- SAP → S3 bucket or ADLS directly
-- Databricks or Snowflake reads from cloud storage
-- Best for: Cost optimization, eventual consistency, event-driven architectures
-- Pay only for storage + compute, no intermediate infrastructure
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 2</span>
+<strong style="font-size:16px;">Record baseline row count in SE16N — reconciliation target</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Capture VBAK count for the sales orgs you're replicating. Init-load reconciliation compares against this number.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>Transaction: SE16N
+Table:       VBAK
+Filter:      VKORG IN ('1000','2000')
+Example:     ~50M rows</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Count recorded. You'll reconcile against this after init-load.</p>
+</li>
 
-**Option C: Direct to Snowflake** (one-step ingestion)
-- SAP → Snowflake table directly
-- No staging required
-- Best for: Snowflake-native teams, simpler architecture
-- Note: Requires Snowflake connector configuration
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 3</span>
+<strong style="font-size:16px;">Configure replication in LTRC / LTRS</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Create the replication configuration and add VBAK. Partition by sales org × distribution channel so parallel readers don't overlap.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>Transaction: LTRC
+Create:      Configuration SAP2KAFKA (source = source system, target = RFC dest to Kafka)
+Parallel:    4–8 readers (coordinate with Basis — keep SM50 dialog usage under 80%)
+Transaction: LTRS
+Table:       VBAK (add under "Table Settings")
+Partitioning: VKORG + VTWEG
+Rule set:    Default (no transformation yet)</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> VBAK appears in LTRC table list with status "In Progress → Delta".</p>
+</li>
 
-**Option D: Direct to Event Hubs / Pub/Sub** (managed streaming)
-- SLT → Azure Event Hubs or Google Pub/Sub
-- Your cloud provider handles scaling
-- Best for: Teams already using cloud-native event systems
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 4</span>
+<strong style="font-size:16px;">Confirm delta queue active in ODQMON</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">After init-load completes, the replication should enter continuous delta mode. Lag is measured here.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>Transaction: ODQMON
+Queue:       VBAK (under SLT subscriber)
+Status:      DELTA (not INIT, not ERROR)
+Lag:         &lt; 5 minutes between DB change and queue entry</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> DELTA status + sub-5-minute lag observed for at least 30 min.</p>
+</li>
 
-**Which path should you choose?**
-- **Complex CDC (capture deletes, schema evolution):** Use Kafka
-- **Simple streaming, no infrastructure management:** Direct to Snowflake or S3
-- **Cost-sensitive, eventual consistency OK:** Direct to S3
-- **Already using Kafka for other pipelines:** Direct to Kafka for consistency
+</ol>
 
-#### Kafka Setup (If Using Kafka as Intermediate)
+</div>
 
-**On your Kafka cluster:**
-1. Create topic: `sap-vbak-cdc` (change data capture)
-2. Partitions: one per SLT replication partition
-3. Retention: 7 days (allows for late subscribers)
-4. Configure SLT RFC destination to push to Kafka
+<div id="aw-panel-tool-vbak" role="tabpanel" hidden style="background:var(--color-bg-2);border:1px solid var(--color-rule);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);padding:var(--space-5);">
 
-**Kafka message format (example):**
-```json
-{
-  "op": "I",  // Insert
-  "table": "VBAK",
-  "key": {"VBELN": "0000100001"},
-  "data": {
-    "VBELN": "0000100001",
-    "KUNNR": "0001234",
-    "VKORG": "1000",
-    "VTWEG": "01",
-    "NETWR": "50000.00",
-    "WAERK": "USD"
-  },
-  "timestamp": 1713871234
-}
-```
+<h4 style="margin-top:0;font-family:var(--font-display);font-size:22px;font-weight:600;">Tool <em style="color:var(--color-accent-2);font-style:italic;">configuration</em></h4>
+<p style="color:var(--color-ink-soft);font-size:14px;">Databricks Structured Streaming reads the SLT Kafka topic and lands Bronze + Silver to S3.</p>
 
-#### Databricks Streaming
+<ol style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
 
-**In Databricks Notebook:**
-```python
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import from_json, col
-from pyspark.sql.types import StructType, StructField, StringType, DoubleType
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 1</span>
+<strong style="font-size:16px;">Create a streaming-capable Databricks cluster</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Streaming needs a long-running cluster (not a job cluster). Use a DBR version that bundles the Kafka source.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>Runtime:    DBR 14.3 LTS (Scala 2.12, Spark 3.5)
+Mode:       Single-user (or shared, depending on governance)
+Node type:  i3.xlarge (2–4 workers; scale with Kafka partitions)
+Libraries:  bundled — spark-sql-kafka-0-10, org.apache.kafka:kafka-clients</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>spark.read.format("kafka")</code> returns without ClassNotFoundException.</p>
+</li>
 
-spark = SparkSession.builder.appName("SAP_VBAK_Stream").getOrCreate()
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 2</span>
+<strong style="font-size:16px;">Store Kafka + S3 credentials in a secret scope</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Never hard-code broker URLs or SASL secrets in notebooks.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>databricks secrets create-scope --scope sap-prod
+databricks secrets put --scope sap-prod --key kafka-bootstrap
+databricks secrets put --scope sap-prod --key kafka-sasl-user
+databricks secrets put --scope sap-prod --key kafka-sasl-pass</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>dbutils.secrets.list("sap-prod")</code> returns all 3 keys.</p>
+</li>
 
-# Define schema for Kafka messages
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 3</span>
+<strong style="font-size:16px;">Structured Streaming: Bronze (raw CDC) → Silver (latest per key)</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">One streaming query writes the raw CDC events; a second projects the current state per sales order (latest by timestamp).</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">from pyspark.sql.functions import from_json, col
+from pyspark.sql.types import StructType, StructField, StringType, LongType
 schema = StructType([
     StructField("op", StringType()),
     StructField("table", StringType()),
     StructField("key", StringType()),
     StructField("data", StringType()),
-    StructField("timestamp", StringType())
+    StructField("timestamp", LongType()),
 ])
+kafka_df = (spark.readStream.format("kafka")
+    .option("kafka.bootstrap.servers", dbutils.secrets.get("sap-prod", "kafka-bootstrap"))
+    .option("subscribe", "sap-vbak-cdc")
+    .option("startingOffsets", "earliest")
+    .load())
+parsed = (kafka_df
+    .select(from_json(col("value").cast("string"), schema).alias("v"))
+    .select("v.*"))
+# Bronze — raw CDC, partitioned by ingest date
+(parsed.writeStream.format("parquet")
+    .option("path", "s3://company-datalake/bronze/vbak-cdc/")
+    .option("checkpointLocation", "s3://company-datalake/checkpoints/bronze-vbak/")
+    .partitionBy("timestamp")
+    .start())
+# Silver — latest state per VBELN. Append-only; downstream reads with ROW_NUMBER.
+(parsed.writeStream.format("parquet")
+    .option("path", "s3://company-datalake/silver/vbak-current/")
+    .option("checkpointLocation", "s3://company-datalake/checkpoints/silver-vbak/")
+    .outputMode("append")
+    .start())
+spark.streams.awaitAnyTermination()</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Streaming UI shows both queries active; Bronze row count grows monotonically.</p>
+</li>
 
-# Read from Kafka topic
-kafka_df = spark.readStream \
-    .format("kafka") \
-    .option("kafka.bootstrap.servers", "kafka:9092") \
-    .option("subscribe", "sap-vbak-cdc") \
-    .option("startingOffsets", "earliest") \
-    .load()
+</ol>
 
-# Parse JSON
-parsed_df = kafka_df.select(
-    from_json(col("value").cast("string"), schema).alias("value")
-).select("value.*")
+</div>
 
-# Bronze layer: Raw CDC
-parsed_df.writeStream \
-    .format("parquet") \
-    .option("path", "s3://company-datalake/bronze/vbak-cdc/") \
-    .option("checkpointLocation", "s3://company-datalake/checkpoints/bronze-vbak/") \
-    .partitionBy("timestamp") \
-    .start()
+<div id="aw-panel-sink-vbak" role="tabpanel" hidden style="background:var(--color-bg-2);border:1px solid var(--color-rule);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);padding:var(--space-5);">
 
-# Silver layer: Deduplicated (latest version of each order)
-parsed_df.createOrReplaceTempView("vbak_cdc")
+<h4 style="margin-top:0;font-family:var(--font-display);font-size:22px;font-weight:600;">Sink <em style="color:var(--color-accent-2);font-style:italic;">setup</em></h4>
+<p style="color:var(--color-ink-soft);font-size:14px;">Kafka topic that SLT writes into, S3 layout that Databricks writes into, and the reconciliation that closes the loop.</p>
 
-silver_query = """
-WITH latest_changes AS (
-  SELECT
-    key,
-    data,
-    timestamp,
-    ROW_NUMBER() OVER (PARTITION BY key ORDER BY timestamp DESC) as rn
-  FROM vbak_cdc
-)
-SELECT * FROM latest_changes WHERE rn = 1
-"""
+<ol style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
 
-spark.sql(silver_query).writeStream \
-    .format("parquet") \
-    .option("path", "s3://company-datalake/silver/vbak-current/") \
-    .option("checkpointLocation", "s3://company-datalake/checkpoints/silver-vbak/") \
-    .outputMode("update") \
-    .start()
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 1</span>
+<strong style="font-size:16px;">Create the Kafka topic SLT writes into</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">One partition per SLT reader. 7-day retention covers late subscribers and replay windows.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>kafka-topics.sh --create \
+  --topic sap-vbak-cdc \
+  --partitions 8 \
+  --replication-factor 3 \
+  --config retention.ms=604800000 \
+  --bootstrap-server $KAFKA_BOOTSTRAP
+# Then in SAP: SM59 → create RFC destination pointing at the Kafka producer
+# endpoint, and set it as the SLT RFC destination in LTRC.</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>kafka-console-consumer --topic sap-vbak-cdc</code> sees JSON CDC events within minutes of activating the SLT config.</p>
+</li>
 
-spark.awaitAnyStreamingQuery()
-```
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 2</span>
+<strong style="font-size:16px;">Lay out S3 prefixes and grant Databricks access</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Separate Bronze/Silver/Gold and keep checkpoints outside the data prefixes — they are sacred to Structured Streaming and must never be deleted during operations.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code>s3://company-datalake/
+├── bronze/vbak-cdc/        # raw CDC events
+├── silver/vbak-current/    # latest state per VBELN
+├── gold/vbak-business/     # modelled (joins with KNA1 etc.)
+└── checkpoints/            # Structured Streaming state — DO NOT DELETE
+# IAM policy attached to the Databricks instance profile:
+{
+  "Effect": "Allow",
+  "Action": ["s3:PutObject", "s3:GetObject", "s3:ListBucket", "s3:DeleteObject"],
+  "Resource": [
+    "arn:aws:s3:::company-datalake",
+    "arn:aws:s3:::company-datalake/*"
+  ]
+}</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> <code>dbutils.fs.ls("s3://company-datalake/")</code> from a notebook lists all four prefixes.</p>
+</li>
 
-#### S3 Architecture
+<li style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+<div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;">Step 3</span>
+<strong style="font-size:16px;">Reconcile: SE16N target vs. Silver row count + lag check</strong>
+</div>
+<p style="color:var(--color-ink-soft);font-size:14px;margin:0 0 var(--space-3);">Init-load reconciliation closes the loop. After init, spot-check delta lag during the steady state.</p>
+<pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">from pyspark.sql.functions import col, max as _max, current_timestamp, unix_timestamp
+silver = spark.read.parquet("s3://company-datalake/silver/vbak-current/")
+# distinct VBELN count should match SE16N ± 0.1%
+distinct_orders = silver.select("key").distinct().count()
+print(f"Silver distinct VBELN: {distinct_orders:,}  (SE16N target ~50,000,000)")
+# Delta lag: time between latest CDC event and now
+latest_ts = silver.agg(_max("timestamp").alias("t")).collect()[0]["t"]
+lag_seconds = spark.sql(f"SELECT unix_timestamp(current_timestamp()) - {latest_ts}").collect()[0][0]
+print(f"Delta lag: {lag_seconds}s  (must be &lt; 300s)")</code></pre>
+<p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Silver distinct-VBELN count matches SE16N within 0.1%, and lag stays under 300 s across a 30-minute window.</p>
+</li>
 
-```
-s3://company-datalake/
-├── bronze/
-│   └── vbak-cdc/          # Raw CDC events (insert/update/delete)
-│       ├── 2026-04-23/
-│       └── 2026-04-24/
-├── silver/
-│   └── vbak-current/      # Latest version of each order (deduplicated)
-├── gold/
-│   └── vbak-business/     # Business-ready (joins with KNA1, etc.)
-└── checkpoints/           # Spark streaming checkpoints (don't delete!)
-```
+</ol>
 
-#### Verification
+</div>
 
-**In SAP, transaction ODQMON:**
-1. Find replication object for VBAK
-2. Check status: "DELTA" means replication is active
-3. Monitor lag: should be < 5 minutes
+</div>
 
-**In Databricks:**
-```python
-# Check latest record
-df = spark.read.parquet("s3://company-datalake/silver/vbak-current/")
-latest = df.orderBy(col("timestamp").desc()).limit(1).select("data", "timestamp").show()
-# Should be within 5 minutes of now
-```
+<script>
+(function(){
+  var root=document.getElementById('vbak-databricks-s3');
+  if(!root)return;
+  var tabs=root.querySelectorAll('.wt-tab[data-aw-tab]');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click',function(){
+      var target=tab.getAttribute('data-aw-tab');
+      tabs.forEach(function(t){t.setAttribute('aria-selected',t===tab?'true':'false');});
+      root.querySelectorAll('[id^="aw-panel-"][id$="-vbak"]').forEach(function(p){
+        if(p.id==='aw-panel-'+target+'-vbak'){p.removeAttribute('hidden');}else{p.setAttribute('hidden','');}
+      });
+    });
+  });
+})();
+</script>
 
-#### Timeline
-- **Full load:** 2–4 hours (50M orders across all partitions)
-- **Delta lag:** < 5 minutes (Databricks processes Kafka within 1–2 minutes)
+#### Performance
+
+- **Full load:** 2–4 hours for ~50M orders across 4–8 SLT partitions.
+- **Delta lag:** under 5 minutes end-to-end (SLT → Kafka ~1 min, Kafka → Databricks ~1–2 min).
 
 ### Alternative Tools
 

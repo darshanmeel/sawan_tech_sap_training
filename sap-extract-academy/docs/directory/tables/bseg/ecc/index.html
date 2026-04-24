@@ -51,6 +51,7 @@
         <nav class="site-nav" aria-label="Primary navigation">
           <ul>
             <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/methods/">Methods</a></li>
             <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
             <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
             <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
@@ -381,8 +382,8 @@ CREATE OR REPLACE TABLE SAP_FI.BSEG (
   MANDT     VARCHAR(3) NOT NULL,
   BUKRS     VARCHAR(4) NOT NULL,
   BELNR     VARCHAR(10) NOT NULL,
-  GJAHR     NUMBER(4) NOT NULL,
-  BUZEI     NUMBER(3) NOT NULL,
+  GJAHR     VARCHAR(4) NOT NULL,
+  BUZEI     VARCHAR(3) NOT NULL,
   BSCHL     VARCHAR(2),
   KOART     VARCHAR(1),
   HKONT     VARCHAR(10),
@@ -407,8 +408,8 @@ CREATE OR REPLACE TABLE sap_fi.bseg (
   mandt     STRING NOT NULL,
   bukrs     STRING NOT NULL,
   belnr     STRING NOT NULL,
-  gjahr     INT NOT NULL,
-  buzei     INT NOT NULL,
+  gjahr     STRING NOT NULL,
+  buzei     STRING NOT NULL,
   bschl     STRING,
   koart     STRING,
   hkont     STRING,
@@ -435,8 +436,8 @@ CREATE TABLE dbo.BSEG (
   MANDT     VARCHAR(3) NOT NULL,
   BUKRS     VARCHAR(4) NOT NULL,
   BELNR     VARCHAR(10) NOT NULL,
-  GJAHR     SMALLINT NOT NULL,
-  BUZEI     SMALLINT NOT NULL,
+  GJAHR     VARCHAR(4) NOT NULL,
+  BUZEI     VARCHAR(3) NOT NULL,
   BSCHL     VARCHAR(2),
   KOART     VARCHAR(1),
   HKONT     VARCHAR(10),

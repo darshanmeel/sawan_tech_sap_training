@@ -51,6 +51,7 @@
         <nav class="site-nav" aria-label="Primary navigation">
           <ul>
             <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/methods/">Methods</a></li>
             <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
             <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
             <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
@@ -426,7 +427,7 @@ ingestion for any cross-system warehouse.</p>
 CREATE OR REPLACE TABLE SAP_MM.EKPO (
   MANDT     VARCHAR(3) NOT NULL,
   EBELN     VARCHAR(10) NOT NULL,
-  EBELP     NUMBER(5) NOT NULL,
+  EBELP     VARCHAR(5) NOT NULL,
   LOEKZ     VARCHAR(1),
   TXZ01     VARCHAR(40),
   MATNR     VARCHAR(40),
@@ -455,7 +456,7 @@ steady-state flow; history reloads parallelize by <code>EKORG</code> via <code>C
 CREATE OR REPLACE TABLE sap_mm.ekpo (
   mandt     STRING NOT NULL,
   ebeln     STRING NOT NULL,
-  ebelp     INT NOT NULL,
+  ebelp     STRING NOT NULL,
   loekz     STRING,
   txz01     STRING,
   matnr     STRING,
@@ -486,7 +487,7 @@ MATNR), gives downstream vendor-spend queries low-latency reads.</p>
 CREATE TABLE dbo.EKPO (
   MANDT     VARCHAR(3) NOT NULL,
   EBELN     VARCHAR(10) NOT NULL,
-  EBELP     INT NOT NULL,
+  EBELP     VARCHAR(5) NOT NULL,
   LOEKZ     VARCHAR(1),
   TXZ01     VARCHAR(40),
   MATNR     VARCHAR(40),

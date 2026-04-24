@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SAP OData &#x2F; ODP Extraction — When to Use, How to Handle — SAP Extract Guide</title>
+  <meta name="description" content="OData via ODP&#x2F;CDS is the SAP-recommended extraction path on S&#x2F;4HANA. Licensing, setup, scaling, and walkthroughs.">
+  <link rel="canonical" href="https://darshanmeel.github.io/sawan_tech_sap_training/methods/odp/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SAP OData &#x2F; ODP Extraction — When to Use, How to Handle">
+  <meta property="og:description" content="OData via ODP&#x2F;CDS is the SAP-recommended extraction path on S&#x2F;4HANA. Licensing, setup, scaling, and walkthroughs.">
+  <meta property="og:url" content="https://darshanmeel.github.io/sawan_tech_sap_training/methods/odp/">
+  <meta property="og:image" content="https://darshanmeel.github.io/sawan_tech_sap_training/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Guide">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SAP OData &#x2F; ODP Extraction — When to Use, How to Handle">
+  <meta name="twitter:description" content="OData via ODP&#x2F;CDS is the SAP-recommended extraction path on S&#x2F;4HANA. Licensing, setup, scaling, and walkthroughs.">
+  <meta name="twitter:image" content="https://darshanmeel.github.io/sawan_tech_sap_training/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage"}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Guide</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/methods/">Methods</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Method detail page -->
+
+<div class="container" style="padding-top: var(--space-6); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/methods/">Methods</a></li>
+      <li aria-current="page">OData</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Extraction method</p>
+        <h1>OData &#x2F; ODP via CDS<em>.</em></h1>
+      </div>
+      <p>The default for S&#x2F;4HANA. Runtime-license compatible, scales with partitioning.</p>
+    </div>
+
+    <div class="card section">
+      <h2>When to <em>use</em></h2>
+      <p>Any S&#x2F;4HANA table that doesn&#39;t need sub-minute latency. Works on ECC too, with fewer released views.</p>
+    </div>
+
+    <div class="card section">
+      <h2>How to <em>handle</em></h2>
+      <div class="prose">
+        <h2>Setup in SAP</h2>
+<ol>
+<li>Confirm the CDS view exists and is released for ODP consumption. Use
+<code>RODPS_REPL_TEST</code> to validate that the provider can stream deltas.</li>
+<li>Create a technical user with <code>S_RFC</code> and <code>S_ODP_READ</code> authorizations only —
+don&#39;t give it dialog access.</li>
+<li>Expose the ODP context (<code>ABAP_CDS</code>) on the SAP Gateway if your sink consumes
+over HTTP, or use the native RFC ODP API if going through a Microsoft/SAP CDC
+connector.</li>
+</ol>
+<h2>How to handle</h2>
+<ul>
+<li><strong>First-delta gotcha</strong> — the first read on a new subscription does a full
+initialization. For heavyweight tables (ACDOCA, BSEG) this can run for hours.
+Always run the init on a maintenance window and monitor with <code>ODQMON</code>.</li>
+<li><strong>Partitioning</strong> — split by a stable key (<code>RYEAR</code> + <code>RBUKRS</code> for FI tables,
+<code>ERDAT</code> + plant for logistics). Never run unpartitioned against a table over
+100M rows.</li>
+<li><strong>Schema drift</strong> — if the underlying CDS view adds a column, downstream
+schemas must be refreshed explicitly. ODP won&#39;t fail; it will silently drop
+the new column.</li>
+</ul>
+<h2>Tradeoffs</h2>
+<p>Runtime-license safe, no dialog user needed, works with every mainstream
+connector. The cost is latency — even with parallelism you&#39;re reading through
+an SAP gateway, so a 500M-row table takes real time. Custom Z-tables require a
+CDS extension on top, which needs ABAP help.</p>
+
+      </div>
+    </div>
+
+    <div class="card section">
+      <h2>At a <em>glance</em></h2>
+      <table class="method-attributes">
+        <tbody>
+          <tr>
+            <th scope="row">Standard SAP tables</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Custom Z-tables</th>
+            <td class="cell cell--bad">
+              <span class="cell-icon" aria-hidden="true">❌</span>
+              <span class="sr-only">No</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">S&#x2F;4HANA</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              <span class="cell-text">Best</span>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">ECC 6.0</th>
+            <td class="cell cell--warn">
+              <span class="cell-icon" aria-hidden="true">⚠️</span>
+              <span class="sr-only">With caveats</span>
+              <span class="cell-text">Limited</span>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Fivetran native</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Agent required</th>
+            <td class="cell cell--bad">
+              <span class="cell-icon" aria-hidden="true">❌</span>
+              <span class="sr-only">No</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">SAP Basis needed</th>
+            <td class="cell cell--warn">
+              <span class="cell-icon" aria-hidden="true">⚠️</span>
+              <span class="sr-only">With caveats</span>
+              <span class="cell-text">Auth only</span>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Custom PV tables</th>
+            <td class="cell cell--bad">
+              <span class="cell-icon" aria-hidden="true">❌</span>
+              <span class="sr-only">No</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Volume performance</th>
+            <td class="cell cell--warn">
+              <span class="cell-icon" aria-hidden="true">⚠️</span>
+              <span class="sr-only">With caveats</span>
+              <span class="cell-text">Slow</span>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">License risk</th>
+            <td class="cell cell--bad">
+              <span class="cell-icon" aria-hidden="true">❌</span>
+              <span class="sr-only">No</span>
+              
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card section">
+      <h2>Walkthroughs using <em>OData</em></h2>
+      <ul class="method-walkthroughs">
+        <li><a href="&#x2F;sawan_tech_sap_training&#x2F;walkthrough&#x2F;acdoca&#x2F;"><strong>ACDOCA</strong> — Extract ACDOCA One Company&#x2F;Year via ODP</a></li>
+        <li><a href="&#x2F;sawan_tech_sap_training&#x2F;walkthrough&#x2F;bkpf&#x2F;"><strong>BKPF</strong> — Extract BKPF Multi-Year</a></li>
+        <li><a href="&#x2F;sawan_tech_sap_training&#x2F;walkthrough&#x2F;lfa1&#x2F;"><strong>LFA1</strong> — Extract LFA1 with Hourly Delta</a></li>
+        <li><a href="&#x2F;sawan_tech_sap_training&#x2F;walkthrough&#x2F;mara&#x2F;"><strong>MARA</strong> — Extract MARA with Z-Fields via CDS Extension</a></li>
+        <li><a href="&#x2F;sawan_tech_sap_training&#x2F;walkthrough&#x2F;vbak&#x2F;"><strong>VBAK</strong> — Extract VBAK with Delta and Z-Field</a></li>
+      </ul>
+    </div>
+
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+        <p class="copyright">© SAP Extract Guide 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

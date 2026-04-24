@@ -3,7 +3,7 @@ CREATE OR REPLACE TABLE sap_fi.bkpf (
   mandt     STRING NOT NULL,
   bukrs     STRING NOT NULL,
   belnr     STRING NOT NULL,
-  gjahr     INT NOT NULL,
+  gjahr     STRING NOT NULL,
   blart     STRING,
   bldat     DATE,
   waers     STRING

@@ -55,8 +55,44 @@ const pageTemplates = {
   // Worker B — directory templates
   directoryTable: fs.readFileSync(path.join(TEMPLATES_DIR, 'directory-table.html'), 'utf-8'),
   directoryLanding: fs.readFileSync(path.join(TEMPLATES_DIR, 'directory-index.html'), 'utf-8'),
-  directoryRedirect: fs.readFileSync(path.join(TEMPLATES_DIR, 'directory-redirect.html'), 'utf-8')
+  directoryRedirect: fs.readFileSync(path.join(TEMPLATES_DIR, 'directory-redirect.html'), 'utf-8'),
+  // Methods section — per-method detail + landing with comparison matrix
+  method: fs.readFileSync(path.join(TEMPLATES_DIR, 'method-detail.html'), 'utf-8'),
+  methodsLanding: fs.readFileSync(path.join(TEMPLATES_DIR, 'methods-landing.html'), 'utf-8')
 };
+
+// Comparison matrix rows rendered on /methods/ landing and every per-method
+// "At a glance" table. Row order is stable across methods so columns line up.
+const METHOD_MATRIX_ROWS = [
+  { key: 'standardTables',   label: 'Standard SAP tables' },
+  { key: 'customZTables',    label: 'Custom Z-tables' },
+  { key: 's4',               label: 'S/4HANA' },
+  { key: 'ecc',              label: 'ECC 6.0' },
+  { key: 'fivetranNative',   label: 'Fivetran native' },
+  { key: 'agentRequired',    label: 'Agent required' },
+  { key: 'sapBasisNeeded',   label: 'SAP Basis needed' },
+  { key: 'customPvTables',   label: 'Custom PV tables' },
+  { key: 'volumePerformance', label: 'Volume performance' },
+  { key: 'licenseRisk',      label: 'License risk' }
+];
+
+// Column order on the /methods/ landing table. Methods not listed here are
+// still rendered as detail pages but omitted from the comparison matrix.
+const METHOD_COMPARISON_ORDER = ['odp', 'rfc', 'direct-db', 'bw-openhub', 'flat-file'];
+
+const CELL_ICONS = {
+  ok:   { iconClass: 'ok',   iconChar: '✅', ariaLabel: 'Yes' },
+  bad:  { iconClass: 'bad',  iconChar: '❌', ariaLabel: 'No' },
+  warn: { iconClass: 'warn', iconChar: '⚠️', ariaLabel: 'With caveats' },
+  na:   { iconClass: 'na',   iconChar: '—',  ariaLabel: 'Not applicable' }
+};
+
+function normalizeMatrixCell(cell) {
+  if (!cell) return { ...CELL_ICONS.na, text: '' };
+  const mark = typeof cell === 'string' ? cell : cell.mark;
+  const icon = CELL_ICONS[mark] || CELL_ICONS.na;
+  return { ...icon, text: (cell && cell.label) || '' };
+}
 
 // Lazy-load Worker A's schema validator. Optional — if the file isn't in the
 // tree yet, we build anyway but log a warning so the gap is visible.
@@ -93,6 +129,13 @@ const VOLUME_LABELS = {
 const sitemapEntries = [];
 const currentYear = new Date().getFullYear();
 const walkthroughsBySlug = {};
+// method id → [{ slug, table, title, url }], populated during pass 1 so each
+// method detail page can list the walkthroughs that use it.
+const walkthroughsByMethod = {};
+// method id → { id, slug, name, shortName, tagline, matrix, ... } from the
+// method file frontmatter. Populated during pass 1; consumed by the /methods/
+// landing to render the comparison table.
+const methodsById = {};
 
 function getPageType(filePath) {
   const normalized = filePath.replaceAll('\\', '/');
@@ -102,6 +145,10 @@ function getPageType(filePath) {
   // /directory/tables/* is classified as directoryTable, not table.
   if (normalized.includes('/directory/tables/')) return 'directoryTable';
   if (normalized.endsWith('/directory/index.md')) return 'directoryLanding';
+
+  // Methods section — match BEFORE the generic index.md/tables checks.
+  if (normalized.endsWith('/methods/index.md')) return 'methodsLanding';
+  if (normalized.includes('/methods/')) return 'method';
 
   if (baseName === 'index.md') return 'landing';
   if (baseName === 'about.md') return 'guide';
@@ -172,6 +219,11 @@ function buildBreadcrumbs(filePath, data) {
     breadcrumbs.push({ position: 3, name: data.term });
   } else if (pageType === 'roadmap') {
     breadcrumbs.push({ position: 2, name: 'Roadmap' });
+  } else if (pageType === 'method') {
+    breadcrumbs.push({ position: 2, name: 'Methods', item: `${SITE_ORIGIN}/methods/` });
+    breadcrumbs.push({ position: 3, name: data.name });
+  } else if (pageType === 'methodsLanding') {
+    breadcrumbs.push({ position: 2, name: 'Methods' });
   }
 
   return breadcrumbs;
@@ -296,7 +348,7 @@ function buildPage(filePath, content) {
   // Parse sections for guide pages (split by h2 headers)
   let sections = [];
   if (pageType === 'guide') {
-    const h2Regex = /<h2>(.*?)<\/h2>/g;
+    const h2Regex = /<h2[^>]*>(.*?)<\/h2>/g;
     const parts = renderedBody.split(h2Regex);
     for (let i = 1; i < parts.length; i += 2) {
       sections.push({
@@ -418,9 +470,9 @@ function buildPage(filePath, content) {
     ? data.relatedWalkthroughs
     : [];
 
-  // Format publishDate as "22 Apr 2026" for article pages
+  // Format publishDate as "22 Apr 2026" for article pages (in UTC)
   const formattedPublishDate = data.publishDate
-    ? new Date(data.publishDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+    ? new Date(data.publishDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
     : '';
 
   const mergedData = {
@@ -474,6 +526,38 @@ function buildPage(filePath, content) {
     hasDdl
   };
 
+  // Methods section: detail pages get a matrix + walkthrough backlinks;
+  // the landing page gets a full columns × rows comparison.
+  if (pageType === 'method') {
+    const methodId = data.id || tableSlug;
+    const matrix = data.matrix || {};
+    mergedData.shortName = data.shortName || data.name;
+    mergedData.matrixRows = METHOD_MATRIX_ROWS.map(r => ({
+      label: r.label,
+      cell: normalizeMatrixCell(matrix[r.key])
+    }));
+    const walkthroughs = walkthroughsByMethod[methodId] || [];
+    mergedData.walkthroughsUsing = walkthroughs;
+    mergedData.hasWalkthroughsUsing = walkthroughs.length > 0;
+  } else if (pageType === 'methodsLanding') {
+    const columns = METHOD_COMPARISON_ORDER
+      .map(id => methodsById[id])
+      .filter(Boolean)
+      .map(m => ({
+        id: m.id,
+        slug: m.slug || m.id,
+        name: m.name,
+        shortName: m.shortName || m.name,
+        tagline: m.tagline || ''
+      }));
+    mergedData.bodyHtml = renderedBody;
+    mergedData.comparisonColumns = columns;
+    mergedData.comparisonRows = METHOD_MATRIX_ROWS.map(r => ({
+      label: r.label,
+      cells: columns.map(c => normalizeMatrixCell((methodsById[c.id].matrix || {})[r.key]))
+    }));
+  }
+
   const pageTypeTemplate = pageTemplates[pageType];
   const pageContent = Mustache.render(pageTypeTemplate, mergedData, partials);
 
@@ -497,38 +581,71 @@ function buildPage(filePath, content) {
   console.log(`✓ Built ${canonicalPath}`);
 }
 
-function walkFiles(dir) {
+// Walk the content tree once, returning render-candidate markdown files.
+// Non-intermediate walkthroughs are skipped here — intermediate is canonical,
+// shared/*.yaml is loaded on demand from buildPage.
+function collectFiles(dir, acc = []) {
   const files = fs.readdirSync(dir, { withFileTypes: true });
-
   for (const file of files) {
     const fullPath = path.join(dir, file.name);
     if (file.isDirectory()) {
-      walkFiles(fullPath);
+      collectFiles(fullPath, acc);
     } else if (file.name.endsWith('.md')) {
       const normalized = fullPath.replaceAll('\\', '/');
-      // Skip non-intermediate walkthroughs — one walkthrough per table, intermediate is canonical.
       if (normalized.includes('/walkthroughs/') &&
           !normalized.includes('/walkthroughs/intermediate/') &&
           !normalized.includes('/walkthroughs/shared/')) {
         continue;
       }
-      const content = fs.readFileSync(fullPath, 'utf-8');
-      // Collect walkthroughs for reference by table detail pages
-      if (normalized.includes('/walkthroughs/intermediate/')) {
-        const { data } = matter(content);
-        const slug = data.slug || path.parse(file.name).name;
-        if (!walkthroughsBySlug[slug]) {
-          walkthroughsBySlug[slug] = { slug, table: data.table || slug.toUpperCase(), summary: data.summary || '' };
-        }
+      acc.push({ fullPath, normalized });
+    }
+  }
+  return acc;
+}
+
+// Two-pass build over the already-collected file list. Pass 1 hydrates
+// walkthroughsBySlug; Pass 2 renders. Without the split, table detail pages
+// render before walkthroughs are collected (directory order is
+// articles < glossary < tables < walkthroughs), so hasWalkthrough was always
+// false on individual /tables/<slug>/ pages.
+function buildContent(allFiles) {
+  for (const { fullPath, normalized } of allFiles) {
+    if (normalized.includes('/walkthroughs/intermediate/')) {
+      const { data } = matter(fs.readFileSync(fullPath, 'utf-8'));
+      const slug = data.slug || path.parse(fullPath).name;
+      if (!walkthroughsBySlug[slug]) {
+        walkthroughsBySlug[slug] = {
+          slug,
+          table: data.table || slug.toUpperCase(),
+          summary: data.summary || ''
+        };
       }
-      // Fan-out: one /directory/tables/<slug>.md produces up to 3 outputs
-      // (canonical + /s4/ + /ecc/). Keep the single-output pipeline for
-      // everything else.
-      if (normalized.includes('/directory/tables/')) {
-        buildDirectoryTablePage(fullPath, content);
-      } else {
-        buildPage(fullPath, content);
+      // Index by method so /methods/<id>/ pages can list the walkthroughs
+      // that demonstrate them.
+      const methodId = data.method;
+      if (methodId) {
+        (walkthroughsByMethod[methodId] ||= []).push({
+          slug,
+          table: data.table || slug.toUpperCase(),
+          title: data.title || '',
+          url: `/walkthrough/${slug}/`
+        });
       }
+    } else if (normalized.includes('/methods/') && !normalized.endsWith('/methods/index.md')) {
+      const { data } = matter(fs.readFileSync(fullPath, 'utf-8'));
+      const id = data.id || data.slug || path.parse(fullPath).name;
+      methodsById[id] = { ...data, id };
+    }
+  }
+
+  for (const { fullPath, normalized } of allFiles) {
+    const content = fs.readFileSync(fullPath, 'utf-8');
+    // Fan-out: one /directory/tables/<slug>.md produces up to 3 outputs
+    // (canonical + /s4/ + /ecc/); single-output pipeline for everything else.
+    if (normalized.includes('/directory/tables/')) {
+      buildDirectoryTablePage(fullPath, content);
+    } else {
+      buildPage(fullPath, content);
     }
   }
 }
@@ -845,10 +962,14 @@ function buildDirectoryTablePage(filePath, content) {
 
   // Schema validation — hard failure if validator is present.
   if (validateDirectory) {
-    try {
-      validateDirectory(data, { filePath });
-    } catch (err) {
-      throw new Error(`Directory schema validation failed for ${filePath}: ${err.message}`);
+    const { errors, warnings } = validateDirectory(data, filePath);
+    if (warnings.length > 0) {
+      warnings.forEach(w => console.warn(`⚠ ${w}`));
+    }
+    if (errors.length > 0) {
+      console.error(`❌ Validation failed for ${filePath}:`);
+      errors.forEach(e => console.error(`  - ${e}`));
+      process.exit(1);
     }
   }
 
@@ -1115,7 +1236,7 @@ function generateIndexPages() {
   }
 
   // Generate walkthrough index page — one walkthrough per table
-  // (walkthroughsBySlug is populated during walkFiles when processing intermediate walkthroughs)
+  // (walkthroughsBySlug is populated during collectMetadata)
   const walkthroughItems = Object.values(walkthroughsBySlug).map(w => ({
     title: w.table,
     description: w.summary,
@@ -1181,9 +1302,10 @@ function buildIndexPage(category, data) {
 }
 
 function generateSitemap() {
+  // Deduplicate entries and filter out / which is added manually
   const entries = [
     { url: '/', lastmod: new Date().toISOString().split('T')[0], changefreq: 'weekly', priority: 1.0 },
-    ...sitemapEntries
+    ...sitemapEntries.filter(e => e.url !== '/')
   ];
 
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -1208,7 +1330,8 @@ function build() {
   console.log('Building SAP Extract Guide...\n');
 
   if (fs.existsSync(CONTENT_DIR)) {
-    walkFiles(CONTENT_DIR);
+    const files = collectFiles(CONTENT_DIR);
+    buildContent(files);
     generateIndexPages();
     generateDirectoryIndex();
   } else {

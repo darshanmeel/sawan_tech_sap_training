@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SAP SLT Replication — When to Use, How to Handle — SAP Extract Guide</title>
+  <meta name="description" content="SLT (Landscape Transformation) replication for real-time SAP table CDC. Licensing, LTRC&#x2F;LTRS setup, Z-columns via rule assignment.">
+  <link rel="canonical" href="https://darshanmeel.github.io/sawan_tech_sap_training/methods/slt/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SAP SLT Replication — When to Use, How to Handle">
+  <meta property="og:description" content="SLT (Landscape Transformation) replication for real-time SAP table CDC. Licensing, LTRC&#x2F;LTRS setup, Z-columns via rule assignment.">
+  <meta property="og:url" content="https://darshanmeel.github.io/sawan_tech_sap_training/methods/slt/">
+  <meta property="og:image" content="https://darshanmeel.github.io/sawan_tech_sap_training/assets/og/default-og.png">
+  <meta property="og:site_name" content="SAP Extract Guide">
+  <meta property="og:locale" content="en_US">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SAP SLT Replication — When to Use, How to Handle">
+  <meta name="twitter:description" content="SLT (Landscape Transformation) replication for real-time SAP table CDC. Licensing, LTRC&#x2F;LTRS setup, Z-columns via rule assignment.">
+  <meta name="twitter:image" content="https://darshanmeel.github.io/sawan_tech_sap_training/assets/og/default-og.png">
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage"}</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/tokens.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/main.css">
+  <link rel="stylesheet" href="&#x2F;sawan_tech_sap_training/assets/css/directory.css">
+  <link rel="icon" href="&#x2F;sawan_tech_sap_training/favicon.svg" type="image/svg+xml">
+
+  <!-- <script defer data-domain="academy.example.com" src="https://plausible.io/js/script.js"></script> -->
+
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/source-picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/picker.js" defer></script>
+  <script src="&#x2F;sawan_tech_sap_training/assets/js/checklist.js" defer></script>
+  <script type="module" src="&#x2F;sawan_tech_sap_training/assets/js/directory.js"></script>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <a href="&#x2F;sawan_tech_sap_training/" class="site-logo">Extract<span>.</span>Guide</a>
+        <nav class="site-nav" aria-label="Primary navigation">
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/directory/tables/">Directory</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/methods/">Methods</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/walkthrough/">Walkthroughs</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Method detail page -->
+
+<div class="container" style="padding-top: var(--space-6); padding-bottom: var(--space-7);">
+
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:var(--space-4);">
+    <ol>
+      <li><a href="&#x2F;sawan_tech_sap_training/">Home</a></li>
+      <li><a href="&#x2F;sawan_tech_sap_training/methods/">Methods</a></li>
+      <li aria-current="page">SLT</li>
+    </ol>
+  </nav>
+
+  <div class="grid">
+
+    <div class="card hero">
+      <div>
+        <p class="eyebrow"><span class="dot"></span>Extraction method</p>
+        <h1>SLT replication<em>.</em></h1>
+      </div>
+      <p>Real-time row-level replication. Full-Use license, substantial Basis setup.</p>
+    </div>
+
+    <div class="card section">
+      <h2>When to <em>use</em></h2>
+      <p>When latency under a minute matters — regulatory reporting, near-real-time analytics, CDC for downstream systems. Not for a one-shot extract.</p>
+    </div>
+
+    <div class="card section">
+      <h2>How to <em>handle</em></h2>
+      <div class="prose">
+        <h2>Setup in SAP</h2>
+<ol>
+<li>Install the SLT add-on on a dedicated system (or co-deploy with Datasphere /
+Data Intelligence). Create a replication configuration in <code>LTRC</code>.</li>
+<li>In <code>LTRS</code>, add each source table you want to replicate and map it to the
+target. Rule assignments happen here — Z-columns, filters, and field-level
+transformations are expressed as ABAP in rule blocks.</li>
+<li>Start the initial load. SLT reads the cluster table entries via the DB
+interface, not RFC — performance is a function of the source DB, not the
+SAP work processes.</li>
+</ol>
+<h2>How to handle</h2>
+<ul>
+<li><strong>Full-Use license required</strong> — SLT reads below the SAP application layer, so
+a Runtime license typically doesn&#39;t cover it. Get the license question
+answered before you start.</li>
+<li><strong>Z-columns</strong> — add the column to the target structure in <code>LTRS</code>, then write
+a field- or event-related rule in ABAP to populate it. The rule runs for
+every replicated row.</li>
+<li><strong>Init load strategy</strong> — for heavyweight tables, split the initial load
+across multiple partitions (LTRC provides a parallelism dial). A full
+reinit on a 1B-row table will saturate the source DB if unpartitioned.</li>
+</ul>
+<h2>Tradeoffs</h2>
+<p>The only option that gives you genuine sub-minute latency across every SAP
+table, including custom Z and cluster tables. In return you commit to an
+SLT system, a Full-Use license discussion, and ongoing Basis ownership of the
+replication runtime.</p>
+
+      </div>
+    </div>
+
+    <div class="card section">
+      <h2>At a <em>glance</em></h2>
+      <table class="method-attributes">
+        <tbody>
+          <tr>
+            <th scope="row">Standard SAP tables</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Custom Z-tables</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">S&#x2F;4HANA</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">ECC 6.0</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Fivetran native</th>
+            <td class="cell cell--bad">
+              <span class="cell-icon" aria-hidden="true">❌</span>
+              <span class="sr-only">No</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Agent required</th>
+            <td class="cell cell--bad">
+              <span class="cell-icon" aria-hidden="true">❌</span>
+              <span class="sr-only">No</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">SAP Basis needed</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              <span class="cell-text">Substantial</span>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Custom PV tables</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">Volume performance</th>
+            <td class="cell cell--ok">
+              <span class="cell-icon" aria-hidden="true">✅</span>
+              <span class="sr-only">Yes</span>
+              <span class="cell-text">Real-time</span>
+            </td>
+          </tr>
+          <tr>
+            <th scope="row">License risk</th>
+            <td class="cell cell--warn">
+              <span class="cell-icon" aria-hidden="true">⚠️</span>
+              <span class="sr-only">With caveats</span>
+              <span class="cell-text">Full Use</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card section">
+      <h2>Walkthroughs using <em>SLT</em></h2>
+      <ul class="method-walkthroughs">
+        <li><a href="&#x2F;sawan_tech_sap_training&#x2F;walkthrough&#x2F;slt-setup&#x2F;"><strong>SLT</strong> — SAP Landscape Transformation (SLT) Setup &amp; Configuration</a></li>
+      </ul>
+    </div>
+
+
+  </div>
+</div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <nav>
+          <ul>
+            <li><a href="&#x2F;sawan_tech_sap_training/about/">About</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/roadmap/">Roadmap</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/glossary/">Glossary</a></li>
+            <li><a href="&#x2F;sawan_tech_sap_training/articles/">Articles</a></li>
+            <li><a href="https://github.com/darshanmeel/sawan_tech_sap_training" target="_blank" rel="noopener noreferrer">GitHub <span class="sr-only">(opens in new tab)</span></a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <form
+        action="https://buttondown.email/api/emails/embed-subscribe/example"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://buttondown.email/example', 'popupwindow')"
+        class="email-form"
+      >
+        <div class="email-form-content">
+          <label for="bd-email">Email address</label>
+          <div class="email-form-row">
+            <input
+              type="email"
+              name="email"
+              id="bd-email"
+              placeholder="you@example.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+          <p class="email-consent">By subscribing you agree to receive occasional emails about platform updates. Unsubscribe anytime.</p>
+        </div>
+      </form>
+
+      <div class="footer-info">
+        <p class="disclaimer">⚠️ Disclaimer: All information on this site is based on professional field experience and official SAP documentation. While thoroughly tested and validated in production environments, extraction patterns may vary based on your specific SAP version, customizations, and system configuration. Always validate licensing with SAP before implementing. SAP, S&#x2F;4HANA, and related terms are trademarks of SAP SE. This site is an independent educational resource and is not affiliated with, endorsed by, or sponsored by SAP SE.</p>
+        <p class="copyright">© SAP Extract Guide 2026</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
