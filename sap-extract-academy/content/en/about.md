@@ -77,7 +77,7 @@ This guide is built for the data community and improves when you contribute to i
 
 - **GitHub:** [darshanmeel/sawan_tech_sap_training](https://github.com/darshanmeel/sawan_tech_sap_training) — open an issue or a pull request.
 - **LinkedIn:** Follow for new walkthroughs and pattern updates.
-- **Email:** `team@sapextractguide.com` (coming soon).
+- **Email:** `darshan.meel@gmail.com`
 
 Corrections on licensing content are especially welcome — SAP rules shift, and this content needs to stay current. Cite SAP Notes by number where possible.
 
