@@ -15,8 +15,19 @@ const OUTPUT_DIR = path.join(__dirname, 'docs');
 const STRINGS_PATH = path.join(__dirname, 'strings/en.json');
 
 const BASE_PATH = process.env.BASE_PATH || '/sawan_tech_sap_training';
+// SITE_URL: absolute origin for canonical links, OG tags, JSON-LD, sitemap.
+// Override in CI (GITHUB_ACTIONS) or local builds via env var.
+const SITE_URL = process.env.SITE_URL || 'https://darshanmeel.github.io';
+const SITE_ORIGIN = `${SITE_URL}${BASE_PATH}`;
 
-const strings = JSON.parse(fs.readFileSync(STRINGS_PATH, 'utf-8'));
+// Read strings with a helpful error if JSON is malformed (otherwise node throws
+// "Unexpected token" without naming the file, which is painful during edits).
+let strings;
+try {
+  strings = JSON.parse(fs.readFileSync(STRINGS_PATH, 'utf-8'));
+} catch (e) {
+  throw new Error(`Failed to parse ${STRINGS_PATH}: ${e.message}`);
+}
 const baseTemplate = fs.readFileSync(path.join(TEMPLATES_DIR, 'base.html'), 'utf-8');
 
 // Load Mustache partials from templates/partials/ (*.mustache or *.html)
@@ -143,21 +154,21 @@ function getCanonicalPath(inputPath) {
 function buildBreadcrumbs(filePath, data) {
   const pageType = getPageType(filePath);
   const breadcrumbs = [
-    { position: 1, name: 'Home', item: 'https://academy.example.com/' }
+    { position: 1, name: 'Home', item: `${SITE_ORIGIN}/` }
   ];
 
   if (pageType === 'table') {
-    breadcrumbs.push({ position: 2, name: 'Tables', item: 'https://academy.example.com/tables/' });
+    breadcrumbs.push({ position: 2, name: 'Tables', item: `${SITE_ORIGIN}/tables/` });
     breadcrumbs.push({ position: 3, name: data.code || data.name });
   } else if (pageType === 'walkthrough') {
-    breadcrumbs.push({ position: 2, name: 'Walkthroughs', item: 'https://academy.example.com/walkthrough/' });
-    breadcrumbs.push({ position: 3, name: data.table, item: `https://academy.example.com/tables/${data.slug}/` });
+    breadcrumbs.push({ position: 2, name: 'Walkthroughs', item: `${SITE_ORIGIN}/walkthrough/` });
+    breadcrumbs.push({ position: 3, name: data.table, item: `${SITE_ORIGIN}/tables/${data.slug}/` });
     breadcrumbs.push({ position: 4, name: data.title });
   } else if (pageType === 'article') {
-    breadcrumbs.push({ position: 2, name: 'Articles', item: 'https://academy.example.com/articles/' });
+    breadcrumbs.push({ position: 2, name: 'Articles', item: `${SITE_ORIGIN}/articles/` });
     breadcrumbs.push({ position: 3, name: data.title });
   } else if (pageType === 'glossary') {
-    breadcrumbs.push({ position: 2, name: 'Glossary', item: 'https://academy.example.com/glossary/' });
+    breadcrumbs.push({ position: 2, name: 'Glossary', item: `${SITE_ORIGIN}/glossary/` });
     breadcrumbs.push({ position: 3, name: data.term });
   } else if (pageType === 'roadmap') {
     breadcrumbs.push({ position: 2, name: 'Roadmap' });
@@ -167,7 +178,7 @@ function buildBreadcrumbs(filePath, data) {
 }
 
 function buildJsonLd(pageType, data, canonicalPath, breadcrumbs) {
-  const baseUrl = 'https://academy.example.com';
+  const baseUrl = SITE_ORIGIN;
 
   if (pageType === 'table') {
     return JSON.stringify({
@@ -298,6 +309,16 @@ function buildPage(filePath, content) {
   const stepCount = data.steps ? data.steps.length : 0;
 
   const tableSlug = data.slug || (data.code ? data.code.toLowerCase() : '');
+  // Slug is used to build output file paths and DDL lookups. Reject any value
+  // that could traverse outside the output dir or inject null/newline bytes.
+  // (Existing content uses both plain slugs like "acdoca" and path fragments
+  // like "/about/", so we only ban traversal patterns rather than a strict regex.)
+  if (tableSlug && (/\.\./.test(tableSlug) || /[\0\r\n]/.test(tableSlug))) {
+    throw new Error(
+      `Unsafe slug in ${filePath}: ${JSON.stringify(tableSlug)}. ` +
+      `Slug must not contain '..' or control characters.`
+    );
+  }
 
   const primaryKeyList = Array.isArray(data.primaryKey) ? data.primaryKey : [];
   const keyFieldsRaw = Array.isArray(data.keyFields) ? data.keyFields : [];
@@ -411,6 +432,7 @@ function buildPage(filePath, content) {
     canonicalPath,
     currentYear,
     basePath: BASE_PATH,
+    siteOrigin: SITE_ORIGIN,
     buttondownUsername: 'example',
     ogImage: 'default-og.png',
     ogType: pageType === 'article' ? 'article' : 'website',
@@ -753,10 +775,11 @@ function renderDirectoryPageToFile(pageType, viewModel, outputDir, outputPath) {
       '@type': 'WebPage',
       'name': viewModel.name,
       'description': viewModel.seoDescription,
-      'url': 'https://academy.example.com' + viewModel.canonicalPath
+      'url': SITE_ORIGIN + viewModel.canonicalPath
     }),
     currentYear,
     basePath: BASE_PATH,
+    siteOrigin: SITE_ORIGIN,
     buttondownUsername: 'example',
     ogImage: 'default-og.png',
     ogType: 'website'
@@ -921,6 +944,7 @@ function generateDirectoryIndex() {
     strings,
     currentYear,
     basePath: BASE_PATH,
+    siteOrigin: SITE_ORIGIN,
     canonicalPath,
     seoTitle: 'SAP Table Directory',
     seoDescription: 'Reference directory of the SAP tables most commonly extracted in data-engineering projects. Columns, DDL, extraction methods, release notes.',
@@ -929,7 +953,7 @@ function generateDirectoryIndex() {
       '@type': 'CollectionPage',
       'name': 'SAP Table Directory',
       'description': 'Reference directory of SAP tables.',
-      'url': 'https://academy.example.com' + canonicalPath
+      'url': SITE_ORIGIN + canonicalPath
     }),
     ogImage: 'default-og.png',
     ogType: 'website',
@@ -1129,6 +1153,7 @@ function buildIndexPage(category, data) {
     strings,
     currentYear,
     basePath: BASE_PATH,
+    siteOrigin: SITE_ORIGIN,
     ogImage: 'default-og.png',
     ogType: 'website'
   };
@@ -1166,7 +1191,7 @@ function generateSitemap() {
 
   for (const entry of entries) {
     xml += '  <url>\n';
-    xml += `    <loc>https://academy.example.com${entry.url}</loc>\n`;
+    xml += `    <loc>${SITE_ORIGIN}${entry.url}</loc>\n`;
     xml += `    <lastmod>${entry.lastmod}</lastmod>\n`;
     xml += `    <changefreq>${entry.changefreq}</changefreq>\n`;
     xml += `    <priority>${entry.priority}</priority>\n`;

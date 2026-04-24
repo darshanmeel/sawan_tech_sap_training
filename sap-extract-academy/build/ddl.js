@@ -167,6 +167,23 @@ function normalizeType(t) {
   return String(t).trim().toUpperCase();
 }
 
+// Reject any identifier (table, column, schema, module) that isn't a plain
+// alphanumeric/underscore SQL identifier. This closes the DDL injection hole
+// where a malicious YAML `module: "FI'; DROP TABLE USERS; --"` would otherwise
+// interpolate straight into the CREATE TABLE statement. SAP identifiers are
+// always uppercase ASCII by convention, so this is zero-cost for real content.
+const IDENT_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
+
+function assertIdent(value, label) {
+  if (typeof value !== 'string' || !IDENT_RE.test(value)) {
+    throw new Error(
+      `Invalid SQL identifier in ${label}: ${JSON.stringify(value)}. ` +
+      `Must match /^[A-Za-z_][A-Za-z0-9_]*$/.`
+    );
+  }
+  return value;
+}
+
 function mapType(dialect, type, length, decimals) {
   const d = DIALECTS[dialect];
   if (!d) throw new Error(`Unknown DDL dialect: ${dialect}`);
@@ -341,8 +358,14 @@ export function generateDdl(
   if (!Array.isArray(columns) || columns.length === 0) {
     throw new Error(`generateDdl: columns must be a non-empty array (table ${tableName})`);
   }
+  // Validate every identifier that will be interpolated into DDL. Fail fast at
+  // build time rather than generating broken / injection-prone SQL.
+  assertIdent(tableName, 'tableName');
   const module = opts.module;
+  if (module) assertIdent(module, 'opts.module');
+  for (const c of columns) assertIdent(c.name, `column name (table ${tableName})`);
   const keys = Array.isArray(partitionKeys) ? partitionKeys : [];
+  for (const k of keys) assertIdent(k, `partitionKey (table ${tableName})`);
   switch (dialect) {
     case 'snowflake':
       return generateSnowflake(tableName, columns, keys, module);
