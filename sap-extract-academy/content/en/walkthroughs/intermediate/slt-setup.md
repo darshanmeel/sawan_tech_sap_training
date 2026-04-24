@@ -188,6 +188,97 @@ steps:
       helpUrl: "https://help.sap.com/"
     verify: "Monitoring dashboard shows current replication lag. Lag alert is configured and will notify Basis/DBA if lag exceeds threshold."
 
+toolSteps:
+  - tool: custom
+    label: "Custom (Python / pyrfc) — trigger SLT replication and consume delta queues"
+    steps:
+      - title: "Create or activate an SLT mass transfer programmatically"
+        explanation: "Once the SLT Replication Server is set up (SAP-side tab), a custom pipeline can orchestrate which tables are added to which mass transfer via the RFC function module IUUC_REPL_CONFIG_CHANGE. Useful when you need to promote a new table into replication without opening LTRC manually."
+        code: |
+          import pyrfc
+
+          slt = pyrfc.Connection(
+              ashost='slt-prod.company.com',
+              sysnr='00', client='001',
+              user='SLT_AUTOMATION', passwd='<password>'
+          )
+
+          # Add VBAK to an existing mass transfer
+          slt.call(
+              'IUUC_REPL_CONFIG_CHANGE',
+              MT_ID='001',                   # Mass transfer ID
+              TABLE_NAME='VBAK',
+              ACTION='ADD',
+              START_REPLICATION='X'          # Kick off initial load immediately
+          )
+
+          print("VBAK added to mass transfer 001 — initial load started")
+        language: python
+        verify: "LTRC on the SLT system shows VBAK in Data Provisioning with status 'Initial Load In Progress', then transitioning to 'Replication'."
+
+      - title: "Poll replication status and read delta via /1CADMC/IL_<MT>_LOG"
+        explanation: "SLT writes change records to a logging table per source table (e.g. /1CADMC/IL_001_VBAK for mass transfer 001). A custom pipeline can poll this logging table, pull changes since the last watermark, and push to a downstream target."
+        code: |
+          result = slt.call(
+              'RFC_READ_TABLE',
+              QUERY_TABLE='/1CADMC/IL_001_VBAK',
+              OPTIONS=[{'TEXT': "SEQUENCENUMBER > '000000012345'"}],
+              ROWCOUNT=100000
+          )
+
+          changes = [row['WA'] for row in result['DATA']]
+          print(f"Read {len(changes)} change records from SLT delta queue")
+        language: python
+        verify: "Each poll returns changed rows plus operation codes (I/U/D). Watermark advances — subsequent calls only return new changes."
+
+  - tool: adf
+    label: "Azure Data Factory — SAP CDC connector (built on SLT)"
+    steps:
+      - title: "Create a linked service using SAP CDC connector"
+        explanation: "ADF's SAP CDC connector sits on top of your SLT Replication Server. Point it at the SLT system you just configured (not the source ERP). ADF manages subscriptions and downloads change packages via ODQ; the SLT infrastructure you built feeds the ODQ internally."
+        verify: "Linked service test returns green. Dataset browser lists all tables registered in LTRC mass transfers."
+
+      - title: "Build an initial-plus-delta Copy Activity"
+        explanation: "Configure the Copy Activity with Run Mode = 'Full on the first run, Incremental afterwards'. ADF records the subscription watermark and, on every schedule, pulls only the changes since the last run. Partition large initial loads via the partition option to parallelise across source system work processes."
+        verify: "First run emits full table; subsequent runs show 'Rows Read' matching the count of SLT delta records since the last sync. ODQMON on the SAP side shows the ADF subscription active."
+
+  - tool: databricks
+    label: "Databricks — Lakehouse Federation / SAP CDC structured streaming"
+    steps:
+      - title: "Register SLT target HANA as a federated catalog"
+        explanation: "If your SLT mass transfer lands data in SAP HANA, the simplest Databricks pattern is to create a Lakehouse Federation connection to that HANA schema. Delta replication keeps HANA current; Databricks queries it live via JDBC without copying. For higher-volume streaming, point the Databricks SAP connector at ODQ subscriptions on the SLT system."
+        code: |
+          -- Databricks SQL
+          CREATE CONNECTION slt_hana
+          TYPE SAP_HANA
+          OPTIONS (
+            host 'slt-hana.company.com',
+            port '30015',
+            user secret('sap-prod','user'),
+            password secret('sap-prod','password')
+          );
+
+          CREATE FOREIGN CATALOG slt_replicated
+          USING CONNECTION slt_hana
+          OPTIONS (database 'SLT_REPL');
+        language: sql
+        verify: "SHOW TABLES IN slt_replicated.dbo returns the tables you registered in LTRC. SELECT COUNT(*) matches the SLT target table count."
+
+      - title: "Stream SLT deltas into Delta Lake"
+        explanation: "For the structured streaming path, use the Databricks SAP connector with sourceType 'SLT' pointing at a specific ODQ subscription. The micro-batch query reads new delta rows per trigger and writes them to a Delta table in your Unity Catalog."
+        verify: "A bronze Delta table accumulates SLT change events. DESCRIBE HISTORY shows commits at each streaming trigger interval."
+
+  - tool: fivetran
+    label: "Fivetran — SAP HANA connector reading SLT-replicated schema"
+    steps:
+      - title: "Connect Fivetran to the SLT target HANA schema"
+        explanation: "Fivetran does not talk to SLT directly; instead, it reads the HANA schema that SLT replicates into. Use the Fivetran SAP HANA connector, point it at the SLT target database, and select the tables SLT is replicating. Fivetran handles incremental CDC via HANA's row version columns."
+        verify: "Fivetran connector setup test succeeds. The connector lists the SLT-replicated tables and initiates a full sync."
+
+      - title: "Schedule incremental syncs aligned with SLT delta frequency"
+        explanation: "Set the Fivetran sync frequency (5 min recommended) to match SLT's delta push cadence. Running Fivetran faster than SLT pushes changes wastes credits; running slower lets lag accumulate in the downstream warehouse."
+        verify: "Fivetran sync history shows consistent row counts per interval matching SLT LTRC logs. No sync warnings about schema drift."
+
 troubleshooting:
   - problem: "RFC connection test fails with 'Connection refused'"
     solution: "Verify the target host is reachable. Check firewall rules between SLT system and source ERP. Confirm gateway service (sapgw00) is running on the source. Test connectivity: ping erp-prod.company.com, and verify gateway port 3300 is open."

@@ -1067,7 +1067,145 @@ Commit Frequency:          Every 100,000 records
       <div class="card section tool-steps-section" id="wt-panel-tool" role="tabpanel" aria-labelledby="wt-tab-tool" hidden>
         <h2>Tool <em>configuration</em></h2>
         <p style="color:var(--color-ink-soft);font-size:14px;margin-bottom:var(--space-5);">Pipeline code and config for your selected tool. Switch the <strong>Tool</strong> picker above to see a different variant.</p>
-        <p style="color:var(--color-ink-soft);font-size:14px;">No tool-specific steps for this walkthrough. See the SAP side tab for extraction steps.</p>
+        <div class="tool-steps-container" data-default-tool="custom">
+          <div data-tool-block="custom">
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Custom (Python &#x2F; pyrfc) — trigger SLT replication and consume delta queues</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Create or activate an SLT mass transfer programmatically</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Once the SLT Replication Server is set up (SAP-side tab), a custom pipeline can orchestrate which tables are added to which mass transfer via the RFC function module IUUC_REPL_CONFIG_CHANGE. Useful when you need to promote a new table into replication without opening LTRC manually.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">import pyrfc
+
+slt &#x3D; pyrfc.Connection(
+    ashost&#x3D;&#39;slt-prod.company.com&#39;,
+    sysnr&#x3D;&#39;00&#39;, client&#x3D;&#39;001&#39;,
+    user&#x3D;&#39;SLT_AUTOMATION&#39;, passwd&#x3D;&#39;&lt;password&gt;&#39;
+)
+
+# Add VBAK to an existing mass transfer
+slt.call(
+    &#39;IUUC_REPL_CONFIG_CHANGE&#39;,
+    MT_ID&#x3D;&#39;001&#39;,                   # Mass transfer ID
+    TABLE_NAME&#x3D;&#39;VBAK&#39;,
+    ACTION&#x3D;&#39;ADD&#39;,
+    START_REPLICATION&#x3D;&#39;X&#39;          # Kick off initial load immediately
+)
+
+print(&quot;VBAK added to mass transfer 001 — initial load started&quot;)</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> LTRC on the SLT system shows VBAK in Data Provisioning with status &#39;Initial Load In Progress&#39;, then transitioning to &#39;Replication&#39;.</p>
+              </li>
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 2</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Poll replication status and read delta via &#x2F;1CADMC&#x2F;IL_&lt;MT&gt;_LOG</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">SLT writes change records to a logging table per source table (e.g. /1CADMC/IL_001_VBAK for mass transfer 001). A custom pipeline can poll this logging table, pull changes since the last watermark, and push to a downstream target.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-python">result &#x3D; slt.call(
+    &#39;RFC_READ_TABLE&#39;,
+    QUERY_TABLE&#x3D;&#39;&#x2F;1CADMC&#x2F;IL_001_VBAK&#39;,
+    OPTIONS&#x3D;[{&#39;TEXT&#39;: &quot;SEQUENCENUMBER &gt; &#39;000000012345&#39;&quot;}],
+    ROWCOUNT&#x3D;100000
+)
+
+changes &#x3D; [row[&#39;WA&#39;] for row in result[&#39;DATA&#39;]]
+print(f&quot;Read {len(changes)} change records from SLT delta queue&quot;)</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Each poll returns changed rows plus operation codes (I&#x2F;U&#x2F;D). Watermark advances — subsequent calls only return new changes.</p>
+              </li>
+            </ol>
+          </div>
+          <div data-tool-block="adf" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Azure Data Factory — SAP CDC connector (built on SLT)</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Create a linked service using SAP CDC connector</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">ADF&#39;s SAP CDC connector sits on top of your SLT Replication Server. Point it at the SLT system you just configured (not the source ERP). ADF manages subscriptions and downloads change packages via ODQ; the SLT infrastructure you built feeds the ODQ internally.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Linked service test returns green. Dataset browser lists all tables registered in LTRC mass transfers.</p>
+              </li>
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 2</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Build an initial-plus-delta Copy Activity</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Configure the Copy Activity with Run Mode = &#39;Full on the first run, Incremental afterwards&#39;. ADF records the subscription watermark and, on every schedule, pulls only the changes since the last run. Partition large initial loads via the partition option to parallelise across source system work processes.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> First run emits full table; subsequent runs show &#39;Rows Read&#39; matching the count of SLT delta records since the last sync. ODQMON on the SAP side shows the ADF subscription active.</p>
+              </li>
+            </ol>
+          </div>
+          <div data-tool-block="databricks" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Databricks — Lakehouse Federation &#x2F; SAP CDC structured streaming</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Register SLT target HANA as a federated catalog</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">If your SLT mass transfer lands data in SAP HANA, the simplest Databricks pattern is to create a Lakehouse Federation connection to that HANA schema. Delta replication keeps HANA current; Databricks queries it live via JDBC without copying. For higher-volume streaming, point the Databricks SAP connector at ODQ subscriptions on the SLT system.</p>
+                <pre style="margin:0 0 var(--space-3);font-size:12px;"><code class="language-sql">-- Databricks SQL
+CREATE CONNECTION slt_hana
+TYPE SAP_HANA
+OPTIONS (
+  host &#39;slt-hana.company.com&#39;,
+  port &#39;30015&#39;,
+  user secret(&#39;sap-prod&#39;,&#39;user&#39;),
+  password secret(&#39;sap-prod&#39;,&#39;password&#39;)
+);
+
+CREATE FOREIGN CATALOG slt_replicated
+USING CONNECTION slt_hana
+OPTIONS (database &#39;SLT_REPL&#39;);</code></pre>
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> SHOW TABLES IN slt_replicated.dbo returns the tables you registered in LTRC. SELECT COUNT(*) matches the SLT target table count.</p>
+              </li>
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 2</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Stream SLT deltas into Delta Lake</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">For the structured streaming path, use the Databricks SAP connector with sourceType &#39;SLT&#39; pointing at a specific ODQ subscription. The micro-batch query reads new delta rows per trigger and writes them to a Delta table in your Unity Catalog.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> A bronze Delta table accumulates SLT change events. DESCRIBE HISTORY shows commits at each streaming trigger interval.</p>
+              </li>
+            </ol>
+          </div>
+          <div data-tool-block="fivetran" hidden>
+            <div class="tool-block-header" style="margin-bottom:var(--space-5);padding-bottom:var(--space-4);border-bottom:1px solid var(--color-rule);">
+              <h3 style="font-size:20px;font-weight:600;margin:0;font-family:var(--font-body);letter-spacing:-0.01em;">Fivetran — SAP HANA connector reading SLT-replicated schema</h3>
+            </div>
+            <ol class="tool-steps-list" style="padding-left:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-4);">
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 1</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Connect Fivetran to the SLT target HANA schema</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Fivetran does not talk to SLT directly; instead, it reads the HANA schema that SLT replicates into. Use the Fivetran SAP HANA connector, point it at the SLT target database, and select the tables SLT is replicating. Fivetran handles incremental CDC via HANA&#39;s row version columns.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Fivetran connector setup test succeeds. The connector lists the SLT-replicated tables and initiates a full sync.</p>
+              </li>
+              <li class="tool-step-card" style="background:var(--color-bg-3);border-radius:var(--radius-md);padding:var(--space-5);border:1px solid var(--color-rule);">
+                <div style="display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-3);">
+                  <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-accent-2);font-weight:600;flex-shrink:0;">Step 2</span>
+                  <strong style="font-size:16px;font-weight:600;color:var(--color-ink);font-family:var(--font-body);">Schedule incremental syncs aligned with SLT delta frequency</strong>
+                </div>
+                <p style="color:var(--color-ink-soft);margin:0 0 var(--space-3);font-size:14px;line-height:1.6;">Set the Fivetran sync frequency (5 min recommended) to match SLT&#39;s delta push cadence. Running Fivetran faster than SLT pushes changes wastes credits; running slower lets lag accumulate in the downstream warehouse.</p>
+                
+                <p style="font-size:13px;color:var(--color-accent);margin:0;background:var(--color-accent-soft);padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);"><strong>Verify:</strong> Fivetran sync history shows consistent row counts per interval matching SLT LTRC logs. No sync warnings about schema drift.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
 
         <!-- Tool troubleshooting -->
         <details class="ts-section" style="margin-top:var(--space-6);border-top:1px solid var(--color-rule);padding-top:var(--space-5);">
